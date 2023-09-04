@@ -13,7 +13,7 @@ import com.sss.bank.api.health.dto.HealthCheckResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 @RequiredArgsConstructor
 public class HealthController {
 	private final Environment environment;
