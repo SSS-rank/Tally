@@ -182,4 +182,14 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+# mariadb docker
+localbankstack/mariadb
+
+### ENV ###
+.env
+
+## gitlab
+.idea
+.gradle
+
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java,intellij,git
