@@ -18,4 +18,9 @@
 ![image](https://github.com/KimSeonHui/Algorithm-Problems/assets/44824456/ae570a25-3746-4742-a524-03bd0ce5ba91)
 
 ### Font Weight
+
 ![image](https://github.com/DagonLee/DagonLee/assets/43575986/2ac19780-0116-4bc8-b651-098bfeb59cfb)
+
+### Color System
+
+![image](https://github.com/FOR-MY-EGG/ForMyEgg/assets/18045556/5ec3933d-ca08-4e1e-88b9-53a3edfaba59)
