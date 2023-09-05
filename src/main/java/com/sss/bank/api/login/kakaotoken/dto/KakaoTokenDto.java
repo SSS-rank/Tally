@@ -1,5 +1,8 @@
 package com.sss.bank.api.login.kakaotoken.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,12 +26,13 @@ public class KakaoTokenDto {
 	@ToString
 	@NoArgsConstructor
 	@AllArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class Response{
-		private String token_type;
-		private String access_token;
-		private Integer expires_in;
-		private String refresh_token;
-		private Integer getRefresh_token_expires_in;
+		private String tokenType;
+		private String accessToken;
+		private Integer expiresIn;
+		private String refreshToken;
+		private Integer getRefreshTokenExpiresIn;
 		private String scope;
 	}
 }
