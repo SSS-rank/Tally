@@ -104,7 +104,7 @@ const MainPage = () =>{
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small">이체</Button>
+                      <Button size="small"  href="/transfer">이체</Button>
                       <Button size="small">삭제</Button>
                     </CardActions>
                   </Card>
