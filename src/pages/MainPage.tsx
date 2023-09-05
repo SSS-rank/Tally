@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
+import React, {useEffect,  useRef} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import { useNavigate } from 'react-router-dom';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,17 +20,29 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 const MainPage = () =>{
+    const navigate = useNavigate();
+    const accountNumRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         const fetchAccountData = async () => {
             try{
-              const {data} = await axios.get(`/api/lesson/card`)
-              console.log(data)
+              // const {data} = await axios.get(`/api/lesson/card`)
+              // console.log(data)
             } catch (error) {
               console.error(error);
             }
           }
           fetchAccountData()
     });
+    const handleAccountClick = () =>{
+      const accountNumElement = accountNumRef.current;
+      if (accountNumElement) {
+        const accountNumValue = accountNumElement.innerText;
+
+        console.log('클릭된 Typography의 값:', accountNumValue);
+        navigate('/accountdetail/'+ accountNumValue)
+      }
+    }
+    
     return(
         <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
@@ -83,13 +95,12 @@ const MainPage = () =>{
                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                   >
                     
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Heading
+                    <CardContent sx={{ flexGrow: 1 }} onClick={handleAccountClick}>
+                      <Typography gutterBottom variant="h5" component="h2" id="accountNum" ref={accountNumRef}>
+                        110110
                       </Typography>
                       <Typography>
-                        This is a media card. You can use this section to describe the
-                        content.
+                        금액
                       </Typography>
                     </CardContent>
                     <CardActions>
@@ -102,21 +113,7 @@ const MainPage = () =>{
             </Grid>
           </Container>
         </main>
-        {/* Footer */}
-        {/* <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-          <Typography variant="h6" align="center" gutterBottom>
-            Footer
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            Something here to give the footer a purpose!
-          </Typography>
-        </Box> */}
-        {/* End footer */}
+       
       </ThemeProvider>
     );
 };
