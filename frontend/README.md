@@ -33,6 +33,10 @@
 
 ![image](https://github.com/KimSeonHui/Algorithm-Problems/assets/44824456/23ecfa53-2a4d-40d2-89e9-95943e5255aa)
 
+### Button Style
+
+![image](https://github.com/FOR-MY-EGG/ForMyEgg/assets/18045556/b81f4a14-de8f-4c79-afde-8927d903e2cb)
+
 <br /><br />
 
 # Frontend Team Role
