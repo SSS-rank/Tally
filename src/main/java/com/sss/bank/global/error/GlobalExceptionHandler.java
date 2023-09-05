@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.sss.bank.global.error.dto.ErrorResponseDto;
+import com.sss.bank.global.error.exception.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,14 @@ public class GlobalExceptionHandler {
 		log.error("hadleMethodArgumentTypeMismatchException", e);
 		ErrorResponseDto errorResponseDto = ErrorResponseDto.of(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(errorResponseDto);
+	}
+
+	@ExceptionHandler(value = {BusinessException.class})
+	protected ResponseEntity<ErrorResponseDto> handleConflict(BusinessException e) {
+		log.error("BusinessException", e);
+		ErrorResponseDto errorResponseDto = ErrorResponseDto.of(e.getErrorCode().getErrorCode(), e.getMessage());
+		return ResponseEntity.status(e.getErrorCode().getHttpStatus())
 			.body(errorResponseDto);
 	}
 }
