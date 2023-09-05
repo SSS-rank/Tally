@@ -10,15 +10,22 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 public class KakaoTokenDto {
-
 	@Builder
 	@Getter
 	public static class Request{
-		private String grant_type;
+		private final String grant_type = "authorization_code";
 		private String client_id;
-		private String redirect_uri;
+		private final String redirect_uri = "http://localhost:8080/oauth/kakao/callback";
 		private String code;
 		private String client_secret;
+
+		public static Request of(String clientId, String code, String clientSecret) {
+			return Request.builder()
+				.client_id(clientId)
+				.client_secret(clientSecret)
+				.code(code)
+				.build();
+		}
 	}
 
 	@Builder

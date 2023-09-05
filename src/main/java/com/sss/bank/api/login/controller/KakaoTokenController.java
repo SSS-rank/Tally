@@ -23,13 +23,7 @@ public class KakaoTokenController {
 	@GetMapping("/oauth/kakao/callback")
 	public @ResponseBody String loginCallback(String code){
 		String contentType = "application/x-www-form-urlencoded;charset=utf-8";
-		KakaoTokenDto.Request kakaoTokenRequest = KakaoTokenDto.Request.builder()
-			.client_id(clientId)
-			.client_secret(clientSecret)
-			.grant_type("authorization_code")
-			.code(code)
-			.redirect_uri("http://localhost:8080/oauth/kakao/callback")
-			.build();
+		KakaoTokenDto.Request kakaoTokenRequest = KakaoTokenDto.Request.of(clientId, code, clientSecret);
 		KakaoTokenDto.Response kakaoTokenResponse = kakaoTokenClient.requestKakaoToken(contentType, kakaoTokenRequest);
 
 		return "kakao token: "+kakaoTokenResponse;
