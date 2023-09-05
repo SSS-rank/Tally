@@ -183,7 +183,7 @@ gradle-app.setting
 *.hprof
 
 # mariadb docker
-localbankstack/mariadb
+sssdocker/mariadb
 
 ### ENV ###
 .env

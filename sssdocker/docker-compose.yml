@@ -12,4 +12,4 @@ services:
     volumes:
       - "./mariadb/conf.d:/etc/mysql/conf.d"
       - "./mariadb/data:/var/lib/mysql"
-    container_name: mariadb
+    container_name: mariadb-bank
