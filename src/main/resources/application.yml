@@ -12,3 +12,8 @@ spring:
       properties:
         hibernate:
           format_sql: true
+
+kakao:
+  client:
+    id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_CLIENT_SECRET}
