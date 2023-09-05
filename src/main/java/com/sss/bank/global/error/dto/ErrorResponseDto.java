@@ -21,6 +21,13 @@ public class ErrorResponseDto {
 			.build();
 	}
 
+	public static ErrorResponseDto of(String errorCode, BindingResult bindingResult) {
+		return ErrorResponseDto.builder()
+			.errorCode(errorCode)
+			.errorMessage(createErrorMessage(bindingResult))
+			.build();
+	}
+
 	private static String createErrorMessage(BindingResult bindingResult) {
 		StringBuilder sb = new StringBuilder();
 		boolean isFirst = true;
