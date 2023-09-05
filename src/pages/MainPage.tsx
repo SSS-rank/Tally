@@ -67,7 +67,9 @@ const MainPage = () =>{
                 spacing={2}
                 justifyContent="center"
               >
-                <Button variant="contained">계좌 추가</Button>
+                <Button variant="contained"  href="/accountadd" className="btn btn-primary">
+                  계좌 추가
+                </Button>
                 <Button variant="outlined">shop 목록</Button>
               </Stack>
             </Container>
