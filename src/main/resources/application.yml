@@ -12,3 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+kakao:
+  client:
+    id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_CLIENT_SECRET}
+    
+token:
+  secret: ${TOKEN_SECRET} # 임의의 문자열
+  access-token-expiration-time: 600000 # 10분 1000(ms) x 60(s) x 10(m)
+  refresh-token-expiration-time: 1209600000 # 2주 1000(ms) x 60 (s) x 60(m) x 24(h) x 14(d)
