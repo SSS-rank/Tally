@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sss.bank.domain.account.entity.Account;
 
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Transfer {
@@ -44,7 +47,7 @@ public class Transfer {
 
 	@Column(nullable = false)
 	private Long amount;
-	
+
 	@CreatedDate
 	@Column(nullable = false)
 	private LocalDateTime transferDate;
