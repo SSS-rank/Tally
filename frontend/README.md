@@ -19,3 +19,8 @@
 
 ### Font Weight
 ![image](https://github.com/DagonLee/DagonLee/assets/43575986/2ac19780-0116-4bc8-b651-098bfeb59cfb)
+
+# Frontend Team Role
+- 이희정 : 메인페이지, 계좌 관리, 이체 UX / UI 설계 및 개발
+- 이다곤 : 정산 및 분석 페이지 UX/UI 설계 및 개발
+- 김선희 : 소셜 로그인,  여행지 관리, 상세 내역 UX / UI 설계 및 개발
