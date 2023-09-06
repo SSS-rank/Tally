@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.domain.bank.entity.Bank;
 import com.sss.bank.domain.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -43,7 +44,7 @@ public class Account {
 
 	@JoinColumn(name = "bank_id")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Member bankId;
+	private Bank bankId;
 
 	@Column(nullable = false, unique = true)
 	private String accountNumber;
@@ -69,15 +70,4 @@ public class Account {
 		this.balance -= amount;
 	}
 
-	public static Account of(Member member, String accountNum, String uuid, String password) {
-		//	String accountNum = generateAccountNum(dbValue);
-		return Account.builder()
-			.accountUuid(uuid)
-			.accountNumber(accountNum)
-			.balance(1000000L)
-			.memberId(member)
-			.status(false)
-			.password(password)
-			.build();
-	}
 }
