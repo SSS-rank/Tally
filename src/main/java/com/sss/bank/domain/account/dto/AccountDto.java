@@ -1,5 +1,6 @@
 package com.sss.bank.domain.account.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -36,5 +37,20 @@ public class AccountDto {
 				.bankId(bank)
 				.build();
 		}
+	}
+
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public class AccountDeleteRequestDto {
+		@NotNull
+		@NotEmpty
+		private String accountHolderUuid;
+		@NotNull
+		private String bankCode;
+		@NotNull
+		private String accountNum;
+		@NotNull
+		private String accountPassword;
 	}
 }
