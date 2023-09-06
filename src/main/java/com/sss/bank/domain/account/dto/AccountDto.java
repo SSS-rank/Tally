@@ -1,6 +1,7 @@
 package com.sss.bank.domain.account.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.bank.entity.Bank;
@@ -20,6 +21,7 @@ public class AccountDto {
 		@NotNull
 		private String bankCode;
 		@NotNull
+		@Size(max = 4)
 		private String accountPassword;
 
 		public Account toAccountEntity(Member member, String accountNum, String uuid, Bank bank) {
