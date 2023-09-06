@@ -31,7 +31,9 @@
   "plugins": ["react", "@typescript-eslint"],
   // plugin 규칙 커스텀 가능
   "rules": {
+    "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "import/order": [
       "error",
       {
@@ -59,4 +61,5 @@
       }
     ]
   }
+  
 }
