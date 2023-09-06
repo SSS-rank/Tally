@@ -70,4 +70,8 @@ public class Account {
 		this.balance -= amount;
 	}
 
+	public void deactivateAccount() {
+		this.status = true;
+	}
+
 }
