@@ -27,8 +27,15 @@ public class AccountController {
 		@RequestBody @Valid AccountDto.AccountCreateRequestDto accountCreateRequestDto, BindingResult bindingResult) {
 		long memberId = 1;
 		//	String memberId = loginUser.getMember().memberId();
-		System.out.println("www" + accountCreateRequestDto.getAccountPassword());
 		Boolean isTrue = accountService.createAccount(memberId, accountCreateRequestDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+	}
+
+	@PostMapping("/delete")
+	public ResponseEntity<String> deleteAccount(
+		@RequestBody @Valid AccountDto.AccountDeleteRequestDto accountDeleteRequestDto, BindingResult bindingResult) {
+		int memberId = 1;
+		Boolean isSuccess = accountService.deleteAccount(accountDeleteRequestDto, memberId);
+		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
 }

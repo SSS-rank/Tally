@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.bank.domain.account.dto.AccountDto;
+import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.bank.entity.Bank;
 import com.sss.bank.domain.bank.repository.BankRepository;
@@ -30,10 +31,7 @@ public class AccountServiceImpl implements AccountService {
 	public Boolean createAccount(long memberId, AccountDto.AccountCreateRequestDto accountCreateRequestDto) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
-			System.out.println(accountCreateRequestDto.getBankCode());
 			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateRequestDto.getBankCode());
-			System.out.println(bankOptional.isPresent());
-			System.out.println("ww" + bankOptional.isEmpty());
 			if (bankOptional.isEmpty()) {
 				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 			}
@@ -55,7 +53,6 @@ public class AccountServiceImpl implements AccountService {
 
 			int numberOfZeros = 4 - lastnumToString.length();
 
-			// 필요한 0을 추가
 			for (int i = 0; i < numberOfZeros; i++) {
 				accountNumBuilder.append("0");
 			}
@@ -78,5 +75,35 @@ public class AccountServiceImpl implements AccountService {
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 		}
+	}
+
+	@Transactional
+	@Override
+	public Boolean deleteAccount(AccountDto.AccountDeleteRequestDto accountDeleteRequestDto, int memberId) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		if (memberOptional.isPresent()) {
+			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteRequestDto.getBankCode());
+			if (bankOptional.isEmpty()) {
+				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			}
+			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+				accountDeleteRequestDto.getAccountNum());
+			if (accountOptional.isEmpty()) {
+				throw new IllegalArgumentException("존재하지 않는 계좌입니다.");
+			}
+			Account account = accountOptional.get();
+
+			if (!account.getPassword().equals(accountDeleteRequestDto.getAccountPassword())) {
+				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			}
+			if (!account.getBankId().getBankCode().equals(accountDeleteRequestDto.getBankCode())) {
+				throw new IllegalArgumentException("은행 코드가 일치하지 않습니다.");
+			}
+			account.deactivateAccount();
+			return true;
+		} else {
+			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+		}
+
 	}
 }

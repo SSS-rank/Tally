@@ -42,7 +42,7 @@ public class AccountDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	public class AccountDeleteRequestDto {
+	public static class AccountDeleteRequestDto {
 		@NotNull
 		@NotEmpty
 		private String accountHolderUuid;
