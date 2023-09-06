@@ -1,4 +1,4 @@
-package com.sss.bank.api.login.kakaotoken.dto;
+package com.sss.bank.api.kakaotoken.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
