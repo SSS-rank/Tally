@@ -1,4 +1,4 @@
-package com.sss.bank.domain.bank.entity.repository;
+package com.sss.bank.domain.bank.repository;
 
 import java.util.Optional;
 

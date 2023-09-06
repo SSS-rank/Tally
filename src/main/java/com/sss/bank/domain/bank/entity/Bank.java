@@ -29,6 +29,6 @@ public class Bank {
 	@Column(nullable = false)
 	private String bankName;
 	@Column(nullable = false)
-	private Integer bankCode;
+	private String bankCode;
 
 }
