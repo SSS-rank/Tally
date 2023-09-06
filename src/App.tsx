@@ -1,13 +1,10 @@
 import React from 'react';
 import './App.css';
-import MainPage from './pages/MainPage';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import AccountAdd from './pages/AccountAdd';
 import AccountDetail from './pages/AccountDetail';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import MainPage from './pages/MainPage';
 
 function App() {
   return (
@@ -15,7 +12,10 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/accountadd" element={<AccountAdd />} />
-        <Route path="/accountdetail/:accountNumber" element={<AccountDetail/>} />
+        <Route
+          path="/accountdetail/:accountNumber"
+          element={<AccountDetail />}
+        />
       </Routes>
     </BrowserRouter>
   );
