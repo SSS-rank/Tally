@@ -16,12 +16,12 @@ import com.sss.bank.domain.transfer.service.TransferService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/account")
+@RequestMapping("/transfer")
 @RestController
 public class TransferController {
 	private final TransferService transferService;
 
-	@PostMapping("/transfer")
+	@PostMapping("/deposit")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransfer(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
 		BindingResult bindingResult) {
