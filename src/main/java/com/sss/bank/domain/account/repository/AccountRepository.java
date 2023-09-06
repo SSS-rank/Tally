@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.sss.bank.domain.account.entity.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-	Account findAccountByAccountNumberAndStatusIsFalse(String accountNum);
+	Optional<Account> findAccountByAccountNumberAndStatusIsFalse(String accountNum);
 
 	@Query("SELECT COUNT(a) FROM Account a")
 	Optional<Integer> countRows();

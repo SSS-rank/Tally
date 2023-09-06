@@ -33,11 +33,13 @@ public class TransferServiceImpl implements TransferService {
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
 			//출금 계좌
-			Account senderAccount = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 				transferDepositReqDto.getSenderAccountNum());
+			Account senderAccount = senderAccountOptional.get();
 			//입금 계좌
-			Account recAccount = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 				transferDepositReqDto.getReceiverAccountNum());
+			Account recAccount = recAccountOptional.get();
 			// 출금계좌와 입금계좌가 동일하면 안됨
 			if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
 				throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
