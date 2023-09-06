@@ -41,6 +41,10 @@ public class Account {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member memberId;
 
+	@JoinColumn(name = "bank_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Member bankId;
+
 	@Column(nullable = false, unique = true)
 	private String accountNumber;
 
