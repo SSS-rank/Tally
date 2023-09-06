@@ -27,5 +27,15 @@ public class OauthLoginDto {
 
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 		private Date refreshTokenExpireTime;
+
+		public static Response from(JwtTokenDto jwtTokenDto){
+			return Response.builder()
+				.grantType(jwtTokenDto.getGrantType())
+				.accessToken(jwtTokenDto.getAccessToken())
+				.accessTokenExpireTime(jwtTokenDto.getAccessTokenExpireTime())
+				.refreshToken(jwtTokenDto.getRefreshToken())
+				.refreshTokenExpireTime(jwtTokenDto.getRefreshTokenExpireTime())
+				.build();
+		}
 	}
 }
