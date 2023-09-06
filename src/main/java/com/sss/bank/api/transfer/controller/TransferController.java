@@ -23,12 +23,13 @@ public class TransferController {
 	private final TransferService transferService;
 
 	@PostMapping("/transfer")
-	public ResponseEntity<?> createTransfer(@RequestBody @Valid TransferDepositReqDto transferDepositReqDto,
+	public ResponseEntity<TransferDepositRespDto> createTransfer(
+		@RequestBody @Valid TransferDepositReqDto transferDepositReqDto,
 		BindingResult bindingResult) {
 		long memberId = 1;
 		//String memberUuid = loginUser.getMember().getMemberUuid();
 		TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(transferDepositReqDto,
 			memberId);
-		return new ResponseEntity<>(transferDepositRespDto, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
 }
