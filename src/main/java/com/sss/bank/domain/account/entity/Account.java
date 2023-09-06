@@ -61,4 +61,15 @@ public class Account {
 	public void withdraw(Long amount) {
 		this.balance -= amount;
 	}
+
+	public Account of(Member member, String accountNum, String uuid) {
+		//	String accountNum = generateAccountNum(dbValue);
+		return Account.builder()
+			.accountUuid(uuid)
+			.accountNumber(accountNum)
+			.balance(1000000L)
+			.memberId(member)
+			.status(false)
+			.build();
+	}
 }
