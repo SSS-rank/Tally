@@ -1,8 +1,8 @@
 package com.sss.bank.domain.transfer.service;
 
-import com.sss.bank.domain.transfer.dto.TransferDepositReqDto;
-import com.sss.bank.domain.transfer.dto.TransferDepositRespDto;
+import com.sss.bank.domain.transfer.dto.TransferDto;
 
 public interface TransferService {
-	TransferDepositRespDto createTransfer(TransferDepositReqDto transferDepositReqDto, long memberId);
+	TransferDto.TransferDepositRespDto createTransfer(TransferDto.TransferDepositReqDto transferDepositReqDto,
+		long memberId);
 }

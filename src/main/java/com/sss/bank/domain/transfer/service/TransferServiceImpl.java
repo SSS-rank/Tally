@@ -9,8 +9,7 @@ import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
-import com.sss.bank.domain.transfer.dto.TransferDepositReqDto;
-import com.sss.bank.domain.transfer.dto.TransferDepositRespDto;
+import com.sss.bank.domain.transfer.dto.TransferDto;
 import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
@@ -28,7 +27,8 @@ public class TransferServiceImpl implements TransferService {
 	private final TransferRepository transferRepository;
 
 	@Override
-	public TransferDepositRespDto createTransfer(TransferDepositReqDto transferDepositReqDto, long memberId) {
+	public TransferDto.TransferDepositRespDto createTransfer(TransferDto.TransferDepositReqDto transferDepositReqDto,
+		long memberId) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
@@ -79,7 +79,9 @@ public class TransferServiceImpl implements TransferService {
 
 			String reqName = recAccount.getMemberId().getName();
 			Long balance = transferDepositReqDto.getDepositAmount();
-			TransferDepositRespDto transferDepositRespDto = new TransferDepositRespDto(reqName, balance);
+			TransferDto.TransferDepositRespDto transferDepositRespDto = new TransferDto.TransferDepositRespDto(reqName,
+				balance);
+
 			return transferDepositRespDto;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);

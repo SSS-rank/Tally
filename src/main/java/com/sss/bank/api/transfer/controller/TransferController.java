@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sss.bank.domain.transfer.dto.TransferDepositReqDto;
-import com.sss.bank.domain.transfer.dto.TransferDepositRespDto;
+import com.sss.bank.domain.transfer.dto.TransferDto;
 import com.sss.bank.domain.transfer.service.TransferService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,13 @@ public class TransferController {
 	private final TransferService transferService;
 
 	@PostMapping("/transfer")
-	public ResponseEntity<TransferDepositRespDto> createTransfer(
-		@RequestBody @Valid TransferDepositReqDto transferDepositReqDto,
+	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransfer(
+		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
 		BindingResult bindingResult) {
 		long memberId = 1;
 		//String memberUuid = loginUser.getMember().getMemberUuid();
-		TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(transferDepositReqDto,
+		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(
+			transferDepositReqDto,
 			memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
