@@ -52,3 +52,19 @@
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"/>
 <img src="https://img.shields.io/badge/Recoil-3578E5?style=flat&logo=recoil&logoColor=white"/>
+<br /><br />
+<br /><br />
+
+# Prettier 설정
+```json
+{
+  "singleQuote": true,
+  "parser": "typescript",
+  "semi": true,
+  "useTabs": true,
+  "trailingComma": "all",
+  "printWidth": 100, 
+  "tabWidth": 2
+}
+
+```
