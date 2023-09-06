@@ -61,6 +61,14 @@ public class TransferServiceImpl implements TransferService {
 				throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
 			}
 
+			//0원체크
+			if (transferDepositReqDto.getDepositAmount() <= 0) {
+				throw new IllegalArgumentException("출금 금액은 0보다 커야 합니다.");
+			}
+			//출금 가능 체크
+			if (recAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
+				throw new IllegalArgumentException("잔액이 부족합니다.");
+			}
 			//이체하기(계좌 잔액 조정)
 			senderAccount.withdraw(transferDepositReqDto.getDepositAmount());
 			recAccount.deposit(transferDepositReqDto.getDepositAmount());
