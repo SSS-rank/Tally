@@ -50,6 +50,9 @@ public class Account {
 	@Column(nullable = false)
 	private Boolean status;
 
+	@Column(nullable = false)
+	private String password;
+
 	@CreatedDate
 	private LocalDateTime createDate;
 
@@ -62,7 +65,7 @@ public class Account {
 		this.balance -= amount;
 	}
 
-	public Account of(Member member, String accountNum, String uuid) {
+	public static Account of(Member member, String accountNum, String uuid, String password) {
 		//	String accountNum = generateAccountNum(dbValue);
 		return Account.builder()
 			.accountUuid(uuid)
@@ -70,6 +73,7 @@ public class Account {
 			.balance(1000000L)
 			.memberId(member)
 			.status(false)
+			.password(password)
 			.build();
 	}
 }
