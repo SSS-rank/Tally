@@ -31,15 +31,13 @@ public class Member {
 	private Long memberId;
 
 	@Column(nullable = false, unique = true)
-	private String kakaoId;
+	private Long kakaoId;
 
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String englishName;
 
-	@Column(nullable = false)
 	private String email;
 
 	private LocalDateTime withdrawalDate;
