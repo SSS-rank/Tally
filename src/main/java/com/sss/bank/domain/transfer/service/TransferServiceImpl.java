@@ -1,8 +1,14 @@
 package com.sss.bank.domain.transfer.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +86,7 @@ public class TransferServiceImpl implements TransferService {
 			balance = senderAccount.getBalance() - depositAmount;
 			senderAccount.updateBalance(balance);
 			balance = recAccount.getBalance() + depositAmount;
-			recAccount.updateBalance(transferDepositReqDto.getDepositAmount());
+			recAccount.updateBalance(balance);
 			//거래내역 남기기
 			String Uuid = UUID.randomUUID().toString();
 			transferRepository.save(
@@ -97,5 +103,45 @@ public class TransferServiceImpl implements TransferService {
 
 		}
 
+	}
+
+	@Override
+	public List<TransferDto.TransferListRespDto> getList(long memberId,
+		TransferDto.TransferListReqDto transferListReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		int page = transferListReqDto.getPage();
+		int limit = transferListReqDto.getLimit();
+		Pageable fixedPageable = PageRequest.of(page, limit, Sort.by("transferDate").descending());
+		if (memberOptional.isPresent()) {
+			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+				transferListReqDto.getAccountNum());
+			if (accountOptional.isEmpty()) {
+				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+			}
+			Account account = accountOptional.get();
+			if (!account.getPassword().equals(transferListReqDto.getAccountPassword())) {
+				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			}
+			Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account,
+				fixedPageable);
+			List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
+			for (Transfer transfer : transferList) {
+				//출금자가 본인일때
+				if (transfer.getSender().getAccountNumber().equals(transferListReqDto.getAccountNum())) {
+					TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
+						"출금");
+
+					transferListRespDtos.add(transferListRespDto);
+				} else { //입금자가 본인일 때
+					TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
+						"입금");
+
+					transferListRespDtos.add(transferListRespDto);
+				}
+			}
+			return transferListRespDtos;
+		} else {
+			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+		}
 	}
 }
