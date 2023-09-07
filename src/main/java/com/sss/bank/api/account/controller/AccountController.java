@@ -34,8 +34,8 @@ public class AccountController {
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteAccount(
 		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) {
-		int memberId = 1;
-		Boolean isSuccess = accountService.deleteAccount(accountDeleteReqDto, memberId);
+		long memberId = 1;
+		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
 }
