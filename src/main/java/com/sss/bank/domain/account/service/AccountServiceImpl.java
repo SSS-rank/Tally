@@ -69,8 +69,9 @@ public class AccountServiceImpl implements AccountService {
 
 			Member member = memberOptional.get();
 			String uuid = UUID.randomUUID().toString();
+
 			accountRepository.save(
-				accountCreateRequestDto.toAccountEntity(member, accountNumBuilder.toString(), uuid, bank));
+				Account.of(accountCreateRequestDto, member, accountNumBuilder.toString(), uuid, bank));
 			return true;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
@@ -99,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
 			if (!account.getBankId().getBankCode().equals(accountDeleteRequestDto.getBankCode())) {
 				throw new IllegalArgumentException("은행 코드가 일치하지 않습니다.");
 			}
-			account.deactivateAccount();
+			account.updateStatus(true);
 			return true;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
