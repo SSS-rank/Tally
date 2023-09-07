@@ -11,5 +11,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	Optional<Account> findAccountByAccountNumberAndStatusIsFalse(String accountNum);
 
 	@Query("SELECT COUNT(a) FROM Account a")
-	Optional<Integer> countRows();
+	Optional<Integer> countAccountRows();
 }
