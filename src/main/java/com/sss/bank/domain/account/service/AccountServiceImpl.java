@@ -36,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
 				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 			}
 			Bank bank = bankOptional.get();
-			Optional<Integer> lastNumOptional = accountRepository.countRows();
+			Optional<Integer> lastNumOptional = accountRepository.countAccountRows();
 			Integer lastNum = lastNumOptional.get();
 			if (lastNum >= 9999) {
 				lastNum -= 9998;
@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional
 	@Override
-	public Boolean deleteAccount(AccountDto.AccountDeleteReqDto accountDeleteReqDto, long memberId) {
+	public Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteReqDto.getBankCode());
