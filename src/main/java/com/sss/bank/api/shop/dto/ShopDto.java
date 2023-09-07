@@ -1,5 +1,9 @@
 package com.sss.bank.api.shop.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.bank.domain.shop.entity.Shop;
@@ -12,6 +16,10 @@ import lombok.Getter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ShopDto {
 	private Long shopId;
+
+	@NotNull
+	@Max(7)
+	@Min(1)
 	private int shopType;
 	private String shopName;
 
@@ -19,6 +27,9 @@ public class ShopDto {
 	@Builder
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class ShopReqDto {
+		@NotNull
+		@Max(7)
+		@Min(1)
 		private int shopType;
 		private String shopName;
 	}
