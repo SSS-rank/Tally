@@ -2,6 +2,7 @@ package com.sss.bank.api.shop.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,12 @@ public class ShopController {
 	@PostMapping
 	public ResponseEntity<ShopDto.ShopRespDto> createShop(@RequestBody ShopDto.ShopReqDto shopReqDto) {
 		ShopDto.ShopRespDto shopRespDto = shopService.createShop(shopReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
+	}
+
+	@PatchMapping
+	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@RequestBody ShopDto.ShopReqDto shopReqDto) {
+		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
 	}
 }
