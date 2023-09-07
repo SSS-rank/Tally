@@ -29,9 +29,8 @@ public class TransferController {
 		BindingResult bindingResult) {
 		long memberId = 1;
 		//String memberUuid = loginUser.getMember().getMemberUuid();
-		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(
-			transferDepositReqDto,
-			memberId);
+		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(memberId,
+			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
 

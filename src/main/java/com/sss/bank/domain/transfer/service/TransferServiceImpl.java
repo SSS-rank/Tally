@@ -36,8 +36,8 @@ public class TransferServiceImpl implements TransferService {
 	private final TransferRepository transferRepository;
 
 	@Override
-	public TransferDto.TransferDepositRespDto createTransfer(TransferDto.TransferDepositReqDto transferDepositReqDto,
-		long memberId) {
+	public TransferDto.TransferDepositRespDto createTransfer(long memberId,
+		TransferDto.TransferDepositReqDto transferDepositReqDto) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
