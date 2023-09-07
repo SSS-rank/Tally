@@ -21,4 +21,11 @@ public class ShopServiceImpl implements ShopService {
 		shopRepository.save(shop);
 		return ShopDto.ShopRespDto.from(shop);
 	}
+
+	@Override
+	public ShopDto.ShopRespDto updateShop(ShopDto.ShopReqDto shopReqDto) {
+		Shop shop = Shop.from(shopReqDto);
+		shop.updateInfo(shopReqDto.getShopType(), shopReqDto.getShopName());
+		return ShopDto.ShopRespDto.from(shop);
+	}
 }
