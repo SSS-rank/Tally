@@ -27,6 +27,8 @@ public enum ErrorCode {
 	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "006", "해당 RefreshToken을 찾을 수 없습니다."),
 	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "007", "해당 RefreshToken은 만료되었습니다."),
 
+	NOT_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "008", "해당 토큰은 ACCESS 토큰이 아닙니다."),
+
 	// 가게
 	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "010", "해당 가게는 존재하지 않습니다.");
 
