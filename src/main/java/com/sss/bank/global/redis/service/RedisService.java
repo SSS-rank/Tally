@@ -1,4 +1,4 @@
-package com.sss.bank.global.service;
+package com.sss.bank.global.redis.service;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -18,14 +18,13 @@ public class RedisService {
 	private RedisTemplate<String, String> redisTemplate;
 
 	public String getValues(String key) {
-
 		ValueOperations<String, String> values = redisTemplate.opsForValue();
 		return values.get(key);
 	}
 
 	public void setValues(String key, String value) {
 		redisTemplate.opsForValue().set(key, value);
-		redisTemplate.expire(key, 30, TimeUnit.DAYS);
+		redisTemplate.expire(key, 14, TimeUnit.DAYS);
 	}
 
 	public void expireValues(String key) {
