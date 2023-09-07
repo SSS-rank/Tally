@@ -36,4 +36,9 @@ public class Shop {
 			.shopType(shopReqDto.getShopType())
 			.build();
 	}
+
+	public void updateInfo(int shopType, String shopName) {
+		this.shopType = shopType;
+		this.shopName = shopName;
+	}
 }
