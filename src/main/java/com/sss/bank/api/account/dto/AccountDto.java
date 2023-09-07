@@ -1,4 +1,4 @@
-package com.sss.bank.domain.account.dto;
+package com.sss.bank.api.account.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ public class AccountDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	public static class AccountCreateRequestDto {
+	public static class AccountCreateReqDto {
 
 		@NotNull
 		private String bankCode;
@@ -26,7 +26,7 @@ public class AccountDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	public static class AccountDeleteRequestDto {
+	public static class AccountDeleteReqDto {
 		@NotNull
 		@NotEmpty
 		private String accountHolderUuid;

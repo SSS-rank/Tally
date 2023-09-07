@@ -15,8 +15,8 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.entity.Account;
-import com.sss.bank.domain.transfer.dto.TransferDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

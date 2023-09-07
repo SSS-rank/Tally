@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.sss.bank.domain.account.dto.AccountDto;
+import com.sss.bank.api.account.dto.AccountDto;
 import com.sss.bank.domain.bank.entity.Bank;
 import com.sss.bank.domain.member.entity.Member;
 
@@ -62,7 +62,7 @@ public class Account {
 	@CreatedDate
 	private LocalDateTime createDate;
 
-	public static Account of(AccountDto.AccountCreateRequestDto accountCreateRequestDto, Member member,
+	public static Account of(AccountDto.AccountCreateReqDto accountCreateReqDto, Member member,
 		String accountNum, String uuid, Bank bank) {
 		return Account.builder()
 			.accountUuid(uuid)
@@ -70,7 +70,7 @@ public class Account {
 			.balance(1000000L)
 			.memberId(member)
 			.status(false)
-			.password(accountCreateRequestDto.getAccountPassword())
+			.password(accountCreateReqDto.getAccountPassword())
 			.bankId(bank)
 			.build();
 	}

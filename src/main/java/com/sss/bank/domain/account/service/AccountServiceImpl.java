@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sss.bank.domain.account.dto.AccountDto;
+import com.sss.bank.api.account.dto.AccountDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.bank.entity.Bank;
@@ -17,21 +17,21 @@ import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
 	private final MemberRepository memberRepository;
 	private final AccountRepository accountRepository;
 	private final BankRepository bankRepository;
 
-	@Transactional
 	@Override
-	public Boolean createAccount(long memberId, AccountDto.AccountCreateRequestDto accountCreateRequestDto) {
+	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
-			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateRequestDto.getBankCode());
+			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateReqDto.getBankCode());
 			if (bankOptional.isEmpty()) {
 				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 			}
@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
 			String uuid = UUID.randomUUID().toString();
 
 			accountRepository.save(
-				Account.of(accountCreateRequestDto, member, accountNumBuilder.toString(), uuid, bank));
+				Account.of(accountCreateReqDto, member, accountNumBuilder.toString(), uuid, bank));
 			return true;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
@@ -80,24 +80,24 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional
 	@Override
-	public Boolean deleteAccount(AccountDto.AccountDeleteRequestDto accountDeleteRequestDto, int memberId) {
+	public Boolean deleteAccount(AccountDto.AccountDeleteReqDto accountDeleteReqDto, long memberId) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
-			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteRequestDto.getBankCode());
+			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteReqDto.getBankCode());
 			if (bankOptional.isEmpty()) {
 				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 			}
 			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
-				accountDeleteRequestDto.getAccountNum());
+				accountDeleteReqDto.getAccountNum());
 			if (accountOptional.isEmpty()) {
 				throw new IllegalArgumentException("존재하지 않는 계좌입니다.");
 			}
 			Account account = accountOptional.get();
 
-			if (!account.getPassword().equals(accountDeleteRequestDto.getAccountPassword())) {
+			if (!account.getPassword().equals(accountDeleteReqDto.getAccountPassword())) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
-			if (!account.getBankId().getBankCode().equals(accountDeleteRequestDto.getBankCode())) {
+			if (!account.getBankId().getBankCode().equals(accountDeleteReqDto.getBankCode())) {
 				throw new IllegalArgumentException("은행 코드가 일치하지 않습니다.");
 			}
 			account.updateStatus(true);

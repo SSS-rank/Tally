@@ -1,4 +1,4 @@
-package com.sss.bank.domain.transfer.dto;
+package com.sss.bank.api.transfer.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

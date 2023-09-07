@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sss.bank.domain.transfer.dto.TransferDto;
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.transfer.service.TransferService;
 
 import lombok.RequiredArgsConstructor;
