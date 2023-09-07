@@ -1,5 +1,7 @@
 package com.sss.bank.api.transfer.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,20 @@ public class TransferController {
 		BindingResult bindingResult) {
 		long memberId = 1;
 		//String memberUuid = loginUser.getMember().getMemberUuid();
-		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(
-			transferDepositReqDto,
-			memberId);
+		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(memberId,
+			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
+	}
+
+	@PostMapping("/history")
+	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferList(
+		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
+		BindingResult bindingResult) {
+		long memberId = 1;
+
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getList(memberId,
+			transferListReqDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
 	}
 }
