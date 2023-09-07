@@ -26,8 +26,8 @@ public class ShopController {
 	}
 
 	@PatchMapping
-	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@RequestBody ShopDto.ShopReqDto shopReqDto) {
-		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopReqDto);
+	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@RequestBody ShopDto shopDto) {
+		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopDto);
 		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
 	}
 }
