@@ -1,11 +1,15 @@
 package com.sss.bank.domain.shop.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.bank.api.shop.dto.ShopDto;
 import com.sss.bank.domain.shop.entity.Shop;
 import com.sss.bank.domain.shop.repository.ShopRepository;
+import com.sss.bank.global.error.ErrorCode;
+import com.sss.bank.global.error.exception.ShopException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,9 +27,11 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ShopDto.ShopRespDto updateShop(ShopDto.ShopReqDto shopReqDto) {
-		Shop shop = Shop.from(shopReqDto);
-		shop.updateInfo(shopReqDto.getShopType(), shopReqDto.getShopName());
-		return ShopDto.ShopRespDto.from(shop);
+	public ShopDto.ShopRespDto updateShop(ShopDto shopDto) {
+		Optional<Shop> shop = shopRepository.findShopByShopId(shopDto.getShopId());
+		if (shop.isEmpty())
+			throw new ShopException(ErrorCode.NOT_EXIST_SHOP);
+		shop.get().updateInfo(shopDto.getShopType(), shopDto.getShopName());
+		return ShopDto.ShopRespDto.from(shop.get());
 	}
 }
