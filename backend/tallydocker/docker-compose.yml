@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:11.0.2
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_DATABASE: tally
+      MARIADB_USER: sss
+      MARIADB_PASSWORD: tallysssA108
+      MARIADB_ROOT_PASSWORD: test
+    volumes:
+      - "./mariadb/conf.d:/etc/mysql/conf.d"
+      - "./mariadb/data:/var/lib/mysql"
+    container_name: mariadb-tally
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=banksssA108
+    container_name: redis-bank
