@@ -35,11 +35,7 @@ public class TokenService {
 			if (!(findRefreshToken.isEmpty()) && findRefreshToken.equals(refreshToken)) {
 				Date accessTokenExpireTime = tokenManager.createAcessTokenExpireTime();
 				String accessToken = tokenManager.createAcessToken(memberId, accessTokenExpireTime);
-				return AccessTokenRespDto.builder()
-					.grantType(GrantType.BEARER.getType())
-					.accessToken(accessToken)
-					.accessTokenExpireTime(accessTokenExpireTime)
-					.build();
+				return AccessTokenRespDto.of(GrantType.BEARER.getType(),accessToken,accessTokenExpireTime);
 			} else {
 				throw new AuthenticationException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
 			}
