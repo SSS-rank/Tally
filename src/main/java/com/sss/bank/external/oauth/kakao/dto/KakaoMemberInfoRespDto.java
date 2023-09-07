@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class KakaoMemberInfoResDto {
+public class KakaoMemberInfoRespDto {
 	private Long id;
 
 	@JsonProperty("kakao_account")
