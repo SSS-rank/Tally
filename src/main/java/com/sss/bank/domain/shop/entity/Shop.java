@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.sss.bank.api.shop.dto.ShopDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +29,11 @@ public class Shop {
 
 	@Column(nullable = false)
 	private String shopName;
+
+	public static Shop from(ShopDto.ShopReqDto shopReqDto) {
+		return Shop.builder()
+			.shopName(shopReqDto.getShopName())
+			.shopType(shopReqDto.getShopType())
+			.build();
+	}
 }
