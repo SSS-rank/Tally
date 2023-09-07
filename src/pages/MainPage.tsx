@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -12,7 +11,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -46,13 +44,6 @@ function MainPage() {
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
-			<AppBar position="relative">
-				<Toolbar>
-					<Typography variant="h6" color="inherit" noWrap>
-						SSS-Bank
-					</Typography>
-				</Toolbar>
-			</AppBar>
 			<main>
 				{/* Hero unit */}
 				<Box
@@ -63,18 +54,8 @@ function MainPage() {
 					}}
 				>
 					<Container maxWidth="sm">
-						<Typography
-							component="h1"
-							variant="h2"
-							align="center"
-							color="text.primary"
-							gutterBottom
-						>
-							SSS-Bank
-						</Typography>
-
 						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-							<Button variant="contained" href="/accountadd" className="btn btn-primary">
+							<Button variant="contained" href="/add" className="btn btn-primary">
 								계좌 추가
 							</Button>
 							<Button variant="outlined">shop 목록</Button>
