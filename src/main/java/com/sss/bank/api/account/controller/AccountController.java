@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +32,23 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
 	}
 
-	@PostMapping("/delete")
+	@PatchMapping("/delete")
 	public ResponseEntity<String> deleteAccount(
 		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) {
 		long memberId = 1;
 		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
+	}
+
+	@PostMapping("/getBalance")
+	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalance(
+		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
+		BindingResult bindingResult) {
+		long memberId = 1;
+		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
+			accountGetBalanceReqDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
+
 	}
 }
