@@ -17,4 +17,10 @@ public class ShopDto {
 		private String shopName;
 	}
 
+	@Getter
+	@Builder
+	public static class ShopRespDto {
+		private int shopType;
+		private String shopName;
+	}
 }
