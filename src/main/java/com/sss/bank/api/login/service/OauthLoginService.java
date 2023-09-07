@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sss.bank.api.login.dto.OauthLoginDto;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
-import com.sss.bank.domain.member.service.MemberService;
 import com.sss.bank.external.oauth.kakao.service.SocialLoginApiServiceFactory;
 import com.sss.bank.external.oauth.model.OAuthAttributes;
 import com.sss.bank.external.oauth.service.SocialLoginApiService;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @RequiredArgsConstructor
 public class OauthLoginService {
-	private final MemberService memberService;
 	private final MemberRepository memberRepository;
 	private final TokenManager tokenManager;
 	public OauthLoginDto.Response oauthLogin(String accessToken){
@@ -34,7 +32,7 @@ public class OauthLoginService {
 		Optional<Member> optionalMember = memberRepository.findByKakaoId(userInfo.getKakaoId());
 		if(optionalMember.isEmpty()){ //신규 회원
 			Member oauthMember = userInfo.toMemberEntity();
-			oauthMember = memberService.registerMember(oauthMember);
+			oauthMember = memberRepository.save(oauthMember);
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());
 			// oauthMember.updateRefreshToken(jwtTokenDto);
