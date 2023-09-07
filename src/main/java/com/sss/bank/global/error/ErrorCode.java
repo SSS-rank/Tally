@@ -14,7 +14,6 @@ public enum ErrorCode {
 	INVALID_DEPOSIT_ACCOUNT(HttpStatus.BAD_REQUEST, "-4", "입금 계좌번호가 잘못되었습니다."),
 	UNAUTHORIZED_ACCESS(HttpStatus.BAD_REQUEST, "-5", "출금계좌 소유자와 accessToken이 일치하지 않습니다."),
 	INSUFFICIENT_FUNDS(HttpStatus.BAD_REQUEST, "-6", "잔액이 부족합니다"),
-	// TEST(HttpStatus.INTERNAL_SERVER_ERROR, "001", "businessExceptionTest");
 
 	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "001", "토큰이 만료되었습니다."),
 	NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "002", "해당 토큰은 유효하지 않습니다."),
@@ -24,8 +23,9 @@ public enum ErrorCode {
 	ALREADY_REGISTER_MEMBER(HttpStatus.BAD_REQUEST, "005", "이미 가입된 회원입니다."),
 
 	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "006", "해당 RefreshToken을 찾을 수 없습니다."),
-	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,"007","해당 RefreshToken은 만료되었습니다.");
+	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,"007","해당 RefreshToken은 만료되었습니다."),
 
+	NOT_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "008", "해당 토큰은 ACCESS 토큰이 아닙니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;
