@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AccessTokenResponseDto {
+public class AccessTokenRespDto {
 	private String grantType;
 	private String accessToken;
 

@@ -25,10 +25,10 @@ public class OauthLoginService {
 	private final MemberRepository memberRepository;
 	private final TokenManager tokenManager;
 	public OauthLoginDto.Response oauthLogin(String accessToken){
-		OAuthAttributes userInfo = kakaoLoginApiService.getUserInfo(accessToken);
+		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(accessToken);
 
 		JwtTokenDto jwtTokenDto;
-		Optional<Member> optionalMember = memberRepository.findByKakaoId(userInfo.getKakaoId());
+		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
 		if(optionalMember.isEmpty()){ //신규 회원
 			Member oauthMember = Member.from(userInfo);
 			oauthMember = memberRepository.save(oauthMember);
