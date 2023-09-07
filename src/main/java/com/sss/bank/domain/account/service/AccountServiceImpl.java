@@ -107,4 +107,28 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 	}
+
+	@Override
+	public AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
+		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		if (memberOptional.isPresent()) {
+			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+				accountGetBalanceReqDto.getAccountNum());
+
+			if (accountOptional.isEmpty()) {
+				throw new IllegalArgumentException("계좌 정보를 찾을 수 없습니다.");
+			}
+			Account account = accountOptional.get();
+			if (!account.getPassword().equals(accountGetBalanceReqDto.getAccountPassword())) {
+				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			}
+			AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.of(
+				account);
+
+			return accountGetBalanceRespDto;
+		} else {
+			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+		}
+	}
 }
