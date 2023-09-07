@@ -24,11 +24,14 @@ public class TokenService {
 
 	public AccessTokenRespDto createAccessTokenByRefreshToken(String refreshToken){
 		try {
+			// refreshToken 으로 멤버 정보 받아오기
 			Claims tokenClaims = tokenManager.getTokenClaims(refreshToken);
 			Long memberId = Long.valueOf((Integer)tokenClaims.get("memberId"));
 
+			// redis 에서 memberId로 refresh token 가져오기
 			String findRefreshToken = redisService.getValues(String.valueOf(memberId));
 
+			// refresh token이 같을 경우
 			if (!(findRefreshToken.isEmpty()) && findRefreshToken.equals(refreshToken)) {
 				Date accessTokenExpireTime = tokenManager.createAcessTokenExpireTime();
 				String accessToken = tokenManager.createAcessToken(memberId, accessTokenExpireTime);
