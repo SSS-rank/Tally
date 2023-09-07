@@ -53,6 +53,11 @@ public class Transfer {
 	@Column(nullable = false)
 	private LocalDateTime transferDate;
 
+	@Column
+	private String withdrawAccountContent;
+	@Column
+	private String depositAccountContent;
+
 	public static Transfer of(TransferDto.TransferDepositReqDto transferDepositReqDto, String uuid, Account sender,
 		Account receiver) {
 		return Transfer
@@ -61,6 +66,9 @@ public class Transfer {
 			.sender(sender)
 			.receiver(receiver)
 			.amount(transferDepositReqDto.getDepositAmount())
+			.withdrawAccountContent(transferDepositReqDto.getWithdrawAccountContent())
+			.depositAccountContent(transferDepositReqDto.getDepositAccountContent())
 			.build();
 	}
+
 }
