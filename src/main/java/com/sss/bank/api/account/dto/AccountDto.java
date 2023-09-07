@@ -67,7 +67,7 @@ public class AccountDto {
 
 		private Long balance;
 
-		public static AccountGetBalanceRespDto of(Account account) {
+		public static AccountGetBalanceRespDto from(Account account) {
 			return AccountGetBalanceRespDto.builder()
 				.balance(account.getBalance())
 				.bankName(account.getBankId().getBankName())
