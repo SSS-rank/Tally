@@ -69,6 +69,16 @@
 }
 ```
 
+### 저장 시 Prettier 자동 적용
+
+1. File → Preferences → Settings
+2. Settings에서 `Format On Save` 검색 후 체크
+   ![Untitled (2)](https://github.com/KimSeonHui/cs-study/assets/44824456/2a585830-e3e3-4f19-a8cb-f8123f061739)
+3. Settings에서 `Default Formatter` 검색 후 Default Formatter selectbox에서 prettier 선택
+   ![Untitled (1)](https://github.com/KimSeonHui/cs-study/assets/44824456/7d216bb0-7873-48e8-afae-15f24bd8eb02)
+
+<br /><br />
+
 # lint 설정
 
 ```json
