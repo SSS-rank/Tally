@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
 import com.sss.bank.external.oauth.kakao.client.KakaoUserInfoClient;
 import com.sss.bank.external.oauth.kakao.dto.KakaoUserInfoResDto;
 import com.sss.bank.external.oauth.model.OAuthAttributes;
-import com.sss.bank.external.oauth.service.SocialLoginApiService;
 import com.sss.bank.global.jwt.constant.GrantType;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class KakaoLoginApiServiceImpl implements SocialLoginApiService {
+public class KakaoLoginApiServiceImpl implements KakaoLoginApiService {
 	private final KakaoUserInfoClient kakaoUserInfoClient;
 	private final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
 

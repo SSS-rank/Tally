@@ -8,9 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sss.bank.api.login.dto.OauthLoginDto;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
-import com.sss.bank.external.oauth.kakao.service.SocialLoginApiServiceFactory;
 import com.sss.bank.external.oauth.model.OAuthAttributes;
-import com.sss.bank.external.oauth.service.SocialLoginApiService;
+import com.sss.bank.external.oauth.kakao.service.KakaoLoginApiService;
 import com.sss.bank.global.jwt.dto.JwtTokenDto;
 import com.sss.bank.global.jwt.service.TokenManager;
 
@@ -22,11 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @RequiredArgsConstructor
 public class OauthLoginService {
+	private final KakaoLoginApiService kakaoLoginApiService;
 	private final MemberRepository memberRepository;
 	private final TokenManager tokenManager;
 	public OauthLoginDto.Response oauthLogin(String accessToken){
-		SocialLoginApiService socialLoginApiService = SocialLoginApiServiceFactory.getSocialLoginApiService();
-		OAuthAttributes userInfo = socialLoginApiService.getUserInfo(accessToken);
+		OAuthAttributes userInfo = kakaoLoginApiService.getUserInfo(accessToken);
 
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findByKakaoId(userInfo.getKakaoId());
