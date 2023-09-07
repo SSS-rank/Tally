@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ShopDto {
 	private Long shopId;
 	private int shopType;
