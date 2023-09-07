@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.entity.Account;
 
 import lombok.AccessLevel;
@@ -51,4 +52,15 @@ public class Transfer {
 	@CreatedDate
 	@Column(nullable = false)
 	private LocalDateTime transferDate;
+
+	public static Transfer of(TransferDto.TransferDepositReqDto transferDepositReqDto, String uuid, Account sender,
+		Account receiver) {
+		return Transfer
+			.builder()
+			.transferUuid(uuid)
+			.sender(sender)
+			.receiver(receiver)
+			.amount(transferDepositReqDto.getDepositAmount())
+			.build();
+	}
 }
