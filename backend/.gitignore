@@ -182,4 +182,7 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+tallydocker/mariadb
+
+.env
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,git,gradle
