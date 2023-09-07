@@ -147,3 +147,20 @@
   }
 }
 ```
+
+# ESLint 에러 확인
+
+```json
+npm run lint
+
+"lint": "eslint ./src/**/*.{ts,tsx,js,jsx}",
+
+```
+
+# ESLint 에러 자동 수정
+
+```json
+npm run lint:fix
+
+"lint:fix": "eslint --fix ./src/**/*.{ts,tsx,js,jsx}"
+```
