@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.bank.domain.transfer.entity.Transfer;
 
 import lombok.AllArgsConstructor;
@@ -17,8 +19,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TransferDto {
-
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -47,6 +50,7 @@ public class TransferDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -58,6 +62,7 @@ public class TransferDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -79,6 +84,7 @@ public class TransferDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@Builder
 	@AllArgsConstructor

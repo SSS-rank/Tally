@@ -123,7 +123,7 @@ public class AccountServiceImpl implements AccountService {
 			if (!account.getPassword().equals(accountGetBalanceReqDto.getAccountPassword())) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
-			AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.of(
+			AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.from(
 				account);
 
 			return accountGetBalanceRespDto;

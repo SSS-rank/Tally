@@ -4,6 +4,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.bank.domain.account.entity.Account;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +13,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class AccountDto {
-
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -26,6 +29,7 @@ public class AccountDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -38,6 +42,7 @@ public class AccountDto {
 		private String accountPassword;
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
@@ -55,6 +60,7 @@ public class AccountDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
