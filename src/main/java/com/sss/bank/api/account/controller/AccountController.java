@@ -23,7 +23,7 @@ public class AccountController {
 
 	private final AccountService accountService;
 
-	@PostMapping("/create")
+	@PostMapping("/")
 	public ResponseEntity<String> createAccount(
 		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult) {
 		long memberId = 1;
@@ -32,7 +32,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
 	}
 
-	@PatchMapping("/delete")
+	@PatchMapping("/")
 	public ResponseEntity<String> deleteAccount(
 		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) {
 		long memberId = 1;
@@ -40,7 +40,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
 
-	@PostMapping("/getBalance")
+	@PostMapping("/get-balance")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalance(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
 		BindingResult bindingResult) {

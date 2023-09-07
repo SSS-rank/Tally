@@ -35,7 +35,7 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
 
-	@PostMapping("/getList")
+	@PostMapping("/history")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferList(
 		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
 		BindingResult bindingResult) {

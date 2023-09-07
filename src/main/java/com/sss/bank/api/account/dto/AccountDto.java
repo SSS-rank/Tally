@@ -31,9 +31,6 @@ public class AccountDto {
 	@Getter
 	public static class AccountDeleteReqDto {
 		@NotNull
-		@NotEmpty
-		private String accountHolderUuid;
-		@NotNull
 		private String bankCode;
 		@NotNull
 		private String accountNum;
