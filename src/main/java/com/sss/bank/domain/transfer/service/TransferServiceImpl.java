@@ -10,6 +10,7 @@ import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.domain.transfer.dto.TransferDto;
+import com.sss.bank.domain.transfer.entity.Transfer;
 import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
@@ -72,17 +73,21 @@ public class TransferServiceImpl implements TransferService {
 				throw new IllegalArgumentException("잔액이 부족합니다.");
 			}
 			//이체하기(계좌 잔액 조정)
-			senderAccount.withdraw(transferDepositReqDto.getDepositAmount());
-			recAccount.deposit(transferDepositReqDto.getDepositAmount());
+			Long depositAmount = transferDepositReqDto.getDepositAmount();
+			Long balance = 0l;
+			balance = senderAccount.getBalance() - depositAmount;
+			senderAccount.updateBalance(balance);
+			balance = recAccount.getBalance() + depositAmount;
+			recAccount.updateBalance(transferDepositReqDto.getDepositAmount());
 			//거래내역 남기기
 			String Uuid = UUID.randomUUID().toString();
 			transferRepository.save(
-				transferDepositReqDto.toTransferEntity(Uuid, senderAccount, recAccount));
+				Transfer.of(transferDepositReqDto, Uuid, senderAccount, recAccount));
 
 			String reqName = recAccount.getMemberId().getName();
-			Long balance = transferDepositReqDto.getDepositAmount();
+
 			TransferDto.TransferDepositRespDto transferDepositRespDto = new TransferDto.TransferDepositRespDto(reqName,
-				balance);
+				depositAmount);
 
 			return transferDepositRespDto;
 		} else {
