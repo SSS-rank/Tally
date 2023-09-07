@@ -12,6 +12,7 @@ import com.sss.bank.external.oauth.model.OAuthAttributes;
 import com.sss.bank.external.oauth.kakao.service.KakaoLoginApiService;
 import com.sss.bank.global.jwt.dto.JwtTokenDto;
 import com.sss.bank.global.jwt.service.TokenManager;
+import com.sss.bank.global.redis.service.RedisService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OauthLoginService {
 	private final KakaoLoginApiService kakaoLoginApiService;
+	private final RedisService redisService;
 	private final MemberRepository memberRepository;
 	private final TokenManager tokenManager;
 	public OauthLoginDto.Response oauthLogin(String accessToken){
@@ -34,12 +36,12 @@ public class OauthLoginService {
 			oauthMember = memberRepository.save(oauthMember);
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());
-			// oauthMember.updateRefreshToken(jwtTokenDto);
+			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
 		} else { //이미 존재하는 회원
 			Member oauthMember = optionalMember.get();
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());
-			// oauthMember.updateRefreshToken(jwtTokenDto);
+			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
 		}
 		return OauthLoginDto.Response.from(jwtTokenDto);
 	}
