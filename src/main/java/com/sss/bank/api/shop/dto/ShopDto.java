@@ -9,4 +9,12 @@ public class ShopDto {
 	private Long shopId;
 	private int shopType;
 	private String shopName;
+
+	@Getter
+	@Builder
+	public static class ShopReqDto {
+		private int shopType;
+		private String shopName;
+	}
+
 }
