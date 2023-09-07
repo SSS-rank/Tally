@@ -31,7 +31,7 @@ public class OauthLoginService {
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findByKakaoId(userInfo.getKakaoId());
 		if(optionalMember.isEmpty()){ //신규 회원
-			Member oauthMember = userInfo.toMemberEntity();
+			Member oauthMember = Member.from(userInfo);
 			oauthMember = memberRepository.save(oauthMember);
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());

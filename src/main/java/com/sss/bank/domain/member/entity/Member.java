@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.external.oauth.model.OAuthAttributes;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,4 +46,12 @@ public class Member {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static Member from (OAuthAttributes userInfo){
+		return Member.builder()
+			.kakaoId(userInfo.getKakaoId())
+			.email(userInfo.getEmail())
+			.name(userInfo.getName())
+			.build();
+	}
 }
