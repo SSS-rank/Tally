@@ -18,13 +18,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Shop {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
 
 	@Column(nullable = false)
-	private String shopType;
+	private int shopType;
 
 	@Column(nullable = false)
 	private String shopName;
