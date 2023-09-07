@@ -2,6 +2,7 @@ package com.sss.bank.api.login.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class OauthLoginController {
 
 		String accessToken = authorizationHeader.split(" ")[1];
 		OauthLoginDto.Response jwtTokenResponseDto = oauthLoginService.oauthLogin(accessToken);
-		return ResponseEntity.ok(jwtTokenResponseDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(jwtTokenResponseDto);
 	}
 }
