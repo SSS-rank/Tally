@@ -1,12 +1,12 @@
-package com.sss.bank.api.login.controller;
+package com.sss.bank.api.kakaotoken.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sss.bank.api.login.kakaotoken.client.KakaoTokenClient;
-import com.sss.bank.api.login.kakaotoken.dto.KakaoTokenDto;
+import com.sss.bank.api.kakaotoken.client.KakaoTokenClient;
+import com.sss.bank.api.kakaotoken.dto.KakaoTokenDto;
 
 import lombok.RequiredArgsConstructor;
 
