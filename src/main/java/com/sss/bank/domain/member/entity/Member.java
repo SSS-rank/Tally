@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.external.oauth.model.OAuthAttributes;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,19 +33,25 @@ public class Member {
 	private Long memberId;
 
 	@Column(nullable = false, unique = true)
-	private String kakaoId;
+	private Long kakaoId;
 
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String englishName;
 
-	@Column(nullable = false)
 	private String email;
 
 	private LocalDateTime withdrawalDate;
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static Member from (OAuthAttributes userInfo){
+		return Member.builder()
+			.kakaoId(userInfo.getKakaoId())
+			.email(userInfo.getEmail())
+			.name(userInfo.getName())
+			.build();
+	}
 }
