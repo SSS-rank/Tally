@@ -183,7 +183,7 @@ public class TransferServiceImpl implements TransferService {
 			);
 
 			createTransfer(1, transferDepositReqDto);
-			redisService.setValues2(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
+			redisService.setOneTrnasferValues(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
 
 			return depositAccountContent;
 		} else {

@@ -27,7 +27,7 @@ public class RedisService {
 		redisTemplate.expire(key, 14, TimeUnit.DAYS);
 	}
 
-	public void setValues2(String key, String value) {
+	public void setOneTrnasferValues(String key, String value) {
 		redisTemplate.opsForValue().set(key, value);
 		redisTemplate.expire(key, 3, TimeUnit.MINUTES);
 	}
