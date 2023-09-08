@@ -1,6 +1,9 @@
 package com.sss.bank.api.kakaotoken.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,11 +24,11 @@ public class KakaoTokenController {
 	@Value("${kakao.client.secret}")
 	private String clientSecret;
 	@GetMapping("/oauth/kakao/callback")
-	public @ResponseBody String loginCallback(String code){
+	public ResponseEntity<KakaoTokenDto.Response> loginCallback(String code){
 		String contentType = "application/x-www-form-urlencoded;charset=utf-8";
 		KakaoTokenDto.Request kakaoTokenRequest = KakaoTokenDto.Request.of(clientId, code, clientSecret);
 		KakaoTokenDto.Response kakaoTokenResponse = kakaoTokenClient.requestKakaoToken(contentType, kakaoTokenRequest);
 
-		return "kakao token: "+kakaoTokenResponse;
+		return ResponseEntity.status(HttpStatus.OK).body(kakaoTokenResponse);
 	}
 }
