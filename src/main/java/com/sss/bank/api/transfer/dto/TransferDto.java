@@ -112,6 +112,39 @@ public class TransferDto {
 				.transferUuid(transfer.getTransferUuid())
 				.build();
 		}
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class OnetransferReqDto {
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+
+		@NotNull
+		private String bankCode;
 
 	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class OnetransferVerifyReqDto {
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+		
+		@Size(max = 4)
+		@NotNull
+		private String code;
+
+	}
+
 }
