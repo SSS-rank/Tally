@@ -41,7 +41,7 @@ public class TransferController {
 		BindingResult bindingResult) {
 		long memberId = 1;
 
-		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getList(memberId,
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferList(memberId,
 			transferListReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
