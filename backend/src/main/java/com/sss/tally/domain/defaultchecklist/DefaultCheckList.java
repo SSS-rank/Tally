@@ -1,8 +1,8 @@
-package com.sss.tally.domain.account.entity;
+package com.sss.tally.domain.defaultchecklist;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,30 +14,24 @@ import org.springframework.data.annotation.CreatedDate;
 
 import com.sss.tally.domain.member.entity.Member;
 
-public class Account {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DefaultCheckList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long accountId;
-
-	@JoinColumn(name = "member_id")
+	private Long defaultChecklistId;
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
 	private Member memberId;
-
-	@Column(nullable = false, unique = true)
-	private String accountNumber;
-
-	@Column(nullable = false)
-	private Boolean status;
-
-	@Column(nullable = false)
-	private int order;
-
-	@Column(nullable = false)
-	private String bankName;
-
-	@Column(nullable = false)
-	private Boolean representativeAccount;
-
+	private String content;
 	@CreatedDate
-	private LocalDateTime createDate;
+	private LocalDateTime createTime;
 }

@@ -1,4 +1,4 @@
-package com.sss.tally.domain.account.entity;
+package com.sss.tally.domain.customchecklist.entity;
 
 import java.time.LocalDateTime;
 
@@ -14,30 +14,21 @@ import org.springframework.data.annotation.CreatedDate;
 
 import com.sss.tally.domain.member.entity.Member;
 
-public class Account {
+public class CustomChecklist {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long accountId;
+	private Long customChecklistId;
 
 	@JoinColumn(name = "member_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member memberId;
 
-	@Column(nullable = false, unique = true)
-	private String accountNumber;
+	private Long travelId;
 
 	@Column(nullable = false)
+	private String content;
+
 	private Boolean status;
-
-	@Column(nullable = false)
-	private int order;
-
-	@Column(nullable = false)
-	private String bankName;
-
-	@Column(nullable = false)
-	private Boolean representativeAccount;
-
 	@CreatedDate
 	private LocalDateTime createDate;
 }
