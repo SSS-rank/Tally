@@ -2,6 +2,7 @@ package com.sss.bank.api.payment.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -25,10 +26,10 @@ public class PaymentDto {
 		@Size(max = 20)
 		private String senderAccountNum;
 
-		@NotBlank
+		@NotNull
 		private Long shopId;
 
-		@NotBlank
+		@NotNull
 		@Min(1)
 		private Long paymentAmount;
 
