@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.api.payment.dto.PaymentDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.shop.entity.Shop;
 
@@ -52,4 +53,14 @@ public class Payment {
 	@CreatedDate
 	@Column(nullable = false)
 	private LocalDateTime paymentDate;
+
+	public static Payment of(PaymentDto.PaymentReqDto paymentReqDto, String uuid, Account account, Shop shop) {
+		return Payment.builder()
+			.accountId(account)
+			.paymentUuid(uuid)
+			.shopId(shop)
+			.amount(paymentReqDto.getPaymentAmount())
+			.build();
+	}
+
 }

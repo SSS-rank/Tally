@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class PaymentDto {
 	@AllArgsConstructor
 	@Getter
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class PayementReqDto {
+	public static class PaymentReqDto {
 
 		@NotBlank
 		@Size(max = 20)
@@ -39,12 +40,19 @@ public class PaymentDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class PaymentRespDto {
 
-		private String receiverName;
+		private String shopName;
 
-		private Long paymentAmount;
+		private Long balance;
 
+		public static PaymentRespDto of(String shopName, Long balance) {
+			return PaymentRespDto.builder()
+				.shopName(shopName)
+				.balance(balance)
+				.build();
+		}
 	}
 }
