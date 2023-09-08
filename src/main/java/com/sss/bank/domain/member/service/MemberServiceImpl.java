@@ -11,6 +11,7 @@ import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.AuthenticationException;
+import com.sss.bank.global.error.exception.MemberException;
 import com.sss.bank.global.redis.service.RedisService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MemberServiceImpl implements MemberService{
 		// refreshToken 만료시키기
 		redisService.expireValues(String.valueOf(memberId));
 		if(member.isEmpty()) {
-			throw new AuthenticationException(ErrorCode.NOT_FOUND_MEMBER);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
 		// 해당 회원 탈퇴 날짜 INSERT
 		member.get().withdrawal(LocalDateTime.now());
@@ -38,7 +39,7 @@ public class MemberServiceImpl implements MemberService{
 	public MemberDto.MemberRespDto addInfo(Long memberId, MemberDto.MemberReqDto memberReqDto) {
 		Optional<Member> member = memberRepository.findMemberByMemberId(memberId);
 		if(member.isEmpty()){
-			throw new AuthenticationException(ErrorCode.NOT_FOUND_MEMBER);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
 		member.get().addInfo(memberReqDto);
 		return MemberDto.MemberRespDto.from(member.get());
