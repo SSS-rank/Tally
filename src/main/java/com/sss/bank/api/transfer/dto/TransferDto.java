@@ -25,6 +25,7 @@ public class TransferDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
 	public static class TransferDepositReqDto {
 
 		@NotNull
@@ -47,6 +48,20 @@ public class TransferDto {
 
 		@Column
 		private String depositAccountContent;
+
+		@NotNull
+		private String accountPassword;
+
+		public static TransferDepositReqDto of(String senderAccountNum, String receiverAccountNum, Long depositAmount,
+			String withdrawAccountContent, String depositAccountContent) {
+			return TransferDepositReqDto.builder()
+				.senderAccountNum(senderAccountNum)
+				.receiverAccountNum(receiverAccountNum)
+				.depositAmount(depositAmount)
+				.withdrawAccountContent(withdrawAccountContent)
+				.depositAccountContent(depositAccountContent)
+				.build();
+		}
 
 	}
 
