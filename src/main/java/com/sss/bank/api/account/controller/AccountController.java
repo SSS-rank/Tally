@@ -23,7 +23,7 @@ public class AccountController {
 
 	private final AccountService accountService;
 
-	@PostMapping("")
+	@PostMapping
 	public ResponseEntity<String> createAccount(
 		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult) {
 		long memberId = 1;
@@ -32,7 +32,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
 	}
 
-	@PatchMapping("")
+	@PatchMapping
 	public ResponseEntity<String> deleteAccount(
 		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) {
 		long memberId = 1;
