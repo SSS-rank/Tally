@@ -10,4 +10,8 @@ public interface TransferService {
 	);
 
 	List<TransferDto.TransferListRespDto> getList(long memberId, TransferDto.TransferListReqDto transferListReqDto);
+
+	String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto);
+
+	String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto);
 }
