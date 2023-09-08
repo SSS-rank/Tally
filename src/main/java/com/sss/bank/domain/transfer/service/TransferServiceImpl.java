@@ -1,5 +1,6 @@
 package com.sss.bank.domain.transfer.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sss.bank.api.password.service.PasswordRepository;
 import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
@@ -44,10 +46,11 @@ public class TransferServiceImpl implements TransferService {
 	private final BankRepository bankRepository;
 
 	private final RedisService redisService;
+	private final PasswordRepository passwordRepository;
 
 	@Override
 	public TransferDto.TransferDepositRespDto createTransfer(long memberId,
-		TransferDto.TransferDepositReqDto transferDepositReqDto) {
+		TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
 
 		// 회원 확인
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
@@ -62,6 +65,11 @@ public class TransferServiceImpl implements TransferService {
 		if (senderAccountOptional.isEmpty())
 			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
 		Account senderAccount = senderAccountOptional.get();
+
+		// 출금 계좌 비밀번호 확인
+		if (!passwordRepository.checkPassword(transferDepositReqDto.getSenderAccountNum(),
+			transferDepositReqDto.getAccountPassword()))
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 
 		//입금 계좌 인증
 		Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
@@ -104,34 +112,30 @@ public class TransferServiceImpl implements TransferService {
 
 	@Override
 	public List<TransferDto.TransferListRespDto> getTransferList(long memberId,
-		TransferDto.TransferListReqDto transferListReqDto) {
+		TransferDto.TransferListReqDto transferListReqDto) throws NoSuchAlgorithmException {
 
 		// 회원 인증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty())
 			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-		// 계좌 인증
-		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
-		if (accountOptional.isEmpty())
-			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
-
-		// 계좌 비밀번호 인증
-		Account account = accountOptional.get();
-		if (!account.getPassword().equals(transferListReqDto.getAccountPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-		}
+		// 계좌 존재 인증 및 비밀번호 인증
+		if (!passwordRepository.checkPassword(transferListReqDto.getAccountNum(),
+			transferListReqDto.getAccountPassword()))
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
 
 		Pageable fixedPageable = PageRequest.of(page, limit, Sort.by("transferDate").descending());
-		Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account,
+		Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(
+			account.get(),
 			fixedPageable);
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
-		
+
 		for (Transfer transfer : transferList) {
 			//출금자가 본인일때
 			if (transfer.getSender().getAccountNumber().equals(transferListReqDto.getAccountNum())) {
@@ -151,7 +155,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) {
+	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) throws
+		NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 
 		if (memberOptional.isPresent()) {
@@ -175,7 +180,7 @@ public class TransferServiceImpl implements TransferService {
 				stringBuilder.append(digit);
 			}
 			String depositAccountContent = stringBuilder.toString();
-			TransferDto.TransferDepositReqDto transferDepositReqDto = new TransferDto.TransferDepositReqDto(
+			TransferDto.TransferDepositReqDto transferDepositReqDto = TransferDto.TransferDepositReqDto.of(
 				senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
 			);
 
