@@ -25,7 +25,7 @@ public class PasswordRepository {
 			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
 
 		String password = SHA256Util.getEncrypt(accountPassword, account.get().getSalt());
-		if (accountPassword.equals(password)) {
+		if (account.get().getPassword().equals(password)) {
 			return true;
 		}
 		return false;
