@@ -102,7 +102,7 @@ public class TransferServiceImpl implements TransferService {
 
 			String reqName = recAccount.getMemberId().getName();
 
-			TransferDto.TransferDepositRespDto transferDepositRespDto = new TransferDto.TransferDepositRespDto(reqName,
+			TransferDto.TransferDepositRespDto transferDepositRespDto = TransferDto.TransferDepositRespDto.of(reqName,
 				depositAmount);
 
 			return transferDepositRespDto;

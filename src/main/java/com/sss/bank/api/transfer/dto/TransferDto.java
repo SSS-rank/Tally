@@ -54,11 +54,19 @@ public class TransferDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
 	public static class TransferDepositRespDto {
 
 		private String receiverName;
 
 		private Long depositAmount;
+
+		public static TransferDepositRespDto of(String receiverName, Long depositAmount) {
+			return TransferDepositRespDto.builder()
+				.receiverName(receiverName)
+				.depositAmount(depositAmount)
+				.build();
+		}
 
 	}
 
@@ -140,7 +148,7 @@ public class TransferDto {
 		@NotEmpty
 		@Size(max = 20)
 		private String accountNum;
-		
+
 		@Size(max = 4)
 		@NotNull
 		private String code;
