@@ -1,5 +1,6 @@
 package com.sss.bank.domain.account.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
+import com.sss.bank.global.util.SHA256Util;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,9 +28,11 @@ public class AccountServiceImpl implements AccountService {
 	private final MemberRepository memberRepository;
 	private final AccountRepository accountRepository;
 	private final BankRepository bankRepository;
+	private final SHA256Util sha256Util;
 
 	@Override
-	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) {
+	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+		NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateReqDto.getBankCode());
@@ -70,8 +74,11 @@ public class AccountServiceImpl implements AccountService {
 			Member member = memberOptional.get();
 			String uuid = UUID.randomUUID().toString();
 
+			String salt = SHA256Util.createSalt();
+			String password = SHA256Util.getEncrypt(salt, accountCreateReqDto.getAccountPassword());
+
 			accountRepository.save(
-				Account.of(accountCreateReqDto, member, accountNumBuilder.toString(), uuid, bank));
+				Account.of(accountCreateReqDto, member, salt, password, accountNumBuilder.toString(), uuid, bank));
 			return true;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
