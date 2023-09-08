@@ -15,6 +15,7 @@ public enum ErrorCode {
 	INVALID_DEPOSIT_ACCOUNT(HttpStatus.BAD_REQUEST, "-4", "입금 계좌번호가 잘못되었습니다."),
 	UNAUTHORIZED_ACCESS(HttpStatus.BAD_REQUEST, "-5", "출금계좌 소유자와 accessToken이 일치하지 않습니다."),
 	INSUFFICIENT_FUNDS(HttpStatus.BAD_REQUEST, "-6", "잔액이 부족합니다"),
+	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "-6", "해당 계좌는 존재하지 않습니다."),
 
 	// 인증 & 인가
 	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "001", "토큰이 만료되었습니다."),
