@@ -1,5 +1,6 @@
 package com.sss.bank.domain.account.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.bank.api.account.dto.AccountDto;
+import com.sss.bank.api.password.service.PasswordRepository;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.bank.entity.Bank;
@@ -16,6 +18,7 @@ import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
+import com.sss.bank.global.util.SHA256Util;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,9 +29,12 @@ public class AccountServiceImpl implements AccountService {
 	private final MemberRepository memberRepository;
 	private final AccountRepository accountRepository;
 	private final BankRepository bankRepository;
+	private final SHA256Util sha256Util;
+	private final PasswordRepository passwordRepository;
 
 	@Override
-	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) {
+	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+		NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateReqDto.getBankCode());
@@ -70,8 +76,10 @@ public class AccountServiceImpl implements AccountService {
 			Member member = memberOptional.get();
 			String uuid = UUID.randomUUID().toString();
 
+			String salt = SHA256Util.createSalt();
+			String password = SHA256Util.getEncrypt(accountCreateReqDto.getAccountPassword(), salt);
 			accountRepository.save(
-				Account.of(accountCreateReqDto, member, accountNumBuilder.toString(), uuid, bank));
+				Account.of(member, salt, password, accountNumBuilder.toString(), uuid, bank));
 			return true;
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
@@ -80,7 +88,8 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional
 	@Override
-	public Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) {
+	public Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
+		NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteReqDto.getBankCode());
@@ -94,7 +103,8 @@ public class AccountServiceImpl implements AccountService {
 			}
 			Account account = accountOptional.get();
 
-			if (!account.getPassword().equals(accountDeleteReqDto.getAccountPassword())) {
+			if (!passwordRepository.checkPassword(accountDeleteReqDto.getAccountNum(),
+				accountDeleteReqDto.getAccountPassword())) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
 			if (!account.getBankId().getBankCode().equals(accountDeleteReqDto.getBankCode())) {
@@ -110,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
-		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) {
+		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isPresent()) {
 			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
@@ -120,7 +130,8 @@ public class AccountServiceImpl implements AccountService {
 				throw new IllegalArgumentException("계좌 정보를 찾을 수 없습니다.");
 			}
 			Account account = accountOptional.get();
-			if (!account.getPassword().equals(accountGetBalanceReqDto.getAccountPassword())) {
+			if (!passwordRepository.checkPassword(accountGetBalanceReqDto.getAccountNum(),
+				accountGetBalanceReqDto.getAccountPassword())) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
 			AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.from(

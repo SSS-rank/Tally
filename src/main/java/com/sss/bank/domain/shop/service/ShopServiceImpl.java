@@ -1,6 +1,8 @@
 package com.sss.bank.domain.shop.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +35,13 @@ public class ShopServiceImpl implements ShopService {
 			throw new ShopException(ErrorCode.NOT_EXIST_SHOP);
 		shop.get().updateInfo(shopDto.getShopType(), shopDto.getShopName());
 		return ShopDto.ShopRespDto.from(shop.get());
+	}
+
+	@Override
+	public List<ShopDto> getShopList() {
+		List<Shop> shopList = shopRepository.findAll();
+		return shopList.stream()
+			.map(ShopDto::from)
+			.collect(Collectors.toList());
 	}
 }

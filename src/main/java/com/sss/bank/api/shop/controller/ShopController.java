@@ -1,9 +1,12 @@
 package com.sss.bank.api.shop.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +34,11 @@ public class ShopController {
 	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@RequestBody @Valid ShopDto shopDto) {
 		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopDto);
 		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<ShopDto>> getShopList() {
+		List<ShopDto> shopList = shopService.getShopList();
+		return ResponseEntity.status(HttpStatus.OK).body(shopList);
 	}
 }

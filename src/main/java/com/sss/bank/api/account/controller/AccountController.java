@@ -1,5 +1,7 @@
 package com.sss.bank.api.account.controller;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,8 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<String> createAccount(
-		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult) {
+		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult) throws
+		NoSuchAlgorithmException {
 		long memberId = 1;
 		//	String memberId = loginUser.getMember().memberId();
 		Boolean isTrue = accountService.createAccount(memberId, accountCreateReqDto);
@@ -34,7 +37,8 @@ public class AccountController {
 
 	@PatchMapping
 	public ResponseEntity<String> deleteAccount(
-		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) {
+		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) throws
+		NoSuchAlgorithmException {
 		long memberId = 1;
 		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
@@ -43,7 +47,7 @@ public class AccountController {
 	@PostMapping("/get-balance")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalance(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
-		BindingResult bindingResult) {
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
 		long memberId = 1;
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
 			accountGetBalanceReqDto);

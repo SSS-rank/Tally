@@ -15,6 +15,8 @@ public enum ErrorCode {
 	INVALID_DEPOSIT_ACCOUNT(HttpStatus.BAD_REQUEST, "-4", "입금 계좌번호가 잘못되었습니다."),
 	UNAUTHORIZED_ACCESS(HttpStatus.BAD_REQUEST, "-5", "출금계좌 소유자와 accessToken이 일치하지 않습니다."),
 	INSUFFICIENT_FUNDS(HttpStatus.BAD_REQUEST, "-6", "잔액이 부족합니다"),
+	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "-6", "해당 계좌는 존재하지 않습니다."),
+	INVALID_ACCOUNT_PASSWORD(HttpStatus.BAD_REQUEST, "-6", "잘못된 계좌 비밀번호입니다."),
 
 	// 인증 & 인가
 	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "001", "토큰이 만료되었습니다."),
@@ -26,13 +28,16 @@ public enum ErrorCode {
 	NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "006", "존재하지 않는 회원입니다."),
 	ALREADY_WITHDRAWAL_MEMBER(HttpStatus.UNAUTHORIZED, "007", "탈퇴한 회원입니다."),
 
-	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "008", "해당 RefreshToken을 찾을 수 없습니다."),
-	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "009", "해당 RefreshToken은 만료되었습니다."),
+	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "006", "해당 RefreshToken을 찾을 수 없습니다."),
+	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "007", "해당 RefreshToken은 만료되었습니다."),
 
-	NOT_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "010", "해당 토큰은 ACCESS 토큰이 아닙니다."),
+	NOT_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "008", "해당 토큰은 ACCESS 토큰이 아닙니다."),
 
 	// 가게
-	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "011", "해당 가게는 존재하지 않습니다.");
+	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "010", "해당 가게는 존재하지 않습니다."),
+
+	// 회원
+	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;
