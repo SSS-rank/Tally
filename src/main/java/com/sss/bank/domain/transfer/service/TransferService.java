@@ -9,7 +9,8 @@ public interface TransferService {
 		TransferDto.TransferDepositReqDto transferDepositReqDto
 	);
 
-	List<TransferDto.TransferListRespDto> getList(long memberId, TransferDto.TransferListReqDto transferListReqDto);
+	List<TransferDto.TransferListRespDto> getTransferList(long memberId,
+		TransferDto.TransferListReqDto transferListReqDto);
 
 	String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto);
 

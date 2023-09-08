@@ -86,11 +86,6 @@ public class TransferServiceImpl implements TransferService {
 			throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
 		}
 
-		//출금 가능 체크
-		if (recAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
-			throw new IllegalArgumentException("잔액이 부족합니다.");
-		}
-
 		//이체하기(계좌 잔액 조정)
 		Long depositAmount = transferDepositReqDto.getDepositAmount();
 		senderAccount.updateBalance(senderAccount.getBalance() - depositAmount);
@@ -108,43 +103,51 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public List<TransferDto.TransferListRespDto> getList(long memberId,
+	public List<TransferDto.TransferListRespDto> getTransferList(long memberId,
 		TransferDto.TransferListReqDto transferListReqDto) {
+
+		// 회원 인증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		if (memberOptional.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+		// 계좌 인증
+		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferListReqDto.getAccountNum());
+		if (accountOptional.isEmpty())
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
+
+		// 계좌 비밀번호 인증
+		Account account = accountOptional.get();
+		if (!account.getPassword().equals(transferListReqDto.getAccountPassword())) {
+			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+		}
+
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
+
 		Pageable fixedPageable = PageRequest.of(page, limit, Sort.by("transferDate").descending());
-		if (memberOptional.isPresent()) {
-			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
-				transferListReqDto.getAccountNum());
-			if (accountOptional.isEmpty()) {
-				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
-			}
-			Account account = accountOptional.get();
-			if (!account.getPassword().equals(transferListReqDto.getAccountPassword())) {
-				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-			}
-			Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account,
-				fixedPageable);
-			List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
-			for (Transfer transfer : transferList) {
-				//출금자가 본인일때
-				if (transfer.getSender().getAccountNumber().equals(transferListReqDto.getAccountNum())) {
-					TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
-						"출금");
+		Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account,
+			fixedPageable);
 
-					transferListRespDtos.add(transferListRespDto);
-				} else { //입금자가 본인일 때
-					TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
-						"입금");
+		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
+		
+		for (Transfer transfer : transferList) {
+			//출금자가 본인일때
+			if (transfer.getSender().getAccountNumber().equals(transferListReqDto.getAccountNum())) {
+				TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
+					"출금");
 
-					transferListRespDtos.add(transferListRespDto);
-				}
+				transferListRespDtos.add(transferListRespDto);
+			} else { //입금자가 본인일 때
+				TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
+					"입금");
+
+				transferListRespDtos.add(transferListRespDto);
 			}
-			return transferListRespDtos;
-		} else {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 		}
+
+		return transferListRespDtos;
 	}
 
 	@Override
