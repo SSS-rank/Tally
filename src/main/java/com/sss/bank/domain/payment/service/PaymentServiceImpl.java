@@ -1,11 +1,13 @@
 package com.sss.bank.domain.payment.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sss.bank.api.password.service.PasswordRepository;
 import com.sss.bank.api.payment.dto.PaymentDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
@@ -27,9 +29,11 @@ public class PaymentServiceImpl implements PaymentService {
 	private final PaymentRepository paymentRepository;
 	private final ShopRepository shopRepository;
 	private final AccountRepository accountRepository;
+	private final PasswordRepository passwordRepository;
 
 	@Override
-	public PaymentDto.PaymentRespDto createPayment(PaymentDto.PaymentReqDto paymentReqDto) {
+	public PaymentDto.PaymentRespDto createPayment(PaymentDto.PaymentReqDto paymentReqDto) throws
+		NoSuchAlgorithmException {
 		// 1. 존재하는 sender 인지 확인
 		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			paymentReqDto.getSenderAccountNum());
@@ -37,6 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
 
 		// 2. 비밀 번호 체크
+		if (!passwordRepository.checkPassword(paymentReqDto.getSenderAccountNum(), paymentReqDto.getPassword()))
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 
 		// 3. 잔액 확인
 		Long balance = account.get().getBalance();
