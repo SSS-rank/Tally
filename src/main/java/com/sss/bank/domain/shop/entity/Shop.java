@@ -30,6 +30,9 @@ public class Shop {
 	@Column(nullable = false)
 	private String shopName;
 
+	@Column(nullable = false)
+	private String shopNationCode;
+
 	public static Shop from(ShopDto.ShopReqDto shopReqDto) {
 		return Shop.builder()
 			.shopName(shopReqDto.getShopName())
