@@ -29,4 +29,11 @@ public class MemberController {
 		LocalDateTime withdrawalDate = memberService.withdrawal(memberInfoDto.getMemberId());
 		return ResponseEntity.status(HttpStatus.OK).body(withdrawalDate);
 	}
+
+	@PatchMapping("/info")
+	public ResponseEntity<MemberDto.MemberRespDto> addInfo(@MemberInfo MemberInfoDto memberInfoDto,
+		@RequestBody @Valid MemberDto.MemberReqDto memberReqDto) {
+		MemberDto.MemberRespDto memberRespDto = memberService.addInfo(memberInfoDto.getMemberId(), memberReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body(memberRespDto);
+	}
 }
