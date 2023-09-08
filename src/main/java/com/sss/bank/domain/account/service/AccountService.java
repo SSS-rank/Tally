@@ -8,8 +8,9 @@ public interface AccountService {
 	Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException;
 
-	Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto);
+	Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
+		NoSuchAlgorithmException;
 
 	AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
-		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto);
+		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException;
 }
