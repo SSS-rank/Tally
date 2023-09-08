@@ -23,7 +23,9 @@ import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.domain.transfer.entity.Transfer;
 import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
+import com.sss.bank.global.error.exception.AccountException;
 import com.sss.bank.global.error.exception.BusinessException;
+import com.sss.bank.global.error.exception.MemberException;
 import com.sss.bank.global.redis.service.RedisService;
 
 import lombok.RequiredArgsConstructor;
@@ -46,70 +48,62 @@ public class TransferServiceImpl implements TransferService {
 	@Override
 	public TransferDto.TransferDepositRespDto createTransfer(long memberId,
 		TransferDto.TransferDepositReqDto transferDepositReqDto) {
+
+		// 회원 확인
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isPresent()) {
-			Member member = memberOptional.get();
-			//출금 계좌
-			Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
-				transferDepositReqDto.getSenderAccountNum());
-			Account senderAccount = senderAccountOptional.get();
-			//입금 계좌
-			Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
-				transferDepositReqDto.getReceiverAccountNum());
-			Account recAccount = recAccountOptional.get();
-			// 출금계좌와 입금계좌가 동일하면 안됨
-			if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
-				throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
-			}
-			// 출금계좌 확인
-			if (senderAccount == null) {
-				throw new BusinessException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
-			}
-			// 입금계좌 확인
-			if (recAccount == null) {
-				throw new BusinessException(ErrorCode.INVALID_DEPOSIT_ACCOUNT);
-			}
+		if (memberOptional.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-			//출금계좌 소유자랑 입금계좌 소유자가 로그인한 사용자것인지 확인
-			if (senderAccount.getMemberId() != member) {
-				throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
-			}
+		Member member = memberOptional.get();
 
-			//출금계좌 잔액 확인
-			if (senderAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
-				throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
-			}
+		//출금 계좌 인증
+		Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getSenderAccountNum());
+		if (senderAccountOptional.isEmpty())
+			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
+		Account senderAccount = senderAccountOptional.get();
 
-			//0원체크
-			if (transferDepositReqDto.getDepositAmount() <= 0) {
-				throw new IllegalArgumentException("출금 금액은 0보다 커야 합니다.");
-			}
-			//출금 가능 체크
-			if (recAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
-				throw new IllegalArgumentException("잔액이 부족합니다.");
-			}
-			//이체하기(계좌 잔액 조정)
-			Long depositAmount = transferDepositReqDto.getDepositAmount();
-			Long balance = 0l;
-			balance = senderAccount.getBalance() - depositAmount;
-			senderAccount.updateBalance(balance);
-			balance = recAccount.getBalance() + depositAmount;
-			recAccount.updateBalance(balance);
-			//거래내역 남기기
-			String Uuid = UUID.randomUUID().toString();
-			transferRepository.save(
-				Transfer.of(transferDepositReqDto, Uuid, senderAccount, recAccount));
+		//입금 계좌 인증
+		Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getReceiverAccountNum());
+		if (recAccountOptional.isEmpty())
+			throw new AccountException(ErrorCode.INVALID_DEPOSIT_ACCOUNT);
 
-			String reqName = recAccount.getMemberId().getName();
+		Account recAccount = recAccountOptional.get();
 
-			TransferDto.TransferDepositRespDto transferDepositRespDto = TransferDto.TransferDepositRespDto.of(reqName,
-				depositAmount);
-
-			return transferDepositRespDto;
-		} else {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
-
+		// 출금계좌와 입금계좌가 동일하면 안됨
+		if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
+			throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
 		}
+
+		//출금계좌 소유주와 로그인한 사용자가 동일한지 확인
+		if (senderAccount.getMemberId() != member) {
+			throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
+		}
+
+		//출금계좌 잔액 확인
+		if (senderAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
+			throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
+		}
+
+		//출금 가능 체크
+		if (recAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
+			throw new IllegalArgumentException("잔액이 부족합니다.");
+		}
+
+		//이체하기(계좌 잔액 조정)
+		Long depositAmount = transferDepositReqDto.getDepositAmount();
+		senderAccount.updateBalance(senderAccount.getBalance() - depositAmount);
+		recAccount.updateBalance(recAccount.getBalance() + depositAmount);
+
+		// 이체 내역 생성
+		String Uuid = UUID.randomUUID().toString();
+		transferRepository.save(
+			Transfer.of(transferDepositReqDto, Uuid, senderAccount, recAccount));
+
+		return TransferDto.TransferDepositRespDto.of(
+			recAccount.getMemberId().getName(),
+			depositAmount);
 
 	}
 
