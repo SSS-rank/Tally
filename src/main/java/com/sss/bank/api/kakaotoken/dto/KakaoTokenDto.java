@@ -15,7 +15,7 @@ public class KakaoTokenDto {
 	public static class Request{
 		private final String grant_type = "authorization_code";
 		private String client_id;
-		private final String redirect_uri = "http://localhost:8080/oauth/kakao/callback";
+		private final String redirect_uri = "http://localhost:3000/oauth/kakao/callback";
 		private String code;
 		private String client_secret;
 
