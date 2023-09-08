@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sss.bank.api.member.dto.MemberDto;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
@@ -31,5 +32,15 @@ public class MemberServiceImpl implements MemberService{
 		// 해당 회원 탈퇴 날짜 INSERT
 		member.get().withdrawal(LocalDateTime.now());
 		return member.get().getWithdrawalDate();
+	}
+
+	@Override
+	public MemberDto.MemberRespDto addInfo(Long memberId, MemberDto.MemberReqDto memberReqDto) {
+		Optional<Member> member = memberRepository.findMemberByMemberId(memberId);
+		if(member.isEmpty()){
+			throw new AuthenticationException(ErrorCode.NOT_FOUND_MEMBER);
+		}
+		member.get().addInfo(memberReqDto);
+		return MemberDto.MemberRespDto.from(member.get());
 	}
 }

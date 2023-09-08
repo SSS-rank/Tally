@@ -59,4 +59,9 @@ public class Member {
 	public void withdrawal(LocalDateTime withdrawalDate){
 		this.withdrawalDate = withdrawalDate;
 	}
+
+	public void addInfo(MemberDto.MemberReqDto memberReqDto){
+		this.name = memberReqDto.getName();
+		this.englishName = memberReqDto.getEnglishName();
+	}
 }
