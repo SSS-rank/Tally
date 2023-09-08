@@ -33,6 +33,9 @@ public class Account {
 	private int order;
 
 	@Column(nullable = false)
+	private String bankName;
+
+	@Column(nullable = false)
 	private Boolean representativeAccount;
 
 	@CreatedDate
