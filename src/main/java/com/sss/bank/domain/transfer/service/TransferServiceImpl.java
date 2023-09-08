@@ -3,6 +3,7 @@ package com.sss.bank.domain.transfer.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -15,12 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
+import com.sss.bank.domain.bank.entity.Bank;
+import com.sss.bank.domain.bank.repository.BankRepository;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.domain.transfer.entity.Transfer;
 import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.BusinessException;
+import com.sss.bank.global.redis.service.RedisService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +38,10 @@ public class TransferServiceImpl implements TransferService {
 	private final AccountRepository accountRepository;
 
 	private final TransferRepository transferRepository;
+
+	private final BankRepository bankRepository;
+
+	private final RedisService redisService;
 
 	@Override
 	public TransferDto.TransferDepositRespDto createTransfer(long memberId,
@@ -140,6 +148,68 @@ public class TransferServiceImpl implements TransferService {
 				}
 			}
 			return transferListRespDtos;
+		} else {
+			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+		}
+	}
+
+	@Override
+	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+
+		if (memberOptional.isPresent()) {
+			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+				onetransferReqDto.getAccountNum());
+			if (accountOptional.isEmpty()) {
+				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+			}
+			Optional<Bank> bankOptional = bankRepository.findByBankCode(onetransferReqDto.getBankCode());
+			if (bankOptional.isEmpty()) {
+				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			}
+			String senderAccountNum = "555111111111";
+			String receiverAccountNum = onetransferReqDto.getAccountNum();
+			Long depositAmount = 1l;
+			String withdrawAccountContent = "1원 인증";
+			StringBuilder stringBuilder = new StringBuilder();
+			Random random = new Random();
+			for (int i = 0; i < 4; i++) {
+				int digit = random.nextInt(10);
+				stringBuilder.append(digit);
+			}
+			String depositAccountContent = stringBuilder.toString();
+			TransferDto.TransferDepositReqDto transferDepositReqDto = new TransferDto.TransferDepositReqDto(
+				senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
+			);
+
+			createTransfer(1, transferDepositReqDto);
+			redisService.setValues2(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
+
+			return depositAccountContent;
+		} else {
+			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+		}
+
+	}
+
+	@Override
+	public String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+
+		if (memberOptional.isPresent()) {
+			//레디스 검증 하면 됨 .  .  set 새로만들어 익스파이어 만들어서
+			String redisCode = redisService.getValues(String.valueOf(onetransferVerifyReqDto.getAccountNum()));
+			if (onetransferVerifyReqDto.getCode().equals(redisCode)) {
+				Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+					onetransferVerifyReqDto.getAccountNum());
+				if (accountOptional.isEmpty()) {
+					throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+				}
+				Account account = accountOptional.get();
+				return account.getPassword();
+			} else {
+				throw new IllegalArgumentException("인증 번호가 잘못되었습니다.");
+			}
 		} else {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 		}
