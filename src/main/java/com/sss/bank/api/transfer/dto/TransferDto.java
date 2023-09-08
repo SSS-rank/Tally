@@ -25,6 +25,7 @@ public class TransferDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
 	public static class TransferDepositReqDto {
 
 		@NotNull
@@ -48,17 +49,39 @@ public class TransferDto {
 		@Column
 		private String depositAccountContent;
 
+		@NotNull
+		private String accountPassword;
+
+		public static TransferDepositReqDto of(String senderAccountNum, String receiverAccountNum, Long depositAmount,
+			String withdrawAccountContent, String depositAccountContent) {
+			return TransferDepositReqDto.builder()
+				.senderAccountNum(senderAccountNum)
+				.receiverAccountNum(receiverAccountNum)
+				.depositAmount(depositAmount)
+				.withdrawAccountContent(withdrawAccountContent)
+				.depositAccountContent(depositAccountContent)
+				.build();
+		}
+
 	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
 	public static class TransferDepositRespDto {
 
 		private String receiverName;
 
 		private Long depositAmount;
+
+		public static TransferDepositRespDto of(String receiverName, Long depositAmount) {
+			return TransferDepositRespDto.builder()
+				.receiverName(receiverName)
+				.depositAmount(depositAmount)
+				.build();
+		}
 
 	}
 
@@ -140,7 +163,7 @@ public class TransferDto {
 		@NotEmpty
 		@Size(max = 20)
 		private String accountNum;
-		
+
 		@Size(max = 4)
 		@NotNull
 		private String code;

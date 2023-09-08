@@ -22,6 +22,16 @@ public class ShopDto {
 	@Min(1)
 	private int shopType;
 	private String shopName;
+	private String shopNationCode;
+
+	public static ShopDto from(Shop shop) {
+		return ShopDto.builder()
+			.shopId(shop.getShopId())
+			.shopType(shop.getShopType())
+			.shopName(shop.getShopName())
+			.shopNationCode(shop.getShopNationCode())
+			.build();
+	}
 
 	@Getter
 	@Builder
@@ -32,6 +42,7 @@ public class ShopDto {
 		@Min(1)
 		private int shopType;
 		private String shopName;
+		private String shopNationCode;
 	}
 
 	@Getter
@@ -40,11 +51,13 @@ public class ShopDto {
 	public static class ShopRespDto {
 		private int shopType;
 		private String shopName;
+		private String shopNationCode;
 
 		public static ShopRespDto from(Shop shop) {
 			return ShopRespDto.builder()
 				.shopName(shop.getShopName())
 				.shopType(shop.getShopType())
+				.shopNationCode(shop.getShopNationCode())
 				.build();
 		}
 	}

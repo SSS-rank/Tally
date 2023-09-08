@@ -1,5 +1,6 @@
 package com.sss.bank.api.transfer.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -27,7 +28,7 @@ public class TransferController {
 	@PostMapping("/deposit")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransfer(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
-		BindingResult bindingResult) {
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
 		long memberId = 1;
 		//String memberUuid = loginUser.getMember().getMemberUuid();
 		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(memberId,
@@ -38,10 +39,10 @@ public class TransferController {
 	@PostMapping("/history")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferList(
 		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
-		BindingResult bindingResult) {
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
 		long memberId = 1;
 
-		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getList(memberId,
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferList(memberId,
 			transferListReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
@@ -50,7 +51,7 @@ public class TransferController {
 	@PostMapping("/1transfer")
 	public ResponseEntity<String> oneTransfer(
 		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto,
-		BindingResult bindingResult) {
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
 		long memberId = 1;
 
 		String code = transferService.oneTransfer(memberId, onetransferReqDto);

@@ -37,6 +37,7 @@ public class Shop {
 		return Shop.builder()
 			.shopName(shopReqDto.getShopName())
 			.shopType(shopReqDto.getShopType())
+			.shopNationCode(shopReqDto.getShopNationCode())
 			.build();
 	}
 
