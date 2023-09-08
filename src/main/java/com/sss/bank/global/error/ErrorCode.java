@@ -30,7 +30,10 @@ public enum ErrorCode {
 	NOT_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "008", "해당 토큰은 ACCESS 토큰이 아닙니다."),
 
 	// 가게
-	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "010", "해당 가게는 존재하지 않습니다.");
+	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "010", "해당 가게는 존재하지 않습니다."),
+
+	// 회원
+	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;
