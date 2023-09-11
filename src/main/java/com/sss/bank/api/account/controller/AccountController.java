@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.bank.api.account.dto.AccountDto;
 import com.sss.bank.domain.account.service.AccountService;
+import com.sss.bank.global.resolver.MemberInfo;
+import com.sss.bank.global.resolver.MemberInfoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,19 +29,20 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<String> createAccount(
-		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult) throws
+		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult,
+		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
-		long memberId = 1;
-		//	String memberId = loginUser.getMember().memberId();
+		long memberId = memberInfoDto.getMemberId();
 		Boolean isTrue = accountService.createAccount(memberId, accountCreateReqDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
 	}
 
 	@PatchMapping
 	public ResponseEntity<String> deleteAccount(
-		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult) throws
+		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult,
+		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
-		long memberId = 1;
+		long memberId = memberInfoDto.getMemberId();
 		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
@@ -47,8 +50,8 @@ public class AccountController {
 	@PostMapping("/get-balance")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalance(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
 			accountGetBalanceReqDto);
 
@@ -59,8 +62,8 @@ public class AccountController {
 	@PostMapping("/get-balance/tally")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
 			accountGetBalanceReqDto);
 

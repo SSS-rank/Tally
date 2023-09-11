@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.transfer.service.TransferService;
+import com.sss.bank.global.resolver.MemberInfo;
+import com.sss.bank.global.resolver.MemberInfoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,9 +30,8 @@ public class TransferController {
 	@PostMapping("/deposit")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransfer(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
-		//String memberUuid = loginUser.getMember().getMemberUuid();
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(memberId,
 			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
@@ -39,9 +40,8 @@ public class TransferController {
 	@PostMapping("/deposit/tally")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransferTally(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
-		//String memberUuid = loginUser.getMember().getMemberUuid();
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransferTally(memberId,
 			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
@@ -50,9 +50,9 @@ public class TransferController {
 	@PostMapping("/history")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferList(
 		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
-
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
+		;
 		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferList(memberId,
 			transferListReqDto);
 
@@ -62,8 +62,8 @@ public class TransferController {
 	@PostMapping("/history/tally")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
 		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 
 		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(memberId,
 			transferListReqDto);
@@ -74,8 +74,8 @@ public class TransferController {
 	@PostMapping("/1transfer")
 	public ResponseEntity<String> oneTransfer(
 		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto,
-		BindingResult bindingResult) throws NoSuchAlgorithmException {
-		long memberId = 1;
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		long memberId = memberInfoDto.getMemberId();
 
 		String code = transferService.oneTransfer(memberId, onetransferReqDto);
 
@@ -85,8 +85,8 @@ public class TransferController {
 	@GetMapping("/1transfer-verify")
 	public ResponseEntity<String> oneTransferVerify(
 		@RequestBody @Valid TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto,
-		BindingResult bindingResult) {
-		long memberId = 1;
+		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) {
+		long memberId = memberInfoDto.getMemberId();
 
 		String isVerify = transferService.oneTransferVerify(memberId, onetransferVerifyReqDto);
 
