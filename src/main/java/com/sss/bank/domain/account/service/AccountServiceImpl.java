@@ -39,7 +39,8 @@ public class AccountServiceImpl implements AccountService {
 	private final PasswordRepository passwordRepository;
 
 	@Override
-	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+	public AccountDto.AccountCreateRespDto createAccount(long memberId,
+		AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty()) {
@@ -86,12 +87,11 @@ public class AccountServiceImpl implements AccountService {
 
 		String salt = SHA256Util.createSalt();
 		String password = SHA256Util.getEncrypt(accountCreateReqDto.getAccountPassword(), salt);
-		accountRepository.save(
+		Account save = accountRepository.save(
 			Account.of(member, salt, password, accountNumBuilder.toString(), uuid, bank));
-		return true;
+		return AccountDto.AccountCreateRespDto.from(save);
 	}
 
-	@Transactional
 	@Override
 	public Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
 		NoSuchAlgorithmException {

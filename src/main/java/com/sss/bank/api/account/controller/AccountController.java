@@ -31,13 +31,14 @@ public class AccountController {
 	private final AccountService accountService;
 
 	@PostMapping
-	public ResponseEntity<String> createAccount(
+	public ResponseEntity<AccountDto.AccountCreateRespDto> createAccount(
 		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
-		Boolean isTrue = accountService.createAccount(memberId, accountCreateReqDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+		AccountDto.AccountCreateRespDto accountCreateRespDto = accountService.createAccount(memberId,
+			accountCreateReqDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(accountCreateRespDto);
 	}
 
 	@PatchMapping

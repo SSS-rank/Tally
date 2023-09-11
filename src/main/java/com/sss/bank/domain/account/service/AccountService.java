@@ -7,7 +7,8 @@ import com.sss.bank.api.account.dto.AccountDto;
 import com.sss.bank.global.resolver.MemberInfoDto;
 
 public interface AccountService {
-	Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+	AccountDto.AccountCreateRespDto createAccount(long memberId,
+		AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException;
 
 	Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
