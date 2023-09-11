@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import api from '../api/api';
 function AccountAdd() {
 	type ObjType = {
 		[key: string]: string;
@@ -49,26 +50,14 @@ function AccountAdd() {
 		setbankType(event.target.value as string);
 	};
 	const createAccount = async (reqDto: any) => {
-		const url = 'http://localhost:8080/account';
-		const accessToken = sessionStorage.getItem('accessToken');
 		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`,
-				},
-				body: JSON.stringify(reqDto),
-			});
-
-			if (!response.ok) {
-				throw new Error('HTTP error! status: ' + response.status);
-			}
-
-			const data = await response.text();
-			if (data == 'OK') {
+			const response = await api.post('account', reqDto);
+			if (response.status === 201) {
+				console.log('계정 생성 성공!');
 				window.alert('계좌가 생성 되었습니다!');
 				navigate('/main');
+			} else {
+				console.error('계정 생성 실패:', response.data);
 			}
 		} catch (error) {
 			window.alert('계좌 생성 오류입니다. 다시 생성해주세요');
