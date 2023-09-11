@@ -59,6 +59,18 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
 	}
 
+	@PostMapping("/history/tally")
+	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
+		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
+		long memberId = 1;
+
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(memberId,
+			transferListReqDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
+	}
+
 	@PostMapping("/1transfer")
 	public ResponseEntity<String> oneTransfer(
 		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto,
