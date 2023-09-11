@@ -194,6 +194,30 @@ public class TransferServiceImpl implements TransferService {
 		TransferDto.TransferDepositReqDto transferDepositReqDto = TransferDto.TransferDepositReqDto.of(
 			senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
 		);
+		if (memberOptional.isPresent()) {
+			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+				onetransferReqDto.getAccountNum());
+			if (accountOptional.isEmpty()) {
+				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+			}
+			Optional<Bank> bankOptional = bankRepository.findBankByBankCode(onetransferReqDto.getBankCode());
+			if (bankOptional.isEmpty()) {
+				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			}
+			String senderAccountNum = "555111111111";
+			String receiverAccountNum = onetransferReqDto.getAccountNum();
+			Long depositAmount = 1l;
+			String withdrawAccountContent = "1원 인증";
+			StringBuilder stringBuilder = new StringBuilder();
+			Random random = new Random();
+			for (int i = 0; i < 4; i++) {
+				int digit = random.nextInt(10);
+				stringBuilder.append(digit);
+			}
+			String depositAccountContent = stringBuilder.toString();
+			TransferDto.TransferDepositReqDto transferDepositReqDto = TransferDto.TransferDepositReqDto.of(
+				senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
+			);
 
 		createTransfer(1, transferDepositReqDto);
 		redisService.setOneTrnasferValues(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
