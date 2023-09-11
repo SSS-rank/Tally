@@ -19,10 +19,7 @@ public class HealthCheckController {
 
 	@GetMapping("/health")
 	public ResponseEntity<HealthCheckResponseDto> healthCheck() {
-		HealthCheckResponseDto healthCheckResponseDto = HealthCheckResponseDto.builder()
-			.health("ok")
-			.activeProfiles(Arrays.asList(environment.getActiveProfiles()))
-			.build();
+		HealthCheckResponseDto healthCheckResponseDto = HealthCheckResponseDto.of("OK", Arrays.asList(environment.getActiveProfiles()));
 		return ResponseEntity.status(HttpStatus.OK).body(healthCheckResponseDto);
 	}
 }
