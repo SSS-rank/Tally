@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -69,9 +69,9 @@ function ShopAdd() {
 	const handleClose = () => setOpen(false);
 
 	// 카테고리 선택
-	const [type, setType] = useState(0);
+	const [shopType, setShopType] = useState(0);
 	const selectShopType = (e: React.MouseEvent<HTMLButtonElement>) => {
-		setType(Number(e.currentTarget.dataset.shopType));
+		setShopType(Number(e.currentTarget.dataset.shopType));
 		handleClose();
 	};
 
@@ -83,6 +83,16 @@ function ShopAdd() {
 
 	const navigate = useNavigate();
 
+	// 입력값 유효성 검사
+	const validate = (type: number, name: string) => {
+		if (!type || !name) {
+			alert('값을 입력해주세요!');
+			return false;
+		}
+
+		return true;
+	};
+
 	// 등록 취소
 	const clickCancleBtn = () => {
 		navigate('/shop');
@@ -93,10 +103,13 @@ function ShopAdd() {
 		console.log('shop 등록');
 		if (confirm('등록하시겠습니까?')) {
 			const data = {
-				shop_type: type,
+				shop_type: shopType,
 				shop_name: shopName,
 				shop_nation_code: 'KR',
 			};
+
+			if (!validate(shopType, shopName)) return; // 유효성 검사
+
 			const res = await api.post(`/shop`, data);
 			console.log(res);
 
@@ -106,11 +119,43 @@ function ShopAdd() {
 		}
 	};
 
+	// 등록 or 수정인지 구분
+	const { state } = useLocation();
+
+	// 수정일 경우 기본 값 불러오기
+	useEffect(() => {
+		if (state.isModify) {
+			setShopType(state.shopType);
+			setShopName(state.shopName);
+		}
+	}, [state]);
+
+	// shop 수정
+	const modifyShop = async () => {
+		console.log('shop 수정');
+		if (confirm('수정하시겠습니까?')) {
+			const data = {
+				shop_id: state.shopId,
+				shop_type: shopType,
+				shop_name: shopName,
+			};
+
+			if (!validate(shopType, shopName)) return; // 유효성 검사
+
+			const res = await api.patch(`/shop`, data);
+			console.log(res);
+
+			if (res.status === 200) {
+				alert('수정되었습니다');
+			}
+		}
+	};
+
 	return (
 		<Container sx={{ my: 3, maxWidth: 500 }}>
 			<Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
 				<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-					SHOP 등록
+					{state.isModify ? 'SHOP 수정' : 'SHOP 등록'}
 				</Typography>
 				<IconButton onClick={clickCancleBtn}>
 					<CloseIcon />
@@ -141,27 +186,48 @@ function ShopAdd() {
 						}}
 						onClick={handleOpen}
 					>
-						{type === 0 ? <AddIcon /> : <ShopCategoryIcon category={type} />}
+						{shopType === 0 ? <AddIcon /> : <ShopCategoryIcon category={shopType} />}
 					</IconButton>
 				</Box>
 			</Stack>
-			<Button
-				component="label"
-				variant="contained"
-				fullWidth
-				sx={{
-					background: '#7BC6F6',
-					boxShadow: 'none',
-					my: 3,
-					borderRadius: 2,
-					':hover': {
+			{state.isModify ? (
+				<Button
+					component="label"
+					variant="contained"
+					fullWidth
+					sx={{
+						background: '#7BC6F6',
 						boxShadow: 'none',
-					},
-				}}
-				onClick={submitShop}
-			>
-				등록하기
-			</Button>
+						my: 3,
+						borderRadius: 2,
+						':hover': {
+							boxShadow: 'none',
+						},
+					}}
+					onClick={modifyShop}
+				>
+					수정하기
+				</Button>
+			) : (
+				<Button
+					component="label"
+					variant="contained"
+					fullWidth
+					sx={{
+						background: '#7BC6F6',
+						boxShadow: 'none',
+						my: 3,
+						borderRadius: 2,
+						':hover': {
+							boxShadow: 'none',
+						},
+					}}
+					onClick={submitShop}
+				>
+					등록하기
+				</Button>
+			)}
+
 			<Modal
 				open={open}
 				onClose={handleClose}

@@ -29,7 +29,11 @@ export default function ShopPage() {
 	}, []);
 
 	const clickShopAddBtn = () => {
-		navigate('/shop/add');
+		navigate('/shop/form', {
+			state: {
+				isModify: false,
+			},
+		});
 	};
 
 	return (
@@ -62,7 +66,12 @@ export default function ShopPage() {
 					}}
 				>
 					{shops.map((shop) => (
-						<ShopListItem key={shop.shop_id} shopType={shop.shop_type} shopName={shop.shop_name} />
+						<ShopListItem
+							key={shop.shop_id}
+							shopId={shop.shop_id}
+							shopType={shop.shop_type}
+							shopName={shop.shop_name}
+						/>
 					))}
 				</List>
 			</div>
