@@ -6,7 +6,7 @@ import AccountAdd from './pages/AccountAdd';
 import AccountDetail from './pages/AccountDetail';
 import AccountList from './pages/AccountList';
 import MainPage from './pages/MainPage';
-import ShopPage from './pages/Shop/ShopList';
+import ShopList from './pages/Shop/ShopList';
 import TransferPage from './pages/TransferPage';
 
 function Routes() {
@@ -21,7 +21,7 @@ function Routes() {
 		},
 		{
 			path: '/shop',
-			element: <ShopPage />,
+			element: <ShopList />,
 		},
 		{
 			path: '/add',
