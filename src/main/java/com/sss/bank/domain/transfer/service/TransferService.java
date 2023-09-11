@@ -20,4 +20,8 @@ public interface TransferService {
 	TransferDto.TransferDepositRespDto createTransferTally(long memberId,
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws
 		NoSuchAlgorithmException;
+
+	List<TransferDto.TransferListRespDto> getTransferListTally(long memberId,
+		TransferDto.TransferListReqDto transferListReqDto) throws
+		NoSuchAlgorithmException;
 }
