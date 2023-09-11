@@ -19,7 +19,7 @@ export default function ShopPage() {
 	const navigate = useNavigate();
 
 	const getShops = async () => {
-		const res = await axios.get('/shop');
+		const res = await axios.get('http://localhost:8080/shop');
 		console.log(res);
 		setShops(res.data);
 	};
