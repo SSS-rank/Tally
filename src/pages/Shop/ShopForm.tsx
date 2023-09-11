@@ -69,9 +69,9 @@ function ShopAdd() {
 	const handleClose = () => setOpen(false);
 
 	// 카테고리 선택
-	const [type, setType] = useState(0);
+	const [shopType, setShopType] = useState(0);
 	const selectShopType = (e: React.MouseEvent<HTMLButtonElement>) => {
-		setType(Number(e.currentTarget.dataset.shopType));
+		setShopType(Number(e.currentTarget.dataset.shopType));
 		handleClose();
 	};
 
@@ -83,6 +83,16 @@ function ShopAdd() {
 
 	const navigate = useNavigate();
 
+	// 입력값 유효성 검사
+	const validate = (type: number, name: string) => {
+		if (!type || !name) {
+			alert('값을 입력해주세요!');
+			return false;
+		}
+
+		return true;
+	};
+
 	// 등록 취소
 	const clickCancleBtn = () => {
 		navigate('/shop');
@@ -93,10 +103,13 @@ function ShopAdd() {
 		console.log('shop 등록');
 		if (confirm('등록하시겠습니까?')) {
 			const data = {
-				shop_type: type,
+				shop_type: shopType,
 				shop_name: shopName,
 				shop_nation_code: 'KR',
 			};
+
+			if (!validate(shopType, shopName)) return; // 유효성 검사
+
 			const res = await api.post(`/shop`, data);
 			console.log(res);
 
@@ -112,7 +125,7 @@ function ShopAdd() {
 	// 수정일 경우 기본 값 불러오기
 	useEffect(() => {
 		if (state.isModify) {
-			setType(state.shopType);
+			setShopType(state.shopType);
 			setShopName(state.shopName);
 		}
 	}, [state]);
@@ -123,9 +136,12 @@ function ShopAdd() {
 		if (confirm('수정하시겠습니까?')) {
 			const data = {
 				shop_id: state.shopId,
-				shop_type: type,
+				shop_type: shopType,
 				shop_name: shopName,
 			};
+
+			if (!validate(shopType, shopName)) return; // 유효성 검사
+
 			const res = await api.patch(`/shop`, data);
 			console.log(res);
 
@@ -170,7 +186,7 @@ function ShopAdd() {
 						}}
 						onClick={handleOpen}
 					>
-						{type === 0 ? <AddIcon /> : <ShopCategoryIcon category={type} />}
+						{shopType === 0 ? <AddIcon /> : <ShopCategoryIcon category={shopType} />}
 					</IconButton>
 				</Box>
 			</Stack>
