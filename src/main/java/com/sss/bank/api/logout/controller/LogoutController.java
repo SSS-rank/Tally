@@ -10,14 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sss.bank.api.logout.service.LogoutService;
 import com.sss.bank.global.util.AuthorizationHeaderUtills;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
+@Api(tags = {"04. logout"}, description = "로그아웃 관련 서비스")
 @RestController
 @RequiredArgsConstructor
 public class LogoutController {
 	private final LogoutService logoutService;
+
+	@ApiOperation(value = "로그아웃", notes = "로그아웃한다.")
 	@PostMapping("/logout")
-	public ResponseEntity<String> logout(HttpServletRequest httpServletRequest){
+	public ResponseEntity<String> logout(HttpServletRequest httpServletRequest) {
 		String authorizationHeader = httpServletRequest.getHeader("Authorization");
 		AuthorizationHeaderUtills.validateAuthorization(authorizationHeader);
 
