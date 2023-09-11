@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const cards = [1, 2, 3];
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -45,19 +45,14 @@ function MainPage() {
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
 			<main>
-				{/* Hero unit */}
 				<Box
 					sx={{
 						bgcolor: 'background.paper',
-						pt: 8,
-						pb: 6,
 					}}
 				>
-					<Container maxWidth="sm">
-						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-							<Button variant="contained" href="/add" className="btn btn-primary">
-								계좌 추가
-							</Button>
+					<Container sx={{ py: 2 }} maxWidth="md">
+						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="">
+							<div>계좌 목록</div>
 							<Button variant="outlined">shop 목록</Button>
 						</Stack>
 					</Container>
@@ -89,6 +84,14 @@ function MainPage() {
 								</Card>
 							</Grid>
 						))}
+
+						<Grid item xs={12}>
+							<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+								<Button variant="contained" href="/add" className="btn btn-primary">
+									추가
+								</Button>
+							</Card>
+						</Grid>
 					</Grid>
 				</Container>
 			</main>
