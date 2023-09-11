@@ -1,6 +1,4 @@
-package com.sss.tally.domain.member.entity;
-
-import java.time.LocalDateTime;
+package com.sss.tally.domain.country.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,42 +7,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Country {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long memberId;
-
-	@Column(nullable = false, unique = true)
-	private String memberUuid;
-
-	@Column(nullable = false, unique = true)
-	private Long kakaoId;
+	private Long countryId;
 
 	@Column(nullable = false)
-	private String nickname;
+	private String countryCode;
 
 	@Column(nullable = false)
-	private String transferPassword;
+	private int visa;
+
 	@Column(nullable = false)
-	private String profileImage;
+	private String language;
 
-	@CreatedDate
-	private LocalDateTime createDate;
+	@Column(nullable = false)
+	private String monetaryUnit;
 
-	private LocalDateTime withdrawalDate;
+	@Column(nullable = false)
+	private int timeDifference;
+
 }

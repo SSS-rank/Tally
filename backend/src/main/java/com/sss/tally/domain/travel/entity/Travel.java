@@ -1,4 +1,4 @@
-package com.sss.tally.domain.member.entity;
+package com.sss.tally.domain.travel.entity;
 
 import java.time.LocalDateTime;
 
@@ -21,30 +21,37 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+@AllArgsConstructor
+public class Travel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long memberId;
-
-	@Column(nullable = false, unique = true)
-	private String memberUuid;
-
-	@Column(nullable = false, unique = true)
-	private Long kakaoId;
+	private Long travelId;
 
 	@Column(nullable = false)
-	private String nickname;
+	private String travelTitle;
 
 	@Column(nullable = false)
-	private String transferPassword;
+	private String travelImage;
+
 	@Column(nullable = false)
-	private String profileImage;
+	private LocalDateTime startDate;
+
+	@Column(nullable = false)
+	private LocalDateTime endDate;
+
+	@Column(nullable = false)
+	private Boolean status;
 
 	@CreatedDate
+	@Column(nullable = false)
 	private LocalDateTime createDate;
 
-	private LocalDateTime withdrawalDate;
+	@Column(nullable = false)
+	private long travelLocation;
+
+	@Column(nullable = false)
+	private TravelTypeEnum travelType;
+
 }
