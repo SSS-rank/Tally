@@ -34,8 +34,8 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long accountId;
 
-	@JoinColumn(name = "member_id")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
 	private Member memberId;
 
 	@Column(nullable = false, unique = true)
@@ -45,7 +45,7 @@ public class Account {
 	private Boolean status;
 
 	@Column(nullable = false)
-	private int order;
+	private int orderNumber;
 
 	@Column(nullable = false)
 	private String bankName;
