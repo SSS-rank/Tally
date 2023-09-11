@@ -1,32 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Icon } from '@iconify/react';
 // @mui
-import ImageIcon from '@mui/icons-material/Image';
-import {
-	Alert,
-	Stack,
-	Button,
-	Container,
-	Typography,
-	List,
-	ListItemIcon,
-	ListItemAvatar,
-	Avatar,
-	ListItem,
-	ListItemText,
-	Divider,
-} from '@mui/material';
-import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
+import { Stack, Button, Container, Typography, List } from '@mui/material';
+import axios from 'axios';
 
-import ShopListItem from '../../components/Shop/ShopListItem';
+import ShopListItem from '../../components/ShopListItem/ShopListItem';
 
-const columns: GridColDef[] = [
-	{ field: 'id', headerName: 'No' },
-	{ field: 'shopCategory', headerName: '분류' },
-	{ field: 'shopName', headerName: '상호명' },
-];
-
+// TODO : 가짜 데이터 바꾸기
 const rows = [
 	{ id: 1, shopCategory: 1, shopName: '롯데월드 호텔' },
 	{ id: 3, shopCategory: 6, shopName: '자라' },
@@ -37,26 +18,42 @@ const rows = [
 ];
 
 export default function ShopPage() {
-	const [message, setMessage] = React.useState('');
+	const [shops, setShops] = useState([]);
 
-	const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-		setMessage(`Movie "${params.row.id}" clicked`);
+	const getShops = async () => {
+		const res = await axios.get('/shop');
+		console.log(res);
 	};
+
+	useEffect(() => {
+		getShops();
+	}, []);
+
 	return (
-		<Container>
+		<Container sx={{ my: 3, maxWidth: 500 }}>
 			<Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-				<Typography variant="h4" gutterBottom>
-					Shop
+				<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+					SHOP 목록
 				</Typography>
-				<Button variant="contained" startIcon={<Icon icon="eva:plus-fill" />}>
-					Add Shop
+				<Button
+					variant="contained"
+					startIcon={<Icon icon="eva:plus-fill" />}
+					sx={{
+						borderRadius: 6,
+						background: '#7BC6F6',
+						boxShadow: 'none',
+						':hover': {
+							boxShadow: 'none',
+						},
+					}}
+				>
+					SHOP 등록
 				</Button>
 			</Stack>
-			<div style={{ height: '100%', width: '100%' }}>
+			<div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center' }}>
 				<List
 					sx={{
 						width: '100%',
-						maxWidth: 360,
 						bgcolor: 'background.paper',
 					}}
 				>
@@ -65,7 +62,6 @@ export default function ShopPage() {
 					))}
 				</List>
 			</div>
-			{message && <Alert severity="info">{message}</Alert>}
 		</Container>
 	);
 }
