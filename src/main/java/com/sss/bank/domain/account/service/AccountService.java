@@ -13,4 +13,8 @@ public interface AccountService {
 
 	AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
 		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException;
+
+	AccountDto.AccountGetBalanceRespDto getBalanceTally(long memberId,
+		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws
+		NoSuchAlgorithmException;
 }
