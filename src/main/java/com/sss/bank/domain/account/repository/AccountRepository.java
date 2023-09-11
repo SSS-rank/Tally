@@ -16,4 +16,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 	List<Account> findAllByMemberId_MemberIdAndBankId_BankIdAndStatusIsFalse
 		(Long memberId, Long bankId);
+
+	List<Account> findAllByMemberId_MemberIdAndStatusIsFalse(Long memberId);
 }

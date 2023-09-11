@@ -197,6 +197,22 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	public List<AccountDto> getAccountList(MemberInfoDto memberInfoDto) {
+		// 회원 존재 확인
+		Optional<Member> member = memberRepository.findMemberByMemberId(memberInfoDto.getMemberId());
+		if (member.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+		List<Account> accounts = accountRepository.findAllByMemberId_MemberIdAndStatusIsFalse(
+			member.get()
+				.getMemberId());
+
+		return accounts.stream()
+			.map(AccountDto::from)
+			.collect(Collectors.toList());
+	}
+
+	@Override
 	public List<AccountDto> getAccountList(MemberInfoDto memberInfoDto, String bankCode) {
 		// 회원 존재 확인
 		Optional<Member> member = memberRepository.findMemberByMemberId(memberInfoDto.getMemberId());

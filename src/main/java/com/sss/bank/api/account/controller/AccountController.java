@@ -83,9 +83,13 @@ public class AccountController {
 
 	@ApiOperation(value = "계좌리스트 조회", notes = "계좌리스트를 조회한다")
 	@GetMapping
-	public ResponseEntity<List<AccountDto>> getAccountList(@RequestParam String code,
+	public ResponseEntity<List<AccountDto>> getAccountList(@RequestParam(required = false) String code,
 		@MemberInfo MemberInfoDto memberInfoDto) {
-		List<AccountDto> accountList = accountService.getAccountList(memberInfoDto, code);
+		List<AccountDto> accountList = null;
+		if (code == null)
+			accountList = accountService.getAccountList(memberInfoDto);
+		else
+			accountList = accountService.getAccountList(memberInfoDto, code);
 		return ResponseEntity.status(HttpStatus.OK).body(accountList);
 	}
 

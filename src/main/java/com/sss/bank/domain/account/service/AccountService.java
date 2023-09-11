@@ -23,5 +23,7 @@ public interface AccountService {
 
 	List<AccountDto> getAccountList(MemberInfoDto memberInfoDto, String bankCode);
 
+	List<AccountDto> getAccountList(MemberInfoDto memberInfoDto);
+
 	AccountDto.AccountGetOwnerDto getAccountOwner(String bankNumber);
 }
