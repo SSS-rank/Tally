@@ -1,5 +1,6 @@
 package com.sss.bank.api.login.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,9 @@ import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.external.oauth.model.OAuthAttributes;
 import com.sss.bank.external.oauth.kakao.service.KakaoLoginApiService;
+import com.sss.bank.global.error.ErrorCode;
+import com.sss.bank.global.error.exception.AuthenticationException;
+import com.sss.bank.global.error.exception.MemberException;
 import com.sss.bank.global.jwt.dto.JwtTokenDto;
 import com.sss.bank.global.jwt.service.TokenManager;
 import com.sss.bank.global.redis.service.RedisService;
@@ -39,6 +43,8 @@ public class OauthLoginService {
 			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
 		} else { //이미 존재하는 회원
 			Member oauthMember = optionalMember.get();
+			if(oauthMember.getWithdrawalDate()!=null && oauthMember.getWithdrawalDate().isBefore(LocalDateTime.now()))
+				throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());
 			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());

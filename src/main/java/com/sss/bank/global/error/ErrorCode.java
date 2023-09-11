@@ -24,8 +24,6 @@ public enum ErrorCode {
 	NOT_EXIST_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "003", "Authorization Header가 빈 값입니다."),
 	NOT_VALID_BEARER_GRANT_TYPE(HttpStatus.UNAUTHORIZED, "004", "인증 타입이 Bearer 타입이 아닙니다."),
 
-	ALREADY_REGISTER_MEMBER(HttpStatus.BAD_REQUEST, "005", "이미 가입된 회원입니다."),
-
 	REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "006", "해당 RefreshToken을 찾을 수 없습니다."),
 	REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "007", "해당 RefreshToken은 만료되었습니다."),
 
@@ -35,6 +33,8 @@ public enum ErrorCode {
 	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "010", "해당 가게는 존재하지 않습니다."),
 
 	// 회원
+	ALREADY_REGISTER_MEMBER(HttpStatus.BAD_REQUEST, "005", "이미 가입된 회원입니다."),
+	ALREADY_WITHDRAWAL_MEMBER(HttpStatus.UNAUTHORIZED, "007", "탈퇴한 회원입니다."),
 	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {

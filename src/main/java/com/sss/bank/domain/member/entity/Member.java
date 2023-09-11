@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.bank.api.member.dto.MemberDto;
 import com.sss.bank.external.oauth.model.OAuthAttributes;
 
 import lombok.AccessLevel;
@@ -53,5 +54,14 @@ public class Member {
 			.email(userInfo.getEmail())
 			.name(userInfo.getName())
 			.build();
+	}
+
+	public void withdrawal(LocalDateTime withdrawalDate){
+		this.withdrawalDate = withdrawalDate;
+	}
+
+	public void addInfo(MemberDto.MemberReqDto memberReqDto){
+		this.name = memberReqDto.getName();
+		this.englishName = memberReqDto.getEnglishName();
 	}
 }
