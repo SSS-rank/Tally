@@ -43,7 +43,7 @@ public class OauthLoginService {
 			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
 		} else { //이미 존재하는 회원
 			Member oauthMember = optionalMember.get();
-			if(oauthMember.getWithdrawalDate().isBefore(LocalDateTime.now()))
+			if(oauthMember.getWithdrawalDate()!=null && oauthMember.getWithdrawalDate().isBefore(LocalDateTime.now()))
 				throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 			// 토큰 생성
 			jwtTokenDto = tokenManager.createJwtTokenDto(oauthMember.getMemberId());
