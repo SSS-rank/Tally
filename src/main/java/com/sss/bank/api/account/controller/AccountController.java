@@ -55,4 +55,16 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
 
 	}
+
+	@PostMapping("/get-balance/tally")
+	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
+		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
+		BindingResult bindingResult) throws NoSuchAlgorithmException {
+		long memberId = 1;
+		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
+			accountGetBalanceReqDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
+
+	}
 }
