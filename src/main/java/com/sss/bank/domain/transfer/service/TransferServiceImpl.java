@@ -25,6 +25,7 @@ import com.sss.bank.domain.transfer.entity.Transfer;
 import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.AccountException;
+import com.sss.bank.global.error.exception.BankException;
 import com.sss.bank.global.error.exception.BusinessException;
 import com.sss.bank.global.error.exception.MemberException;
 import com.sss.bank.global.redis.service.RedisService;
@@ -166,19 +167,25 @@ public class TransferServiceImpl implements TransferService {
 	@Override
 	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) throws
 		NoSuchAlgorithmException {
+
+		// 회원 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
+
+		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			onetransferReqDto.getAccountNum());
 		if (accountOptional.isEmpty()) {
-			throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
 		}
+
+		// 은행 코드 검증
 		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(onetransferReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			throw new BankException(ErrorCode.NOT_EXIST_BANK);
 		}
 		String senderAccountNum = "555111111111";
 		String receiverAccountNum = onetransferReqDto.getAccountNum();
@@ -205,21 +212,22 @@ public class TransferServiceImpl implements TransferService {
 	public String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 
+		// 회원 검증
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
-		//레디스 검증 하면 됨 .  .  set 새로만들어 익스파이어 만들어서
+		// 1원 이체 예금주 검증
 		String redisCode = redisService.getValues(String.valueOf(onetransferVerifyReqDto.getAccountNum()));
 		if (onetransferVerifyReqDto.getCode().equals(redisCode)) {
 			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 				onetransferVerifyReqDto.getAccountNum());
 			if (accountOptional.isEmpty()) {
-				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
+				throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
 			}
 			Account account = accountOptional.get();
 			return account.getPassword();
 		} else {
-			throw new IllegalArgumentException("인증 번호가 잘못되었습니다.");
+			throw new AccountException(ErrorCode.INVALID_ONE_VALUE);
 		}
 
 	}
