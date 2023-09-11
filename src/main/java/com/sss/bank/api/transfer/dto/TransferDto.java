@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.sss.bank.domain.transfer.entity.Transfer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -125,14 +124,15 @@ public class TransferDto {
 
 		private String transferUuid;
 
-		public static TransferListRespDto of(Transfer transfer, String flag) {
+		public static TransferListRespDto of(LocalDateTime date, String flag, String content, long amount,
+			String uuid) {
 			return TransferListRespDto
 				.builder()
-				.transferDate(transfer.getTransferDate())
+				.transferDate(date)
 				.flag(flag)
-				.content(transfer.getDepositAccountContent())
-				.amount(transfer.getAmount())
-				.transferUuid(transfer.getTransferUuid())
+				.content(content)
+				.amount(amount)
+				.transferUuid(uuid)
 				.build();
 		}
 	}
