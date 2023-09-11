@@ -35,7 +35,10 @@ public enum ErrorCode {
 	// 회원
 	ALREADY_REGISTER_MEMBER(HttpStatus.BAD_REQUEST, "005", "이미 가입된 회원입니다."),
 	ALREADY_WITHDRAWAL_MEMBER(HttpStatus.UNAUTHORIZED, "007", "탈퇴한 회원입니다."),
-	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다.");
+	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다."),
+
+	//은행
+	NOT_EXIST_BANK(HttpStatus.BAD_REQUEST, "012", "해당 은행은 존재하지 않습니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;

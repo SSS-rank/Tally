@@ -165,7 +165,7 @@ public class TransferServiceImpl implements TransferService {
 			if (accountOptional.isEmpty()) {
 				throw new IllegalArgumentException("계좌번호가 존재하지 않습니다.");
 			}
-			Optional<Bank> bankOptional = bankRepository.findByBankCode(onetransferReqDto.getBankCode());
+			Optional<Bank> bankOptional = bankRepository.findBankByBankCode(onetransferReqDto.getBankCode());
 			if (bankOptional.isEmpty()) {
 				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 			}

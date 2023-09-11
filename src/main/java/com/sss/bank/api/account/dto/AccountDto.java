@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.bank.domain.account.entity.Account;
+import com.sss.bank.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Builder
+@Getter
 public class AccountDto {
+	private String accountUuid;
+
+	private String bankCode;
+
+	private String accountNumber;
+
+	private Long balance;
+
+	public static AccountDto from(Account account) {
+		return AccountDto.builder()
+			.accountUuid(account.getAccountUuid())
+			.bankCode(account.getBankId().getBankCode())
+			.accountNumber(
+				account.getAccountNumber())
+			.balance(account.getBalance())
+			.build();
+	}
+
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -78,6 +99,19 @@ public class AccountDto {
 				.balance(account.getBalance())
 				.bankName(account.getBankId().getBankName())
 				.accountNumber(account.getAccountNumber())
+				.build();
+		}
+	}
+
+	@Getter
+	@Builder
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class AccountGetOwnerDto {
+		private String bankOwner;
+
+		public static AccountGetOwnerDto from(Member member) {
+			return AccountGetOwnerDto.builder()
+				.bankOwner(member.getName())
 				.build();
 		}
 	}
