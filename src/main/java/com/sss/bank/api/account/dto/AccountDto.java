@@ -14,7 +14,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Builder
+@Getter
 public class AccountDto {
+	private String accountUuid;
+
+	private String bankCode;
+
+	private String accountNumber;
+
+	private Long balance;
+
+	public static AccountDto from(Account account) {
+		return AccountDto.builder()
+			.accountUuid(account.getAccountUuid())
+			.bankCode(account.getBankId().getBankCode())
+			.accountNumber(
+				account.getAccountNumber())
+			.balance(account.getBalance())
+			.build();
+	}
+
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
