@@ -14,8 +14,8 @@ import {
 	Modal,
 	Grid,
 } from '@mui/material';
-import axios from 'axios';
 
+import api from '../../api/api';
 import ShopCategoryIcon from '../../components/ShopCategoryIcon';
 
 const modalStyle = {
@@ -96,7 +96,7 @@ function ShopAdd() {
 			shop_name: shopName,
 			shop_nation_code: 'KR',
 		};
-		const res = await axios.post(`http://localhost:8080/shop`, data);
+		const res = await api.post(`/shop`, data);
 		console.log(res);
 	};
 

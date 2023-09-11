@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 // @mui
 import { Stack, Button, Container, Typography, List } from '@mui/material';
-import axios from 'axios';
 
+import api from '../../api/api';
 import ShopListItem from '../../components/ShopListItem/ShopListItem';
 
 interface Shop {
@@ -19,7 +19,7 @@ export default function ShopPage() {
 	const navigate = useNavigate();
 
 	const getShops = async () => {
-		const res = await axios.get('http://localhost:8080/shop');
+		const res = await api.get('/shop');
 		console.log(res);
 		setShops(res.data);
 	};
