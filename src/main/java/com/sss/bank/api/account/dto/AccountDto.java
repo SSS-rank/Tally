@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.bank.domain.account.entity.Account;
+import com.sss.bank.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -98,6 +99,19 @@ public class AccountDto {
 				.balance(account.getBalance())
 				.bankName(account.getBankId().getBankName())
 				.accountNumber(account.getAccountNumber())
+				.build();
+		}
+	}
+
+	@Getter
+	@Builder
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class AccountGetOwnerDto {
+		private String bankOwner;
+
+		public static AccountGetOwnerDto from(Member member) {
+			return AccountGetOwnerDto.builder()
+				.bankOwner(member.getName())
 				.build();
 		}
 	}
