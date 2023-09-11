@@ -21,7 +21,7 @@ function ShopCategoryIcon({ category }: ShopCategoryIconProps): any {
 	else if (category === 4) icon = <LocalPlayIcon />; // 관광
 	else if (category === 5) icon = <RestaurantIcon />; // 식사
 	else if (category === 6) icon = <ShoppingBasketIcon />; // 쇼핑
-	else icon = PendingIcon; // 기타
+	else icon = <PendingIcon />; // 기타
 
 	return icon;
 }
