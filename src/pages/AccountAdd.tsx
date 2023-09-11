@@ -14,6 +14,33 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 function AccountAdd() {
+	type ObjType = {
+		[key: string]: string;
+	};
+
+	const bankCode: ObjType = {
+		경남은행: '039',
+		광주은행: '034',
+		단위농협: '012',
+		부산은행: '032',
+		새마을금고: '045',
+		신한은행: '088',
+		씨티은행: '027',
+		우리은행: '020',
+		전북은행: '037',
+		제주은행: '035',
+		카카오뱅크: '090',
+		케이뱅크: '089',
+		토스뱅크: '092',
+		하나은행: '081',
+		기업은행: '003',
+		국민은행: '004',
+		대구은행: '031',
+		산업은행: '002',
+		농협은행: '011',
+		SC제일은행: '023',
+		수협은행: '007',
+	};
 	const defaultTheme = createTheme();
 	const navigate = useNavigate();
 	const [bankType, setbankType] = React.useState('');
@@ -21,14 +48,40 @@ function AccountAdd() {
 	const handleChange = (event: SelectChangeEvent) => {
 		setbankType(event.target.value as string);
 	};
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const createAccount = async (reqDto: any) => {
+		const url = 'http://localhost:8080/account';
+		const accessToken = sessionStorage.getItem('accessToken');
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${accessToken}`,
+				},
+				body: JSON.stringify(reqDto),
+			});
+
+			if (!response.ok) {
+				throw new Error('HTTP error! status: ' + response.status);
+			}
+
+			const data = await response.text();
+			if (data == 'OK') {
+				window.alert('계좌가 생성 되었습니다!');
+				navigate('/main');
+			}
+		} catch (error) {
+			window.alert('계좌 생성 오류입니다. 다시 생성해주세요');
+		}
+	};
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			name: data.get('name'),
-			accountNum: data.get('accountNum'),
-			bankType,
-		});
+		const accountCreateReqDto = {
+			bank_code: bankCode[bankType],
+			account_password: data.get('password'),
+		};
+		createAccount(accountCreateReqDto);
 	};
 	const goBack = () => {
 		navigate(-1);
@@ -38,7 +91,6 @@ function AccountAdd() {
 		<ThemeProvider theme={defaultTheme}>
 			<Container component="main" maxWidth="xs">
 				<CssBaseline />
-
 				<Box
 					sx={{
 						marginTop: 8,
@@ -71,7 +123,7 @@ function AccountAdd() {
 								<TextField name="name" required fullWidth id="name" label="예금주" autoFocus />
 							</Grid>
 							<Grid item xs={12}>
-								<TextField required fullWidth id="accountNum" label="계좌번호" name="accountNum" />
+								<TextField required fullWidth id="password" label="비밀번호" name="password" />
 							</Grid>
 						</Grid>
 						<Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
