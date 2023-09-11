@@ -8,7 +8,7 @@ import AccountList from './pages/AccountList';
 import CallBack from './pages/CallBack';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
-import ShopPage from './pages/Shop/ShopPage';
+import ShopList from './pages/Shop/ShopList';
 import TransferPage from './pages/TransferPage';
 
 function Routes() {
@@ -27,7 +27,7 @@ function Routes() {
 		},
 		{
 			path: '/shop',
-			element: <ShopPage />,
+			element: <ShopList />,
 		},
 		{
 			path: '/add',
