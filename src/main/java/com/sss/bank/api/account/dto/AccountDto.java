@@ -54,6 +54,27 @@ public class AccountDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
+	@Builder
+	public static class AccountCreateRespDto {
+
+		private String accountUuid;
+		private String bankCode;
+		private String accountNumber;
+
+		public static AccountCreateRespDto from(Account account) {
+			return AccountCreateRespDto.builder()
+				.accountNumber(account.getAccountNumber())
+				.accountUuid(account.getAccountUuid())
+				.bankCode(account.getBankId().getBankCode())
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
 	public static class AccountDeleteReqDto {
 		@NotNull
 		private String bankCode;
@@ -72,6 +93,22 @@ public class AccountDto {
 		@NotNull
 		@NotEmpty
 		@Size(max = 5)
+		private String accountPassword;
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class AccountGetBalanceTallyReqDto {
+
+		@NotNull
 		private String accountPassword;
 
 		@NotNull

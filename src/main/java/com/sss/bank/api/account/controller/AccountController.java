@@ -35,13 +35,14 @@ public class AccountController {
 
 	@ApiOperation(value = "계좌 생성", notes = "계좌를 생성한다")
 	@PostMapping
-	public ResponseEntity<String> createAccount(
+	public ResponseEntity<AccountDto.AccountCreateRespDto> createAccount(
 		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
-		Boolean isTrue = accountService.createAccount(memberId, accountCreateReqDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+		AccountDto.AccountCreateRespDto accountCreateRespDto = accountService.createAccount(memberId,
+			accountCreateReqDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(accountCreateRespDto);
 	}
 
 	@ApiOperation(value = "계좌 삭제", notes = "계좌를 삭제한다")
@@ -51,7 +52,7 @@ public class AccountController {
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
-		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
+		accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
 
@@ -63,7 +64,6 @@ public class AccountController {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
 			accountGetBalanceReqDto);
-
 		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
 
 	}
@@ -71,7 +71,7 @@ public class AccountController {
 	@ApiOperation(value = "잔액 조회 for Tally", notes = "잔액을 조회한다")
 	@PostMapping("/get-balance/tally")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
-		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
+		@RequestBody @Valid AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
