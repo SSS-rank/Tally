@@ -1,4 +1,4 @@
-package com.sss.tally.domain.group.entity;
+package com.sss.tally.domain.travel_group.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -25,11 +25,11 @@ import lombok.NoArgsConstructor;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
-public class Group {
+public class TravelGroup {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long groupId;
+	private Long travelGroupId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
