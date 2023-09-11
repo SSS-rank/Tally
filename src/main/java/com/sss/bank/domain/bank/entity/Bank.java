@@ -28,7 +28,7 @@ public class Bank {
 	private Long bankId;
 	@Column(nullable = false)
 	private String bankName;
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String bankCode;
 
 }
