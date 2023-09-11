@@ -45,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
 		if (memberOptional.isEmpty()) {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 		}
-		Optional<Bank> bankOptional = bankRepository.findByBankCode(accountCreateReqDto.getBankCode());
+		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountCreateReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
 			throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 		}
@@ -55,17 +55,6 @@ public class AccountServiceImpl implements AccountService {
 		if (lastNum >= 9999) {
 			lastNum -= 9998;
 		}
-		if (memberOptional.isPresent()) {
-			Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountCreateReqDto.getBankCode());
-			if (bankOptional.isEmpty()) {
-				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
-			}
-			Bank bank = bankOptional.get();
-			Optional<Integer> lastNumOptional = accountRepository.countAccountRows();
-			Integer lastNum = lastNumOptional.get();
-			if (lastNum >= 9999) {
-				lastNum -= 9998;
-			}
 
 		StringBuilder accountNumBuilder = new StringBuilder("555");
 		Random random = new Random();
@@ -110,7 +99,7 @@ public class AccountServiceImpl implements AccountService {
 		if (memberOptional.isEmpty()) {
 			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 		}
-		Optional<Bank> bankOptional = bankRepository.findByBankCode(accountDeleteReqDto.getBankCode());
+		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountDeleteReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
 			throw new IllegalArgumentException("존재하지 않는 은행입니다.");
 		}
@@ -120,17 +109,6 @@ public class AccountServiceImpl implements AccountService {
 			throw new IllegalArgumentException("존재하지 않는 계좌입니다.");
 		}
 		Account account = accountOptional.get();
-		if (memberOptional.isPresent()) {
-			Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountDeleteReqDto.getBankCode());
-			if (bankOptional.isEmpty()) {
-				throw new IllegalArgumentException("존재하지 않는 은행입니다.");
-			}
-			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
-				accountDeleteReqDto.getAccountNum());
-			if (accountOptional.isEmpty()) {
-				throw new IllegalArgumentException("존재하지 않는 계좌입니다.");
-			}
-			Account account = accountOptional.get();
 
 		if (!passwordRepository.checkPassword(accountDeleteReqDto.getAccountNum(),
 			accountDeleteReqDto.getAccountPassword())) {
