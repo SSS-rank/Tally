@@ -25,6 +25,10 @@ public class AuthenticationIntercepter implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
 		Exception {
 
+		String swaggerUri = request.getRequestURI();
+		if (swaggerUri.contains("swagger") || swaggerUri.contains("api-docs") || swaggerUri.contains("webjars"))
+			return true;
+
 		// 1. Authorization Header 검증
 		String authorizationHeader = request.getHeader("Authorization");
 		AuthorizationHeaderUtills.validateAuthorization(authorizationHeader);
