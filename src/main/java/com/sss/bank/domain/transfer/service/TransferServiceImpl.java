@@ -1,16 +1,15 @@
 package com.sss.bank.domain.transfer.service;
 
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,7 +118,7 @@ public class TransferServiceImpl implements TransferService {
 		if (memberOptional.isEmpty())
 			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
 		// 계좌 존재 인증 및 비밀번호 인증
 		if (!passwordRepository.checkPassword(transferListReqDto.getAccountNum(),
@@ -128,27 +127,37 @@ public class TransferServiceImpl implements TransferService {
 
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
+		Account account = accountOptional.get();
+		long accountId = account.getAccountId();
 
-		Pageable fixedPageable = PageRequest.of(page, limit, Sort.by("transferDate").descending());
-		Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(
-			account.get(),
-			fixedPageable);
+		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId, limit, page);
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
-		for (Transfer transfer : transferList) {
-			//출금자가 본인일때
-			if (transfer.getSender().getAccountNumber().equals(transferListReqDto.getAccountNum())) {
-				TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
-					"출금");
+		for (Map<String, Object> rawResult : Results) {
+			//보내는 자일 때 (출금)
+			if (((BigInteger)rawResult.get("accountId")).longValue() == accountId) {
+				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
+				LocalDateTime localDateTime = timestamp.toLocalDateTime();
+				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
+					localDateTime
+					, "출금", (String)rawResult.get("withdrawAccountContent"),
+					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
 
-				transferListRespDtos.add(transferListRespDto);
-			} else { //입금자가 본인일 때
-				TransferDto.TransferListRespDto transferListRespDto = TransferDto.TransferListRespDto.of(transfer,
-					"입금");
-
-				transferListRespDtos.add(transferListRespDto);
+				transferListRespDtos.add(dto);
 			}
+			//받는 자일 때 (입금)
+			if (((BigInteger)rawResult.get("receiver")).longValue() == accountId) {
+				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
+				LocalDateTime localDateTime = timestamp.toLocalDateTime();
+				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
+					localDateTime
+					, "입금", (String)rawResult.get("name"),
+					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
+
+				transferListRespDtos.add(dto);
+			}
+
 		}
 
 		return transferListRespDtos;
