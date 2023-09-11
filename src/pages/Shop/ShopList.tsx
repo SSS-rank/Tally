@@ -29,7 +29,7 @@ export default function ShopPage() {
 	}, []);
 
 	const clickShopAddBtn = () => {
-		navigate('/shop/add', {
+		navigate('/shop/form', {
 			state: {
 				isModify: false,
 			},

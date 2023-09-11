@@ -15,7 +15,7 @@ function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
 	const navigate = useNavigate();
 	const modifyItem = () => {
 		console.log('수정');
-		navigate('/shop/add', {
+		navigate('/shop/form', {
 			state: {
 				isModify: true,
 				shopId: shopId,
