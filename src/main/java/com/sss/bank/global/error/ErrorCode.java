@@ -38,7 +38,8 @@ public enum ErrorCode {
 	NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "111", "해당 회원은 존재하지 않습니다."),
 
 	//은행
-	NOT_EXIST_BANK(HttpStatus.BAD_REQUEST, "012", "해당 은행은 존재하지 않습니다.");
+	NOT_EXIST_BANK(HttpStatus.BAD_REQUEST, "012", "해당 은행은 존재하지 않습니다."),
+	BANK_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "013", "은행 코드가 일치하지 않습니다.");
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;

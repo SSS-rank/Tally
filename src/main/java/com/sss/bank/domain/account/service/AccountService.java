@@ -11,14 +11,14 @@ public interface AccountService {
 		AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException;
 
-	Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
+	void deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
 		NoSuchAlgorithmException;
 
 	AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
 		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException;
 
 	AccountDto.AccountGetBalanceRespDto getBalanceTally(long memberId,
-		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws
+		AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto) throws
 		NoSuchAlgorithmException;
 
 	List<AccountDto> getAccountList(MemberInfoDto memberInfoDto, String bankCode);

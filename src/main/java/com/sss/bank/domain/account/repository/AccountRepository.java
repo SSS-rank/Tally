@@ -12,7 +12,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	Optional<Account> findAccountByAccountNumberAndStatusIsFalse(String accountNum);
 
 	@Query("SELECT COUNT(a) FROM Account a")
-	Optional<Integer> countAccountRows();
+	Integer countAccountRows();
 
 	List<Account> findAllByMemberId_MemberIdAndBankId_BankIdAndStatusIsFalse
 		(Long memberId, Long bankId);
