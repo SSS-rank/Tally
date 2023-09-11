@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Icon } from '@iconify/react';
 // @mui
@@ -7,27 +8,29 @@ import axios from 'axios';
 
 import ShopListItem from '../../components/ShopListItem/ShopListItem';
 
-// TODO : 가짜 데이터 바꾸기
-const rows = [
-	{ id: 1, shopCategory: 1, shopName: '롯데월드 호텔' },
-	{ id: 3, shopCategory: 6, shopName: '자라' },
-	{ id: 4, shopCategory: 5, shopName: '바스버거' },
-	{ id: 5, shopCategory: 6, shopName: '올리브영' },
-	{ id: 2, shopCategory: 5, shopName: '돼지통' },
-	{ id: 6, shopCategory: 3, shopName: '고속버스' },
-];
+interface Shop {
+	shop_id: number;
+	shop_type: number;
+	shop_name: string;
+}
 
 export default function ShopPage() {
-	const [shops, setShops] = useState([]);
+	const [shops, setShops] = useState<Shop[]>([]);
+	const navigate = useNavigate();
 
 	const getShops = async () => {
 		const res = await axios.get('/shop');
 		console.log(res);
+		setShops(res.data);
 	};
 
 	useEffect(() => {
 		getShops();
 	}, []);
+
+	const clickShopAddBtn = () => {
+		navigate('/shop/add');
+	};
 
 	return (
 		<Container sx={{ my: 3, maxWidth: 500 }}>
@@ -46,6 +49,7 @@ export default function ShopPage() {
 							boxShadow: 'none',
 						},
 					}}
+					onClick={clickShopAddBtn}
 				>
 					SHOP 등록
 				</Button>
@@ -57,8 +61,8 @@ export default function ShopPage() {
 						bgcolor: 'background.paper',
 					}}
 				>
-					{rows.map((row, index) => (
-						<ShopListItem key={index} shopCategory={row.shopCategory} shopName={row.shopName} />
+					{shops.map((shop) => (
+						<ShopListItem key={shop.shop_id} shopType={shop.shop_type} shopName={shop.shop_name} />
 					))}
 				</List>
 			</div>
