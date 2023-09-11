@@ -30,4 +30,14 @@ public class PasswordRepository {
 		}
 		return false;
 	}
+
+	public boolean checkPasswordTally(String accountNumber, String accountPassword) throws NoSuchAlgorithmException {
+		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber);
+		if (account.isEmpty())
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
+		if (account.get().getPassword().equals(accountPassword)) {
+			return true;
+		}
+		return false;
+	}
 }
