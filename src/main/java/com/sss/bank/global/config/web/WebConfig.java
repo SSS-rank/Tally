@@ -40,7 +40,7 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(authenticationIntercepter)
 			.order(1)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/login", "/access-token/issue",
+			.excludePathPatterns("/oauth/kakao/callback", "/login", "/access-token/issue",
 				"/health", "/swagger-ui/*");
 
 	}
