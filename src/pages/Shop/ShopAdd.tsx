@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -106,11 +106,40 @@ function ShopAdd() {
 		}
 	};
 
+	// 등록 or 수정인지 구분
+	const { state } = useLocation();
+
+	// 수정일 경우 기본 값 불러오기
+	useEffect(() => {
+		if (state.isModify) {
+			setType(state.shopType);
+			setShopName(state.shopName);
+		}
+	}, [state]);
+
+	// shop 수정
+	const modifyShop = async () => {
+		console.log('shop 수정');
+		if (confirm('수정하시겠습니까?')) {
+			const data = {
+				shop_id: state.shopId,
+				shop_type: type,
+				shop_name: shopName,
+			};
+			const res = await api.patch(`/shop`, data);
+			console.log(res);
+
+			if (res.status === 200) {
+				alert('수정되었습니다');
+			}
+		}
+	};
+
 	return (
 		<Container sx={{ my: 3, maxWidth: 500 }}>
 			<Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
 				<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-					SHOP 등록
+					{state.isModify ? 'SHOP 수정' : 'SHOP 등록'}
 				</Typography>
 				<IconButton onClick={clickCancleBtn}>
 					<CloseIcon />
@@ -145,23 +174,44 @@ function ShopAdd() {
 					</IconButton>
 				</Box>
 			</Stack>
-			<Button
-				component="label"
-				variant="contained"
-				fullWidth
-				sx={{
-					background: '#7BC6F6',
-					boxShadow: 'none',
-					my: 3,
-					borderRadius: 2,
-					':hover': {
+			{state.isModify ? (
+				<Button
+					component="label"
+					variant="contained"
+					fullWidth
+					sx={{
+						background: '#7BC6F6',
 						boxShadow: 'none',
-					},
-				}}
-				onClick={submitShop}
-			>
-				등록하기
-			</Button>
+						my: 3,
+						borderRadius: 2,
+						':hover': {
+							boxShadow: 'none',
+						},
+					}}
+					onClick={modifyShop}
+				>
+					수정하기
+				</Button>
+			) : (
+				<Button
+					component="label"
+					variant="contained"
+					fullWidth
+					sx={{
+						background: '#7BC6F6',
+						boxShadow: 'none',
+						my: 3,
+						borderRadius: 2,
+						':hover': {
+							boxShadow: 'none',
+						},
+					}}
+					onClick={submitShop}
+				>
+					등록하기
+				</Button>
+			)}
+
 			<Modal
 				open={open}
 				onClose={handleClose}
