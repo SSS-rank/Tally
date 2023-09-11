@@ -5,6 +5,9 @@ const Footer = () => {
 		textAlign: 'center',
 		lineHeight: '100px',
 		backgroundColor: '#91C0EB',
+		position: 'fixed',
+		bottom: 0,
+		width: '100%',
 	};
 
 	return (
