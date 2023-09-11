@@ -5,6 +5,7 @@ import { useRoutes } from 'react-router-dom';
 import AccountAdd from './pages/AccountAdd';
 import AccountDetail from './pages/AccountDetail';
 import AccountList from './pages/AccountList';
+import CallBack from './pages/CallBack';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import ShopPage from './pages/Shop/ShopPage';
@@ -40,6 +41,10 @@ function Routes() {
 		{
 			path: '/transfer',
 			element: <TransferPage />,
+		},
+		{
+			path: '/oauth/kakao/callback',
+			element: <CallBack />,
 		},
 	]);
 
