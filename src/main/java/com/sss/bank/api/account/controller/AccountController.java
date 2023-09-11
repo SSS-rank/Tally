@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,5 +67,11 @@ public class AccountController {
 		@MemberInfo MemberInfoDto memberInfoDto) {
 		List<AccountDto> accountList = accountService.getAccountList(memberInfoDto, code);
 		return ResponseEntity.status(HttpStatus.OK).body(accountList);
+	}
+
+	@GetMapping("/owner/{accountNumber}")
+	public ResponseEntity<AccountDto.AccountGetOwnerDto> getAccountOwner(@PathVariable String accountNumber) {
+		AccountDto.AccountGetOwnerDto owner = accountService.getAccountOwner(accountNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(owner);
 	}
 }
