@@ -18,14 +18,18 @@ import com.sss.bank.domain.transfer.service.TransferService;
 import com.sss.bank.global.resolver.MemberInfo;
 import com.sss.bank.global.resolver.MemberInfoDto;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
+@Api(tags = {"09. transfer"}, description = "이체 관련 서비스")
 @RequiredArgsConstructor
 @RequestMapping("/transfer")
 @RestController
 public class TransferController {
 	private final TransferService transferService;
 
+	@ApiOperation(value = "이체하기", notes = "돈을 이체한다")
 	@PostMapping("/deposit")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransfer(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
@@ -36,6 +40,7 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
 
+	@ApiOperation(value = "이체하기 for Tally", notes = "돈을 이체한다")
 	@PostMapping("/deposit/tally")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransferTally(
 		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
@@ -46,6 +51,7 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
 
+	@ApiOperation(value = "거래내역 조회", notes = "거래내역을 조회한다 page:0이 1페이지 page:10 이 2페이지")
 	@PostMapping("/history")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferList(
 		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
@@ -57,6 +63,8 @@ public class TransferController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
 	}
+
+	@ApiOperation(value = "거래내역 조회 for Tally", notes = "거래내역을 조회한다 page:0이 1페이지 page:10 이 2페이지")
 
 	@PostMapping("/history/tally")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
@@ -70,6 +78,7 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
 	}
 
+	@ApiOperation(value = "1원인증", notes = "1원 인증을 진행 후 인증 코드를 받는다 거래내역 조회로 확인")
 	@PostMapping("/1transfer")
 	public ResponseEntity<String> oneTransfer(
 		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto,
@@ -80,6 +89,8 @@ public class TransferController {
 
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
+
+	@ApiOperation(value = "1원인증 검증", notes = "거래내역 조회로 확인한 code를 3분안에 입력한다.")
 
 	@GetMapping("/1transfer-verify")
 	public ResponseEntity<String> oneTransferVerify(

@@ -16,20 +16,25 @@ import com.sss.bank.domain.member.service.MemberService;
 import com.sss.bank.global.resolver.MemberInfo;
 import com.sss.bank.global.resolver.MemberInfoDto;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
+@Api(tags = {"05. member"}, description = "회원 관련 서비스")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
 	private final MemberService memberService;
 
+	@ApiOperation(value = "회원 탈퇴", notes = "회원을 탈퇴한다.")
 	@PatchMapping("/withdrawal")
 	public ResponseEntity<LocalDateTime> withdrawal(@MemberInfo MemberInfoDto memberInfoDto) {
 		LocalDateTime withdrawalDate = memberService.withdrawal(memberInfoDto.getMemberId());
 		return ResponseEntity.status(HttpStatus.OK).body(withdrawalDate);
 	}
 
+	@ApiOperation(value = "회원정보 수정", notes = "회원 정보를 수정한다.")
 	@PatchMapping("/info")
 	public ResponseEntity<MemberDto.MemberRespDto> addInfo(@MemberInfo MemberInfoDto memberInfoDto,
 		@RequestBody @Valid MemberDto.MemberReqDto memberReqDto) {
