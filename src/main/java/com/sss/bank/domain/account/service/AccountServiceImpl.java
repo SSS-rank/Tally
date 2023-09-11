@@ -19,6 +19,7 @@ import com.sss.bank.domain.bank.repository.BankRepository;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
+import com.sss.bank.global.error.exception.AccountException;
 import com.sss.bank.global.error.exception.BankException;
 import com.sss.bank.global.error.exception.BusinessException;
 import com.sss.bank.global.error.exception.MemberException;
@@ -167,5 +168,21 @@ public class AccountServiceImpl implements AccountService {
 		return accounts.stream()
 			.map(AccountDto::from)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public AccountDto.AccountGetOwnerDto getAccountOwner(String bankNumber) {
+		// 해당 계좌가 존재하지 않는 경우
+		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(bankNumber);
+		if (account.isEmpty())
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
+
+		// 해당 회원이 존재하지 않는 경우
+		Optional<Member> member = memberRepository.findMemberByMemberId(account.get().getMemberId().getMemberId());
+		if (member.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		
+		return AccountDto.AccountGetOwnerDto.from(member.get());
+
 	}
 }

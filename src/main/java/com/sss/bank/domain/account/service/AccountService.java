@@ -17,4 +17,6 @@ public interface AccountService {
 		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException;
 
 	List<AccountDto> getAccountList(MemberInfoDto memberInfoDto, String bankCode);
+
+	AccountDto.AccountGetOwnerDto getAccountOwner(String bankNumber);
 }
