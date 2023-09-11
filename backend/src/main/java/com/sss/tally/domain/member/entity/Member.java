@@ -40,7 +40,7 @@ public class Member {
 
 	@Column(nullable = false)
 	private String transferPassword;
-
+	@Column(nullable = false)
 	private String profileImage;
 
 	@CreatedDate
