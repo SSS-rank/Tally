@@ -103,6 +103,22 @@ public class AccountDto {
 	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class AccountGetBalanceTallyReqDto {
+
+		@NotNull
+		private String accountPassword;
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor

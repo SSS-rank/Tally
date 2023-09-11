@@ -47,7 +47,7 @@ public class AccountController {
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
-		Boolean isSuccess = accountService.deleteAccount(memberId, accountDeleteReqDto);
+		accountService.deleteAccount(memberId, accountDeleteReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
 	}
 
@@ -58,14 +58,13 @@ public class AccountController {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
 			accountGetBalanceReqDto);
-
 		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
 
 	}
 
 	@PostMapping("/get-balance/tally")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
-		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
+		@RequestBody @Valid AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
