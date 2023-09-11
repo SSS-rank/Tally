@@ -91,13 +91,19 @@ function ShopAdd() {
 	// shop 등록
 	const submitShop = async () => {
 		console.log('shop 등록');
-		const data = {
-			shop_type: type,
-			shop_name: shopName,
-			shop_nation_code: 'KR',
-		};
-		const res = await api.post(`/shop`, data);
-		console.log(res);
+		if (confirm('등록하시겠습니까?')) {
+			const data = {
+				shop_type: type,
+				shop_name: shopName,
+				shop_nation_code: 'KR',
+			};
+			const res = await api.post(`/shop`, data);
+			console.log(res);
+
+			if (res.status === 200) {
+				alert('등록되었습니다');
+			}
+		}
 	};
 
 	return (
