@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +32,7 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<String> createAccount(
-		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto, BindingResult bindingResult,
+		@RequestBody @Valid AccountDto.AccountCreateReqDto accountCreateReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
@@ -43,7 +42,7 @@ public class AccountController {
 
 	@PatchMapping
 	public ResponseEntity<String> deleteAccount(
-		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto, BindingResult bindingResult,
+		@RequestBody @Valid AccountDto.AccountDeleteReqDto accountDeleteReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) throws
 		NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
@@ -54,7 +53,7 @@ public class AccountController {
 	@PostMapping("/get-balance")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalance(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
-		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(memberId,
 			accountGetBalanceReqDto);
@@ -66,7 +65,7 @@ public class AccountController {
 	@PostMapping("/get-balance/tally")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
 		@RequestBody @Valid AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto,
-		BindingResult bindingResult, @MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
+		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
 		long memberId = memberInfoDto.getMemberId();
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
 			accountGetBalanceReqDto);
