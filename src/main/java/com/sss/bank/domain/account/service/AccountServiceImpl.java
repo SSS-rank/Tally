@@ -21,7 +21,6 @@ import com.sss.bank.domain.member.repository.MemberRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.AccountException;
 import com.sss.bank.global.error.exception.BankException;
-import com.sss.bank.global.error.exception.BusinessException;
 import com.sss.bank.global.error.exception.MemberException;
 import com.sss.bank.global.resolver.MemberInfoDto;
 import com.sss.bank.global.util.SHA256Util;
@@ -39,19 +38,26 @@ public class AccountServiceImpl implements AccountService {
 	private final PasswordRepository passwordRepository;
 
 	@Override
-	public Boolean createAccount(long memberId, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+	public AccountDto.AccountCreateRespDto createAccount(long memberId,
+		AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException {
+
+		// 회원 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
+
+		// 은행 코드 검증
 		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountCreateReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			throw new BankException(ErrorCode.NOT_EXIST_BANK);
 		}
+
 		Bank bank = bankOptional.get();
-		Optional<Integer> lastNumOptional = accountRepository.countAccountRows();
-		Integer lastNum = lastNumOptional.get();
+
+		// 계좌 번호 생성 로직
+		Integer lastNum = accountRepository.countAccountRows();
 		if (lastNum >= 9999) {
 			lastNum -= 9998;
 		}
@@ -82,63 +88,77 @@ public class AccountServiceImpl implements AccountService {
 		accountNumBuilder.append(lastDigit);
 
 		Member member = memberOptional.get();
+
+		// 계좌 UUID 생성
 		String uuid = UUID.randomUUID().toString();
 
 		String salt = SHA256Util.createSalt();
 		String password = SHA256Util.getEncrypt(accountCreateReqDto.getAccountPassword(), salt);
-		accountRepository.save(
+
+		Account save = accountRepository.save(
 			Account.of(member, salt, password, accountNumBuilder.toString(), uuid, bank));
-		return true;
+		return AccountDto.AccountCreateRespDto.from(save);
 	}
 
-	@Transactional
 	@Override
-	public Boolean deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
+	public void deleteAccount(long memberId, AccountDto.AccountDeleteReqDto accountDeleteReqDto) throws
 		NoSuchAlgorithmException {
+
+		// 회원 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
+
+		// 은행 코드 검증
 		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(accountDeleteReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 은행입니다.");
+			throw new BankException(ErrorCode.NOT_EXIST_BANK);
 		}
+
+		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			accountDeleteReqDto.getAccountNum());
 		if (accountOptional.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 계좌입니다.");
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
 		}
 		Account account = accountOptional.get();
 
+		// 계좌 비밀번호 검증
 		if (!passwordRepository.checkPassword(accountDeleteReqDto.getAccountNum(),
 			accountDeleteReqDto.getAccountPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 		}
+
+		// 은행 코드 검증
 		if (!account.getBankId().getBankCode().equals(accountDeleteReqDto.getBankCode())) {
-			throw new IllegalArgumentException("은행 코드가 일치하지 않습니다.");
+			throw new AccountException(ErrorCode.BANK_CODE_MISMATCH);
 		}
 		account.updateStatus(true);
-		return true;
 
 	}
 
 	@Override
 	public AccountDto.AccountGetBalanceRespDto getBalance(long memberId,
 		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
+		// 회원 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
+
+		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			accountGetBalanceReqDto.getAccountNum());
-
 		if (accountOptional.isEmpty()) {
-			throw new IllegalArgumentException("계좌 정보를 찾을 수 없습니다.");
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
 		}
 		Account account = accountOptional.get();
+
+		// 비밀번호 검증
 		if (!passwordRepository.checkPassword(accountGetBalanceReqDto.getAccountNum(),
 			accountGetBalanceReqDto.getAccountPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 		}
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.from(
 			account);
@@ -149,26 +169,47 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountDto.AccountGetBalanceRespDto getBalanceTally(long memberId,
-		AccountDto.AccountGetBalanceReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
+		AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
+		// 회원 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
 		if (memberOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 		}
+
+		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			accountGetBalanceReqDto.getAccountNum());
 
 		if (accountOptional.isEmpty()) {
-			throw new IllegalArgumentException("계좌 정보를 찾을 수 없습니다.");
+			throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
 		}
 		Account account = accountOptional.get();
+
+		// 비밀번호 검증
 		if (!passwordRepository.checkPasswordTally(accountGetBalanceReqDto.getAccountNum(),
 			accountGetBalanceReqDto.getAccountPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 		}
 		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.from(
 			account);
 
 		return accountGetBalanceRespDto;
+	}
+
+	@Override
+	public List<AccountDto> getAccountList(MemberInfoDto memberInfoDto) {
+		// 회원 존재 확인
+		Optional<Member> member = memberRepository.findMemberByMemberId(memberInfoDto.getMemberId());
+		if (member.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+		List<Account> accounts = accountRepository.findAllByMemberId_MemberIdAndStatusIsFalse(
+			member.get()
+				.getMemberId());
+
+		return accounts.stream()
+			.map(AccountDto::from)
+			.collect(Collectors.toList());
 	}
 
 	@Override
