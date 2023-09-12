@@ -1,29 +1,26 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import axios from 'axios';
+import api from '../api/api';
 
 function CallBack() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const authenticateUser = (code: string) => {
-		axios
-			.get('http://localhost:8080/oauth/kakao/callback', { params: { code } })
-			.then((response) => {
-				console.log(response);
+	const authenticateUser = async (code: string) => {
+		try {
+			const response = await api.get('oauth/kakao/callback', { params: { code } });
+			if (response.status === 200) {
 				const accessToken = response.data.access_token;
 				const refreshToken = response.data.refresh_token;
-				const requestOptions = {
-					method: 'POST',
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				};
+
 				if (accessToken) {
-					fetch('http://localhost:8080/login', requestOptions)
+					sessionStorage.setItem('accessToken', accessToken);
+					api
+						.post('login')
 						.then((res) => {
 							if (res.status === 200) {
-								return res.json(); // 응답 데이터 파싱
+								console.log(res.data);
+								return res.data; // 응답 데이터 파싱
 							} else {
 								throw new Error('로그인에 실패했습니다.');
 							}
@@ -40,11 +37,12 @@ function CallBack() {
 				if (refreshToken) {
 					sessionStorage.setItem('refreshToken', refreshToken);
 				}
-				//
-			})
-			.catch((error) => {
-				console.log('Error:', error);
-			});
+			} else {
+				console.error('계정 생성 실패:', response.data);
+			}
+		} catch (error) {
+			window.alert('계좌 생성 오류입니다. 다시 생성해주세요');
+		}
 	};
 
 	useEffect(() => {
