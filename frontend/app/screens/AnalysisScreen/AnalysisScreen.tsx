@@ -1,17 +1,20 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 
-const AnaylsisScreen = () => {
+function AnalysisScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text>Home Screen! :tada:</Text>
+    <View style={styles.viewContainer}>
+      <Text>AnalysisScreen! 🎉</Text>
     </View>
   );
-};
+}
 
-export default AnaylsisScreen;
+const styles = StyleSheet.create({
+  viewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default AnalysisScreen;

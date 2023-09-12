@@ -1,10 +1,10 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 
-function AdjustScreen() {
+function AlertScreen() {
   return (
     <View style={styles.viewContainer}>
-      <Text>AdjustScreen! 🎉</Text>
+      <Text>AlertScreen! 🎉</Text>
     </View>
   );
 }
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdjustScreen;
+export default AlertScreen;
