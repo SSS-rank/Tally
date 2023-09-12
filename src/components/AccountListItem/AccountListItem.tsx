@@ -8,6 +8,8 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+import api from '../../api/api';
+import DeleteAccountModal from '../Modal/DeleteAccountModal';
 interface accountListItemProps {
 	balance: number;
 	bankcode: string;
@@ -18,6 +20,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 	const navigate = useNavigate();
 
 	const accountNumRef = useRef<HTMLDivElement | null>(null);
+	const [modalOpen, setModalOpen] = useState(false);
 	const handleAccountClick = () => {
 		const accountNumElement = accountNumRef.current;
 
@@ -28,6 +31,37 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 			navigate(`/accountdetail/${accountNumValue}`);
 		}
 	};
+	const handleDeleteAccount = () => {
+		setModalOpen(true);
+	};
+
+	const handleCloseModal = () => {
+		setModalOpen(false);
+	};
+
+	const handleDeleteConfirm = async (password: string) => {
+		try {
+			const accountDeleteReqDto = {
+				bank_code: { bankcode }.bankcode,
+				account_num: { accountNum }.accountNum,
+				account_password: password,
+			};
+			console.log(accountDeleteReqDto);
+			const response = await api.patch('account', accountDeleteReqDto);
+
+			if (response.status === 200) {
+				console.log('계좌 삭제 성공!');
+				navigate('/main');
+			} else {
+				console.error('계정 삭제 실패:', response.data);
+			}
+		} catch (error) {
+			window.alert('계좌 삭제 오류 입니다.');
+		}
+
+		handleCloseModal();
+	};
+
 	return (
 		<Grid item xs={12}>
 			<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -41,9 +75,16 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 					<Button size="small" href="/transfer">
 						이체
 					</Button>
-					<Button size="small">삭제</Button>
+					<Button size="small" onClick={handleDeleteAccount}>
+						삭제
+					</Button>
 				</CardActions>
 			</Card>
+			<DeleteAccountModal
+				open={modalOpen}
+				handleClose={handleCloseModal}
+				handleDelete={handleDeleteConfirm}
+			/>
 		</Grid>
 	);
 }
