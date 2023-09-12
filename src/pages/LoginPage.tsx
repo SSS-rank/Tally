@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import kakao from '../asset/image/icon/kakao.png';
+import logo from '../asset/image/sss_bank.png';
 const defaultTheme = createTheme();
 
 function LoginPage() {
@@ -25,9 +26,11 @@ function LoginPage() {
 					justifyContent: 'center',
 					alignItems: 'center',
 					my: 6,
+					maxWidth: 500,
+					height: '60vh',
 				}}
 			>
-				<Typography variant="h2">SSS-Bank</Typography>
+				<Box component="img" src={logo} sx={{ width: '60%' }}></Box>
 				<Button
 					onClick={handleLoginClick}
 					sx={{
