@@ -28,6 +28,15 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 			navigate(`/accountdetail/${accountNumValue}`);
 		}
 	};
+
+	const clickTransfer = () => {
+		navigate(`/transfer`, {
+			state: {
+				senderAccountNum: accountNum,
+			},
+		});
+	};
+
 	return (
 		<Grid item xs={12}>
 			<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -38,7 +47,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 					<Typography>{balance}원</Typography>
 				</CardContent>
 				<CardActions sx={{ alignSelf: 'flex-end', marginTop: 'auto' }}>
-					<Button size="small" href="/transfer">
+					<Button size="small" onClick={clickTransfer}>
 						이체
 					</Button>
 					<Button size="small">삭제</Button>
