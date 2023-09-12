@@ -22,7 +22,12 @@ function TripStack() {
       <Stack.Screen
         name="TripList"
         component={TripListScreen}
-        options={{title: '여행지 목록'}}
+        options={{
+          title: '여행지 목록',
+          headerTitleStyle: {
+            fontFamily: 'Pretendard-Light',
+          },
+        }}
       />
       <Stack.Screen
         name="CreateTrip"
