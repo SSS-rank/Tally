@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -12,6 +12,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import api from '../../api/api';
+import BankIcon from '../BankIcon/BankIcon';
+
 interface accountListItemProps {
 	balance: number;
 	bankcode: string;
@@ -78,14 +80,37 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 
 	return (
 		<Grid item xs={12}>
-			<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+			<Card
+				sx={{
+					height: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+					position: 'relative',
+					':hover': {
+						cursor: 'pointer',
+						background: '#efefef',
+					},
+				}}
+			>
 				<CardContent sx={{ flexGrow: 1 }} onClick={handleAccountClick}>
-					<Typography gutterBottom variant="h5" component="h2" id="accountNum" ref={accountNumRef}>
-						{accountNum}
-					</Typography>
+					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+						<BankIcon code={bankcode} />
+						<Typography
+							gutterBottom
+							variant="h6"
+							component="h2"
+							id="accountNum"
+							ref={accountNumRef}
+							sx={{ ml: 2, mb: 0, fontWeight: 'bold' }}
+						>
+							{accountNum}
+						</Typography>
+					</Box>
 					<Typography>{balance}원</Typography>
 				</CardContent>
-				<CardActions sx={{ alignSelf: 'flex-end', marginTop: 'auto' }}>
+				<CardActions
+					sx={{ alignSelf: 'flex-end', marginTop: 'auto', position: 'absolute', top: '50%' }}
+				>
 					<Button size="small" onClick={clickTransfer}>
 						이체
 					</Button>

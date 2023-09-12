@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -12,22 +10,17 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
+import logo from '../../../asset/image/sss.png';
+
 const pages = ['조회', '이체', 'SHOP'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const settings = ['Logout'];
 
 function ResponsiveAppBar() {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
-	};
-	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElUser(event.currentTarget);
 	};
 
 	const navigate = useNavigate();
@@ -36,7 +29,7 @@ function ResponsiveAppBar() {
 		console.log(page);
 		// setAnchorElNav(null);
 		if (page === '조회') {
-			navigate('/');
+			navigate('/main');
 		} else if (page === '이체') {
 			navigate('/transfer');
 		} else if (page === 'SHOP') {
@@ -49,34 +42,27 @@ function ResponsiveAppBar() {
 		setAnchorElNav(null);
 	};
 
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
+	const logout = () => {
+		sessionStorage.clear();
+		location.href = '/';
 	};
 
 	return (
 		<AppBar position="static">
 			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-					<Typography
-						variant="h6"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						SSS
-					</Typography>
-
-					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+				<Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
+					<Box component="a" href="/main" sx={{ display: { xs: 'none', md: 'flex' } }}>
+						<Box
+							component="img"
+							src={logo}
+							sx={{
+								mr: 2,
+								width: '100px',
+								display: { xs: 'none', md: 'flex' },
+							}}
+						></Box>
+					</Box>
+					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
 							size="large"
 							aria-label="account of current user"
@@ -112,25 +98,14 @@ function ResponsiveAppBar() {
 							))}
 						</Menu>
 					</Box>
-					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-					<Typography
-						variant="h5"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-							display: { xs: 'flex', md: 'none' },
-							flexGrow: 1,
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						LOGO
-					</Typography>
+					<Box component="a" href="/main">
+						<Box
+							component="img"
+							src={logo}
+							sx={{ width: '100px', mr: 2, display: { xs: 'flex', md: 'none' } }}
+						></Box>
+					</Box>
+
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{pages.map((page) => (
 							<Button
@@ -144,33 +119,9 @@ function ResponsiveAppBar() {
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-							</IconButton>
-						</Tooltip>
-						<Menu
-							sx={{ mt: '45px' }}
-							id="menu-appbar"
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
-						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography textAlign="center">{setting}</Typography>
-								</MenuItem>
-							))}
-						</Menu>
+						<Button variant="text" sx={{ color: '#fff' }} onClick={logout}>
+							{sessionStorage.getItem('accessToken') !== null ? '로그아웃' : ''}
+						</Button>
 					</Box>
 				</Toolbar>
 			</Container>

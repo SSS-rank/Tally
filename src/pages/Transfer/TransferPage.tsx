@@ -9,14 +9,13 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import api from '../../api/api';
 import BankIcon from '../../components/BankIcon/BankIcon';
+import BankCode from '../../Data/BankCode';
 
 const modalStyle = {
 	position: 'absolute',
@@ -30,20 +29,12 @@ const modalStyle = {
 	p: 4,
 };
 
-const banks = [
-	{ bankCode: '088', bankName: '신한은행' },
-	{ bankCode: '020', bankName: '우리은행' },
-	{ bankCode: '090', bankName: '카카오뱅크' },
-	{ bankCode: '092', bankName: '토스뱅크' },
-	{ bankCode: '004', bankName: 'KB국민은행' },
-	{ bankCode: '011', bankName: 'NH농협은행' },
-];
+const banks = ['신한은행', '우리은행', '카카오뱅크', '토스뱅크', '국민은행', '농협은행'];
 
 const Transfer = () => {
 	const defaultTheme = createTheme();
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	const [bankType, setbankType] = useState(''); // 은행 코드
 	const [bankName, setbankName] = useState(''); // 은행 이름
 
 	// 이체하기
@@ -59,7 +50,7 @@ const Transfer = () => {
 				withdraw_account_content: data.get('withdrawAccountContent'),
 				deposit_account_Content: data.get('depositAccountContent'),
 				account_password: data.get('accountPassword'),
-				bank_code: bankType,
+				bank_code: BankCode[bankName],
 			};
 
 			// console.log(req);
@@ -82,7 +73,6 @@ const Transfer = () => {
 	const handleClose = () => setOpen(false);
 
 	const selectBank = (e: React.MouseEvent<HTMLButtonElement>) => {
-		setbankType(String(e.currentTarget.dataset.bankType));
 		setbankName(String(e.currentTarget.dataset.bankName));
 		handleClose();
 	};
@@ -128,10 +118,14 @@ const Transfer = () => {
 										alignItems: 'center',
 									}}
 								>
-									{bankType !== '' ? <BankIcon code={bankType} /> : <AccountBalanceIcon />}
+									{bankName !== '' ? (
+										<BankIcon code={BankCode[bankName]} />
+									) : (
+										<AccountBalanceIcon />
+									)}
 									<TextField
-										name="bankType"
-										id="bankType"
+										name="bankName"
+										id="bankName"
 										required
 										fullWidth
 										value={bankName}
@@ -228,13 +222,13 @@ const Transfer = () => {
 													background: '#1976d2',
 												},
 											}}
-											data-bank-type={bank.bankCode}
-											data-bank-name={bank.bankName}
+											data-bank-type={BankCode[bank]}
+											data-bank-name={bank}
 											onClick={selectBank}
 										>
-											<BankIcon code={bank.bankCode} />
+											<BankIcon code={BankCode[bank]} />
 										</IconButton>
-										<Typography sx={{ fontWeight: 'bold', mt: 1 }}>{bank.bankName}</Typography>
+										<Typography sx={{ fontWeight: 'bold', mt: 1 }}>{bank}</Typography>
 									</Box>
 								</Grid>
 							))}

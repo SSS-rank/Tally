@@ -1,8 +1,11 @@
 import React from 'react';
 
-import { Typography } from '@mui/material';
+import { Typography, Button, Box, Container } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import kakao from '../asset/image/icon/kakao.png';
+import logo from '../asset/image/sss_bank.png';
 const defaultTheme = createTheme();
 
 function LoginPage() {
@@ -15,10 +18,38 @@ function LoginPage() {
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
-			<main style={{ textAlign: 'center', marginTop: '10vh', transform: 'translateY(-50%)' }}>
-				<Typography variant="h2">SSS-Bank</Typography>
-				<button onClick={handleLoginClick}>카카오 로그인</button>
-			</main>
+			<Container
+				sx={{
+					textAlign: 'center',
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+					my: 6,
+					maxWidth: 500,
+					height: '60vh',
+				}}
+			>
+				<Box component="img" src={logo} sx={{ width: '60%' }}></Box>
+				<Button
+					onClick={handleLoginClick}
+					sx={{
+						background: '#FFE400',
+						color: '#232323',
+						fontWeight: 'bold',
+						borderRadius: 6,
+						width: '80%',
+						my: 2,
+						':hover': {
+							background: '#FFE400',
+							color: '#fff',
+						},
+					}}
+				>
+					<Box component="img" src={kakao}></Box>
+					카카오 로그인
+				</Button>
+			</Container>
 		</ThemeProvider>
 	);
 }
