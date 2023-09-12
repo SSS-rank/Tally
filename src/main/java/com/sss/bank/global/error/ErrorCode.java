@@ -38,6 +38,9 @@ public enum ErrorCode {
 	// 가게
 	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "023", "해당 가게는 존재하지 않습니다."),
 
+	// 나라
+	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "024", "해당 나라는 존재하지 않습니다."),
+
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
