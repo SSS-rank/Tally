@@ -1,45 +1,52 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 
-const cards = [1, 2, 3];
+import api from '../api/api';
+import AccountListItem from '../components/AccountListItem/AccountListItem';
+import BankCode from '../Data/BankCode';
 
+interface Account {
+	account_number: string;
+	balance: number;
+	bank_code: string;
+}
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 function MainPage() {
+	const [accounts, setAccounts] = useState<Account[]>([]);
+	const [token, setToken] = useState(sessionStorage.getItem('accessToken'));
 	const navigate = useNavigate();
 	const accountNumRef = useRef<HTMLDivElement | null>(null);
-	useEffect(() => {
-		const fetchAccountData = async () => {
-			try {
-				// const {data} = await axios.get(`/api/lesson/card`)
-				// console.log(data)
-			} catch (error) {
-				console.error(error);
+	const fetchAccountData = async () => {
+		try {
+			const response = await api.get('account');
+			if (response.status === 200) {
+				console.log('계좌 조회 성공!');
+				console.log(response.data);
+				setAccounts(response.data);
+				// console.log(accounts);
+			} else {
+				console.error('계정 조회 실패:', response.data);
 			}
-		};
-		fetchAccountData();
-	});
-	const handleAccountClick = () => {
-		const accountNumElement = accountNumRef.current;
-		if (accountNumElement) {
-			const accountNumValue = accountNumElement.innerText;
-
-			console.log('클릭된 Typography의 값:', accountNumValue);
-			navigate(`/accountdetail/${accountNumValue}`);
+		} catch (error) {
+			window.alert('계좌 조회 오류 입니다.');
 		}
 	};
+
+	useEffect(() => {
+		if (token) {
+			fetchAccountData();
+		}
+	}, [token]);
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -53,38 +60,20 @@ function MainPage() {
 					<Container sx={{ py: 2 }} maxWidth="md">
 						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="">
 							<div>계좌 목록</div>
-							<Button variant="outlined">shop 목록</Button>
 						</Stack>
 					</Container>
 				</Box>
 				<Container sx={{ py: 2 }} maxWidth="md">
 					{/* End hero unit */}
 					<Grid container spacing={4}>
-						{cards.map((card) => (
-							<Grid item key={card} xs={12}>
-								<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-									<CardContent sx={{ flexGrow: 1 }} onClick={handleAccountClick}>
-										<Typography
-											gutterBottom
-											variant="h5"
-											component="h2"
-											id="accountNum"
-											ref={accountNumRef}
-										>
-											110110
-										</Typography>
-										<Typography>금액</Typography>
-									</CardContent>
-									<CardActions>
-										<Button size="small" href="/transfer">
-											이체
-										</Button>
-										<Button size="small">삭제</Button>
-									</CardActions>
-								</Card>
-							</Grid>
+						{accounts.map((account) => (
+							<AccountListItem
+								key={account.account_number}
+								balance={account.balance}
+								bankcode={account.bank_code}
+								accountNum={account.account_number}
+							/>
 						))}
-
 						<Grid item xs={12}>
 							<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
 								<Button variant="contained" href="/add" className="btn btn-primary">
