@@ -41,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
 			.order(1)
 			.addPathPatterns("/**")
 			.excludePathPatterns("/oauth/kakao/callback", "/login", "/access-token/issue",
-				"/health", "/swagger-ui/*");
+				"/health", "/swagger-ui/*", "/country");
 
 	}
 
