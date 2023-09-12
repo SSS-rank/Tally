@@ -29,7 +29,7 @@ public class ShopDto {
 			.shopId(shop.getShopId())
 			.shopType(shop.getShopType())
 			.shopName(shop.getShopName())
-			.shopNationCode(shop.getShopNationCode())
+			.shopNationCode(shop.getCountryId().getCountryCode())
 			.build();
 	}
 
@@ -57,7 +57,7 @@ public class ShopDto {
 			return ShopRespDto.builder()
 				.shopName(shop.getShopName())
 				.shopType(shop.getShopType())
-				.shopNationCode(shop.getShopNationCode())
+				.shopNationCode(shop.getCountryId().getCountryCode())
 				.build();
 		}
 	}

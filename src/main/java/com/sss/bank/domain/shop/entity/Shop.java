@@ -2,11 +2,15 @@ package com.sss.bank.domain.shop.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.sss.bank.api.shop.dto.ShopDto;
+import com.sss.bank.domain.country.entity.Country;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,14 +34,15 @@ public class Shop {
 	@Column(nullable = false)
 	private String shopName;
 
-	@Column(nullable = false)
-	private String shopNationCode;
+	@JoinColumn(name = "country_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Country countryId;
 
-	public static Shop from(ShopDto.ShopReqDto shopReqDto) {
+	public static Shop of(ShopDto.ShopReqDto shopReqDto, Country country) {
 		return Shop.builder()
 			.shopName(shopReqDto.getShopName())
 			.shopType(shopReqDto.getShopType())
-			.shopNationCode(shopReqDto.getShopNationCode())
+			.countryId(country)
 			.build();
 	}
 
