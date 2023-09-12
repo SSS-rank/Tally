@@ -1,6 +1,7 @@
 package com.sss.bank.domain.country.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CountryServiceImpl implements CountryService {
 	private String serviceKey;
 
 	@Override
-	public List<Country> getAllCountryInfo() {
+	public List<CountryInfoDto.CountryInfoRespDto> getAllCountryInfo() {
 		if (countryRepository.count() == 0) {
 			CountryDto.CountryReq countryReq = CountryDto.CountryReq.of(serviceKey, 1, 196);
 			CountryDto.CountryResp countryResp = countryClient.requestCountryInfo(countryReq);
@@ -36,6 +37,9 @@ public class CountryServiceImpl implements CountryService {
 			}
 		}
 
-		return countryRepository.findAll();
+		List<Country> countries = countryRepository.findAll();
+		return countries.stream()
+			.map(CountryInfoDto.CountryInfoRespDto::from)
+			.collect(Collectors.toList());
 	}
 }
