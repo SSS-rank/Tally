@@ -34,6 +34,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 			navigate(`/accountdetail/${accountNumValue}`);
 		}
 	};
+
 	const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
 	};
@@ -66,6 +67,14 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 		}
 
 		handleCloseModal();
+
+
+	const clickTransfer = () => {
+		navigate(`/transfer`, {
+			state: {
+				senderAccountNum: accountNum,
+			},
+		});
 	};
 
 	return (
@@ -78,7 +87,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 					<Typography>{balance}원</Typography>
 				</CardContent>
 				<CardActions sx={{ alignSelf: 'flex-end', marginTop: 'auto' }}>
-					<Button size="small" href="/transfer">
+					<Button size="small" onClick={clickTransfer}>
 						이체
 					</Button>
 					<Button size="small" onClick={handleDeleteAccount}>
