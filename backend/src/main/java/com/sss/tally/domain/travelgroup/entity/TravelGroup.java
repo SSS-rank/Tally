@@ -1,4 +1,4 @@
-package com.sss.tally.domain.travel_group.entity;
+package com.sss.tally.domain.travelgroup.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;

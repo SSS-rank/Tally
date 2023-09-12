@@ -1,4 +1,4 @@
-package com.sss.tally.domain.caculate_group.entity;
+package com.sss.tally.domain.caculategroup.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

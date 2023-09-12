@@ -1,4 +1,4 @@
-package com.sss.tally.domain.member_payment.entity;
+package com.sss.tally.domain.memberpayment.entity;
 
 import java.time.LocalDateTime;
 
