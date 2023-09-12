@@ -14,7 +14,8 @@ public class CountryDto {
 		private String serviceKey;
 		private int page;
 		private int perPage;
-		public static CountryReq of(String serviceKey, int page, int perPage){
+
+		public static CountryReq of(String serviceKey, int page, int perPage) {
 			return CountryReq.builder()
 				.serviceKey(serviceKey)
 				.page(page)
@@ -27,7 +28,7 @@ public class CountryDto {
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class CountryResp{
-		private List<CountryInfoDto> data;
+	public static class CountryResp {
+		private List<CountryInfoDto.CountryInfoReqDto> data;
 	}
 }
