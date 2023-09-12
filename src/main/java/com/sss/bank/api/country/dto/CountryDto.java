@@ -1,33 +1,33 @@
 package com.sss.bank.api.country.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.sss.bank.api.kakaotoken.dto.KakaoTokenDto;
-import com.sss.bank.domain.country.entity.Country;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 public class CountryDto {
+	@Builder
+	@Getter
+	public static class CountryReq {
+		private String serviceKey;
+		private int page;
+		private int perPage;
+		public static CountryReq of(String serviceKey, int page, int perPage){
+			return CountryReq.builder()
+				.serviceKey(serviceKey)
+				.page(page)
+				.perPage(perPage)
+				.build();
+		}
+	}
 
 	@Builder
 	@Getter
-	@ToString
 	@NoArgsConstructor
 	@AllArgsConstructor
-	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class Response{
-		private String countryCode;
-		private String countryName;
-
-		public static Response from(Country country){
-			return Response.builder()
-				.countryCode(country.getCountryCode())
-				.countryName(country.getCountryName())
-				.build();
-		}
+	public static class CountryResp{
+		private List<CountryInfoDto> data;
 	}
 }
