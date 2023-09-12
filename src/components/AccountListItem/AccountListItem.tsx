@@ -67,8 +67,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 		}
 
 		handleCloseModal();
-
-
+	};
 	const clickTransfer = () => {
 		navigate(`/transfer`, {
 			state: {
