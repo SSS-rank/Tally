@@ -42,6 +42,11 @@ function ResponsiveAppBar() {
 		setAnchorElNav(null);
 	};
 
+	const logout = () => {
+		sessionStorage.clear();
+		location.href = '/';
+	};
+
 	return (
 		<AppBar position="static">
 			<Container maxWidth="xl">
@@ -114,8 +119,8 @@ function ResponsiveAppBar() {
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Button variant="text" sx={{ color: '#fff' }}>
-							로그아웃
+						<Button variant="text" sx={{ color: '#fff' }} onClick={logout}>
+							{sessionStorage.getItem('accessToken') !== null ? '로그아웃' : ''}
 						</Button>
 					</Box>
 				</Toolbar>
