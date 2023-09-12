@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import api from '../../api/api';
 import BankIcon from '../../components/BankIcon/BankIcon';
 
 const modalStyle = {
@@ -46,18 +47,30 @@ const Transfer = () => {
 	const [bankName, setbankName] = useState(''); // 은행 이름
 
 	// 이체하기
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			sender_account_num: state,
-			receiver_account_num: data.get('accountNum'),
-			deposit_amount: data.get('amount'),
-			withdraw_account_content: data.get('withdrawAccountContent'),
-			deposit_account_Content: data.get('depositAccountContent'),
-			account_password: data.get('accountPassword'),
-			bank_code: bankType,
-		});
+
+		if (confirm(`이체 하시겠습니까?`)) {
+			const data = new FormData(event.currentTarget);
+			const req = {
+				sender_account_num: state.senderAccountNum,
+				receiver_account_num: data.get('accountNum'),
+				deposit_amount: data.get('amount'),
+				withdraw_account_content: data.get('withdrawAccountContent'),
+				deposit_account_Content: data.get('depositAccountContent'),
+				account_password: data.get('accountPassword'),
+				bank_code: bankType,
+			};
+
+			// console.log(req);
+
+			const res = await api.post(`/transfer/deposit`, req);
+
+			if (res.status === 200) {
+				alert('이체가 완료되었습니다.');
+				navigate('/main');
+			}
+		}
 	};
 	const goBack = () => {
 		navigate(-1);
