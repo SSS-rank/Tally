@@ -12,6 +12,7 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import com.sss.bank.domain.country.entity.Country;
 import com.sss.bank.domain.country.repository.CountryRepository;
 
 import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/country")
@@ -35,10 +37,12 @@ public class CountryController {
 	private final CountryClient countryClient;
 	private final CountryRepository countryRepository;
 
+	@Value("${country.service.key}")
+	private String serviceKey;
+
 	@GetMapping
 	public ResponseEntity<List<Country>> getCountry() {
 		if(countryRepository.count()==0) {
-			String serviceKey = "lQexMZMXDyFSmMCHE%2BbQj%2Fcm7uDGA%2Fn0AuNXPx0rfTPz%2BDOj%2FRX8U1Ay50ntvW2CJgOgOpMvoBYNohwsp%2BQMsw%3D%3D";
 			CountryDto.CountryReq countryReq = CountryDto.CountryReq.of(serviceKey,1,196);
 			CountryDto.CountryResp countryResp = countryClient.requestCountryInfo(countryReq);
 
