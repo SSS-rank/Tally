@@ -33,6 +33,9 @@ public class TransferDto {
 		private String senderAccountNum;
 
 		@NotNull
+		private String bankCode;
+
+		@NotNull
 		@NotEmpty
 		@Size(max = 20)
 		private String receiverAccountNum;
