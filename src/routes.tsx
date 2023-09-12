@@ -10,7 +10,7 @@ import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import ShopForm from './pages/Shop/ShopForm';
 import ShopList from './pages/Shop/ShopList';
-import TransferPage from './pages/TransferPage';
+import TransferPage from './pages/Transfer/TransferPage';
 
 function Routes() {
 	const routes = useRoutes([
