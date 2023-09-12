@@ -58,7 +58,11 @@ public class TransferServiceImpl implements TransferService {
 			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		Member member = memberOptional.get();
-
+		// 은행 코드 검증
+		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(transferDepositReqDto.getBankCode());
+		if (bankOptional.isEmpty()) {
+			throw new BankException(ErrorCode.NOT_EXIST_BANK);
+		}
 		//출금 계좌 인증
 		Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferDepositReqDto.getSenderAccountNum());
@@ -242,6 +246,11 @@ public class TransferServiceImpl implements TransferService {
 			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		Member member = memberOptional.get();
+
+		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(transferDepositReqDto.getBankCode());
+		if (bankOptional.isEmpty()) {
+			throw new BankException(ErrorCode.NOT_EXIST_BANK);
+		}
 
 		//출금 계좌 인증
 		Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
