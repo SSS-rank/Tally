@@ -25,7 +25,6 @@ function MainPage() {
 	const [accounts, setAccounts] = useState<Account[]>([]);
 	const [token, setToken] = useState(sessionStorage.getItem('accessToken'));
 	const navigate = useNavigate();
-	const accountNumRef = useRef<HTMLDivElement | null>(null);
 	const fetchAccountData = async () => {
 		try {
 			const response = await api.get('account');
