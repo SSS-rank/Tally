@@ -1,32 +1,34 @@
 import React from 'react';
-import {Text, View, Button} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import HomeScreen from '../HomeScreen/HomeScreen';
-import LoginScreen from '../LoginScreen/LoginScreen';
+import {Text, View, Button, StyleSheet} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {TripStackProps} from '../../navigation/TripStack';
 
-const Tab = createBottomTabNavigator();
+type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 
-const TripListScreen = ({navigation}: any) => {
+function TripListScreen({navigation}: TripStackProp) {
   return (
     <>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View style={styles.viewContainer}>
         <Text>Trip Screen! 🎉</Text>
         <Button
-          title="Go to Details"
-          onPress={() => navigation.navigate('Create')}
+          title="여행 추가"
+          onPress={() => navigation.navigate('CreateTrip')}
+        />
+        <Button
+          title="상세"
+          onPress={() => navigation.navigate('TripDetail')}
         />
       </View>
-      <Tab.Navigator screenOptions={{headerShown: false}}>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Login" component={LoginScreen} />
-      </Tab.Navigator>
     </>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  viewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default TripListScreen;
