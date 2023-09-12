@@ -4,7 +4,6 @@ import { useRoutes } from 'react-router-dom';
 
 import AccountAdd from './pages/AccountAdd';
 import AccountDetail from './pages/AccountDetail';
-import AccountList from './pages/AccountList';
 import CallBack from './pages/CallBack';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
@@ -21,10 +20,6 @@ function Routes() {
 		{
 			path: '/main',
 			element: <MainPage />,
-		},
-		{
-			path: '/list',
-			element: <AccountList />,
 		},
 		{
 			path: '/shop',
