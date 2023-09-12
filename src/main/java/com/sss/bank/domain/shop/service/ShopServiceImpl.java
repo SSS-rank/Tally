@@ -31,7 +31,6 @@ public class ShopServiceImpl implements ShopService {
 		if (country.isEmpty())
 			throw new CountryException(ErrorCode.NOT_EXIST_COUNTRY);
 
-		System.out.println(country.get());
 		Shop shop = Shop.of(shopReqDto, country.get());
 		Shop save = shopRepository.save(shop);
 		return ShopDto.ShopRespDto.from(save);
