@@ -1,8 +1,5 @@
-package com.sss.tally.domain.stamp.entity;
+package com.sss.tally.domain.group_payment.entity;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -12,10 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.caculate_group.entity.CalculateGroup;
+import com.sss.tally.domain.payment.entity.Payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,21 +25,18 @@ import lombok.NoArgsConstructor;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
-public class Stamp {
+public class GroupPayment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long stampId;
+	private Long groupPaymentId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member memberId;
-	@Column(nullable = false)
-	private Long travelLocation;
+	@JoinColumn(name = "payment_id")
+	private Payment paymentId;
 
-	@Column(nullable = false)
-	private int travelType;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "calculate_group_id")
+	private CalculateGroup calculateGroupId;
 
-	@CreatedDate
-	private LocalDateTime createDate;
 }

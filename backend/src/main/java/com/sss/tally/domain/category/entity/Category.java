@@ -1,21 +1,13 @@
-package com.sss.tally.domain.stamp.entity;
-
-import java.time.LocalDateTime;
+package com.sss.tally.domain.category.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,21 +20,13 @@ import lombok.NoArgsConstructor;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
-public class Stamp {
+public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long stampId;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member memberId;
-	@Column(nullable = false)
-	private Long travelLocation;
+	private Long categoryId;
 
 	@Column(nullable = false)
-	private int travelType;
+	private String categoryType;
 
-	@CreatedDate
-	private LocalDateTime createDate;
 }
