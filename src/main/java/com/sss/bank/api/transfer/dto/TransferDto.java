@@ -99,9 +99,6 @@ public class TransferDto {
 		private String accountNum;
 
 		@NotNull
-		private String accountPassword;
-
-		@NotNull
 		private int page;
 
 		@NotNull
