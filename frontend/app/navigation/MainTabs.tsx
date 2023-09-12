@@ -34,7 +34,11 @@ function MainTabs() {
           title: '여행지',
           tabBarLabel: 'Trip',
           tabBarIcon: ({color}: any) => (
-            <MaterialCommunityIcons name="facebook" color={color} size={26} />
+            <MaterialCommunityIcons
+              name="wallet-travel"
+              color={color}
+              size={26}
+            />
           ),
           headerShown: false,
         }}
