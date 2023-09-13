@@ -1,7 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ListItemAvatar, Avatar, ListItem, ListItemText } from '@mui/material';
+import {
+	ListItemAvatar,
+	Avatar,
+	ListItem,
+	ListItemText,
+	ListItemButton,
+	Button,
+} from '@mui/material';
 
 import ShopCategoryIcon from '../ShopCategoryIcon';
 
@@ -9,9 +16,10 @@ interface shopListItemProps {
 	shopId: number;
 	shopName: string;
 	shopType: number;
+	shopNationCode: string;
 }
 
-function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
+function ShopListItem({ shopId, shopType, shopName, shopNationCode }: shopListItemProps) {
 	const navigate = useNavigate();
 	const modifyItem = () => {
 		console.log('수정');
@@ -21,6 +29,16 @@ function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
 				shopId: shopId,
 				shopType: shopType,
 				shopName: shopName,
+				shopNationCode: shopNationCode,
+			},
+		});
+	};
+
+	// 결제
+	const clickPayment = () => {
+		navigate(`/payment`, {
+			state: {
+				shopId: shopId,
 			},
 		});
 	};
@@ -35,14 +53,25 @@ function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
 					background: '#efefef',
 				},
 			}}
-			onClick={modifyItem}
 		>
-			<ListItemAvatar>
-				<Avatar sx={{ background: '#95D6FF' }}>
-					<ShopCategoryIcon category={shopType} />
-				</Avatar>
-			</ListItemAvatar>
-			<ListItemText primary={shopName} />
+			<ListItemButton
+				onClick={modifyItem}
+				sx={{
+					':hover': {
+						background: 'transparent',
+					},
+				}}
+			>
+				<ListItemAvatar>
+					<Avatar sx={{ background: '#95D6FF' }}>
+						<ShopCategoryIcon category={shopType} />
+					</Avatar>
+				</ListItemAvatar>
+				<ListItemText primary={shopName} />
+			</ListItemButton>
+			<Button size="small" onClick={clickPayment}>
+				결제
+			</Button>
 		</ListItem>
 	);
 }

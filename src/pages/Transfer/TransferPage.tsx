@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -79,34 +80,32 @@ const Transfer = () => {
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			<Container component="main" maxWidth="xs">
+			<Container component="main">
 				<CssBaseline />
 
 				<Box
 					sx={{
-						marginTop: 8,
+						my: 3,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
 					}}
 				>
-					<Grid container spacing={2}>
-						<Box
-							sx={{
-								width: '100%',
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center',
-							}}
-						>
-							<Typography component="h1" variant="h5">
-								계좌 이체
-							</Typography>
-							<IconButton onClick={goBack}>
-								<CloseIcon />
-							</IconButton>
-						</Box>
-					</Grid>
+					<Stack
+						display="flex"
+						direction="row"
+						alignItems="center"
+						justifyContent="space-between"
+						width="100%"
+						mb={5}
+					>
+						<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+							계좌 이체
+						</Typography>
+						<IconButton onClick={goBack}>
+							<CloseIcon />
+						</IconButton>
+					</Stack>
 					<Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
@@ -177,6 +176,7 @@ const Transfer = () => {
 									label="계좌 비밀번호 입력"
 									name="accountPassword"
 									variant="standard"
+									type="password"
 								/>
 							</Grid>
 						</Grid>

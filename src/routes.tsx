@@ -7,6 +7,7 @@ import AccountDetail from './pages/AccountDetail';
 import CallBack from './pages/CallBack';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
+import Payment from './pages/Payment/Payment';
 import ShopForm from './pages/Shop/ShopForm';
 import ShopList from './pages/Shop/ShopList';
 import TransferPage from './pages/Transfer/TransferPage';
@@ -28,6 +29,10 @@ function Routes() {
 		{
 			path: '/shop/form',
 			element: <ShopForm />,
+		},
+		{
+			path: '/payment',
+			element: <Payment />,
 		},
 		{
 			path: '/add',
