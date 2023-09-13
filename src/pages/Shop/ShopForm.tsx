@@ -13,7 +13,10 @@ import {
 	IconButton,
 	Modal,
 	Grid,
+	Select,
+	MenuItem,
 } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 import api from '../../api/api';
 import ShopCategoryIcon from '../../components/ShopCategoryIcon';
@@ -99,13 +102,14 @@ function ShopAdd() {
 	};
 
 	// shop 등록
+	const [shopCountryCode, setShopCountryCode] = useState('');
 	const submitShop = async () => {
 		console.log('shop 등록');
 		if (confirm('등록하시겠습니까?')) {
 			const data = {
 				shop_type: shopType,
 				shop_name: shopName,
-				shop_nation_code: 'KR',
+				shop_nation_code: shopCountryCode,
 			};
 
 			if (!validate(shopType, shopName)) return; // 유효성 검사
@@ -127,6 +131,7 @@ function ShopAdd() {
 		if (state.isModify) {
 			setShopType(state.shopType);
 			setShopName(state.shopName);
+			setShopCountryCode(state.shopNationCode);
 		}
 	}, [state]);
 
@@ -147,8 +152,35 @@ function ShopAdd() {
 
 			if (res.status === 200) {
 				alert('수정되었습니다');
+				navigate('/shop');
 			}
 		}
+	};
+
+	// 국가 불러오기
+	interface Country {
+		country_code: string;
+		country_name: string;
+	}
+	const [countries, setCountries] = useState<Country[]>([]);
+
+	const getCountry = async () => {
+		const res = await api.get(`/country`);
+		setCountries(res.data);
+	};
+	useEffect(() => {
+		if (countries.length === 0) getCountry();
+	}, [countries]);
+
+	const handleChange = (e: SelectChangeEvent<string>) => {
+		console.log(e);
+		setShopCountryCode(e.target.value);
+	};
+
+	const findCountryName = (code: string) => {
+		const country = countries.filter((con: Country) => con.country_code === code);
+		console.log(country[0].country_name);
+		return country[0].country_name;
 	};
 
 	return (
@@ -162,6 +194,27 @@ function ShopAdd() {
 				</IconButton>
 			</Stack>
 			<Stack direction="column" alignItems="flex-start">
+				<Box sx={{ my: 2, width: '100%' }}>
+					<Typography>국가 선택</Typography>
+					<Select fullWidth onChange={handleChange} value={shopCountryCode}>
+						{countries.length !== 0 &&
+							shopCountryCode === '' &&
+							countries.map((country) => (
+								<MenuItem
+									key={country.country_code}
+									value={country.country_code}
+									data-country-name={country.country_name}
+								>
+									{country.country_name}
+								</MenuItem>
+							))}
+						{countries.length !== 0 && shopCountryCode !== '' && (
+							<MenuItem key={shopCountryCode} value={shopCountryCode} selected={true}>
+								{findCountryName(shopCountryCode)}
+							</MenuItem>
+						)}
+					</Select>
+				</Box>
 				<TextField
 					fullWidth
 					type="text"

@@ -12,6 +12,7 @@ interface Shop {
 	shop_id: number;
 	shop_type: number;
 	shop_name: string;
+	shop_nation_code: string;
 }
 
 export default function ShopPage() {
@@ -71,6 +72,7 @@ export default function ShopPage() {
 							shopId={shop.shop_id}
 							shopType={shop.shop_type}
 							shopName={shop.shop_name}
+							shopNationCode={shop.shop_nation_code}
 						/>
 					))}
 				</List>
