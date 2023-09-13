@@ -38,7 +38,7 @@ export default function ShopPage() {
 	};
 
 	return (
-		<Container sx={{ my: 3, maxWidth: 500 }}>
+		<Container sx={{ my: 3 }}>
 			<Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
 				<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
 					SHOP 목록

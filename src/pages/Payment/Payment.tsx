@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -9,6 +8,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
@@ -44,35 +44,33 @@ function Payment() {
 	};
 
 	return (
-		<Container component="main" maxWidth="xs">
+		<Container component="main">
 			<CssBaseline />
 
 			<Box
 				sx={{
-					marginTop: 8,
+					my: 3,
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
 				}}
 			>
-				<Grid container spacing={2}>
-					<Box
-						sx={{
-							width: '100%',
-							display: 'flex',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						}}
-					>
-						<Typography component="h1" variant="h5">
-							결제
-						</Typography>
-						<IconButton onClick={clickCancleBtn}>
-							<CloseIcon />
-						</IconButton>
-					</Box>
-				</Grid>
-				<Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit}>
+				<Stack
+					display="flex"
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					width="100%"
+					mb={5}
+				>
+					<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+						결제
+					</Typography>
+					<IconButton onClick={clickCancleBtn}>
+						<CloseIcon />
+					</IconButton>
+				</Stack>
+				<Box component="form" sx={{ mt: 3, width: '100%' }} onSubmit={handleSubmit}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<TextField
