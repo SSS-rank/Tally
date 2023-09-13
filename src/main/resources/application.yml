@@ -1,16 +1,30 @@
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=bank
-DB_USER=sss
-DB_PASSWORD=banksssA108
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+kakao:
+  client:
+    id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_CLIENT_SECRET}
 
-KAKAO_CLIENT_ID=0276510eefdffe0d93cb4abb41182907
-KAKAO_CLIENT_SECRET=RH8Ch6MB4aTf9WEc9vJy8QnpZqQbXs39
+token:
+  secret: ${TOKEN_SECRET} # 임의의 문자열
+  access-token-expiration-time: 600000 # 10분 1000(ms) x 60(s) x 10(m)
+  refresh-token-expiration-time: 1209600000 # 2주 1000(ms) x 60 (s) x 60(m) x 24(h) x 14(d)
 
-TOKEN_SECRET=and0LXRva2VuLXNlY3JldA==
-
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=banksssA108
-
-COUNTRY_SERVICE_KEY=lQexMZMXDyFSmMCHE%2BbQj%2Fcm7uDGA%2Fn0AuNXPx0rfTPz%2BDOj%2FRX8U1Ay50ntvW2CJgOgOpMvoBYNohwsp%2BQMsw%3D%3D
+country:
+  service:
+    key: ${COUNTRY_SERVICE_KEY}
