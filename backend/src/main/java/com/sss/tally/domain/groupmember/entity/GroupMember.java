@@ -1,4 +1,4 @@
-package com.sss.tally.domain.group_member.entity;
+package com.sss.tally.domain.groupmember.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.sss.tally.domain.caculate_group.entity.CalculateGroup;
+import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
