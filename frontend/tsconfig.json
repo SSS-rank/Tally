@@ -2,7 +2,7 @@
   "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
   "compilerOptions": {
     // ..., // 다른 옵션들...
-    "baseUrl": "./app",
+    "baseUrl": "./frontend/app",
     "paths": {
       "@/*": ["./*"],
       "@components/*": ["components/*"],
