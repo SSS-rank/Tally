@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 
-function AdjustScreen() {
+function AdjustListScreen() {
   return (
     <View style={styles.viewContainer}>
       <Text>AdjustScreen! 🎉</Text>
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdjustScreen;
+export default AdjustListScreen;
