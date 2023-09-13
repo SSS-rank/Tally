@@ -1,20 +1,26 @@
 import React from 'react';
-import {Text, View, StyleSheet, Button} from 'react-native';
+import {Text, View, StyleSheet, Image} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackProps} from '../../navigation/RootStack';
-import {useTheme, Badge} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 
 function LoginScreen({route}: RootStackProp) {
-  const theme = useTheme();
   const {setUserToken} = route.params;
 
   return (
     <View style={styles.viewContainer}>
-      <Text style={{backgroundColor: theme.colors.primary}}>Tally</Text>
-      <Button title="Sign Up" onPress={() => setUserToken('token')} />
-      <Badge>3</Badge>
+      <Text style={styles.titleText}>Tally</Text>
+      <Button
+        mode="contained"
+        buttonColor="#FFE900"
+        textColor="#232323"
+        onPress={() => setUserToken('token')}
+        style={{borderRadius: 24, padding: 4}}>
+        <Image source={require('../../assets/images/kakao.png')} />
+        카카오톡으로 시작하기
+      </Button>
     </View>
   );
 }
@@ -25,6 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  titleText: {fontSize: 50, fontWeight: 'bold', marginBottom: 40},
 });
 
 export default LoginScreen;
