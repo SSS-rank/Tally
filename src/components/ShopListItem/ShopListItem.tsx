@@ -9,9 +9,10 @@ interface shopListItemProps {
 	shopId: number;
 	shopName: string;
 	shopType: number;
+	shopNationCode: string;
 }
 
-function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
+function ShopListItem({ shopId, shopType, shopName, shopNationCode }: shopListItemProps) {
 	const navigate = useNavigate();
 	const modifyItem = () => {
 		console.log('수정');
@@ -21,6 +22,7 @@ function ShopListItem({ shopId, shopType, shopName }: shopListItemProps) {
 				shopId: shopId,
 				shopType: shopType,
 				shopName: shopName,
+				shopNationCode: shopNationCode,
 			},
 		});
 	};
