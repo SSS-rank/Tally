@@ -12,7 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import api from '../api/api';
-import AccountListItem from '../components/AccountListItem/AccountListItem';
+import AccountListItem from '../components/AccountItem/AccountListItem';
+import BankCode from '../Data/BankCode';
 
 interface Account {
 	account_number: string;

@@ -49,7 +49,7 @@ const Transfer = () => {
 				receiver_account_num: data.get('accountNum'),
 				deposit_amount: data.get('amount'),
 				withdraw_account_content: data.get('withdrawAccountContent'),
-				deposit_account_Content: data.get('depositAccountContent'),
+				deposit_account_content: data.get('depositAccountContent'),
 				account_password: data.get('accountPassword'),
 				bank_code: BankCode[bankName],
 			};
@@ -153,7 +153,7 @@ const Transfer = () => {
 									required
 									fullWidth
 									id="withdrawAccountContent"
-									label="받는 분에게 표시"
+									label="나에게 표시"
 									name="withdrawAccountContent"
 									variant="standard"
 								/>
@@ -163,7 +163,7 @@ const Transfer = () => {
 									required
 									fullWidth
 									id="depositAccountContent"
-									label="나에게 표시"
+									label="받는분에게 표시"
 									name="depositAccountContent"
 									variant="standard"
 								/>

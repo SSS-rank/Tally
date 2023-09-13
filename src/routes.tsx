@@ -39,7 +39,7 @@ function Routes() {
 			element: <AccountAdd />,
 		},
 		{
-			path: '/accountdetail/:accountNumber',
+			path: '/accountdetail',
 			element: <AccountDetail />,
 		},
 

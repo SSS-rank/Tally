@@ -33,7 +33,19 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 			const accountNumValue = accountNumElement.innerText;
 
 			console.log('클릭된 Typography의 값:', accountNumValue);
-			navigate(`/accountdetail/${accountNumValue}`);
+			navigate(`/accountdetail`, { state: { accountNum: accountNumValue, balance: balance } });
+		}
+	};
+	const handleCopyClipBoard = () => {
+		const accountNumElement = accountNumRef.current;
+		if (accountNumElement) {
+			const accountNumValue = accountNumElement.innerText;
+			try {
+				navigator.clipboard.writeText(accountNumValue);
+				alert('클립보드에 복사되었습니다.');
+			} catch (error) {
+				alert('클립보드 복사에 실패하였습니다.');
+			}
 		}
 	};
 
@@ -116,6 +128,9 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 					</Button>
 					<Button size="small" onClick={handleDeleteAccount}>
 						삭제
+					</Button>
+					<Button size="small" onClick={handleCopyClipBoard}>
+						계좌 번호 복사
 					</Button>
 				</CardActions>
 			</Card>
