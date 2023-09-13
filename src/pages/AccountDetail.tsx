@@ -4,12 +4,13 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import api from '../api/api';
 import AccountDetailListItem from '../components/AccountItem/AccountDetailListItem';
+import BankIcon from '../components/BankIcon/BankIcon';
 
 interface Transaction {
 	transfer_date: string; //이체날짜
@@ -27,6 +28,7 @@ function AccountDetail() {
 	const location = useLocation();
 	const accountNumber = location.state.accountNum;
 	const balance = location.state.balance;
+	const bankcode = location.state.bankcode;
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 
 	useEffect(() => {
@@ -55,20 +57,20 @@ function AccountDetail() {
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
-			<main>
-				<Grid container direction="column" justifyContent="center" alignItems="center">
-					<Grid item xs={12} marginTop={10}>
-						<Typography component="h1" variant="h5">
-							{accountNumber}
-						</Typography>
-					</Grid>
-					<Grid item xs={12}>
-						<Typography component="h1" variant="h5">
-							{balance}
-						</Typography>
-					</Grid>
-					<Grid item spacing={4} xs={12} marginTop={1} width="800px">
-						{transactions.map((trans) => (
+			<Container sx={{ width: '800px' }}>
+				<Box sx={{ mt: 10, mb: 6 }}>
+					<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+						<BankIcon code={bankcode} />
+						<Typography sx={{ color: '#666', ml: 1 }}>{accountNumber}</Typography>
+					</Box>
+					<Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
+						{balance}원
+					</Typography>
+				</Box>
+				<List sx={{ width: '100%' }}>
+					{/* <Grid item spacing={4} xs={12} marginTop={1} mb={10} width="100%"> */}
+					{transactions.length > 0 &&
+						transactions.map((trans) => (
 							<AccountDetailListItem
 								transfer_date={trans.transfer_date}
 								flag={trans.flag}
@@ -77,9 +79,22 @@ function AccountDetail() {
 								key={trans.transfer_uuid}
 							/>
 						))}
-					</Grid>
-				</Grid>
-			</main>
+
+					{transactions.length === 0 && (
+						<Box
+							sx={{
+								textAlign: 'center',
+								py: 3,
+								borderTop: '1px dashed #d9d9d9',
+								borderBottom: '1px dashed #d9d9d9',
+							}}
+						>
+							<Typography sx={{ color: '#666' }}>거래 내역이 없습니다</Typography>
+						</Box>
+					)}
+					{/* </Grid> */}
+				</List>
+			</Container>
 		</ThemeProvider>
 	);
 }
