@@ -177,6 +177,7 @@ const Transfer = () => {
 									label="계좌 비밀번호 입력"
 									name="accountPassword"
 									variant="standard"
+									type="password"
 								/>
 							</Grid>
 						</Grid>
