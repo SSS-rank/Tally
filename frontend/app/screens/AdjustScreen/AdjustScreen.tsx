@@ -1,12 +1,20 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 
-const AdjustScreen = () => {
+function AdjustScreen() {
   return (
-    <View>
-      <Text> AdjustScreen :tada:</Text>
+    <View style={styles.viewContainer}>
+      <Text>AdjustScreen! 🎉</Text>
     </View>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  viewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default AdjustScreen;
