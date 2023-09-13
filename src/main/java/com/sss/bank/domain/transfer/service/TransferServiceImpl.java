@@ -125,7 +125,6 @@ public class TransferServiceImpl implements TransferService {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
-		// 계좌 존재 인증 및 비밀번호 인증
 
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
@@ -310,7 +309,6 @@ public class TransferServiceImpl implements TransferService {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
-		// 계좌 존재 인증 및 비밀번호 인증
 
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
