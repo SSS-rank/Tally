@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import api from '../../../api/api';
 import logo from '../../../asset/image/sss.png';
 
 const pages = ['조회', '이체', 'SHOP'];
@@ -42,9 +43,15 @@ function ResponsiveAppBar() {
 		setAnchorElNav(null);
 	};
 
-	const logout = () => {
-		sessionStorage.clear();
-		location.href = '/';
+	const logout = async () => {
+		const res = await api.post(`/logout`);
+
+		if (res.data === 'logout success') {
+			sessionStorage.clear(); // sessionStorage 초기화
+			location.href = '/';
+		} else if (res.data.errorCode === '001') {
+			console.error(res.data.errorMessage);
+		}
 	};
 
 	return (
