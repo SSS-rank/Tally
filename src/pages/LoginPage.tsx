@@ -26,7 +26,7 @@ function LoginPage() {
 					justifyContent: 'center',
 					alignItems: 'center',
 					my: 6,
-					maxWidth: 500,
+					maxWidth: '500px !important',
 					height: '60vh',
 				}}
 			>
