@@ -19,7 +19,7 @@ kakao:
   client:
     id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_CLIENT_SECRET}
-    
+
 token:
   secret: ${TOKEN_SECRET} # 임의의 문자열
   access-token-expiration-time: 600000 # 10분 1000(ms) x 60(s) x 10(m)
