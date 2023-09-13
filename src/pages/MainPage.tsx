@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import api from '../api/api';
-import AccountListItem from '../components/AccountListItem/AccountListItem';
+import AccountListItem from '../components/AccountItem/AccountListItem';
 import BankCode from '../Data/BankCode';
 
 interface Account {
