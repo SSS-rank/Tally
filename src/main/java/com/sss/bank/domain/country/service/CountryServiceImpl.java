@@ -28,11 +28,14 @@ public class CountryServiceImpl implements CountryService {
 	@Override
 	public List<CountryInfoDto.CountryInfoRespDto> getAllCountryInfo() {
 		if (countryRepository.count() == 0) {
-			CountryDto.CountryReq countryReq = CountryDto.CountryReq.of(serviceKey, 1, 196);
+			CountryDto.CountryReq countryReq = CountryDto.CountryReq.of(serviceKey, 1, 197);
 			CountryDto.CountryResp countryResp = countryClient.requestCountryInfo(countryReq);
 
+			Country country = Country.of("KOR", "대한민국");
+			countryRepository.save(country);
+
 			for (CountryInfoDto.CountryInfoReqDto countryInfo : countryResp.getData()) {
-				Country country = Country.of(countryInfo.getCountryCode(), countryInfo.getCountryName());
+				country = Country.of(countryInfo.getCountryCode(), countryInfo.getCountryName());
 				countryRepository.save(country);
 			}
 		}
