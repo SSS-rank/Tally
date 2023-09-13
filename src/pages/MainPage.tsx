@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -9,10 +9,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 import api from '../api/api';
 import AccountListItem from '../components/AccountListItem/AccountListItem';
-import BankCode from '../Data/BankCode';
 
 interface Account {
 	account_number: string;
@@ -58,7 +58,9 @@ function MainPage() {
 				>
 					<Container sx={{ py: 2 }} maxWidth="md">
 						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="">
-							<div>계좌 목록</div>
+							<Typography component="h1" variant="h5">
+								계좌 목록
+							</Typography>
 						</Stack>
 					</Container>
 				</Box>
