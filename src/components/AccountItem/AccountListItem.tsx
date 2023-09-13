@@ -33,7 +33,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 			const accountNumValue = accountNumElement.innerText;
 
 			console.log('클릭된 Typography의 값:', accountNumValue);
-			navigate(`/accountdetail/${accountNumValue}`);
+			navigate(`/accountdetail`, { state: { accountNum: accountNumValue, balance: balance } });
 		}
 	};
 	const handleCopyClipBoard = () => {
