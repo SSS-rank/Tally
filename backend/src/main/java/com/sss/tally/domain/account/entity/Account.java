@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.tally.api.account.dto.AccountDto;
 import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -55,6 +56,12 @@ public class Account {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static Account from(AccountDto.AccountCreateReqDto accountCreateReqDto){
+		return Account.builder()
+			.accountNumber(accountCreateReqDto.getAccountNumber())
+			.build();
+	}
 
 	private void updateStatus(boolean status) {
 		this.status = status;
