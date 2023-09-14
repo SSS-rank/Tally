@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -23,7 +24,11 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
 import com.sss.tally.api.notification.dto.NotificationDto;
+import com.sss.tally.domain.device.entity.Device;
+import com.sss.tally.domain.device.repository.DeviceRepository;
 import com.sss.tally.domain.notification.repository.NotificationRepository;
+import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.NotificationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,17 +39,21 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private final NotificationRepository notificationRepository;
 
+	private final DeviceRepository deviceRepository;
+
 	@Autowired
-	public NotificationServiceImpl(NotificationRepository notificationRepository) {
+	public NotificationServiceImpl(NotificationRepository notificationRepository, DeviceRepository deviceRepository) {
 		this.notificationRepository = notificationRepository;
+		this.deviceRepository = deviceRepository;
+
 	}
 
-	@Value("${FCM_KEY_PATH}")
+	@Value("${fcm.key.path}")
 	private String FCM_PRIVATE_KEY_PATH;
 
 	//
 	// 메시징만 권한 설정
-	@Value("${FCM_KEY_SCOPE}")
+	@Value("${fcm.key.scope}")
 	private String fireBaseScope;
 
 	// fcm 기본 설정 진행
@@ -70,6 +79,13 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public List<NotificationDto.NotificationRespDto> sendNotificationList(
 		List<NotificationDto.NotificationReqDto> notificationReqDtos) {
+		for (NotificationDto.NotificationReqDto notificationReqDto : notificationReqDtos) {
+			Optional<List<Device>> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+				notificationReqDto.getToken());
+			if (optionalDeviceList.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			}
+		}
 
 		List<Message> messages = new ArrayList<>();
 		List<NotificationDto.NotificationRespDto> notificationRespDtoList = new ArrayList<>();
@@ -110,12 +126,17 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			return notificationRespDtoList;
 		} catch (FirebaseMessagingException e) {
-			throw new IllegalArgumentException("알림 전송 실패" + e.getMessage());
+			throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
 		}
 	}
 
 	@Override
 	public NotificationDto.NotificationRespDto sendNotification(NotificationDto.NotificationReqDto notificationReqDto) {
+		Optional<List<Device>> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+			notificationReqDto.getToken());
+		if (optionalDeviceList.isEmpty()) {
+			throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+		}
 
 		Message message = Message.builder()
 			.putData("time", LocalDateTime.now().toString())
@@ -132,7 +153,7 @@ public class NotificationServiceImpl implements NotificationService {
 				notificationReqDto);
 			return notificationRespDto;
 		} catch (FirebaseMessagingException e) {
-			throw new IllegalArgumentException("알림 전송 실패" + e.getMessage());
+			throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
 		}
 
 	}
