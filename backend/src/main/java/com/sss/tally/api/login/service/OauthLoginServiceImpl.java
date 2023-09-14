@@ -30,8 +30,8 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 	private final JwtProvider jwtProvider;
 
 	@Override
-	public OauthLoginDto.OauthLoginRespDto oauthLogin(String accessToken) {
-		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(accessToken);
+	public OauthLoginDto.OauthLoginRespDto oauthLogin(OauthLoginDto.OauthLoginReqDto oauthLoginReqDto) {
+		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(oauthLoginReqDto.getKakaoAccessToken());
 
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
@@ -42,14 +42,14 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			oauthMember = memberRepository.save(oauthMember);
 			// 토큰 생성
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberId());
-			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
+			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
 		} else { //이미 존재하는 회원
 			Member oauthMember = optionalMember.get();
 			if(oauthMember.getWithdrawalDate()!=null && oauthMember.getWithdrawalDate().isBefore(LocalDateTime.now()))
 				throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 			// 토큰 생성
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberId());
-			redisService.setValues(String.valueOf(oauthMember.getMemberId()), jwtTokenDto.getRefreshToken());
+			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
 		}
 		return OauthLoginDto.OauthLoginRespDto.from(jwtTokenDto);
 	}
