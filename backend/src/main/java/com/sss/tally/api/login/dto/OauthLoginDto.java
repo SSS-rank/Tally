@@ -4,14 +4,27 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sss.tally.global.jwt.dto.JwtTokenDto;
+import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 public class OauthLoginDto {
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class OauthLoginReqDto{
+		@NonNull
+		private String kakaoAccessToken;
+		@NotNull
+		private String deviceToken;
+	}
 
 	@Getter
 	@Setter

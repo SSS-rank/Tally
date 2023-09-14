@@ -30,8 +30,8 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 	private final JwtProvider jwtProvider;
 
 	@Override
-	public OauthLoginDto.OauthLoginRespDto oauthLogin(String accessToken) {
-		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(accessToken);
+	public OauthLoginDto.OauthLoginRespDto oauthLogin(OauthLoginDto.OauthLoginReqDto oauthLoginReqDto) {
+		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(oauthLoginReqDto.getKakaoAccessToken());
 
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());

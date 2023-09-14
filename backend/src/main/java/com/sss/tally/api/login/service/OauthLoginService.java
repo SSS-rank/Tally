@@ -3,5 +3,5 @@ package com.sss.tally.api.login.service;
 import com.sss.tally.api.login.dto.OauthLoginDto;
 
 public interface OauthLoginService {
-	OauthLoginDto.OauthLoginRespDto oauthLogin(String accessToken);
+	OauthLoginDto.OauthLoginRespDto oauthLogin(OauthLoginDto.OauthLoginReqDto oauthLoginReqDto);
 }
