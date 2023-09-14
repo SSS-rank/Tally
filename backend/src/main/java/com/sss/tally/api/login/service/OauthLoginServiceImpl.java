@@ -33,8 +33,6 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 	public OauthLoginDto.OauthLoginRespDto oauthLogin(String accessToken) {
 		OAuthAttributes userInfo = kakaoLoginApiService.getMemberInfo(accessToken);
 
-		System.out.println(userInfo.getNickname()+" "+userInfo.getProfileImageUrl());
-
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
 		String memberUuid = UUID.randomUUID().toString();
