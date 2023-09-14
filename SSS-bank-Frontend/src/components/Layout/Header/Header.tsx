@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import api from '../../../api/api';
 import logo from '../../../asset/image/sss.png';
 
-const pages = ['조회', '이체', 'SHOP'];
+const pages = ['조회', 'SHOP'];
 
 function ResponsiveAppBar() {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -31,8 +31,6 @@ function ResponsiveAppBar() {
 		// setAnchorElNav(null);
 		if (page === '조회') {
 			navigate('/main');
-		} else if (page === '이체') {
-			navigate('/transfer');
 		} else if (page === 'SHOP') {
 			navigate('/shop');
 		}
@@ -44,13 +42,16 @@ function ResponsiveAppBar() {
 	};
 
 	const logout = async () => {
-		const res = await api.post(`/logout`);
-
-		if (res.data === 'logout success') {
-			sessionStorage.clear(); // sessionStorage 초기화
-			location.href = '/';
-		} else if (res.data.errorCode === '001') {
-			console.error(res.data.errorMessage);
+		try {
+			const res = await api.post(`/logout`);
+			if (res.data === 'logout success') {
+				sessionStorage.clear(); // sessionStorage 초기화
+				location.href = '/';
+			} else if (res.data.errorCode === '001') {
+				console.error(res.data.errorMessage);
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
