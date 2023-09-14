@@ -80,4 +80,17 @@ public class JwtProvider {
 			.refreshTokenExpireTime(refreshTokenExpireTime)
 			.build();
 	}
+
+	// 토큰 유효성 검사
+	public boolean validateToken(String token){
+		try{
+			Jwts.parser().setSigningKey(tokenSecret.getBytes(StandardCharsets.UTF_8))
+				.parseClaimsJws(token);
+		} catch (ExpiredJwtException e) {
+			throw new AuthenticationException(ErrorCode.EXPIRED_TOKEN);
+		} catch (Exception e){
+			throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
+		}
+		return true;
+	}
 }
