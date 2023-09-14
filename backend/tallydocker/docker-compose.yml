@@ -21,3 +21,11 @@ services:
     environment:
       - REDIS_PASSWORD=banksssA108
     container_name: redis-tally
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./mongodb/data:/data/db"
+    container_name: mongodb-tally
