@@ -44,7 +44,7 @@ function LoginScreen({ route }: RootStackProp) {
 				mode="contained"
 				buttonColor="#FFE900"
 				textColor="#232323"
-				onPress={() => setUserToken('token')}
+				onPress={() => login()}
 				style={{ borderRadius: 24, padding: 4 }}
 			>
 				<Image source={require('../../assets/images/kakao.png')} />
