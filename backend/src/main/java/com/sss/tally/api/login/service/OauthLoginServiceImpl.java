@@ -2,6 +2,7 @@ package com.sss.tally.api.login.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
-		String memberUuid = "AAAA";
+		String memberUuid = UUID.randomUUID().toString();
 		if(optionalMember.isEmpty()){ //신규 회원
 			Member oauthMember = Member.of(memberUuid, userInfo);
 			oauthMember = memberRepository.save(oauthMember);
