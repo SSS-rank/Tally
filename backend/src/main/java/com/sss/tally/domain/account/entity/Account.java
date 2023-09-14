@@ -55,4 +55,12 @@ public class Account {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	private void updateStatus(boolean status) {
+		this.status = status;
+	}
+
+	private void updateOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 }

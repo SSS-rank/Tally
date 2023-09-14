@@ -6,15 +6,19 @@ spring:
     url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
     username: ${DB_USER}
     password: ${DB_PASSWORD}
-  data:
-    mongodb:
-      uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+    mongodb:
+      uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -22,3 +26,8 @@ fcm:
   key:
     path: ${FCM_KEY_PATH}
     scope: ${FCM_KEY_SCOPE}
+
+token:
+  secret: ${TOKEN_SECRET}
+  access-token-expiration-time: 1800000 # 30분 1000(ms) x 60(s) x 30(m)
+  refresh-token-expiration-time: 1209600000 # 2주 1000(ms) x 60 (s) x 60(m) x 24(h) x 14(d)
