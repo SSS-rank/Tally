@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class OauthLoginController {
 	private final OauthLoginService oauthLoginService;
 	@PostMapping("/login")
-	public ResponseEntity<?> oauthLogin(HttpServletRequest httpServletRequest) {
+	public ResponseEntity<OauthLoginDto.OauthLoginRespDto> oauthLogin(HttpServletRequest httpServletRequest) {
 		String authorizationHeader = httpServletRequest.getHeader("Authorization");
 		AuthorizationHeaderUtills.validateAuthorization(authorizationHeader);
 
