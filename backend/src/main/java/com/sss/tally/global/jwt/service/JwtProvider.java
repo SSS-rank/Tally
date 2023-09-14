@@ -41,4 +41,27 @@ public class JwtProvider {
 	public Date createRefreshTokenExpireTime(){
 		return new Date(System.currentTimeMillis()+Long.parseLong(refreshTokenExpirationTime));
 	}
+
+	// AccessToken 생성
+	public String createAccessToken(Long memberId, Date expirationTime) {
+		return Jwts.builder()
+			.setSubject(TokenType.ACCESS.name())
+			.setIssuedAt(new Date())
+			.setExpiration(expirationTime)
+			.claim("memberId", memberId)
+			.signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
+			.setHeaderParam("typ","JWT")
+			.compact();
+	}
+
+	// RefreshToken 생성
+	public String createRefreshToken(Long memberId, Date expirationTime){
+		return Jwts.builder()
+			.setSubject(TokenType.REFRESH.name())
+			.setIssuedAt(new Date())
+			.setExpiration(expirationTime)
+			.claim("memberId", memberId)
+			.signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
+			.compact();
+	}
 }
