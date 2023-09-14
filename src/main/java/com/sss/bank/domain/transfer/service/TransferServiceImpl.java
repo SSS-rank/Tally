@@ -136,29 +136,36 @@ public class TransferServiceImpl implements TransferService {
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
-			//보내는 자일 때 (출금)
-			if (((BigInteger)rawResult.get("accountId")).longValue() == accountId) {
+			Object accountIdObj = rawResult.get("accountId");
+			Object receiverObj = rawResult.get("receiver");
+
+			// 보내는 자일 때 (출금)
+			if (accountIdObj != null && ((BigInteger)accountIdObj).longValue() == accountId) {
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
-					localDateTime
-					, "출금", (String)rawResult.get("withdrawAccountContent"),
-					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
-
+					localDateTime,
+					"출금",
+					(String)rawResult.get("withdrawAccountContent"),
+					((BigInteger)rawResult.get("amount")).longValue(),
+					(String)rawResult.get("uuid")
+				);
 				transferListRespDtos.add(dto);
 			}
-			//받는 자일 때 (입금)
-			if (((BigInteger)rawResult.get("receiver")).longValue() == accountId) {
+
+			// 받는 자일 때 (입금)
+			if (receiverObj != null && ((BigInteger)receiverObj).longValue() == accountId) {
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
-					localDateTime
-					, "입금", (String)rawResult.get("name"),
-					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
-
+					localDateTime,
+					"입금",
+					(String)rawResult.get("name"),
+					((BigInteger)rawResult.get("amount")).longValue(),
+					(String)rawResult.get("uuid")
+				);
 				transferListRespDtos.add(dto);
 			}
-
 		}
 
 		return transferListRespDtos;
