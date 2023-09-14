@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 
 import api from '../api/api';
 import AccountListItem from '../components/AccountItem/AccountListItem';
-import BankCode from '../Data/BankCode';
 
 interface Account {
 	account_number: string;
@@ -33,12 +32,14 @@ function MainPage() {
 				console.log('계좌 조회 성공!');
 				console.log(response.data);
 				setAccounts(response.data);
-				// console.log(accounts);
-			} else {
-				console.error('계정 조회 실패:', response.data);
 			}
-		} catch (error) {
-			window.alert('계좌 조회 오류 입니다.');
+		} catch (error: any) {
+			console.log(error);
+			if (error.response.status == 401) {
+				window.location.replace('/main');
+			} else {
+				window.alert('계좌 조회 실패');
+			}
 		}
 	};
 

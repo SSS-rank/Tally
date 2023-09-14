@@ -55,12 +55,19 @@ const Transfer = () => {
 			};
 
 			// console.log(req);
-
-			const res = await api.post(`/transfer/deposit`, req);
-
-			if (res.status === 200) {
-				alert('이체가 완료되었습니다.');
-				navigate('/main');
+			try {
+				const res = await api.post(`/transfer/deposit`, req);
+				if (res.status === 200) {
+					alert('이체가 완료되었습니다.');
+					navigate('/main');
+				}
+			} catch (error: any) {
+				console.log(error);
+				if (error.response.status == 401) {
+					window.location.replace('/main');
+				} else {
+					window.alert('이체 실패');
+				}
 			}
 		}
 	};

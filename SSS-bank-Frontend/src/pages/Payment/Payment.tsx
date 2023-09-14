@@ -35,10 +35,19 @@ function Payment() {
 				password: data.get('accountPassword'),
 			};
 
-			const res = await api.post(`/payment`, paymentReq);
-			if (res.status === 200) {
-				alert('결제가 완료되었습니다');
-				navigate('/shop');
+			try {
+				const res = await api.post(`/payment`, paymentReq);
+				if (res.status === 200) {
+					alert('결제가 완료되었습니다');
+					navigate('/shop');
+				}
+			} catch (error: any) {
+				console.log(error);
+				if (error.response.status == 401) {
+					window.location.replace('/main');
+				} else {
+					window.alert('결제 실패');
+				}
 			}
 		}
 	};
