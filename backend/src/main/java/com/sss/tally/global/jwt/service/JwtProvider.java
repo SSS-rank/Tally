@@ -32,6 +32,8 @@ public class JwtProvider {
 	@Value("${token.secret}")
 	private String tokenSecret;
 
+	private final MemberRepository memberRepository;
+
 	//현재 시간으로부터 30분 뒤의 시간을 리턴
 	public Date createAccessTokenExpireTime(){
 		return new Date(System.currentTimeMillis()+Long.parseLong(accessTokenExpirationTime));
@@ -104,5 +106,13 @@ public class JwtProvider {
 			throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
 		}
 		return claims;
+	}
+
+	// JWT 로 인증정보 조회
+	public Authentication getAuthentication(String token){
+		Claims claims = this.getTokenClaims(token);
+		Long memberId = Long.valueOf((Integer) claims.get("memberId"));
+		UserDetails userDetails = memberRepository.findMemberByMemberId(memberId);
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 }
