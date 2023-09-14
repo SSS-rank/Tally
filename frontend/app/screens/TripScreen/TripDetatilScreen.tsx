@@ -1,6 +1,8 @@
 import React from 'react';
 import {Text, View, StyleSheet, Button} from 'react-native';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
 import {TripStackProps} from '../../navigation/TripStack';
 
 type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripDetail'>;

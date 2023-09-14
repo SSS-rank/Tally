@@ -1,8 +1,10 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import RootStack from './navigation/RootStack';
-import {RecoilRoot} from 'recoil';
 import {MD3LightTheme, PaperProvider} from 'react-native-paper';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {RecoilRoot} from 'recoil';
+
+import RootStack from './navigation/RootStack';
 
 const App = () => {
   return (

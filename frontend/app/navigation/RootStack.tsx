@@ -1,8 +1,10 @@
 import React from 'react';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import SplashScreen from '../screens/SplashScreen/SplashScreen';
-import LoginScreen from '../screens/LoginScreen/LoginScreen';
+
 import MainTabs from './MainTabs';
+import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import SplashScreen from '../screens/SplashScreen/SplashScreen';
 
 export type RootStackProps = {
   MainTabs: undefined;
