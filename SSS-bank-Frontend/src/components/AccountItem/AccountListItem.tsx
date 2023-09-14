@@ -70,16 +70,17 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 				account_password: password,
 			};
 			console.log(accountDeleteReqDto);
-			const response = await api.patch('account', accountDeleteReqDto);
-
-			if (response.status === 200) {
-				console.log('계좌 삭제 성공!');
+			const res = await api.patch('account', accountDeleteReqDto);
+			if (res.status === 200) {
+				window.location.replace('/main');
+			}
+		} catch (error: any) {
+			console.log(error);
+			if (error.response.status == 401) {
 				window.location.replace('/main');
 			} else {
-				console.error('계정 삭제 실패:', response.data);
+				window.alert('계좌 삭제 실패');
 			}
-		} catch (error) {
-			window.alert('계좌 삭제 오류 입니다.');
 		}
 
 		handleCloseModal();
