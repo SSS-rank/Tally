@@ -114,11 +114,18 @@ function ShopAdd() {
 
 			if (!validate(shopType, shopName)) return; // 유효성 검사
 
-			const res = await api.post(`/shop`, data);
-			console.log(res);
-
-			if (res.status === 200) {
-				alert('등록되었습니다');
+			try {
+				const res = await api.post(`/shop`, data);
+				if (res.status === 200) {
+					alert('등록되었습니다');
+					navigate('/shop');
+				}
+			} catch (error: any) {
+				if (error.response.status == 401) {
+					navigate('/shop');
+				} else {
+					window.alert('shop 등록 실패');
+				}
 			}
 		}
 	};
@@ -147,12 +154,19 @@ function ShopAdd() {
 
 			if (!validate(shopType, shopName)) return; // 유효성 검사
 
-			const res = await api.patch(`/shop`, data);
-			console.log(res);
-
-			if (res.status === 200) {
-				alert('수정되었습니다');
-				navigate('/shop');
+			try {
+				const res = await api.patch(`/shop`, data);
+				if (res.status === 200) {
+					alert('수정되었습니다');
+					navigate('/shop');
+				}
+			} catch (error: any) {
+				console.log(error);
+				if (error.response.status == 401) {
+					window.location.replace('/shop');
+				} else {
+					window.alert('shop 수정 실패');
+				}
 			}
 		}
 	};

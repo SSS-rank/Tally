@@ -43,12 +43,17 @@ function AccountAdd() {
 			if (response.status === 201) {
 				console.log('계정 생성 성공!');
 				window.alert('계좌가 생성 되었습니다!');
-				navigate('/main');
+				window.location.replace('/main');
 			} else {
 				console.error('계정 생성 실패:', response.data);
 			}
-		} catch (error) {
-			window.alert('계좌 생성 오류입니다. 다시 생성해주세요');
+		} catch (error: any) {
+			console.log(error);
+			if (error.response.status == 401) {
+				window.location.replace('/main');
+			} else {
+				window.alert('계좌 생성 실패');
+			}
 		}
 	};
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

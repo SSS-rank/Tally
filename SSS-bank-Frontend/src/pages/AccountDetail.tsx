@@ -25,10 +25,10 @@ function AccountDetail() {
 	const goBack = () => {
 		navigate(-1);
 	};
-	const location = useLocation();
-	const accountNumber = location.state.accountNum;
-	const balance = location.state.balance;
-	const bankcode = location.state.bankcode;
+	const myLocation = useLocation();
+	const accountNumber = myLocation.state.accountNum;
+	const balance = myLocation.state.balance;
+	const bankcode = myLocation.state.bankcode;
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 
 	useEffect(() => {
@@ -47,8 +47,12 @@ function AccountDetail() {
 				} else {
 					console.error('계정 내역 조회 실패:', response.data);
 				}
-			} catch (error) {
-				window.alert('계좌 내역 조회 오류 입니다.');
+			} catch (error: any) {
+				if (error.response.status == 401) {
+					window.location.replace('/main');
+				} else {
+					window.alert('계좌 내역 조회 실패');
+				}
 			}
 		};
 

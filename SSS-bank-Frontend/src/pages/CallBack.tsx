@@ -11,11 +11,10 @@ function CallBack() {
 			const response = await api.get('oauth/kakao/callback', { params: { code } });
 			if (response.status === 200) {
 				const accessToken = response.data.access_token;
-				const refreshToken = response.data.refresh_token;
 
 				if (accessToken) {
 					sessionStorage.setItem('accessToken', accessToken);
-					api
+					await api
 						.post('login')
 						.then((res) => {
 							if (res.status === 200) {
@@ -34,14 +33,11 @@ function CallBack() {
 							navigate('/main');
 						});
 				}
-				if (refreshToken) {
-					sessionStorage.setItem('refreshToken', refreshToken);
-				}
 			} else {
 				console.error('계정 생성 실패:', response.data);
 			}
 		} catch (error) {
-			window.alert('계좌 생성 오류입니다. 다시 생성해주세요');
+			console.log('카카오 로그인 콜백 실패');
 		}
 	};
 
@@ -55,6 +51,6 @@ function CallBack() {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	});
-	return <div>callback</div>;
+	return <div></div>;
 }
 export default CallBack;
