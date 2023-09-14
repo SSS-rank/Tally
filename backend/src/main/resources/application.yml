@@ -18,3 +18,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+fcm:
+  key:
+    path: ${FCM_KEY_PATH}
+    scope: ${FCM_KEY_SCOPE}
