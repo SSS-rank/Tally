@@ -1,10 +1,12 @@
 import React from 'react';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import TripListScreen from '../screens/TripScreen/TripListScreen';
+
+import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
+import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
-import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
-import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
+import TripListScreen from '../screens/TripScreen/TripListScreen';
 
 export type TripStackProps = {
   TripList: undefined;
