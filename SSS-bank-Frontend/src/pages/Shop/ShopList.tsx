@@ -20,9 +20,20 @@ export default function ShopPage() {
 	const navigate = useNavigate();
 
 	const getShops = async () => {
-		const res = await api.get('/shop');
-		console.log(res);
-		setShops(res.data);
+		try {
+			const res = await api.get('/shop');
+			if (res.status === 200) {
+				console.log('shop 조회성공!');
+				setShops(res.data);
+			}
+		} catch (error: any) {
+			console.log(error);
+			if (error.response.status == 401) {
+				window.location.replace('/main');
+			} else {
+				window.alert('shop 조회 실패');
+			}
+		}
 	};
 
 	useEffect(() => {
