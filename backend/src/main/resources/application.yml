@@ -12,6 +12,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+token:
+  secret: ${TOKEN_SECRET} # 임의의 문자열
+  access-token-expiration-time: 1800000 # 30분 1000(ms) x 60(s) x 30(m)
+  refresh-token-expiration-time: 1209600000 # 2주 1000(ms) x 60 (s) x 60(m) x 24(h) x 14(d)
