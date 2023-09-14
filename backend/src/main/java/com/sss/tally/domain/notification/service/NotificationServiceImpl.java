@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public List<NotificationDto.NotificationRespDto> sendNotificationList(
 		List<NotificationDto.NotificationReqDto> notificationReqDtos) {
 		for (NotificationDto.NotificationReqDto notificationReqDto : notificationReqDtos) {
-			Optional<List<Device>> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+			List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
 				notificationReqDto.getToken());
 			if (optionalDeviceList.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
@@ -113,13 +113,11 @@ public class NotificationServiceImpl implements NotificationService {
 			// 요청에 대한 응답 처리
 			if (response.getFailureCount() > 0) {
 				List<SendResponse> responses = response.getResponses();
-				List<String> failedTokens = new ArrayList<>();
 
 				for (int i = 0; i < responses.size(); i++) {
 					if (!responses.get(i).isSuccessful()) {
 						notificationRespDtofailList.add(NotificationDto.NotificationRespDto.of(
 							-1, notificationReqDtos.get(i)));
-
 					}
 				}
 				return notificationRespDtofailList;
@@ -132,7 +130,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public NotificationDto.NotificationRespDto sendNotification(NotificationDto.NotificationReqDto notificationReqDto) {
-		Optional<List<Device>> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+		List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
 			notificationReqDto.getToken());
 		if (optionalDeviceList.isEmpty()) {
 			throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
@@ -148,10 +146,9 @@ public class NotificationServiceImpl implements NotificationService {
 			.build();
 
 		try {
-			String response = FirebaseMessaging.getInstance().send(message);
-			NotificationDto.NotificationRespDto notificationRespDto = NotificationDto.NotificationRespDto.of(1,
+			FirebaseMessaging.getInstance().send(message);
+			return NotificationDto.NotificationRespDto.of(1,
 				notificationReqDto);
-			return notificationRespDto;
 		} catch (FirebaseMessagingException e) {
 			throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
 		}
