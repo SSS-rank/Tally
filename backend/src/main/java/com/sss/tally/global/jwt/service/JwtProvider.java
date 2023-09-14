@@ -64,4 +64,20 @@ public class JwtProvider {
 			.signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
 			.compact();
 	}
+
+	// JwtToken 생성
+	public JwtTokenDto createJwtTokenDto(Long memberId){
+		Date accessTokenExpireTime = createAccessTokenExpireTime();
+		Date refreshTokenExpireTime = createRefreshTokenExpireTime();
+		String accessToken = createAccessToken(memberId, accessTokenExpireTime);
+		String refreshToken = createRefreshToken(memberId, refreshTokenExpireTime);
+
+		return JwtTokenDto.builder()
+			.grantType(GrantType.BEARER.getType())
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.accessTokenExpireTime(accessTokenExpireTime)
+			.refreshTokenExpireTime(refreshTokenExpireTime)
+			.build();
+	}
 }
