@@ -15,7 +15,11 @@ function LoginScreen({ route }: RootStackProp) {
 	const login = async () => {
 		KakaoLogin.login()
 			.then((result) => {
-				console.log('login success', JSON.stringify(result));
+				// console.log('login success', JSON.stringify(result));
+				const accessToken = result.accessToken;
+				console.log(accessToken);
+				// setUserToken(accessToken);
+
 				getProfile();
 			})
 			.catch((error) => {
@@ -30,7 +34,7 @@ function LoginScreen({ route }: RootStackProp) {
 	const getProfile = () => {
 		KakaoLogin.getProfile()
 			.then((result) => {
-				console.log(`getProfile Success`, JSON.stringify(result));
+				// console.log(result);
 			})
 			.catch((err) => {
 				console.log(`getProfile fail ${err.code} ${err.message}`);
