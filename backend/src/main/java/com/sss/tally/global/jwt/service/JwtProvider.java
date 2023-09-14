@@ -93,4 +93,16 @@ public class JwtProvider {
 		}
 		return true;
 	}
+
+	// 토큰 Claim 으로 가져오기
+	public Claims getTokenClaims(String token) {
+		Claims claims;
+		try {
+			claims = Jwts.parser().setSigningKey(tokenSecret.getBytes(StandardCharsets.UTF_8))
+				.parseClaimsJws(token).getBody();
+		} catch (Exception e) {
+			throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
+		}
+		return claims;
+	}
 }
