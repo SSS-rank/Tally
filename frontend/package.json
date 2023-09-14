@@ -5,9 +5,10 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ./src/**/*.{ts,tsx,js,jsx}",
+    "lint:fix": "eslint --fix ./src/**/*.{ts,tsx,js,jsx}"
   },
   "dependencies": {
     "@react-native-seoul/kakao-login": "^5.3.0",
