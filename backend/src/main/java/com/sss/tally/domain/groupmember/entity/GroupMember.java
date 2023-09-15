@@ -43,4 +43,11 @@ public class GroupMember {
 	@Column(nullable = false)
 	private Boolean status;
 
+	public static GroupMember of(Member member, CalculateGroup calculateGroup, Boolean status) {
+		return GroupMember.builder()
+			.calculateGroupId(calculateGroup)
+			.memberId(member)
+			.status(status)
+			.build();
+	}
 }
