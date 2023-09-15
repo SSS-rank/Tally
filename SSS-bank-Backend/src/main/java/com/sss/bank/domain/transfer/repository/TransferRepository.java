@@ -23,7 +23,7 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 		+
 		"FROM payment p INNER JOIN shop s ON p.shop_id = s.shop_id WHERE account_id = :accountId)" +
 		" UNION ALL " +
-		"(SELECT sender AS accountId, deposit_account_content AS name, transfer_uuid AS uuid, amount AS amount, transfer_date AS date, withdraw_account_content, receiver "
+		"(SELECT sender AS accountId, withdraw_account_content, transfer_uuid AS uuid, amount AS amount, transfer_date AS date,  deposit_account_content AS name, receiver "
 		+
 		"FROM transfer WHERE sender = :accountId OR receiver = :accountId)" +
 		") AS combined " +
