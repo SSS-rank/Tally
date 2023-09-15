@@ -26,7 +26,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 					<Icon name="search" style={styles.searchIcon} />
 				</View>
 			</View>
-			<TouchableOpacity style={styles.tripAddBtn}>
+			<TouchableOpacity style={styles.tripAddBtn} onPress={() => navigation.navigate('CreateTrip')}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<MaterialIcon
 						name="plus-circle"
