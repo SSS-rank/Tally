@@ -2,6 +2,8 @@ package com.sss.tally.api.notification.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.notification.document.Notification;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 public class NotificationDto {
-
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@Getter
 	@AllArgsConstructor
 	@NoArgsConstructor
