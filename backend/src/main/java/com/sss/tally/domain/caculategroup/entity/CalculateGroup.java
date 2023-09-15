@@ -29,4 +29,7 @@ public class CalculateGroup {
 	@Column(nullable = false)
 	private Boolean status;
 
+	public static CalculateGroup from(Boolean status) {
+		return CalculateGroup.builder().status(status).build();
+	}
 }
