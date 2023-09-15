@@ -15,14 +15,15 @@ public class KakaoTokenDto {
 	public static class Request{
 		private final String grant_type = "authorization_code";
 		private String client_id;
-		private final String redirect_uri = "http://localhost:3000/oauth/kakao/callback";
+		private String redirect_uri;
 		private String code;
 		private String client_secret;
 
-		public static Request of(String clientId, String code, String clientSecret) {
+		public static Request of(String clientId, String code, String clientSecret, String redirectUri) {
 			return Request.builder()
 				.client_id(clientId)
 				.client_secret(clientSecret)
+				.redirect_uri(redirectUri)
 				.code(code)
 				.build();
 		}
