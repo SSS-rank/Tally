@@ -21,11 +21,11 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 	@Query(value = "SELECT * FROM (" +
 		"(SELECT account_id AS accountId, shop_name AS withdrawAccountContent, payment_uuid AS uuid, amount AS amount, payment_date AS date, NULL AS name, NULL AS receiver "
 		+
-		"FROM Payment p INNER JOIN shop s ON p.shop_id = s.shop_id WHERE account_id = :accountId)" +
+		"FROM payment p INNER JOIN shop s ON p.shop_id = s.shop_id WHERE account_id = :accountId)" +
 		" UNION ALL " +
-		"(SELECT sender AS accountId, deposit_account_content AS name, transfer_uuid AS uuid, amount AS amount, transfer_date AS date, withdraw_account_content, receiver "
+		"(SELECT sender AS accountId, withdraw_account_content, transfer_uuid AS uuid, amount AS amount, transfer_date AS date,  deposit_account_content AS name, receiver "
 		+
-		"FROM Transfer WHERE sender = :accountId OR receiver = :accountId)" +
+		"FROM transfer WHERE sender = :accountId OR receiver = :accountId)" +
 		") AS combined " +
 		"ORDER BY combined.date DESC " +
 		"LIMIT :limit OFFSET :offset", nativeQuery = true)

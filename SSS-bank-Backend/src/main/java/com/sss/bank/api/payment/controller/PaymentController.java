@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.bank.api.payment.dto.PaymentDto;
 import com.sss.bank.domain.payment.service.PaymentService;
+import com.sss.bank.global.resolver.MemberInfo;
+import com.sss.bank.global.resolver.MemberInfoDto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,9 +29,9 @@ public class PaymentController {
 
 	@ApiOperation(value = "결제 진행", notes = "결제를 진행한다.")
 	@PostMapping
-	public ResponseEntity<PaymentDto.PaymentRespDto> createPayment(
+	public ResponseEntity<PaymentDto.PaymentRespDto> createPayment(@MemberInfo MemberInfoDto memberInfoDto,
 		@RequestBody @Valid PaymentDto.PaymentReqDto paymentReqDto) throws NoSuchAlgorithmException {
-		PaymentDto.PaymentRespDto payment = paymentService.createPayment(paymentReqDto);
+		PaymentDto.PaymentRespDto payment = paymentService.createPayment(memberInfoDto.getMemberId(), paymentReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(payment);
 	}
 }
