@@ -35,13 +35,13 @@ public class JwtProvider {
 	private final MemberRepository memberRepository;
 
 	//현재 시간으로부터 30분 뒤의 시간을 리턴
-	public Date createAccessTokenExpireTime(){
-		return new Date(System.currentTimeMillis()+Long.parseLong(accessTokenExpirationTime));
+	public Date createAccessTokenExpireTime() {
+		return new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpirationTime));
 	}
 
 	//현재 시간으로부터 2주 뒤의 시간을 리턴
-	public Date createRefreshTokenExpireTime(){
-		return new Date(System.currentTimeMillis()+Long.parseLong(refreshTokenExpirationTime));
+	public Date createRefreshTokenExpireTime() {
+		return new Date(System.currentTimeMillis() + Long.parseLong(refreshTokenExpirationTime));
 	}
 
 	// AccessToken 생성
@@ -52,12 +52,12 @@ public class JwtProvider {
 			.setExpiration(expirationTime)
 			.claim("memberId", memberId)
 			.signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
-			.setHeaderParam("typ","JWT")
+			.setHeaderParam("typ", "JWT")
 			.compact();
 	}
 
 	// RefreshToken 생성
-	public String createRefreshToken(Long memberId, Date expirationTime){
+	public String createRefreshToken(Long memberId, Date expirationTime) {
 		return Jwts.builder()
 			.setSubject(TokenType.REFRESH.name())
 			.setIssuedAt(new Date())
@@ -68,7 +68,7 @@ public class JwtProvider {
 	}
 
 	// JwtToken 생성
-	public JwtTokenDto createJwtTokenDto(Long memberId){
+	public JwtTokenDto createJwtTokenDto(Long memberId) {
 		Date accessTokenExpireTime = createAccessTokenExpireTime();
 		Date refreshTokenExpireTime = createRefreshTokenExpireTime();
 		String accessToken = createAccessToken(memberId, accessTokenExpireTime);
@@ -84,13 +84,13 @@ public class JwtProvider {
 	}
 
 	// 토큰 유효성 검사
-	public boolean validateToken(String token){
-		try{
+	public boolean validateToken(String token) {
+		try {
 			Jwts.parser().setSigningKey(tokenSecret.getBytes(StandardCharsets.UTF_8))
 				.parseClaimsJws(token);
 		} catch (ExpiredJwtException e) {
 			throw new AuthenticationException(ErrorCode.EXPIRED_TOKEN);
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
 		}
 		return true;
@@ -109,9 +109,9 @@ public class JwtProvider {
 	}
 
 	// JWT 로 인증정보 조회
-	public Authentication getAuthentication(String token){
+	public Authentication getAuthentication(String token) {
 		Claims claims = this.getTokenClaims(token);
-		Long memberId = Long.valueOf((Integer) claims.get("memberId"));
+		Long memberId = Long.valueOf((Integer)claims.get("memberId"));
 		UserDetails userDetails = memberRepository.findMemberByMemberId(memberId);
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
