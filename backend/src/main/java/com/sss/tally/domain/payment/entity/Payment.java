@@ -70,7 +70,7 @@ public class Payment {
 
 	@Column(nullable = false)
 	private String paymentMemo;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private PaymentMethodEnum paymentMethod;
@@ -84,5 +84,9 @@ public class Payment {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private CalculateStatusEnum calculateStatus;
+
+	public void updateCalculateStatusEnum(CalculateStatusEnum calculateStatus) {
+		this.calculateStatus = calculateStatus;
+	}
 
 }
