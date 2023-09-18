@@ -44,7 +44,10 @@ public class Device {
 	@Column(nullable = false)
 	private Boolean deviceStatus;
 
+	@Column(nullable = false)
+	private Boolean isLogout;
+
 	@CreatedDate
 	private LocalDateTime createDate;
-	
+
 }
