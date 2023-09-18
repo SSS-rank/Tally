@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		backgroundColor: '#ffffff',
 	},
-	titleText: TextStyles({ align: 'left', mBottom: 30 }).header,
+	titleText: TextStyles({ align: 'left', mBottom: 30, weight: 'bold' }).header,
 	searchView: {
 		position: 'relative',
 	},
@@ -185,12 +185,11 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 	},
 	filterTitle: {
-		...TextStyles({ align: 'left', size: 20 }).Bold,
+		...TextStyles({ align: 'left', weight: 'bold' }).title,
 		marginVertical: 16,
 	},
 	listTitle: {
-		...TextStyles({ align: 'left' }).medium,
-		marginBottom: 10,
+		...TextStyles({ align: 'left', mBottom: 10 }).medium,
 	},
 });
 

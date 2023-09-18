@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { TripListItemProps } from '../../model/tripListItem';
 import { TextStyles } from '../../styles/CommonStyles';
 function TripListItem({ title, nationName, date, image }: TripListItemProps) {
-	console.log(image);
 	return (
 		<TouchableOpacity>
 			<View style={styles.listItemContainer}>
