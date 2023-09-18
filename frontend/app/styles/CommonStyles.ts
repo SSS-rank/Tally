@@ -57,7 +57,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			marginRight: props?.mTop,
 			marginLeft: props?.mLeft,
 		},
-		Light: {
+		light: {
 			fontFamily: 'Pretendard-Light',
 			fontSize: 17,
 			color: props?.color ? props.color : '#232323',
