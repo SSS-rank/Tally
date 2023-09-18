@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Button, Portal, Modal } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -7,10 +7,27 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TripListFilter from '../../components/TripListFilter/TripListFilter';
+import TripListItem from '../../components/TripListItem/TripListItem';
+import { TripListItemProps } from '../../model/tripListItem';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
+
+const fakeTripListBefore: TripListItemProps[] = [
+	{
+		title: '축구보러 가자',
+		nationName: '영국',
+		date: '2023.09.01 ~ 2023.09.03',
+		image: '../../assets/images/kakao.png',
+	},
+	{
+		title: '부산 호캉스',
+		nationName: '',
+		date: '2023.09.01 ~ 2023.09.03',
+		image: '../../assets/images/kakao.png',
+	},
+];
 
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
@@ -25,7 +42,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 	};
 
 	return (
-		<View style={styles.viewContainer}>
+		<ScrollView style={styles.viewContainer}>
 			<View>
 				<Text style={styles.titleText}>나의 여행지</Text>
 				<View style={styles.searchView}>
@@ -57,16 +74,48 @@ function TripListScreen({ navigation }: TripStackProp) {
 				icon="chevron-down"
 				mode="text"
 				onPress={openFilter}
-				textColor="#666666"
-				style={{ alignItems: 'flex-start' }}
+				style={{ alignItems: 'flex-start', marginBottom: 5 }}
 				contentStyle={{ flexDirection: 'row-reverse' }}
-				labelStyle={TextStyles({ align: 'left' }).regular}
+				labelStyle={TextStyles({ align: 'left', color: '#666666' }).regular}
 			>
 				필터
 			</Button>
-			<View>{/* TODO : 다가오는 여행 */}</View>
-			<View>{/* TODO : ㅇ행 중 */}</View>
-			<View>{/* TODO : 여행지 생성 버튼 */}</View>
+			<View style={styles.tripListContainer}>
+				<Text style={styles.listTitle}>다가오는 여행</Text>
+				{fakeTripListBefore.map((tripBefore, index) => (
+					<TripListItem
+						key={index}
+						title={tripBefore.title}
+						nationName={tripBefore.nationName}
+						date={tripBefore.date}
+						image={tripBefore.image}
+					/>
+				))}
+			</View>
+			<View>
+				<Text style={styles.listTitle}>여행 중</Text>
+				{fakeTripListBefore.map((tripBefore, index) => (
+					<TripListItem
+						key={index}
+						title={tripBefore.title}
+						nationName={tripBefore.nationName}
+						date={tripBefore.date}
+						image={tripBefore.image}
+					/>
+				))}
+			</View>
+			<View>
+				<Text style={styles.listTitle}>다녀온 여행</Text>
+				{fakeTripListBefore.map((tripBefore, index) => (
+					<TripListItem
+						key={index}
+						title={tripBefore.title}
+						nationName={tripBefore.nationName}
+						date={tripBefore.date}
+						image={tripBefore.image}
+					/>
+				))}
+			</View>
 			{/* <Button title="여행 추가" onPress={() => navigation.navigate('CreateTrip')} />
 				<Button title="상세" onPress={() => navigation.navigate('TripDetail')} /> */}
 
@@ -84,7 +133,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 					</View>
 				</Modal>
 			</Portal>
-		</View>
+		</ScrollView>
 	);
 }
 
@@ -132,9 +181,16 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		padding: 20,
 	},
+	tripListContainer: {
+		marginVertical: 10,
+	},
 	filterTitle: {
 		...TextStyles({ align: 'left', size: 20 }).Bold,
 		marginVertical: 16,
+	},
+	listTitle: {
+		...TextStyles({ align: 'left' }).medium,
+		marginBottom: 10,
 	},
 });
 
