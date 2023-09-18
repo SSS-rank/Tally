@@ -8,6 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TripListFilter from '../../components/TripListFilter/TripListFilter';
 import { TripStackProps } from '../../navigation/TripStack';
+import { TextStyles } from '../../styles/CommonStyles';
 
 type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 
@@ -45,8 +46,8 @@ function TripListScreen({ navigation }: TripStackProp) {
 						style={{ color: '#91C0EB', marginRight: 10 }}
 					/>
 					<View>
-						<Text style={{ fontSize: 18, fontWeight: '500', color: '#232323' }}>여행 만들기</Text>
-						<Text style={{ fontSize: 14, fontWeight: '500', color: '#666666' }}>
+						<Text style={TextStyles({ align: 'left' }).medium}>여행 만들기</Text>
+						<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
 							여행을 등록하고 떠나보세요
 						</Text>
 					</View>
@@ -59,7 +60,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 				textColor="#666666"
 				style={{ alignItems: 'flex-start' }}
 				contentStyle={{ flexDirection: 'row-reverse' }}
-				labelStyle={{ fontSize: 18, textAlign: 'left' }}
+				labelStyle={TextStyles({ align: 'left' }).regular}
 			>
 				필터
 			</Button>
@@ -76,11 +77,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 					contentContainerStyle={styles.modalContainer}
 				>
 					<View style={styles.modalView}>
-						<Text
-							style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 16, color: '#232323' }}
-						>
-							필터 선택
-						</Text>
+						<Text style={styles.filterTitle}>필터 선택</Text>
 						<TripListFilter filterName="다가오는 여행" />
 						<TripListFilter filterName="여행 중" />
 						<TripListFilter filterName="다가오는 여행" />
@@ -97,7 +94,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		backgroundColor: '#ffffff',
 	},
-	titleText: { fontSize: 30, fontWeight: 'bold', marginBottom: 30, color: '#232323' },
+	titleText: TextStyles({ align: 'left', mBottom: 30 }).header,
 	searchView: {
 		position: 'relative',
 	},
@@ -105,8 +102,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		borderBottomWidth: 1,
 		borderBottomColor: '#d9d9d9',
+		...TextStyles({ align: 'left' }).regular,
 		marginBottom: 40,
-		fontSize: 18,
 		position: 'relative',
 		bottom: 0,
 	},
@@ -119,7 +116,6 @@ const styles = StyleSheet.create({
 	},
 	tripAddBtn: {
 		backgroundColor: '#F6F6F6',
-		color: '#232323',
 		borderRadius: 8,
 		paddingVertical: 15,
 		paddingHorizontal: 20,
@@ -135,6 +131,10 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		borderRadius: 8,
 		padding: 20,
+	},
+	filterTitle: {
+		...TextStyles({ align: 'left', size: 20 }).Bold,
+		marginVertical: 16,
 	},
 });
 

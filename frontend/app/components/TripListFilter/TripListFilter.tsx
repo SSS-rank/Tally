@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { TextStyles } from '../../styles/CommonStyles';
+
 interface TripListFilterProps {
 	filterName: string;
 }
@@ -28,9 +30,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 	},
 	filterName: {
-		fontSize: 18,
+		...TextStyles({ align: 'left' }).regular,
 		marginBottom: 14,
-		color: '#232323',
 	},
 	checkIcon: {
 		color: '#91C0EB',
