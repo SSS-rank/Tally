@@ -4,7 +4,7 @@ export type textStyleProps = {
 	color?: string;
 	align?: any;
 	size?: number;
-	weight: any;
+	weight?: any;
 	mBottom?: number;
 	mLeft?: number;
 	mRight?: number;
