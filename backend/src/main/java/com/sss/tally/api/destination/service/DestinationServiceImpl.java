@@ -12,8 +12,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DestinationServiceImpl implements DestinationService{
 
-	@Override
-	public DestinationDto.CityDto getCityList(int state) {
-		return null;
-	}
 }
