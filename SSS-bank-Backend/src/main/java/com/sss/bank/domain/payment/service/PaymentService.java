@@ -5,5 +5,5 @@ import java.security.NoSuchAlgorithmException;
 import com.sss.bank.api.payment.dto.PaymentDto;
 
 public interface PaymentService {
-	PaymentDto.PaymentRespDto createPayment(PaymentDto.PaymentReqDto paymentReqDto) throws NoSuchAlgorithmException;
+	PaymentDto.PaymentRespDto createPayment(Long memberId, PaymentDto.PaymentReqDto paymentReqDto) throws NoSuchAlgorithmException;
 }
