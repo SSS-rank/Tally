@@ -18,7 +18,12 @@ function CreateTripScreen() {
 			<View style={styles.sectionView}>
 				<Text style={styles.title}>여행지 별명 등록</Text>
 				<View style={styles.searchView}>
-					<TextInput style={styles.nameInput} value={name} onChangeText={setName} />
+					<TextInput
+						style={styles.nameInput}
+						value={name}
+						onChangeText={setName}
+						placeholder="별명을 입력해주세요"
+					/>
 					<Icon name="close-circle" style={styles.closeIcon} onPress={reset} />
 				</View>
 			</View>
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
 		position: 'relative',
 	},
 	closeIcon: {
-		color: 'rgba(102,102,102,0.6)',
+		color: '#666666',
 		fontSize: 20,
 		position: 'absolute',
 		bottom: 10,
@@ -58,9 +63,10 @@ const styles = StyleSheet.create({
 		...TextStyles({ align: 'left', weight: 'bold', mBottom: 20 }).title,
 	},
 	nameInput: {
-		borderBottomColor: 'rgba(102,102,102,0.6)',
+		borderBottomColor: '#666666',
 		borderBottomWidth: 1,
 		paddingHorizontal: 15,
+		...TextStyles({ align: 'left' }).regular,
 	},
 });
 
