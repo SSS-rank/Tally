@@ -41,7 +41,10 @@ public class CalculateGroup {
 	@JoinColumn(name = "member_id")
 	private Member memberId;
 
-	public static CalculateGroup from(Boolean status) {
-		return CalculateGroup.builder().status(status).build();
+	public static CalculateGroup of(Boolean status, String uuid, Member member) {
+		return CalculateGroup.builder().status(status)
+			.calculateGroupUuid(uuid)
+			.memberId(member)
+			.build();
 	}
 }
