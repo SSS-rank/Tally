@@ -24,7 +24,8 @@ public enum ErrorCode {
 	NOT_EXIST_PAYER(HttpStatus.BAD_REQUEST, "002", "결제자가 없습니다."),
 	NOT_IDENTICAL_MEMBER(HttpStatus.BAD_REQUEST, "003", "동일한 결제자가 아닙니다."),
 	NOT_BEFORE_STATUS(HttpStatus.BAD_REQUEST, "004", "정산 전 상태가 아닙니다."),
-
+	NOT_EQUAL_LOGIN_MEMBER_PAYER(HttpStatus.BAD_REQUEST, "005", "로그인 사용자와 결제자가 일치하지 않습니다."),
+	NOT_EXIST_GROUP_PAYMENT(HttpStatus.BAD_REQUEST, "006", "정산에 포함된 결제 정보들이 없습니다"),
 	//결제
 	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다.");
 
