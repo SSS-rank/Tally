@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sss.tally.api.calculate.dto.CalculateDto;
 import com.sss.tally.api.notification.dto.NotificationDto;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
+import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
 import com.sss.tally.domain.caculategroup.repository.CalculateGroupRepository;
 import com.sss.tally.domain.device.entity.Device;
 import com.sss.tally.domain.device.repository.DeviceRepository;
@@ -21,6 +22,7 @@ import com.sss.tally.domain.groupmember.repository.GroupMemberRepository;
 import com.sss.tally.domain.grouppayment.entity.GroupPayment;
 import com.sss.tally.domain.grouppayment.repository.GroupPaymentRepository;
 import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
 import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
 import com.sss.tally.domain.notification.document.Notification;
@@ -32,6 +34,7 @@ import com.sss.tally.domain.payment.repository.PaymentRepository;
 import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.CalculateException;
+import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.NotificationException;
 import com.sss.tally.global.error.exception.PaymentException;
 
@@ -58,12 +61,14 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	private final NotificationRepository notificationRepository;
 
+	private final MemberRepository memberRepository;
+
 	@Override
-	public String createCalculate(List<CalculateDto.CalculateCreateDto> calculateCreateDto) {
+	public String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid) {
 		List<Payment> payments = new ArrayList<>();
 		//결제들꺼내기
 		Member member = new Member();
-		for (CalculateDto.CalculateCreateDto x : calculateCreateDto) {
+		for (CalculateDto.CalculateCreateReqDto x : calculateCreateDto) {
 			Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(x.getPaymentUuid());
 			if (paymentOptional.isEmpty()) {
 				throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
@@ -90,10 +95,14 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		if (payer == null) {
 			throw new CalculateException(ErrorCode.NOT_EXIST_PAYER);
 		}
+		if (!payer.getMemberUuid().equals(memberUuid)) {
+			throw new CalculateException(ErrorCode.NOT_EQUAL_LOGIN_MEMBER_PAYER);
+		}
 
 		//정산 그룹 생성하기
 		String uuid = UUID.randomUUID().toString();
-		CalculateGroup calculateGroup = calculateGroupRepository.save(CalculateGroup.of(false, uuid, payer));
+		CalculateGroup calculateGroup = calculateGroupRepository.save(
+			CalculateGroup.of(CalculateGroupStatusEnum.ONGOING, uuid, payer));
 		HashMap<Member, Integer> map = new HashMap<>();
 
 		//정산 그룹에 각 payment들 넣기
@@ -174,5 +183,41 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		}
 
 		return "ok";
+	}
+
+	@Override
+	public List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculate(String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculateListRespDtoList = new ArrayList<>();
+		List<CalculateGroup> calculateGroupList = calculateGroupRepository.findCalculateGroupsByMemberId(member);
+		if (calculateGroupList.isEmpty()) {
+			return getRequestCalculateListRespDtoList;
+		}
+		for (CalculateGroup calculateGroup : calculateGroupList) {
+			Long amount = 0l;
+			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+				calculateGroup);
+			if (groupPaymentList.isEmpty()) {
+				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+			}
+			for (GroupPayment groupPayment : groupPaymentList) {
+				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentId(
+					groupPayment.getPaymentId());
+				if (memberPaymentList.isEmpty()) {
+					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
+				}
+				for (MemberPayment memberPayment : memberPaymentList) {
+					amount += memberPayment.getAmount();
+				}
+			}
+			CalculateDto.GetRequestCalculateListRespDto getRequestCalculateListRespDto =
+				CalculateDto.GetRequestCalculateListRespDto.of(amount, calculateGroup);
+			getRequestCalculateListRespDtoList.add(getRequestCalculateListRespDto);
+		}
+		return getRequestCalculateListRespDtoList;
 	}
 }
