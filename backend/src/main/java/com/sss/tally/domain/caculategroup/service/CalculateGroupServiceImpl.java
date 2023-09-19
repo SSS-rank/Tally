@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,8 +84,16 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 
 		}
+
+		Member payer = new Member();
+		payer = payments.get(0).getMemberId();
+		if (payer == null) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_PAYER);
+		}
+
 		//정산 그룹 생성하기
-		CalculateGroup calculateGroup = calculateGroupRepository.save(CalculateGroup.from(false));
+		String uuid = UUID.randomUUID().toString();
+		CalculateGroup calculateGroup = calculateGroupRepository.save(CalculateGroup.of(false, uuid, payer));
 		HashMap<Member, Integer> map = new HashMap<>();
 
 		//정산 그룹에 각 payment들 넣기
@@ -104,13 +113,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			payment.updateCalculateStatusEnum(CalculateStatusEnum.ONGOING);
 
 		}
-		//결제 당사자 넣기 당사자는 정산을 안하니 true로 기입
-		Member payer = new Member();
-		payer = payments.get(0).getMemberId();
-		if (payer == null) {
-			throw new CalculateException(ErrorCode.NOT_EXIST_PAYER);
-		}
-		groupMemberRepository.save(GroupMember.of(payer, calculateGroup, true));
+
 		//결제에 속해져 있는 멤버들 가져오기
 		Set<Member> keys = map.keySet();
 		List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
