@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -60,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@PostConstruct
 	public void init() {
 		try {
-			FirebaseOptions options = new FirebaseOptions.Builder()
+			FirebaseOptions options = FirebaseOptions.builder()
 				.setCredentials(
 					GoogleCredentials
 						.fromStream(new ClassPathResource(FCM_PRIVATE_KEY_PATH).getInputStream())
@@ -80,7 +79,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public List<NotificationDto.NotificationRespDto> sendNotificationList(
 		List<NotificationDto.NotificationReqDto> notificationReqDtos) {
 		for (NotificationDto.NotificationReqDto notificationReqDto : notificationReqDtos) {
-			List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+			List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsTrueAndIsLoginIsTrue(
 				notificationReqDto.getToken());
 			if (optionalDeviceList.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
@@ -108,7 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 
 			// 알림 발송
-			response = FirebaseMessaging.getInstance().sendAll(messages);
+			response = FirebaseMessaging.getInstance().sendEach(messages);
 			List<NotificationDto.NotificationRespDto> notificationRespDtofailList = new ArrayList<>();
 			// 요청에 대한 응답 처리
 			if (response.getFailureCount() > 0) {
@@ -130,7 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public NotificationDto.NotificationRespDto sendNotification(NotificationDto.NotificationReqDto notificationReqDto) {
-		List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceToken(
+		List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsTrueAndIsLoginIsTrue(
 			notificationReqDto.getToken());
 		if (optionalDeviceList.isEmpty()) {
 			throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);

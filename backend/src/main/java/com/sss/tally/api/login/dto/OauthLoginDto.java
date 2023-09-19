@@ -2,15 +2,17 @@ package com.sss.tally.api.login.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.global.jwt.dto.JwtTokenDto;
-import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 public class OauthLoginDto {
@@ -19,10 +21,11 @@ public class OauthLoginDto {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class OauthLoginReqDto{
-		@NonNull
+		@NotEmpty
 		private String kakaoAccessToken;
-		@NotNull
+		@NotEmpty
 		private String deviceToken;
 	}
 

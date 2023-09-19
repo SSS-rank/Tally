@@ -39,4 +39,11 @@ public class GroupPayment {
 	@JoinColumn(name = "calculate_group_id")
 	private CalculateGroup calculateGroupId;
 
+	public static GroupPayment of(Payment payment, CalculateGroup calculateGroup) {
+		return GroupPayment.builder()
+			.calculateGroupId(calculateGroup)
+			.paymentId(payment)
+			.build();
+	}
+
 }

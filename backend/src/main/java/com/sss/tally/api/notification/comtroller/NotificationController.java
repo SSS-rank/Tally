@@ -39,7 +39,7 @@ public class NotificationController {
 
 	@GetMapping
 	public ResponseEntity<List<NotificationDto.GetNotificationRespDto>> selectAlarm() {
-		String memberUuid = "11111";
+		String memberUuid = "1313";
 		List<NotificationDto.GetNotificationRespDto> getNotificationRespDtos = notificationService.getNotification(
 			memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getNotificationRespDtos);

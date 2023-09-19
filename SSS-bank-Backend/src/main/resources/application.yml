@@ -24,6 +24,7 @@ kakao:
   client:
     id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_CLIENT_SECRET}
+    redirect-uri: "http://localhost:3000/oauth/kakao/callback"
 
 token:
   secret: ${TOKEN_SECRET} # 임의의 문자열
