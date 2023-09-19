@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -11,6 +12,10 @@ function CreateTripScreen() {
 	const [name, setName] = useState('');
 	const reset = () => {
 		setName('');
+	};
+
+	const regist = () => {
+		console.log('여행지 등록하기');
 	};
 
 	return (
@@ -35,6 +40,9 @@ function CreateTripScreen() {
 				<Text style={styles.title}>여행 일정 등록</Text>
 				<TripDateInput />
 			</View>
+			<Button mode="contained" style={styles.registBtn} onPress={regist}>
+				확인
+			</Button>
 		</View>
 	);
 }
@@ -67,6 +75,10 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		paddingHorizontal: 15,
 		...TextStyles({ align: 'left' }).regular,
+	},
+	registBtn: {
+		backgroundColor: '#91C0EB',
+		borderRadius: 4,
 	},
 });
 
