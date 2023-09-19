@@ -38,9 +38,9 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
-		String memberUuid = UUID.randomUUID().toString();
 
 		if(optionalMember.isEmpty()){ //신규 회원
+			String memberUuid = UUID.randomUUID().toString();
 			Member oauthMember = Member.of(memberUuid, userInfo);
 			oauthMember = memberRepository.save(oauthMember);
 			// 토큰 생성
@@ -57,7 +57,7 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 				throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 			// 토큰 생성
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberUuid());
-			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
+			redisService.setValues(oauthMember.getMemberUuid(), jwtTokenDto.getRefreshToken());
 			// device 등록
 			Optional<Device> checkDevice = deviceRepository.findDeviceByDeviceTokenAndMemberId(
 				oauthLoginReqDto.getDeviceToken(), oauthMember
