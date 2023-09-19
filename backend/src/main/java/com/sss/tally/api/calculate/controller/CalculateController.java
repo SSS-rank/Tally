@@ -42,4 +42,14 @@ public class CalculateController {
 			= calculateGroupService.getRequestCalculate(memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateListRespDto);
 	}
+
+	@GetMapping("/receive")
+	public ResponseEntity<List<CalculateDto.GetResponseCalculateListRespDto>> getResponseCalculate(
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+
+		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList
+			= calculateGroupService.getResponseCalculate(memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
+	}
 }
