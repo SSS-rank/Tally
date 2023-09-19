@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +52,14 @@ public class CalculateController {
 		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList
 			= calculateGroupService.getResponseCalculate(memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
+	}
+
+	@PatchMapping("/rejection")
+	public ResponseEntity<String> rejectCalculate(
+		@RequestBody CalculateDto.CalculateRejectReqDto calculateCreateDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+		String result = calculateGroupService.rejectCalculate(calculateCreateDto, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }
