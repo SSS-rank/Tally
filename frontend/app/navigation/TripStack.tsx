@@ -3,6 +3,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
+import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
+import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
@@ -14,13 +16,15 @@ export type TripStackProps = {
 	TripDetail: undefined;
 	AnalysisTrip: undefined;
 	AdjustTrip: undefined;
+	SendAdjust: undefined;
+	GetAdjust: undefined;
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
 
 function TripStack() {
 	return (
-		<Stack.Navigator screenOptions={{ headerShadowVisible: false }}>
+		<Stack.Navigator screenOptions={{ headerShadowVisible: false }} initialRouteName="TripList">
 			<Stack.Screen
 				name="TripList"
 				component={TripListScreen}
@@ -44,6 +48,8 @@ function TripStack() {
 			/>
 			<Stack.Screen name="AnalysisTrip" component={AnalysisScreen} options={{ title: '분석' }} />
 			<Stack.Screen name="AdjustTrip" component={AdjustScreen} options={{ title: '' }} />
+			<Stack.Screen name="SendAdjust" component={SendAdjustScreen} options={{ title: '' }} />
+			<Stack.Screen name="GetAdjust" component={GetAdjustScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }
