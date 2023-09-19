@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Button } from 'react-native-paper';
 
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Carousel from '../../components/Carousel';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
+
+const width = Dimensions.get('window').width - 70;
 
 const TravelSheetPage = ({
 	item,
@@ -25,7 +28,14 @@ const TravelSheetPage = ({
 	};
 }) => {
 	return (
-		<View style={{ ...ViewStyles({ height: 300, color: item.color }).box, width: 300 }}>
+		<TouchableOpacity
+			style={{
+				...ViewStyles({ height: 300, color: item.color }).box,
+				width: width,
+				marginHorizontal: 0,
+				elevation: 2,
+			}}
+		>
 			<View
 				style={{
 					flexDirection: 'row',
@@ -76,74 +86,11 @@ const TravelSheetPage = ({
 					체크리스트
 				</Button>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 
-const RainbowSheet = [
-	{
-		id: 0,
-		color: 'red',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 1,
-		color: 'orange',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 2,
-		color: 'green',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 3,
-		color: 'pink',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 4,
-		color: 'blue',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-];
-
-function AlertScreen() {
+function HomeScreen() {
 	const [page, setPage] = useState(0);
 
 	return (
@@ -176,9 +123,9 @@ function AlertScreen() {
 					<Carousel
 						page={page}
 						setPage={setPage}
-						gap={16}
+						gap={10}
 						data={RainbowSheet}
-						pageWidth={320}
+						pageWidth={width}
 						RenderItem={TravelSheetPage}
 					/>
 				</View>
@@ -210,4 +157,67 @@ function AlertScreen() {
 	);
 }
 
-export default AlertScreen;
+const RainbowSheet = [
+	{
+		id: 0,
+		color: '#91C0EB',
+		dday: 6,
+		title: '싸피 졸업 여행',
+		startDate: '2023.09.11',
+		endDate: '2023.09.15',
+		balance: 675455,
+		profile1: '',
+		profile2: '',
+		profile3: '',
+	},
+	{
+		id: 1,
+		color: '#91C0EB',
+		dday: 6,
+		title: '싸피 졸업 여행',
+		startDate: '2023.09.11',
+		endDate: '2023.09.15',
+		balance: 675455,
+		profile1: '',
+		profile2: '',
+		profile3: '',
+	},
+	{
+		id: 2,
+		color: '#91C0EB',
+		dday: 6,
+		title: '싸피 졸업 여행',
+		startDate: '2023.09.11',
+		endDate: '2023.09.15',
+		balance: 675455,
+		profile1: '',
+		profile2: '',
+		profile3: '',
+	},
+	{
+		id: 3,
+		color: '#91C0EB',
+		dday: 6,
+		title: '싸피 졸업 여행',
+		startDate: '2023.09.11',
+		endDate: '2023.09.15',
+		balance: 675455,
+		profile1: '',
+		profile2: '',
+		profile3: '',
+	},
+	{
+		id: 4,
+		color: '#91C0EB',
+		dday: 6,
+		title: '싸피 졸업 여행',
+		startDate: '2023.09.11',
+		endDate: '2023.09.15',
+		balance: 675455,
+		profile1: '',
+		profile2: '',
+		profile3: '',
+	},
+];
+
+export default HomeScreen;
