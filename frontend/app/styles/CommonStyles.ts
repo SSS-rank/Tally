@@ -15,7 +15,7 @@ export const TextStyles = (props?: textStyleProps) =>
 	StyleSheet.create({
 		header: {
 			fontFamily: '',
-			fontSize: 28,
+			fontSize: 24,
 			color: props?.color ? props.color : '#232323',
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			textAlign: props?.align ? props.align : 'center',
