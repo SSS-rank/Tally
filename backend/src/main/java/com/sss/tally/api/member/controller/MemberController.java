@@ -30,4 +30,10 @@ public class MemberController {
 		MemberDto.MemberRespDto memberRespDto = memberService.getMemberInfo(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(memberRespDto);
 	}
+
+	@PatchMapping("/profile")
+	public ResponseEntity<MemberDto.MemberRespDto> patchMemberInfo(Authentication authentication, MemberDto.MemberReqDto memberReqDto){
+		MemberDto.MemberRespDto memberRespDto = memberService.patchMemberInfo(authentication, memberReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body(memberRespDto);
+	}
 }
