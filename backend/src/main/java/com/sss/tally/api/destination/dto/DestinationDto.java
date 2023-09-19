@@ -2,11 +2,10 @@ package com.sss.tally.api.destination.dto;
 
 import java.util.List;
 
-import org.springframework.data.repository.cdi.Eager;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.city.entity.City;
+import com.sss.tally.domain.state.entity.State;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,31 +29,50 @@ public class DestinationDto {
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class StatusRespListDto{
-		private List<StatusCityRespDto> regcodes;
+	public static class StateCityRespListDto{
+		private List<StateCityRespDto> regcodes;
 	}
 
-	@Builder
 	@Getter
+	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class StatusCityReqDto{
-		private String regcode_pattern;
-		private final boolean is_ignore_zero = true;
+	public static class StateCityRespDto{
+		private String code;
+		private String name;
+	}
 
-		public static StatusCityReqDto from(String regcodePattern){
-			return StatusCityReqDto.builder()
-				.regcode_pattern(regcodePattern)
+	@Getter
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class StateDto{
+		private Long stateId;
+		private String stateName;
+
+		public static StateDto from(State state){
+			return StateDto.builder()
+				.stateId(state.getStateId())
+				.stateName(state.getStateName())
 				.build();
 		}
 	}
 
 	@Getter
 	@Builder
-	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class StatusCityRespDto{
-		private String code;
-		private String name;
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class CityDto{
+		private Long cityId;
+		private String cityName;
+
+		public static CityDto from(City city){
+			return CityDto.builder()
+				.cityId(city.getCityId())
+				.cityName(city.getCityName())
+				.build();
+		}
 	}
 }
