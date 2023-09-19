@@ -1,58 +1,57 @@
 import React from 'react';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
+import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
+import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
 import TripListScreen from '../screens/TripScreen/TripListScreen';
 
 export type TripStackProps = {
-  TripList: undefined;
-  CreateTrip: undefined;
-  TripDetail: undefined;
-  AnalysisTrip: undefined;
-  AdjustTrip: undefined;
+	TripList: undefined;
+	CreateTrip: undefined;
+	TripDetail: undefined;
+	AnalysisTrip: undefined;
+	AdjustTrip: undefined;
+	SendAdjust: undefined;
+	GetAdjust: undefined;
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
 
 function TripStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="TripList"
-        component={TripListScreen}
-        options={{
-          title: '여행지 목록',
-          headerTitleStyle: {
-            fontFamily: 'Pretendard-Light',
-          },
-        }}
-      />
-      <Stack.Screen
-        name="CreateTrip"
-        component={CreateTripScreen}
-        options={{title: '여행지 생성'}}
-      />
-      <Stack.Screen
-        name="TripDetail"
-        component={TripDetailScreen}
-        options={{title: '상세 결제 내역'}}
-      />
-      <Stack.Screen
-        name="AnalysisTrip"
-        component={AnalysisScreen}
-        options={{title: '분석'}}
-      />
-      <Stack.Screen
-        name="AdjustTrip"
-        component={AdjustScreen}
-        options={{title: '정산'}}
-      />
-    </Stack.Navigator>
-  );
+	return (
+		<Stack.Navigator screenOptions={{ headerShadowVisible: false }} initialRouteName="TripList">
+			<Stack.Screen
+				name="TripList"
+				component={TripListScreen}
+				options={{
+					title: '여행지 목록',
+					headerTitleStyle: {
+						fontFamily: 'Pretendard-Light',
+					},
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
+				name="CreateTrip"
+				component={CreateTripScreen}
+				options={{ title: '여행지 생성' }}
+			/>
+			<Stack.Screen
+				name="TripDetail"
+				component={TripDetailScreen}
+				options={{ title: '상세 결제 내역' }}
+			/>
+			<Stack.Screen name="AnalysisTrip" component={AnalysisScreen} options={{ title: '분석' }} />
+			<Stack.Screen name="AdjustTrip" component={AdjustScreen} options={{ title: '' }} />
+			<Stack.Screen name="SendAdjust" component={SendAdjustScreen} options={{ title: '' }} />
+			<Stack.Screen name="GetAdjust" component={GetAdjustScreen} options={{ title: '' }} />
+		</Stack.Navigator>
+	);
 }
 
 export default TripStack;
