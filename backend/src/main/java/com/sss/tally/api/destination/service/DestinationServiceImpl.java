@@ -25,7 +25,7 @@ public class DestinationServiceImpl implements DestinationService{
 	private final StateRepository stateRepository;
 
 	@Override
-	public void createStatus(List<DestinationDto.StateCityRespDto> stateList) {
+	public void createState(List<DestinationDto.StateCityRespDto> stateList) {
 		for(DestinationDto.StateCityRespDto state: stateList)
 			stateRepository.save(State.from(state));
 	}
