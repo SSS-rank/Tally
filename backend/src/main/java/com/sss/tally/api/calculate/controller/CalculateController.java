@@ -24,7 +24,6 @@ public class CalculateController {
 	@PostMapping
 	public ResponseEntity<String> createCalculate(
 		@RequestBody List<CalculateDto.CalculateCreateDto> calculateCreateDto) {
-		System.out.println("dddd" + calculateCreateDto.get(0).getPaymentUuid());
 		String result = calculateGroupService.createCalculate(calculateCreateDto);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
