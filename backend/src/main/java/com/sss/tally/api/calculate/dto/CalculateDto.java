@@ -51,4 +51,34 @@ public class CalculateDto {
 		}
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetResponseCalculateListRespDto {
+
+		private String calculateGroupUuid;
+
+		private Long amount;
+
+		private CalculateGroupStatusEnum status;
+
+		private String createdTime;
+
+		private String receiverName;
+
+		public static GetResponseCalculateListRespDto of(Long amount, CalculateGroup calculateGroup) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String formattedTime = calculateGroup.getCreateDate().format(formatter);
+			return GetResponseCalculateListRespDto.builder()
+				.amount(amount)
+				.calculateGroupUuid(calculateGroup.getCalculateGroupUuid())
+				.createdTime(formattedTime)
+				.status(calculateGroup.getStatus())
+				.receiverName(calculateGroup.getMemberId().getNickname())
+				.build();
+		}
+	}
+
 }
