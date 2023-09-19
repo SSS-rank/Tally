@@ -48,4 +48,11 @@ public class DestinationServiceImpl implements DestinationService{
 			.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<DestinationDto.CityDto> getCityList(Long code) {
+		List<City> all = cityRepository.findBystateId_StateId(code);
+		return all.stream()
+			.map(DestinationDto.CityDto::from)
+			.collect(Collectors.toList());
+	}
 }

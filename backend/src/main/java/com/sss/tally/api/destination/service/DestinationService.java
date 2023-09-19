@@ -8,4 +8,5 @@ public interface DestinationService {
 	void createStatus(List<DestinationDto.StateCityRespDto> statusList);
 	void createCity(List<DestinationDto.StateCityRespDto> cityList);
 	List<DestinationDto.StateDto> getStateList();
+	List<DestinationDto.CityDto> getCityList(Long code);
 }
