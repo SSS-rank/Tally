@@ -21,6 +21,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws IOException, ServletException {
+		String path = request.getServletPath();
+		// 로그인일 경우 건너뛰기
+		if ( path.startsWith("/login")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		String token = this.getTokenByHeader(request);
 		if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
 			Authentication authentication = jwtProvider.getAuthentication(token);
