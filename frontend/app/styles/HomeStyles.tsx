@@ -9,7 +9,6 @@ export const HomeStyles = StyleSheet.create({
 	},
 	scrollView: {
 		// backgroundColor: 'skyblue',
-		paddingHorizontal: 15,
 	},
 });
 
@@ -34,6 +33,7 @@ export const ViewStyles = (props?: styleProps) =>
 			alignItems: props?.alignItems ? props.alignItems : 'flex-end',
 			padding: 10,
 			flex: 1,
+			paddingHorizontal: 15,
 		},
 		box: {
 			flexDirection: props?.flexDirection ? props.flexDirection : 'column',
@@ -46,6 +46,7 @@ export const ViewStyles = (props?: styleProps) =>
 			alignItems: props?.alignItems ? props.alignItems : 'flex-start',
 			padding: 20,
 			flex: 1,
+			marginHorizontal: 15,
 		},
 		innerProfile: {
 			flexDirection: props?.flexDirection ? props.flexDirection : 'column',

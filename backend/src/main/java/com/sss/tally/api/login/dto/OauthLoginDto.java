@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.global.jwt.dto.JwtTokenDto;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ public class OauthLoginDto {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class OauthLoginReqDto{
 		@NotEmpty
 		private String kakaoAccessToken;

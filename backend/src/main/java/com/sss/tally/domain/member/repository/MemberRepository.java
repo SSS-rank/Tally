@@ -13,4 +13,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	UserDetails findMemberByMemberUuid(String memberUuid);
 
 	Optional<Member> findMemberByMemberUuidAndWithdrawalDateIsNull(String uuid);
+	Optional<Member> findByMemberUuid(String memberUuid);
 }

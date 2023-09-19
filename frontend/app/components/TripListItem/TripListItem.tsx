@@ -4,7 +4,7 @@ import { Avatar } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { TripListItemProps } from '../../model/tripListItem';
+import { TripListItemProps } from '../../model/trip';
 import { TextStyles } from '../../styles/CommonStyles';
 function TripListItem({ title, nationName, date, image }: TripListItemProps) {
 	return (
