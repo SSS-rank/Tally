@@ -81,4 +81,15 @@ public class CalculateDto {
 		}
 	}
 
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class CalculateRejectReqDto {
+		@NotNull
+		private String calculateGruopUuid;
+
+		@NotNull
+		private String content;
+	}
+
 }
