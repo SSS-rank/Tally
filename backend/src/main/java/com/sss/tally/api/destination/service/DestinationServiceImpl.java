@@ -40,4 +40,12 @@ public class DestinationServiceImpl implements DestinationService{
 		}
 	}
 
+	@Override
+	public List<DestinationDto.StateDto> getStateList(){
+		List<State> all = stateRepository.findAll();
+		return all.stream()
+			.map(DestinationDto.StateDto::from)
+			.collect(Collectors.toList());
+	}
+
 }
