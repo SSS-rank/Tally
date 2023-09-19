@@ -45,9 +45,21 @@ public class Device {
 	private Boolean deviceStatus;
 
 	@Column(nullable = false)
-	private Boolean isLogout;
+	private Boolean isLogin;
 
 	@CreatedDate
 	private LocalDateTime createDate;
 
+	public static Device of(Member member, String deviceToken){
+		return Device.builder()
+			.memberId(member)
+			.deviceToken(deviceToken)
+			.deviceStatus(true)
+			.isLogin(true)
+			.build();
+	}
+
+	public void updateLogin(Boolean status){
+		this.isLogin = status;
+	}
 }
