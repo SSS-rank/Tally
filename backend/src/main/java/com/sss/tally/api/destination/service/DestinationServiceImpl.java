@@ -30,4 +30,14 @@ public class DestinationServiceImpl implements DestinationService{
 			stateRepository.save(State.from(state));
 	}
 
+	@Override
+	public void createCity(List<DestinationDto.StateCityRespDto> cityList) {
+		for(DestinationDto.StateCityRespDto city: cityList){
+			String[] c = city.getName().split(" ");
+			Optional<State> stateByStateName = stateRepository.findStateByStateName(c[0]);
+			if(stateByStateName.isEmpty()) throw new BusinessException(ErrorCode.NOT_VALID_TOKEN);
+			cityRepository.save(City.of(c[1], stateByStateName.get()));
+		}
+	}
+
 }
