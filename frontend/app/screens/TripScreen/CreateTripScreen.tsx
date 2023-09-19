@@ -3,19 +3,31 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
+import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CreateTripScreen() {
-	const [name, setName] = useState('');
-	const reset = () => {
-		setName('');
+	const [title, setTitle] = useState('');
+
+	const changeName = (value: string) => {
+		setTitle(value);
+
+		const updatedTripInfo = { ...tripInfo, title: value };
+		setTripInfo(updatedTripInfo);
 	};
 
+	const reset = () => {
+		setTitle('');
+	};
+
+	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
 	const regist = () => {
 		console.log('여행지 등록하기');
+		console.log(tripInfo);
 	};
 
 	return (
@@ -25,8 +37,8 @@ function CreateTripScreen() {
 				<View style={styles.searchView}>
 					<TextInput
 						style={styles.nameInput}
-						value={name}
-						onChangeText={setName}
+						value={title}
+						onChangeText={changeName}
 						placeholder="별명을 입력해주세요"
 					/>
 					<Icon name="close-circle" style={styles.closeIcon} onPress={reset} />
