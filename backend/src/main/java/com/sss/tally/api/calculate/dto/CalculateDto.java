@@ -13,8 +13,9 @@ public class CalculateDto {
 	@NoArgsConstructor
 	@Getter
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class CalculateCreateDto {
+	public static class CalculateCreateReqDto {
 		@NotNull
 		private String paymentUuid;
 	}
+
 }
