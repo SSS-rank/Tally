@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.sss.tally.api.member.dto.MemberDto;
 import com.sss.tally.domain.device.entity.Device;
 import com.sss.tally.domain.device.repository.DeviceRepository;
 import com.sss.tally.domain.member.entity.Member;
@@ -39,5 +40,11 @@ public class MemberServiceImpl implements MemberService{
 		device.ifPresent(value -> value.updateLogin(false));
 		// 회원 탈퇴 날짜 저장
 		member.withdrawal(LocalDateTime.now());
+	}
+
+	@Override
+	public MemberDto.MemberRespDto getMemberInfo(Authentication authentication) {
+		Member member = (Member)authentication.getPrincipal();
+		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
 	}
 }
