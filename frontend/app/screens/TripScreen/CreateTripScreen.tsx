@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -27,6 +28,7 @@ function CreateTripScreen() {
 			</View>
 			<View style={styles.sectionView}>
 				<Text style={styles.title}>여행 일정 등록</Text>
+				<TripDateInput />
 			</View>
 		</View>
 	);
