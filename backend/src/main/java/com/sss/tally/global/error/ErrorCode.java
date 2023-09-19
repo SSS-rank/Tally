@@ -18,6 +18,7 @@ public enum ErrorCode {
 
 	//회원
 	ALREADY_WITHDRAWAL_MEMBER(HttpStatus.UNAUTHORIZED, "011", "탈퇴한 회원입니다."),
+	NOT_EXIST_MEMBER(HttpStatus.UNAUTHORIZED, "012", "존재하지 않는 회원입니다."),
 
 	//정산
 	NOT_EXIST_PAYMENT_MEMBER(HttpStatus.BAD_REQUEST, "001", "결제에 태그된 멤버가 없습니다."),
@@ -26,7 +27,11 @@ public enum ErrorCode {
 	NOT_BEFORE_STATUS(HttpStatus.BAD_REQUEST, "004", "정산 전 상태가 아닙니다."),
 
 	//결제
-	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다.");
+	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다."),
+
+	// 여행
+	NOT_EXIST_TRAVEL_TYPE(HttpStatus.BAD_REQUEST, "011", "잘못된 여행 타입입니다."),
+	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
 		this.httpStatus = httpStatus;
