@@ -4,7 +4,9 @@ import { Calendar } from 'react-native-calendars';
 import { Portal, Modal } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRecoilState } from 'recoil';
 
+import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface Day {
@@ -50,6 +52,18 @@ function TripDateInput() {
 		setEndDayModalVisible(false);
 	};
 
+	// recoil
+	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
+	const changeStartDay = (value: string) => {
+		const updatedTripInfo = { ...tripInfo, startDay: value };
+		setTripInfo(updatedTripInfo);
+	};
+
+	const changeEndDay = (value: string) => {
+		const updatedTripInfo = { ...tripInfo, endDay: value };
+		setTripInfo(updatedTripInfo);
+	};
+
 	return (
 		<View style={styles.dateContainer}>
 			<TouchableOpacity style={styles.dateView} onPress={openStartDayCalendar}>
@@ -71,6 +85,7 @@ function TripDateInput() {
 							onDayPress={(day) => {
 								setStartDay(day);
 								setEndDay(defaultDay);
+								changeStartDay(day.dateString);
 								hideStartModal();
 							}}
 							theme={calendarTheme}
@@ -87,6 +102,7 @@ function TripDateInput() {
 							onDayPress={(day) => {
 								if (day.timestamp >= startDay.timestamp) {
 									setEndDay(day);
+									changeEndDay(day.dateString);
 									hideEndModal();
 								}
 							}}
