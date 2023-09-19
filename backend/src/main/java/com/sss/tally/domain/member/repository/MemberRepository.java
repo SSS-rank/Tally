@@ -11,4 +11,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findMemberByKakaoId(Long kakaoId);
 
 	UserDetails findMemberByMemberId(Long memberId);
+
+	Optional<Member> findMemberByMemberUuidAndWithdrawalDateIsNull(String uuid);
 }
