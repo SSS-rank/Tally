@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CreateTripScreen() {
@@ -10,6 +11,7 @@ function CreateTripScreen() {
 	const reset = () => {
 		setName('');
 	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.sectionView}>
@@ -21,6 +23,7 @@ function CreateTripScreen() {
 			</View>
 			<View style={styles.sectionView}>
 				<Text style={styles.title}>여행지 등록</Text>
+				<TripLocationSelect />
 			</View>
 			<View style={styles.sectionView}>
 				<Text style={styles.title}>여행 일정 등록</Text>
@@ -36,7 +39,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 	},
 	sectionView: {
-		marginVertical: 10,
+		marginTop: 10,
+		marginBottom: 40,
 	},
 	searchView: {
 		position: 'relative',
@@ -49,7 +53,7 @@ const styles = StyleSheet.create({
 		right: 10,
 	},
 	title: {
-		...TextStyles({ align: 'left', weight: 'bold' }).title,
+		...TextStyles({ align: 'left', weight: 'bold', mBottom: 20 }).title,
 	},
 	nameInput: {
 		borderBottomColor: 'rgba(102,102,102,0.6)',
