@@ -1,20 +1,61 @@
-import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, TextInput } from 'react-native';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import { TextStyles } from '../../styles/CommonStyles';
 
 function CreateTripScreen() {
-  return (
-    <View style={styles.viewContainer}>
-      <Text>Create Screen! 🎉</Text>
-    </View>
-  );
+	const [name, setName] = useState('');
+	const reset = () => {
+		setName('');
+	};
+	return (
+		<View style={styles.viewContainer}>
+			<View style={styles.sectionView}>
+				<Text style={styles.title}>여행지 별명 등록</Text>
+				<View style={styles.searchView}>
+					<TextInput style={styles.nameInput} value={name} onChangeText={setName} />
+					<Icon name="close-circle" style={styles.closeIcon} onPress={reset} />
+				</View>
+			</View>
+			<View style={styles.sectionView}>
+				<Text style={styles.title}>여행지 등록</Text>
+			</View>
+			<View style={styles.sectionView}>
+				<Text style={styles.title}>여행 일정 등록</Text>
+			</View>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  viewContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+	viewContainer: {
+		flex: 1,
+		padding: 15,
+		backgroundColor: '#ffffff',
+	},
+	sectionView: {
+		marginVertical: 10,
+	},
+	searchView: {
+		position: 'relative',
+	},
+	closeIcon: {
+		color: 'rgba(102,102,102,0.6)',
+		fontSize: 20,
+		position: 'absolute',
+		bottom: 10,
+		right: 10,
+	},
+	title: {
+		...TextStyles({ align: 'left', weight: 'bold' }).title,
+	},
+	nameInput: {
+		borderBottomColor: 'rgba(102,102,102,0.6)',
+		borderBottomWidth: 1,
+		paddingHorizontal: 15,
+	},
 });
 
 export default CreateTripScreen;
