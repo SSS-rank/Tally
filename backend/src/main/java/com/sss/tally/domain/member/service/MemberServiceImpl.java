@@ -47,4 +47,11 @@ public class MemberServiceImpl implements MemberService{
 		Member member = (Member)authentication.getPrincipal();
 		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
 	}
+
+	@Override
+	public MemberDto.MemberRespDto patchMemberInfo(Authentication authentication, MemberDto.MemberReqDto memberReqDto) {
+		Member member = (Member)authentication.getPrincipal();
+		member.patchMemberInfo(memberReqDto.getNickname(), memberReqDto.getProfileImage());
+		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
+	}
 }

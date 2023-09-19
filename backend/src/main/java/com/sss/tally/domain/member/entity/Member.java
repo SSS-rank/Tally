@@ -69,6 +69,11 @@ public class Member implements UserDetails {
 		this.withdrawalDate = localDateTime;
 	}
 
+	public void patchMemberInfo(String nickname, String profileImage){
+		this.nickname = nickname;
+		this.profileImage = profileImage;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
