@@ -42,7 +42,7 @@ public class DestinationServiceImpl implements DestinationService{
 
 	@Override
 	public List<DestinationDto.StateDto> getStateList(){
-		List<State> all = stateRepository.findAll();
+		List<State> all = stateRepository.findAllByOrderByStateIdAsc();
 		return all.stream()
 			.map(DestinationDto.StateDto::from)
 			.collect(Collectors.toList());
