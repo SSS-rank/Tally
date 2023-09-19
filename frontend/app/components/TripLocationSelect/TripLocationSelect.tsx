@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+import { useRecoilState } from 'recoil';
+
+import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface tripLocationSelectItem {
@@ -13,8 +16,8 @@ function TripLocationSelect() {
 	const [openTripType, setOpenTripType] = useState(false);
 	const [tripType, setTripType] = useState(''); // 국내(domestic) , 해외(overseas) 여부
 	const [tripTypeItems, setTripTypeItems] = useState<tripLocationSelectItem[]>([
-		{ label: '국내', value: 'domestic' },
-		{ label: '해외', value: 'overseas' },
+		{ label: '국내', value: 'state' },
+		{ label: '해외', value: 'global' },
 	]);
 
 	// 해외 선택 시 국가
@@ -27,17 +30,23 @@ function TripLocationSelect() {
 	const [area, setArea] = useState('');
 	const [tripAreaItems, setTripAreaItems] = useState<tripLocationSelectItem[]>([]);
 
+	// recoil
+	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
+
 	useEffect(() => {
-		if (tripType === 'domestic') {
+		if (tripType === 'state') {
 			setTripAreaItems([
 				{ label: '서울', value: 'seoul' },
 				{ label: '부산', value: 'busan' },
 			]);
-		} else if (tripType === 'overseas') {
+			setCountry('');
+		} else if (tripType === 'global') {
 			setTripCountryItems([
 				{ label: '일본', value: 'japan' },
 				{ label: '태국', value: 'taiwan' },
 			]);
+			setArea('');
+			setCity('');
 		}
 	}, [tripType]);
 
@@ -55,6 +64,28 @@ function TripLocationSelect() {
 		}
 	}, [area]);
 
+	const changeTripType = (value: any) => {
+		const updatedTripInfo = {
+			...tripInfo,
+			type: value,
+		};
+		setTripInfo(updatedTripInfo);
+	};
+
+	const changeCountry = (value: any) => {
+		const updatedTripInfo = { ...tripInfo, location: value, type: 'global' };
+		setTripInfo(updatedTripInfo);
+	};
+
+	const changeArea = (value: any) => {
+		const updatedTripInfo = { ...tripInfo, location: value };
+		setTripInfo(updatedTripInfo);
+	};
+	const changeCity = (value: any) => {
+		const updatedTripInfo = { ...tripInfo, location: value, type: 'city' };
+		setTripInfo(updatedTripInfo);
+	};
+
 	return (
 		<View>
 			<DropDownPicker
@@ -69,8 +100,9 @@ function TripLocationSelect() {
 				placeholder="선택해 주세요"
 				zIndex={3000}
 				zIndexInverse={1000}
+				onChangeValue={changeTripType}
 			/>
-			{tripType === 'domestic' && (
+			{tripType === 'state' && (
 				<DropDownPicker
 					open={openArea}
 					value={area}
@@ -83,9 +115,10 @@ function TripLocationSelect() {
 					placeholder="선택해 주세요"
 					zIndex={2000}
 					zIndexInverse={2000}
+					onChangeValue={changeArea}
 				/>
 			)}
-			{tripType === 'domestic' && area !== '' && (
+			{tripType === 'state' && area !== '' && (
 				<DropDownPicker
 					open={openCity}
 					value={city}
@@ -98,9 +131,10 @@ function TripLocationSelect() {
 					placeholder="선택해 주세요"
 					zIndex={1000}
 					zIndexInverse={3000}
+					onChangeValue={changeCity}
 				/>
 			)}
-			{tripType === 'overseas' && (
+			{tripType === 'global' && (
 				<DropDownPicker
 					open={openCountry}
 					value={country}
@@ -113,6 +147,7 @@ function TripLocationSelect() {
 					placeholder="선택해 주세요"
 					zIndex={2000}
 					zIndexInverse={2000}
+					onChangeValue={changeCountry}
 				/>
 			)}
 		</View>
