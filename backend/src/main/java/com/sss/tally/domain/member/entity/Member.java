@@ -2,7 +2,6 @@ package com.sss.tally.domain.member.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,24 +12,24 @@ import javax.persistence.Id;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.sss.tally.external.model.OAuthAttributes;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@ToString
 public class Member implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,13 +56,17 @@ public class Member implements UserDetails {
 
 	private LocalDateTime withdrawalDate;
 
-	public static Member of (String memberUuid, OAuthAttributes userInfo){
+	public static Member of(String memberUuid, OAuthAttributes userInfo) {
 		return Member.builder()
 			.memberUuid(memberUuid)
 			.kakaoId(userInfo.getKakaoId())
 			.nickname(userInfo.getNickname())
 			.profileImage(userInfo.getProfileImageUrl())
 			.build();
+	}
+
+	public void withdrawal(LocalDateTime localDateTime){
+		this.withdrawalDate = localDateTime;
 	}
 
 	@Override

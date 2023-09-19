@@ -38,4 +38,11 @@ public class City {
 	@Column(nullable = false)
 	private String cityName;
 
+	public static City of(String cityName, State stateId){
+		return City.builder()
+			.stateId(stateId)
+			.cityName(cityName)
+			.build();
+	}
+
 }
