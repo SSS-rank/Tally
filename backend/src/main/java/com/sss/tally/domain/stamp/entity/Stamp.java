@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.travel.entity.TravelTypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,9 +42,10 @@ public class Stamp {
 	private Member memberId;
 	@Column(nullable = false)
 	private Long travelLocation;
-
+	
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private int travelType;
+	private TravelTypeEnum travelType;
 
 	@CreatedDate
 	private LocalDateTime createDate;

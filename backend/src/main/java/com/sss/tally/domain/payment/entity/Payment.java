@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -57,6 +59,9 @@ public class Payment {
 	private Long amount;
 
 	@Column(nullable = false)
+	private String paymentUuid;
+
+	@Column(nullable = false)
 	private LocalDateTime paymentLocalDate;
 
 	@CreatedDate
@@ -66,6 +71,7 @@ public class Payment {
 	@Column(nullable = false)
 	private String paymentMemo;
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private PaymentMethodEnum paymentMethod;
 
@@ -75,7 +81,12 @@ public class Payment {
 	@Column(nullable = false)
 	private Boolean status;
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private CalculateStatusEnum calculateStatus;
+
+	public void updateCalculateStatusEnum(CalculateStatusEnum calculateStatus) {
+		this.calculateStatus = calculateStatus;
+	}
 
 }
