@@ -8,4 +8,6 @@ public interface CalculateGroupService {
 	String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid);
 
 	List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculate(String memberUuid);
+
+	List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid);
 }
