@@ -63,6 +63,10 @@ public class Member implements UserDetails {
 			.build();
 	}
 
+	public void withdrawal(LocalDateTime localDateTime){
+		this.withdrawalDate = localDateTime;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
