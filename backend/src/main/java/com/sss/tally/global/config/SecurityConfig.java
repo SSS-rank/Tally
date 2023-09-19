@@ -1,5 +1,6 @@
 package com.sss.tally.global.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 			.csrf().disable()
 			.headers().frameOptions().disable().and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+			.logout().logoutUrl("/member/logout").and()
 			.authorizeRequests()
 			.antMatchers( "/v3/api-docs","/swagger*/**", "/login", "/destination/**").permitAll()
 			.anyRequest().authenticated().and()
