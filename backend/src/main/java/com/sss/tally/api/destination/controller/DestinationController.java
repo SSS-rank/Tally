@@ -51,4 +51,14 @@ public class DestinationController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
+	@GetMapping("/state")
+	public ResponseEntity<List<DestinationDto.StateDto>> getStateList(){
+		List<DestinationDto.StateDto> stateList = destinationService.getStateList();
+		return ResponseEntity.status(HttpStatus.OK).body(stateList);
+	}
+	@GetMapping("/city")
+	public ResponseEntity<List<DestinationDto.CityDto>> getCityList(@RequestParam String code){
+		List<DestinationDto.CityDto> cityList = destinationService.getCityList(Long.parseLong(code));
+		return ResponseEntity.status(HttpStatus.OK).body(cityList);
+	}
  }
