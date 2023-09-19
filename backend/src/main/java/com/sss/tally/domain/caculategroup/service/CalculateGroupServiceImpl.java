@@ -220,4 +220,43 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		}
 		return getRequestCalculateListRespDtoList;
 	}
+
+	@Override
+	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList = new ArrayList<>();
+		Member member = memberOptional.get();
+		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByMemberId(member);
+		if (groupMemberList.isEmpty()) {
+			return getResponseCalculateListRespDtoList;
+		}
+		//페이먼트들찾고
+		//해당 페이먼트 중 멤버아이디가 애인애의 amount 다 합치면 될듯??
+		for (GroupMember groupMember : groupMemberList) {
+			Long amount = 0l;
+			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+				groupMember.getCalculateGroupId());
+			if (groupPaymentList.isEmpty()) {
+				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+			}
+			for (GroupPayment groupPayment : groupPaymentList) {
+				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(
+					groupPayment.getPaymentId(), member);
+				if (memberPaymentList.isEmpty()) {
+					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
+				}
+				for (MemberPayment memberPayment : memberPaymentList) {
+					amount += memberPayment.getAmount();
+				}
+			}
+
+			CalculateDto.GetResponseCalculateListRespDto getResponseCalculateListRespDto
+				= CalculateDto.GetResponseCalculateListRespDto.of(amount, groupMember.getCalculateGroupId());
+			getResponseCalculateListRespDtoList.add(getResponseCalculateListRespDto);
+		}
+		return getResponseCalculateListRespDtoList;
+	}
 }
