@@ -39,4 +39,11 @@ public class TravelGroup {
 	@JoinColumn(name = "travel_id")
 	private Travel travelId;
 
+	public static TravelGroup of(Member member, Travel travel){
+		return TravelGroup.builder()
+			.memberId(member)
+			.travelId(travel)
+			.build();
+	}
+
 }

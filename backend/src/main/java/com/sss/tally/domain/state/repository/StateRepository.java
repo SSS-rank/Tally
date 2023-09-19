@@ -9,5 +9,5 @@ import com.sss.tally.domain.state.entity.State;
 
 public interface StateRepository extends JpaRepository<State, Long> {
 	Optional<State> findStateByStateName(String stateName);
-	List<State> findAll();
+	List<State> findAllByOrderByStateIdAsc();
 }

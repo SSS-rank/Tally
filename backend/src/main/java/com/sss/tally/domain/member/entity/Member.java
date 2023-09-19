@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -28,6 +29,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
+@ToString
 public class Member implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +63,15 @@ public class Member implements UserDetails {
 			.nickname(userInfo.getNickname())
 			.profileImage(userInfo.getProfileImageUrl())
 			.build();
+	}
+
+	public void withdrawal(LocalDateTime localDateTime){
+		this.withdrawalDate = localDateTime;
+	}
+
+	public void patchMemberInfo(String nickname, String profileImage){
+		this.nickname = nickname;
+		this.profileImage = profileImage;
 	}
 
 	@Override
