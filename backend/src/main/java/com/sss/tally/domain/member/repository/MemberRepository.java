@@ -10,7 +10,7 @@ import com.sss.tally.domain.member.entity.Member;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findMemberByKakaoId(Long kakaoId);
 
-	UserDetails findMemberByMemberId(Long memberId);
+	UserDetails findMemberByMemberUuid(String memberUuid);
 
 	Optional<Member> findMemberByMemberUuidAndWithdrawalDateIsNull(String uuid);
 }

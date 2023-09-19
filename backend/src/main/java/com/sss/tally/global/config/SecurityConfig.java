@@ -31,7 +31,7 @@ public class SecurityConfig {
 			.headers().frameOptions().disable().and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
-			.antMatchers( "/v3/api-docs","/swagger*/**", "/login").permitAll()
+			.antMatchers( "/v3/api-docs","/swagger*/**", "/login", "/destination/**").permitAll()
 			.anyRequest().authenticated().and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();

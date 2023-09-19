@@ -134,7 +134,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 			groupMemberRepository.save(GroupMember.of(key, calculateGroup, false));
 			//알림 보내기 위해 Dto 생성
-			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsFalseAndIsLogoutIsFalse(
+			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
 				key);
 			if (deviceOptional.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);

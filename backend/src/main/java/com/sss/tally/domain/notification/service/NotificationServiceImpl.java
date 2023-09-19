@@ -87,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public List<NotificationDto.NotificationRespDto> sendNotificationList(
 		List<NotificationDto.NotificationReqDto> notificationReqDtos) {
 		for (NotificationDto.NotificationReqDto notificationReqDto : notificationReqDtos) {
-			List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsFalseAndIsLogoutIsFalse(
+			List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsTrueAndIsLoginIsTrue(
 				notificationReqDto.getToken());
 			if (optionalDeviceList.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
@@ -137,7 +137,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public NotificationDto.NotificationRespDto sendNotification(NotificationDto.NotificationReqDto notificationReqDto) {
-		List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsFalseAndIsLogoutIsFalse(
+		List<Device> optionalDeviceList = deviceRepository.findDevicesByDeviceTokenAndDeviceStatusIsTrueAndIsLoginIsTrue(
 			notificationReqDto.getToken());
 		if (optionalDeviceList.isEmpty()) {
 			throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);

@@ -17,6 +17,7 @@ import com.sss.bank.domain.shop.entity.Shop;
 import com.sss.bank.domain.shop.repository.ShopRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.AccountException;
+import com.sss.bank.global.error.exception.PaymentException;
 import com.sss.bank.global.error.exception.ShopException;
 
 import lombok.RequiredArgsConstructor;
@@ -32,14 +33,18 @@ public class PaymentServiceImpl implements PaymentService {
 	private final PasswordRepository passwordRepository;
 
 	@Override
-	public PaymentDto.PaymentRespDto createPayment(PaymentDto.PaymentReqDto paymentReqDto) throws
+	public PaymentDto.PaymentRespDto createPayment(Long memberId, PaymentDto.PaymentReqDto paymentReqDto) throws
 		NoSuchAlgorithmException {
-		// 1. 존재하는 sender 인지 확인
+		// 0. 존재하는 sender 인지 확인
 		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			paymentReqDto.getSenderAccountNum());
-		if (account.isEmpty())
+		if (account.isEmpty()) {
 			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
-
+		}
+		// 1. 결제자와 사용자가 같은 사람인지 확인
+		if(!account.get().getMemberId().getMemberId().equals(memberId)){
+			throw new PaymentException(ErrorCode.NOT_EXIST_ACCOUNT);
+		}
 		// 2. 비밀 번호 체크
 		if (!passwordRepository.checkPassword(paymentReqDto.getSenderAccountNum(), paymentReqDto.getPassword()))
 			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
