@@ -144,7 +144,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				payer.getNickname() + " 님이 정산을 요청하였습니다.", "정산 요청");
 			notificationReqDtoList.add(notificationReqDto);
 			//알림 저장히기 위한 Dto 생성
-			Notification notification = Notification.of("requestCalculate", payer.getMemberUuid(),
+			Notification notification = Notification.of("request_calculate", payer.getMemberUuid(),
 				payer.getNickname(), key.getMemberUuid(), key.getNickname(), travelName);
 			//알림함에 저장
 			notificationRepository.save(notification);
@@ -223,18 +223,20 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid) {
+		//탈퇴한 회원인지 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 		}
+		//요청 리스트
 		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList = new ArrayList<>();
 		Member member = memberOptional.get();
+		//사용자가 속한 그룹 멤버 리스트 가져오기
 		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByMemberId(member);
 		if (groupMemberList.isEmpty()) {
 			return getResponseCalculateListRespDtoList;
 		}
-		//페이먼트들찾고
-		//해당 페이먼트 중 멤버아이디가 애인애의 amount 다 합치면 될듯??
+		//해당 그룹에 속한 결제건들을 전부 가져오고 해당 결제건 중 로그인 사용자가 지불 해야 할 돈만 가져오기
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
@@ -252,11 +254,116 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 					amount += memberPayment.getAmount();
 				}
 			}
-
+			//그룹 별 사용자가 줘야할 돈 및 정보 저장
 			CalculateDto.GetResponseCalculateListRespDto getResponseCalculateListRespDto
 				= CalculateDto.GetResponseCalculateListRespDto.of(amount, groupMember.getCalculateGroupId());
 			getResponseCalculateListRespDtoList.add(getResponseCalculateListRespDto);
 		}
 		return getResponseCalculateListRespDtoList;
+	}
+
+	@Override
+	public String rejectCalculate(CalculateDto.CalculateRejectReqDto calculateRejectReqDto, String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		//탈퇴한 멤버인지 검증
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+
+		Member member = memberOptional.get();
+
+		//정산 그룹 가져오기
+		CalculateGroup calculateGroup =
+			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+				calculateRejectReqDto.getCalculateGruopUuid());
+		//정산 그룹 없을 시 예외
+		if (calculateGroup == null) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		//결제자와 반려자가 같을 수 없음
+		if (member.equals(calculateGroup.getMemberId())) {
+			throw new CalculateException(ErrorCode.CANT_EQUAL_PAYER_REJECTOR);
+		}
+		//정산 그룹 상태 변경
+		calculateGroup.updateStatus(CalculateGroupStatusEnum.REJECT);
+		//정산 그룹에 속한 결제건들 가져오기
+		List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+			calculateGroup);
+		//값 비어있을 시 예외
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+		}
+		//결제건들 상태 변경
+		for (GroupPayment groupPayment : groupPaymentList) {
+			groupPayment.getPaymentId().updateCalculateStatusEnum(CalculateStatusEnum.BEFORE);
+		}
+		//알림 저장 위한 멤버 리스트 저장
+		List<Member> memberList = new ArrayList<>();
+		memberList.add(calculateGroup.getMemberId());
+		//본인을 제외한 결제자와 태그 사용자들 추가
+		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByCalculateGroupId(calculateGroup);
+		for (GroupMember groupMember : groupMemberList) {
+			if (groupMember.getMemberId().equals(member)) {
+				continue;
+			} else {
+				memberList.add(groupMember.getMemberId());
+			}
+		}
+		//알림 저장 위한 여행정보 가져오기
+		String travelName = groupPaymentList.get(0).getPaymentId().getTravelId().getTravelTitle();
+		//해당 사용자들에게 보낸 알림 저장
+		//알림 보내기 위한 dto
+		List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
+		for (Member receiver : memberList) {
+			Notification notification = Notification.of("reject_calculate", member.getMemberUuid(),
+				member.getNickname(), receiver.getMemberUuid(), receiver.getNickname(), travelName);
+			//알림함에 저장
+			notificationRepository.save(notification);
+
+			//알림 보내기 위한 dto 값 채우기
+			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+				receiver);
+			if (deviceOptional.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			}
+			Device device = deviceOptional.get();
+			NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+				member.getNickname() + " 님이 " + calculateRejectReqDto.getContent() + " 사유로 정산을 반려했습니다.", "정산 반려");
+			notificationReqDtoList.add(notificationReqDto);
+
+		}
+
+		//알림 보내기
+		List<NotificationDto.NotificationRespDto> notificationRespDtoList = notificationService.sendNotificationList(
+			notificationReqDtoList);
+
+		List<NotificationDto.NotificationReqDto> notificationReqDtoFailList = new ArrayList<>();
+		boolean flag = false;
+		// 빈 리스트에 대한 처리
+		if (notificationRespDtoList.isEmpty()) {
+			throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+		} else { //실패한 애들이이 있다면 따로 또 모으기
+			for (NotificationDto.NotificationRespDto notificationRespDto : notificationRespDtoList) {
+				if (notificationRespDto.getCode() == -1) {
+					notificationReqDtoFailList.add(notificationRespDto.getNotificationReqDto());
+					flag = true;
+				}
+			}
+		}
+		//실패한 애들 다시 모아서 다시 보내기
+		if (flag) {
+			List<NotificationDto.NotificationRespDto> reNotificationRespDtoList = notificationService.sendNotificationList(
+				notificationReqDtoList);
+			if (reNotificationRespDtoList.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			}//이번에도 보내기 실패하면 예외처리
+			for (NotificationDto.NotificationRespDto notificationRespDto : reNotificationRespDtoList) {
+				if (notificationRespDto.getCode() == -1) {
+					throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
+				}
+			}
+		}
+
+		return "ok";
 	}
 }
