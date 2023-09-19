@@ -8,7 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TripListFilter from '../../components/TripListFilter/TripListFilter';
 import TripListItem from '../../components/TripListItem/TripListItem';
-import { TripListItemProps } from '../../model/tripListItem';
+import { TripListItemProps } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
