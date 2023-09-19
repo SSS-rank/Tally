@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -25,8 +26,11 @@ import com.google.firebase.messaging.SendResponse;
 import com.sss.tally.api.notification.dto.NotificationDto;
 import com.sss.tally.domain.device.entity.Device;
 import com.sss.tally.domain.device.repository.DeviceRepository;
+import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.notification.repository.NotificationRepository;
 import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.NotificationException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +44,14 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private final DeviceRepository deviceRepository;
 
+	private final MemberRepository memberRepository;
+
 	@Autowired
-	public NotificationServiceImpl(NotificationRepository notificationRepository, DeviceRepository deviceRepository) {
+	public NotificationServiceImpl(NotificationRepository notificationRepository, DeviceRepository deviceRepository,
+		MemberRepository memberRepository) {
 		this.notificationRepository = notificationRepository;
 		this.deviceRepository = deviceRepository;
+		this.memberRepository = memberRepository;
 
 	}
 
@@ -156,6 +164,10 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public List<NotificationDto.GetNotificationRespDto> getNotification(String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
 		List<com.sss.tally.domain.notification.document.Notification> notificationList = notificationRepository.findByReceiverUuid(
 			memberUuid);
 		List<NotificationDto.GetNotificationRespDto> getNotificationRespDtoList = new ArrayList<>();
