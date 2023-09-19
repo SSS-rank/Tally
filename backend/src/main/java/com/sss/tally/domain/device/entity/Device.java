@@ -61,6 +61,5 @@ public class Device {
 
 	public void updateLogin(Boolean status){
 		this.isLogin = status;
-		this.deviceStatus = status;
 	}
 }

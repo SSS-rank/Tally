@@ -47,8 +47,8 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberUuid());
 			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
 			// device 등록
-			Optional<Device> check_device = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(oauthLoginReqDto.getDeviceToken());
-			check_device.ifPresent(device -> device.updateLogin(false));
+			Optional<Device> checkDevice = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(oauthLoginReqDto.getDeviceToken());
+			checkDevice.ifPresent(device -> device.updateLogin(false));
 
 			deviceRepository.save(Device.of(oauthMember, oauthLoginReqDto.getDeviceToken()));
 		} else { //이미 존재하는 회원
@@ -59,13 +59,13 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberUuid());
 			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
 			// device 등록
-			Optional<Device> check_device = deviceRepository.findDeviceByDeviceTokenAndMemberId(
+			Optional<Device> checkDevice = deviceRepository.findDeviceByDeviceTokenAndMemberId(
 				oauthLoginReqDto.getDeviceToken(), oauthMember
 			);
 			// 해당 멤버 + 기기토큰으로 검색했는데 이미 존재하면 true 처리
 			// 한 기기에서 로그아웃 하고 다시 로그인 하는 경우
-			if(check_device.isPresent()){
-				check_device.get().updateLogin(true);
+			if(checkDevice.isPresent()){
+				checkDevice.get().updateLogin(true);
 			} else {
 				// 기기가 다른 멤버 아이디로 로그인 되어 있는 경우
 				Optional<Device> device = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(
