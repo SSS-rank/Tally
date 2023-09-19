@@ -56,4 +56,8 @@ public class CalculateGroup {
 			.memberId(member)
 			.build();
 	}
+
+	public void updateStatus(CalculateGroupStatusEnum status) {
+		this.status = status;
+	}
 }
