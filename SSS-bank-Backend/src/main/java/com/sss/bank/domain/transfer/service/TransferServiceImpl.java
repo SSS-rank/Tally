@@ -306,23 +306,16 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public List<TransferDto.TransferListRespDto> getTransferListTally(long memberId,
-		TransferDto.TransferListReqDto transferListReqDto) throws NoSuchAlgorithmException {
-
-		// 회원 인증
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+	public List<TransferDto.TransferListRespDto> getTransferListTally(
+		TransferDto.TransferListReqTallyDto transferListReqDto) throws NoSuchAlgorithmException {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
 
-		int page = transferListReqDto.getPage();
-		int limit = transferListReqDto.getLimit();
 		Account account = accountOptional.get();
 		long accountId = account.getAccountId();
 
-		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId, limit, page);
+		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId);
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
