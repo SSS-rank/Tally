@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Button, Text } from 'react-native-paper';
 
@@ -13,7 +13,7 @@ function DetailScreen() {
 		value: string;
 	}
 	const [openOrderType, setOpenOrderType] = useState(false);
-	const [orderType, setOrderType] = useState('');
+	const [orderType, setOrderType] = useState('오래된 순');
 	const [orderTypeItems, setOrderTypeItems] = useState<OrderTypeSelectItem[]>([
 		{
 			label: '최신순',
@@ -30,10 +30,20 @@ function DetailScreen() {
 			<View style={styles.header}>
 				<Icon name="chevron-left" size={50} color="black" />
 				<View style={styles.header_button_group}>
-					<Button style={styles.button} mode="outlined" onPress={() => console.log('Pressed')}>
+					<Button
+						style={styles.button}
+						mode="text"
+						labelStyle={TextStyles().regular}
+						onPress={() => console.log('Pressed')}
+					>
 						정산 현황
 					</Button>
-					<Button style={styles.button} mode="outlined" onPress={() => console.log('Pressed')}>
+					<Button
+						style={styles.button}
+						labelStyle={TextStyles().regular}
+						mode="text"
+						onPress={() => console.log('Pressed')}
+					>
 						분석
 					</Button>
 				</View>
@@ -66,7 +76,8 @@ function DetailScreen() {
 				<Button
 					icon="plus"
 					style={styles.button}
-					mode="outlined"
+					mode="text"
+					labelStyle={TextStyles().regular}
 					onPress={() => console.log('Pressed')}
 				>
 					일행 추가
@@ -80,12 +91,18 @@ function DetailScreen() {
 				<Button
 					icon="plus"
 					style={styles.button}
-					mode="outlined"
+					labelStyle={TextStyles().regular}
+					mode="text"
 					onPress={() => console.log('Pressed')}
 				>
 					내역 추가
 				</Button>
-				<Button style={styles.button} mode="outlined" onPress={() => console.log('Pressed')}>
+				<Button
+					style={styles.button}
+					labelStyle={TextStyles().regular}
+					mode="text"
+					onPress={() => console.log('Pressed')}
+				>
 					정산
 				</Button>
 			</View>
@@ -96,12 +113,12 @@ function DetailScreen() {
 				setOpen={setOpenOrderType}
 				setValue={setOrderType}
 				setItems={setOrderTypeItems}
-				textStyle={TextStyles().medium}
-				placeholder="정렬 순서"
+				textStyle={TextStyles().small}
+				placeholder={orderType}
 				style={styles.selectInput}
 			/>
 			<ScrollView>
-				<View style={styles.detail_item_box}>
+				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
 					<DetailListItem
 						title={'런던 센텀 호텔'}
@@ -110,8 +127,8 @@ function DetailScreen() {
 						party={'김싸피, 이싸피, 김호피'}
 						abroad={false}
 					/>
-				</View>
-				<View style={styles.detail_item_box}>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
 					<DetailListItem
 						title={'런던 센텀 호텔'}
@@ -120,8 +137,8 @@ function DetailScreen() {
 						party={'김싸피, 이싸피, 김호피'}
 						abroad={false}
 					/>
-				</View>
-				<View style={styles.detail_item_box}>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
 					<DetailListItem
 						title={'런던 센텀 호텔'}
@@ -130,8 +147,8 @@ function DetailScreen() {
 						party={'김싸피, 이싸피, 김호피'}
 						abroad={false}
 					/>
-				</View>
-				<View style={styles.detail_item_box}>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
 					<DetailListItem
 						title={'런던 센텀 호텔'}
@@ -140,8 +157,8 @@ function DetailScreen() {
 						party={'김싸피, 이싸피, 김호피'}
 						abroad={false}
 					/>
-				</View>
-				<View style={styles.detail_item_box}>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
 					<DetailListItem
 						title={'런던 센텀 호텔'}
@@ -150,37 +167,7 @@ function DetailScreen() {
 						party={'김싸피, 이싸피, 김호피'}
 						abroad={false}
 					/>
-				</View>
-				<View style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</View>
-				<View style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</View>
-				<View style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</View>
+				</TouchableOpacity>
 			</ScrollView>
 		</View>
 	);
@@ -195,8 +182,8 @@ const styles = StyleSheet.create({
 	},
 	selectInput: {
 		borderWidth: 0,
-		borderBottomWidth: 1,
-		marginBottom: 20,
+		borderBottomWidth: 0,
+		width: 150,
 	},
 	center_box: {
 		flexDirection: 'column',
