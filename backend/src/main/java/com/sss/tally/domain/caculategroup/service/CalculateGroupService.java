@@ -12,4 +12,7 @@ public interface CalculateGroupService {
 	List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid);
 
 	String rejectCalculate(CalculateDto.CalculateRejectReqDto calculateRejectReqDto, String memberUuid);
+
+	CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
+		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid);
 }

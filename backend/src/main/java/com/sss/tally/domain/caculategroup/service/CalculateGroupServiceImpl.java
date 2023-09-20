@@ -1,5 +1,6 @@
 package com.sss.tally.domain.caculategroup.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +70,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//결제들꺼내기
 		Member member = new Member();
 		for (CalculateDto.CalculateCreateReqDto x : calculateCreateDto) {
-			Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(x.getPaymentUuid());
+			Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuidAndStatusIsFalse(
+				x.getPaymentUuid());
 			if (paymentOptional.isEmpty()) {
 				throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 			}
@@ -111,7 +113,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			groupPaymentRepository.save(GroupPayment.of(payment, calculateGroup));
 
 			//결제에 속한 멤버 아이디들 전부 가져오며 중복인 애들은 없애야 함.
-			List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentId(payment);
+			List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(
+				payment);
 			if (memberPaymentList.isEmpty()) {
 				throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 			}
@@ -205,7 +208,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
-				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentId(
+				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(
 					groupPayment.getPaymentId());
 				if (memberPaymentList.isEmpty()) {
 					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
@@ -245,7 +248,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
-				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(
+				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), member);
 				if (memberPaymentList.isEmpty()) {
 					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
@@ -273,13 +276,15 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		Member member = memberOptional.get();
 
 		//정산 그룹 가져오기
-		CalculateGroup calculateGroup =
+		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
 				calculateRejectReqDto.getCalculateGruopUuid());
+
 		//정산 그룹 없을 시 예외
-		if (calculateGroup == null) {
+		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
 		//결제자와 반려자가 같을 수 없음
 		if (member.equals(calculateGroup.getMemberId())) {
 			throw new CalculateException(ErrorCode.CANT_EQUAL_PAYER_REJECTOR);
@@ -366,4 +371,52 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 		return "ok";
 	}
+
+	@Override
+	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
+		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		//탈퇴한 멤버인지 검증
+
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		//payment들 가져오기
+		Optional<CalculateGroup> calculateGroupOptional =
+			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+				getResponseCalculateDetailReqDto.getCalculateGruopUuid());
+		if (calculateGroupOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
+		//그룹에 속한 payment 객체들 가져오기
+		List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+			calculateGroup);
+
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+		}
+
+		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		String travelName = travel.getTravelTitle();
+		LocalDateTime requestTime = calculateGroup.getCreateDate();
+		Long totalAmount = 0l;
+		String travelType = travel.getTravelType().toString();
+		List<CalculateDto.Detail> detailList = new ArrayList<>();
+
+		for (GroupPayment groupPayment : groupPaymentList) {
+			CalculateDto.Detail detail = paymentRepository.findDetail(groupPayment.getPaymentId(), member);
+			if (detail == null) {
+				continue;
+			}
+			totalAmount += detail.getMyAmount();
+			detailList.add(detail);
+		}
+		CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetailRespDto
+			= CalculateDto.GetResponseCalculateDetailRespDto.of(travelType, travelName, requestTime, totalAmount,
+			detailList);
+		return getResponseCalculateDetailRespDto;
+	}
 }
+

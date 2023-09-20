@@ -54,6 +54,17 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
 	}
 
+	@GetMapping("/receive-detail")
+	public ResponseEntity<CalculateDto.GetResponseCalculateDetailRespDto> getResponseCalculateDetail(
+		@RequestBody CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+
+		CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetailRespDto
+			= calculateGroupService.getResponseCalculateDetail(getResponseCalculateDetailReqDto, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateDetailRespDto);
+	}
+
 	@PatchMapping("/rejection")
 	public ResponseEntity<String> rejectCalculate(
 		@RequestBody CalculateDto.CalculateRejectReqDto calculateCreateDto,
