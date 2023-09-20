@@ -74,11 +74,12 @@ public class TravelServiceImpl implements TravelService{
 
 	@Override
 	public List<TravelDto> getTravelList(Authentication authentication, String type) {
-
+		// access token으로 사용자 정보 받기
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
 		if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
+		// before, after, ongoing에 맞는 여행지 리스트를 repository에서 받아옴
 		List<Travel> travelList = new ArrayList<>();
 		switch (type) {
 			case "before":
@@ -91,10 +92,16 @@ public class TravelServiceImpl implements TravelService{
 				travelList = travelRepository.findPastTravelForMember(memberOptional.get(), LocalDate.now());
 				break;
 		}
+
+		// for문을 통해 Travel entity를 TravelDto로 변환
 		List<TravelDto> travels = new ArrayList<>();
 		for(Travel travel: travelList){
 			String travelLocation = "";
 			String travelType ="";
+
+			// 여행지 정보를 받아옴
+			// travelType은 국가 코드
+			// travelLocation은 여행지 명
 			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
 				travelType="KOR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
@@ -108,11 +115,13 @@ public class TravelServiceImpl implements TravelService{
 				travelLocation = stateByStateId.get().getStateName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-
+				// country 정보가 구현된 후, 수정 예정
 			}
 
+			// travelId를 통해 여행 참여자들의 정보를 받아옴.
 			List<Member> members = memberRepository.findMembersInTravel(travel);
 
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
 			travels.add(TravelDto.of(travel, travelType, travelLocation, members.stream()
 				.map(MemberDto.MemberTravelDto::from)
 				.collect(Collectors.toList())));
