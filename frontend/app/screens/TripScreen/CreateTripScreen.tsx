@@ -3,11 +3,12 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
-import { TripInfoState } from '../../recoil/recoil';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TokenState, TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CreateTripScreen() {
@@ -25,9 +26,26 @@ function CreateTripScreen() {
 	};
 
 	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
-	const regist = () => {
+	const accessToken = useRecoilValue(TokenState).accessToken;
+	const api = useAxiosWithAuth();
+	const regist = async () => {
 		console.log('여행지 등록하기');
 		console.log(tripInfo);
+		const tripAddReq = {
+			travel_title: tripInfo.title,
+			travel_location: tripInfo.location,
+			travel_type: tripInfo.type,
+			start_date: tripInfo.startDay,
+			end_date: tripInfo.endDay,
+		};
+
+		if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+		const res = await api.post(`/travel`, tripAddReq);
+		if (res.data === 'OK') {
+			console.log(res.data);
+			console.log('등록이 완료 되었습니다');
+			// TODO 여행 상세 페이지로 이동
+		}
 	};
 
 	return (
