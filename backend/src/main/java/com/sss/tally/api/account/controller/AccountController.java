@@ -1,7 +1,10 @@
 package com.sss.tally.api.account.controller;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +22,9 @@ public class AccountController {
 
 	private final AccountService accountService;
 	@PostMapping
-	public ResponseEntity<String> createAccount(@RequestBody AccountDto.AccountCreateReqDto accountCreateReqDto){
-		accountService.createAccount(accountCreateReqDto);
-		return ResponseEntity.status(HttpStatus.OK).body("OK");
+	public ResponseEntity<String> createAccount(Authentication authentication, @RequestBody AccountDto.AccountCreateReqDto accountCreateReqDto) throws
+		NoSuchAlgorithmException {
+		accountService.createAccount(authentication, accountCreateReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body("Success");
 	}
 }
