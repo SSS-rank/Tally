@@ -109,6 +109,22 @@ public class TransferDto {
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class TransferListReqTallyDto {
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+
+		@NotNull
+		private String accountPasswd;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
 	@Builder
 	@AllArgsConstructor
 	@Getter
