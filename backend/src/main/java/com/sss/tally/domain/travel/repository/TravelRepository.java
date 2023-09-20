@@ -2,6 +2,7 @@ package com.sss.tally.domain.travel.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,6 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId) " +
 		"AND t.startDate > :now")
 	List<Travel> findPastTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
+
+	Optional<Travel> findTravelByTravelId(Long travelId);
 }
