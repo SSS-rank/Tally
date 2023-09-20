@@ -1,6 +1,7 @@
 package com.sss.tally.api.account.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,11 @@ public class AccountController {
 	public ResponseEntity<Long> getBalance(@PathVariable Long accountId){
 		Long balance = accountService.getBalance(accountId);
 		return ResponseEntity.status(HttpStatus.OK).body(balance);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<AccountDto.AccountRespDto>> getAccountList(Authentication authentication){
+		List<AccountDto.AccountRespDto> accountRespDtoList = accountService.getAccountList(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(accountRespDtoList);
 	}
 }
