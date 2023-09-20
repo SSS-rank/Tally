@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, Switch } from 'react-native';
 import Line from '../../components/Line';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function SettingScreen() {
+function SettingScreen({ navigation }: any) {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	return (
@@ -27,7 +27,9 @@ function SettingScreen() {
 			<View style={styles.wrap}>
 				<Text style={styles.title}>계좌 관리</Text>
 				<Text style={styles.subTitle}>대표 계좌 지정</Text>
-				<Text style={styles.subTitle}>계좌 연결 관리</Text>
+				<Text style={styles.subTitle} onPress={() => navigation.navigate('Account')}>
+					계좌 연결 관리
+				</Text>
 				<Text style={styles.subTitle}>이체 비밀번호 관리</Text>
 				<Line marginTop={10} />
 			</View>
