@@ -12,13 +12,14 @@ import CustomDropDown from '../../components/DropDown/CustomDropDown';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function TransactionModifyScreen() {
+function PaymentModifyScreen() {
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState('');
 	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
+	const [payed, setPayed] = useState(true);
 	// const [party, setParty] = useState('')
 
 	const handleIconClick = (category: string) => {
@@ -41,45 +42,49 @@ function TransactionModifyScreen() {
 				<Text style={TextStyles({ align: 'left' }).small}>krw(원)</Text>
 				<Text style={TextStyles({ align: 'left' }).header}>50000</Text>
 			</View>
-			<View style={styles.date_box}>
-				<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-				<Chip onPress={() => setOpen(true)}>
-					{date.getFullYear() +
-						'년 ' +
-						(date.getMonth() + 1) +
-						'월 ' +
-						date.getDate() +
-						'일 ' +
-						date.getHours() +
-						'시 ' +
-						date.getMinutes() +
-						'분 '}
-				</Chip>
-				<DatePicker
-					modal
-					open={open}
-					date={date}
-					onConfirm={(p_date) => {
-						setOpen(false);
-						setDate(p_date);
-					}}
-					onCancel={() => {
-						setOpen(false);
-					}}
-				/>
-			</View>
-			<View style={styles.memo_box}>
-				<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
-				<TextInput
-					value={store}
-					onChangeText={(memo) => {
-						setStore(memo);
-						console.log(store);
-					}}
-					returnKeyType="next"
-					style={styles.textInput}
-				/>
-			</View>
+			{payed ? (
+				<View>
+					<View style={styles.date_box}>
+						<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
+						<Chip onPress={() => setOpen(true)}>
+							{date.getFullYear() +
+								'년 ' +
+								(date.getMonth() + 1) +
+								'월 ' +
+								date.getDate() +
+								'일 ' +
+								date.getHours() +
+								'시 ' +
+								date.getMinutes() +
+								'분 '}
+						</Chip>
+						<DatePicker
+							modal
+							open={open}
+							date={date}
+							onConfirm={(p_date) => {
+								setOpen(false);
+								setDate(p_date);
+							}}
+							onCancel={() => {
+								setOpen(false);
+							}}
+						/>
+					</View>
+					<View style={styles.memo_box}>
+						<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
+						<TextInput
+							value={store}
+							onChangeText={(memo) => {
+								setStore(memo);
+								console.log(store);
+							}}
+							returnKeyType="next"
+							style={styles.textInput}
+						/>
+					</View>
+				</View>
+			) : null}
 			<View style={styles.memo_box}>
 				<Text style={TextStyles({ align: 'left' }).medium}>메모</Text>
 				<TextInput
@@ -92,59 +97,69 @@ function TransactionModifyScreen() {
 					style={styles.textInput}
 				/>
 			</View>
-			<View style={styles.category_box}>
-				<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
-				<View style={styles.category_line}>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('숙소')}>
-						<MIcon name="home" size={40} color={selectedcategory === '숙소' ? '#91C0EB' : 'gray'} />
-						<Text style={TextStyles().small}>숙소</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('항공')}>
-						<FIcon
-							name="plane"
-							size={40}
-							color={selectedcategory === '항공' ? '#91C0EB' : 'gray'}
-						/>
-						<Text style={TextStyles().small}>항공</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('교통')}>
-						<FIcon name="car" size={40} color={selectedcategory === '교통' ? '#91C0EB' : 'gray'} />
-						<Text style={TextStyles().small}>교통</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('관광')}>
-						<MIcon
-							name="ticket"
-							size={40}
-							color={selectedcategory === '관광' ? '#91C0EB' : 'gray'}
-						/>
-						<Text style={TextStyles().small}>관광</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('식비')}>
-						<MIcon
-							name="silverware-fork-knife"
-							size={40}
-							color={selectedcategory === '식비' ? '#91C0EB' : 'gray'}
-						/>
-						<Text style={TextStyles().small}>식비</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('쇼핑')}>
-						<MIcon
-							name="shopping"
-							size={40}
-							color={selectedcategory === '쇼핑' ? '#91C0EB' : 'gray'}
-						/>
-						<Text style={TextStyles().small}>쇼핑</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('기타')}>
-						<MIcon
-							name="dots-horizontal-circle"
-							size={40}
-							color={selectedcategory === '기타' ? '#91C0EB' : 'gray'}
-						/>
-						<Text style={TextStyles().small}>기타</Text>
-					</TouchableOpacity>
+			{payed ? (
+				<View style={styles.category_box}>
+					<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
+					<View style={styles.category_line}>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('숙소')}>
+							<MIcon
+								name="home"
+								size={40}
+								color={selectedcategory === '숙소' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>숙소</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('항공')}>
+							<FIcon
+								name="plane"
+								size={40}
+								color={selectedcategory === '항공' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>항공</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('교통')}>
+							<FIcon
+								name="car"
+								size={40}
+								color={selectedcategory === '교통' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>교통</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('관광')}>
+							<MIcon
+								name="ticket"
+								size={40}
+								color={selectedcategory === '관광' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>관광</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('식비')}>
+							<MIcon
+								name="silverware-fork-knife"
+								size={40}
+								color={selectedcategory === '식비' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>식비</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('쇼핑')}>
+							<MIcon
+								name="shopping"
+								size={40}
+								color={selectedcategory === '쇼핑' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>쇼핑</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('기타')}>
+							<MIcon
+								name="dots-horizontal-circle"
+								size={40}
+								color={selectedcategory === '기타' ? '#91C0EB' : 'gray'}
+							/>
+							<Text style={TextStyles().small}>기타</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
+			) : null}
 
 			<View
 				style={[
@@ -152,7 +167,13 @@ function TransactionModifyScreen() {
 					selfCheck ? { backgroundColor: 'gray', pointerEvents: 'none' } : null,
 				]}
 			>
-				<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+				<View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+					<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+					<View style={{ flexDirection: 'row' }}>
+						<Text style={TextStyles({ align: 'left' }).medium}>결제</Text>
+						<Text style={TextStyles({ align: 'left' }).medium}>합계</Text>
+					</View>
+				</View>
 				<ScrollView>
 					<PartyListItem
 						name="김싸피"
@@ -193,7 +214,7 @@ function TransactionModifyScreen() {
 				style={{ marginTop: 10, marginBottom: 70 }}
 			>
 				{' '}
-				등록
+				{payed ? '등록' : '수정요청'}
 			</Button>
 		</ScrollView>
 	);
@@ -253,6 +274,7 @@ const styles = StyleSheet.create({
 	},
 	party_box: {
 		flex: 3,
+		paddingTop: 20,
 	},
 	check_box_container: {
 		flexDirection: 'column',
@@ -270,4 +292,4 @@ const styles = StyleSheet.create({
 		paddingBottom: 50,
 	},
 });
-export default TransactionModifyScreen;
+export default PaymentModifyScreen;
