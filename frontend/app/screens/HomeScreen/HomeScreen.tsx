@@ -90,16 +90,19 @@ const TravelSheetPage = ({
 	);
 };
 
-function HomeScreen() {
+function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
 
 	return (
 		<View style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
 				<View style={ViewStyles().header}>
-					<Text>
-						<Icon name="settings-sharp" size={24} color="#4F8EF7" />
-					</Text>
+					<Icon
+						name="settings-sharp"
+						size={32}
+						color="#91C0EB"
+						onPress={() => navigation.navigate('Setting')}
+					/>
 				</View>
 				<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).box}>
 					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>

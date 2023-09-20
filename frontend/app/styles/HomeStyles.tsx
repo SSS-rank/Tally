@@ -33,7 +33,8 @@ export const ViewStyles = (props?: styleProps) =>
 			alignItems: props?.alignItems ? props.alignItems : 'flex-end',
 			padding: 10,
 			flex: 1,
-			paddingHorizontal: 15,
+			marginHorizontal: 15,
+			marginVertical: 5,
 		},
 		box: {
 			flexDirection: props?.flexDirection ? props.flexDirection : 'column',
