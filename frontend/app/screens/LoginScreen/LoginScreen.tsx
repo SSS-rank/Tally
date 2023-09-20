@@ -6,7 +6,7 @@ import * as KakaoLogin from '@react-native-seoul/kakao-login';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useSetRecoilState } from 'recoil';
 
-import api from '../../api/api';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { RootStackProps } from '../../navigation/RootStack';
 import { TokenState } from '../../recoil/recoil';
 
@@ -15,6 +15,7 @@ type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 function LoginScreen({ route }: RootStackProp) {
 	const { setUserToken } = route.params;
 	const setTokenState = useSetRecoilState(TokenState);
+	const api = useAxiosWithAuth();
 
 	const login = async () => {
 		KakaoLogin.login()
@@ -24,16 +25,26 @@ function LoginScreen({ route }: RootStackProp) {
 				getProfile();
 
 				try {
+					console.log(accessToken);
 					const data = {
-						kakaoAccessToken: accessToken,
-						deviceToken: `ci0kdlHsTxirohKvceSNrn:APA91bGSSysqDgEsg1CFmYB9xw0B4h7jINzWhMxem5S1__93oC9co1bitM1Kz9z7zM7FNafBVXr_rc7i-vBavYLeyM29hTJpec3B1dHcWyUo44JIxnfLDFINHXd7-ap6i4Uk1Jnyausc`,
+						kakao_access_token: accessToken,
+						device_token: `ci0kdlHsTxirohKvceSNrn:APA91bGSSysqDgEsg1CFmYB9xw0B4h7jINzWhMxem5S1__93oC9co1bitM1Kz9z7zM7FNafBVXr_rc7i-vBavYLeyM29hTJpec3B1dHcWyUo44JIxnfLDFINHXd7-ap6i4Uk1Jnyausc`,
 					};
+
 					const res = await api.post(`/login`, data);
 
 					if (res.status === 200) {
 						console.log(res.data);
-						setTokenState(res.data);
-						setUserToken(res.data);
+
+						const tokenState = {
+							accessToken: res.data.accessToken,
+							refreshToken: res.data.refreshToken,
+							accessTokenExpireTime: res.data.accessTokenExpireTime,
+							refreshTokenExpireTime: res.data.refreshTokenExpireTime,
+						};
+
+						setTokenState(tokenState);
+						setUserToken(res.data.accessToken);
 					}
 				} catch (error) {
 					console.error(error);
