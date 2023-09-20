@@ -4,3 +4,11 @@ export interface TripListItemProps {
 	date: string;
 	image: string;
 }
+
+export interface TripInfo {
+	title: string;
+	location: number;
+	type: string;
+	startDay: string;
+	endDay: string;
+}
