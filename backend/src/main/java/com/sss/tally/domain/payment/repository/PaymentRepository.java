@@ -11,7 +11,7 @@ import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.payment.entity.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
-	Optional<Payment> findPaymentByPaymentUuid(String uuid);
+	Optional<Payment> findPaymentByPaymentUuidAndStatusIsFalse(String uuid);
 
 	@Query("SELECT NEW com.sss.tally.api.calculate.dto.CalculateDto$Detail(" +
 		"P.paymentName, " +
