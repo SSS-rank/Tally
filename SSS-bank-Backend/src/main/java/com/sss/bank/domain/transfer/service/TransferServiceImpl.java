@@ -207,8 +207,8 @@ public class TransferServiceImpl implements TransferService {
 		String depositAccountContent = stringBuilder.toString();
 		TransferDto.TransferDepositReqDto transferDepositReqDto = TransferDto.TransferDepositReqDto.of(
 			senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
-		);
-		createTransfer(1, transferDepositReqDto);
+			, onetransferReqDto.getBankCode());
+		createOneTransfer(5, transferDepositReqDto);
 		redisService.setOneTrnasferValues(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
 
 		return depositAccountContent;
@@ -353,5 +353,48 @@ public class TransferServiceImpl implements TransferService {
 		}
 
 		return transferListRespDtos;
+	}
+
+	public TransferDto.TransferDepositRespDto createOneTransfer(long memberId,
+		TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
+
+		// 회원 확인
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		if (memberOptional.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		Member member = memberOptional.get();
+
+		//출금 계좌 인증
+		Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getSenderAccountNum());
+		if (senderAccountOptional.isEmpty())
+			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
+		Account senderAccount = senderAccountOptional.get();
+
+		Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getReceiverAccountNum());
+		Account recAccount = recAccountOptional.get();
+
+		// 출금계좌와 입금계좌가 동일하면 안됨
+		if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
+			throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
+		}
+		//출금계좌 잔액 확인
+		if (senderAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
+			throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
+		}
+		//이체하기(계좌 잔액 조정)
+		Long depositAmount = transferDepositReqDto.getDepositAmount();
+		senderAccount.updateBalance(senderAccount.getBalance() - depositAmount);
+		recAccount.updateBalance(recAccount.getBalance() + depositAmount);
+		// 이체 내역 생성
+		String Uuid = UUID.randomUUID().toString();
+		transferRepository.save(
+			Transfer.of(transferDepositReqDto, Uuid, senderAccount, recAccount));
+
+		return TransferDto.TransferDepositRespDto.of(
+			recAccount.getMemberId().getName(),
+			depositAmount);
+
 	}
 }
