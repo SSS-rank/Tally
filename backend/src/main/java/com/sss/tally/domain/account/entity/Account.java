@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.tally.api.account.dto.AccountDto;
 import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -55,6 +56,17 @@ public class Account {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static Account of(Member member, AccountDto.AccountCreateReqDto accountCreateReqDto, Boolean representativeAccount){
+		return Account.builder()
+			.memberId(member)
+			.accountNumber(accountCreateReqDto.getAccountNumber())
+			.status(false)
+			.orderNumber(accountCreateReqDto.getOrderNumber())
+			.bankName(accountCreateReqDto.getBankName())
+			.representativeAccount(representativeAccount)
+			.build();
+	}
 
 	private void updateStatus(boolean status) {
 		this.status = status;
