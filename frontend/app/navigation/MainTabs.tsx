@@ -3,12 +3,12 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import HomeStack from './HomeStack';
 import TripStack from './TripStack';
 import AlertScreen from '../screens/AlertScreen/AlertScreen';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
 
 export type MainTabsProps = {
-	Home: undefined;
+	HomeStack: undefined;
 	TripStack: undefined;
 	Alert: undefined;
 };
@@ -18,12 +18,12 @@ const Tab = createBottomTabNavigator<MainTabsProps>();
 function MainTabs() {
 	return (
 		<Tab.Navigator
-			initialRouteName="Home"
+			initialRouteName="HomeStack"
 			screenOptions={{ tabBarActiveTintColor: '#91C0EB', tabBarShowLabel: false }}
 		>
 			<Tab.Screen
-				name="Home"
-				component={HomeScreen}
+				name="HomeStack"
+				component={HomeStack}
 				options={{
 					tabBarLabel: 'Home',
 					tabBarIcon: ({ color }: any) => (
