@@ -99,7 +99,7 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles().header}>
 					<Icon
 						name="settings-sharp"
-						size={32}
+						size={24}
 						color="#91C0EB"
 						onPress={() => navigation.navigate('Setting')}
 					/>
