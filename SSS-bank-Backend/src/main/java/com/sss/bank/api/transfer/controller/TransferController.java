@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,7 +91,7 @@ public class TransferController {
 
 	@ApiOperation(value = "1원인증 검증", notes = "거래내역 조회로 확인한 code를 3분안에 입력한다.")
 
-	@GetMapping("/1transfer-verify")
+	@PostMapping("/1transfer-verify")
 	public ResponseEntity<String> oneTransferVerify(
 		@RequestBody @Valid TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) {
