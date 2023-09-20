@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import TripStack from './TripStack';
-import AlertScreen from '../screens/AlertScreen/AlertScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import AddAccountScreen from '../screens/SettingScreen/AddAccountScreen';
+import ManageAccountScreen from '../screens/SettingScreen/ManageAccountScreen';
 import SettingScreen from '../screens/SettingScreen/SettingScreen';
 
 const Stack = createNativeStackNavigator();
@@ -18,6 +18,8 @@ function HomeStack() {
 				component={SettingScreen}
 				options={{ title: '설정', headerTitleAlign: 'center' }}
 			/>
+			<Stack.Screen name="Account" component={ManageAccountScreen} options={{ title: '' }} />
+			<Stack.Screen name="AddAccount" component={AddAccountScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }
