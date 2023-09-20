@@ -278,7 +278,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//정산 그룹 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				calculateRejectReqDto.getCalculateGruopUuid());
+				calculateRejectReqDto.getCalculateGroupUuid());
 
 		//정산 그룹 없을 시 예외
 		if (calculateGroupOptional.isEmpty()) {
@@ -385,7 +385,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getResponseCalculateDetailReqDto.getCalculateGruopUuid());
+				getResponseCalculateDetailReqDto.getCalculateGroupUuid());
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
