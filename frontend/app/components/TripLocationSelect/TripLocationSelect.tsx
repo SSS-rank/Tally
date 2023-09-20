@@ -113,7 +113,7 @@ function TripLocationSelect() {
 	};
 
 	const changeState = (value: any) => {
-		const updatedTripInfo = { ...tripInfo, location: value };
+		const updatedTripInfo = { ...tripInfo, location: value, type: 'state' };
 		setTripInfo(updatedTripInfo);
 	};
 	const changeCity = (value: any) => {
