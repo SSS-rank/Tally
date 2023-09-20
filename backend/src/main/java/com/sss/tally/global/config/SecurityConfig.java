@@ -33,7 +33,7 @@ public class SecurityConfig {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.logout().logoutUrl("/member/logout").and()
 			.authorizeRequests()
-			.antMatchers( "/v3/api-docs","/swagger*/**", "/login", "/destination/**", "/member/**", "/account/**").permitAll()
+			.antMatchers( "/v3/api-docs","/swagger*/**", "/login").permitAll()
 			.anyRequest().authenticated().and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
