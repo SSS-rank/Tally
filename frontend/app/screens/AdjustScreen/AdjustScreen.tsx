@@ -79,21 +79,30 @@ function AdjustScreen({ navigation }: any) {
 								height: 80,
 								marginTop: 20,
 								paddingHorizontal: 10,
+								// alignSelf: 'center',
+								// alignContent: 'center',
 								// borderBottomColor: '#D6D6D6',
 								// borderBottomWidth: 0.5,
 							}}
 							onPress={() => navigation.navigate('TripStack', { screen: 'GetAdjust' })}
 						>
-							<Text style={{ ...TextStyles().regular }}>23.09.01</Text>
-							<Text
-								style={{
-									...TextStyles({ align: 'right' }).title,
-									flex: 1,
-									lineHeight: 60,
-								}}
-							>
-								200,000원
-							</Text>
+							<Text style={{ ...TextStyles({ align: 'left' }).regular }}>23.09.01</Text>
+							<View style={{ flex: 1 }}>
+								<Text
+									style={{
+										...TextStyles({ align: 'right' }).title,
+									}}
+								>
+									-200,000원
+								</Text>
+								<Text
+									style={{
+										...TextStyles({ align: 'right', color: '666666' }).small,
+									}}
+								>
+									요청자 최싸피
+								</Text>
+							</View>
 						</TouchableOpacity>
 					</View>
 				</>
