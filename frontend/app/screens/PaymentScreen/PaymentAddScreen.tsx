@@ -11,7 +11,7 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function TransactionAddScreen() {
+function PaymentAddScreen() {
 	const [amount, setAmount] = useState('');
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
@@ -284,4 +284,4 @@ const styles = StyleSheet.create({
 		paddingBottom: 50,
 	},
 });
-export default TransactionAddScreen;
+export default PaymentAddScreen;
