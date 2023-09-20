@@ -112,4 +112,7 @@ public class Payment {
 		this.calculateStatus = calculateStatus;
 	}
 
+	public void updateMemo(String memo){
+		this.paymentMemo = memo;
+	}
 }
