@@ -1,6 +1,8 @@
 package com.sss.tally.api.calculate.dto;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -92,4 +94,61 @@ public class CalculateDto {
 		private String content;
 	}
 
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class GetResponseCalculateDetailReqDto {
+		@NotNull
+		private String calculateGruopUuid;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetResponseCalculateDetailRespDto {
+
+		private String travelType;
+
+		private String travelName;
+
+		private String requestDate;
+
+		private Long totalAmount;
+
+		private List<Detail> detailList;
+
+		public static GetResponseCalculateDetailRespDto of
+			(String travelType, String travelName, LocalDateTime date, Long totalAmount, List<Detail> detailList) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String formattedTime = date.format(formatter);
+			return GetResponseCalculateDetailRespDto.builder()
+				.detailList(detailList)
+				.totalAmount(totalAmount)
+				.travelName(travelName)
+				.travelType(travelType)
+				.requestDate(formattedTime)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class Detail {
+
+		private String paymentName;
+
+		private int myAmount;
+
+		private Long allAmount;
+
+		private LocalDateTime paymentDate;
+
+	}
 }
