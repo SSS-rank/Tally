@@ -88,7 +88,7 @@ public class CalculateDto {
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class CalculateRejectReqDto {
 		@NotNull
-		private String calculateGruopUuid;
+		private String calculateGroupUuid;
 
 		@NotNull
 		private String content;
@@ -99,7 +99,7 @@ public class CalculateDto {
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class GetResponseCalculateDetailReqDto {
 		@NotNull
-		private String calculateGruopUuid;
+		private String calculateGroupUuid;
 
 	}
 
@@ -151,4 +151,5 @@ public class CalculateDto {
 		private LocalDateTime paymentDate;
 
 	}
+
 }
