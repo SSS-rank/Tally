@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TravelDto {
+	private Long travelId;
 	private String travelTitle;
 	private String travelLocation;
 	private String travelType;
@@ -28,6 +29,7 @@ public class TravelDto {
 
 	public static TravelDto of(Travel travel, String travelLocation, String travelType, List<MemberDto.MemberTravelDto> members){
 		return TravelDto.builder()
+			.travelId(travel.getTravelId())
 			.travelTitle(travel.getTravelTitle())
 			.startDate(travel.getStartDate())
 			.endDate(travel.getEndDate())

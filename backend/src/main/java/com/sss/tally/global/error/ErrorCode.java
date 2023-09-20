@@ -2,8 +2,6 @@ package com.sss.tally.global.error;
 
 import org.springframework.http.HttpStatus;
 
-import com.google.api.Http;
-
 import lombok.Getter;
 
 @Getter
@@ -36,15 +34,21 @@ public enum ErrorCode {
 	CANT_EQUAL_PAYER_REJECTOR(HttpStatus.BAD_REQUEST, "009", "결제자와 반려자가 같을 수 없습니다."),
 	//결제
 	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다."),
+	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
+	NOT_EXIST_PARTICIPANT(HttpStatus.BAD_REQUEST, "003", "존재하지 않는 참가자입니다."),
 
 	// 계좌
 	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "001", "해당 계좌는 존재하지 않습니다."),
 
 	// 여행
+
 	NOT_EXIST_TRAVEL_TYPE(HttpStatus.BAD_REQUEST, "011", "잘못된 여행 타입입니다."),
 	NOT_EXIST_TRAVEL(HttpStatus.BAD_REQUEST, "012", "존재하지 않는 여행입니다."),
 	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),
 	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
+
+	// 카테고리
+	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
