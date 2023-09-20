@@ -168,14 +168,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public AccountDto.AccountGetBalanceRespDto getBalanceTally(long memberId,
-		AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
-		// 회원 검증
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
-
+	public AccountDto.AccountGetBalanceRespDto getBalanceTally(AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
 		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			accountGetBalanceReqDto.getAccountNum());
@@ -190,10 +183,8 @@ public class AccountServiceImpl implements AccountService {
 			accountGetBalanceReqDto.getAccountPassword())) {
 			throw new AccountException(ErrorCode.INVALID_ACCOUNT_PASSWORD);
 		}
-		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = AccountDto.AccountGetBalanceRespDto.from(
-			account);
 
-		return accountGetBalanceRespDto;
+		return AccountDto.AccountGetBalanceRespDto.from(account);
 	}
 
 	@Override
