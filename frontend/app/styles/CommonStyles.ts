@@ -37,7 +37,7 @@ export const TextStyles = (props?: textStyleProps) =>
 		},
 		regular: {
 			fontFamily: 'Pretendard-regular',
-			fontSize: 16,
+			fontSize: 17,
 			color: props?.color ? props.color : '#232323',
 			textAlign: props?.align ? props.align : 'center',
 			fontWeight: props?.weight ? props?.weight : 'normal',
