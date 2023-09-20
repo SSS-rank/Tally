@@ -11,9 +11,13 @@ const Stack = createNativeStackNavigator();
 
 function HomeStack() {
 	return (
-		<Stack.Navigator initialRouteName="Home">
+		<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShadowVisible: false }}>
 			<Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-			<Stack.Screen name="Setting" component={SettingScreen} options={{ title: '' }} />
+			<Stack.Screen
+				name="Setting"
+				component={SettingScreen}
+				options={{ title: '설정', headerTitleAlign: 'center' }}
+			/>
 		</Stack.Navigator>
 	);
 }
