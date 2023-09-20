@@ -97,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService{
 		if(!travelGroupRepository.existsByTravelIdAndMemberId(travelOptional.get(), memberOptional.get()))
 			throw new TravelException(ErrorCode.NOT_EXIST_PARTICIPANT);
 
-		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentMemoDto.getPaymentUuid());
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuidAndStatusIsFalse(paymentMemoDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 
 
