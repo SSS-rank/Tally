@@ -24,6 +24,7 @@ import com.sss.tally.domain.paymentunit.entity.PaymentUnit;
 import com.sss.tally.domain.paymentunit.repository.PaymentUnitRepository;
 import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.domain.travel.repository.TravelRepository;
+import com.sss.tally.domain.travelgroup.repository.TravelGroupRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.CategoryException;
 import com.sss.tally.global.error.exception.MemberException;
@@ -42,6 +43,7 @@ public class PaymentServiceImpl implements PaymentService{
 	private final CategoryRepository categoryRepository;
 	private final PaymentUnitRepository paymentUnitRepository;
 	private final MemberPaymentRepository memberPaymentRepository;
+	private final TravelGroupRepository travelGroupRepository;
 
 	public void createPayment(Authentication authentication, PaymentDto.PaymentManualDto paymentManualDto) {
 		Member member = (Member) authentication.getPrincipal();
@@ -80,5 +82,30 @@ public class PaymentServiceImpl implements PaymentService{
 
 			memberPaymentRepository.save(MemberPayment.of(participant, partOptional.get(), save));
 		}
+	}
+
+	@Override
+	public void modifyMemo(Authentication authentication, PaymentDto.PaymentMemoDto paymentMemoDto) {
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
+		if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(paymentMemoDto.getTravelId());
+		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+
+		if(!travelGroupRepository.existsByTravelIdAndMemberId(travelOptional.get(), memberOptional.get()))
+			throw new TravelException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentMemoDto.getPaymentUuid());
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+
+		if(!memberPaymentRepository.existsByPaymentIdAndMemberIdAndStatusIsTrue(paymentOptional.get(), memberOptional.get()))
+			throw new PaymentException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		paymentOptional.get().updateMemo(paymentMemoDto.getMemo());
+
+
 	}
 }
