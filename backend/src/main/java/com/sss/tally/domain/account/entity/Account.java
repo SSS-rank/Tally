@@ -40,24 +40,28 @@ public class Account {
 	private Member memberId;
 
 	@Column(nullable = false, unique = true)
-	private String accountNumber;
+	private String accountNumber; // 계좌 번호
 
 	@Column(nullable = false)
-	private Boolean status;
+	private Boolean status; //삭제 여부
 
 	@Column(nullable = false)
-	private int orderNumber;
+	private int orderNumber; // 계좌 등록 순서
 
 	@Column(nullable = false)
-	private String bankName;
+	private String bankName; // 은행 이름
 
 	@Column(nullable = false)
-	private Boolean representativeAccount;
+	private Boolean representativeAccount; // 대표 계좌 여부
+
+	@Column(nullable = false)
+	private String accountPassword;
 
 	@CreatedDate
 	private LocalDateTime createDate;
 
-	public static Account of(Member member, AccountDto.AccountCreateReqDto accountCreateReqDto, Boolean representativeAccount){
+	public static Account of(
+		Member member, AccountDto.AccountCreateReqDto accountCreateReqDto, Boolean representativeAccount){
 		return Account.builder()
 			.memberId(member)
 			.accountNumber(accountCreateReqDto.getAccountNumber())
@@ -65,10 +69,11 @@ public class Account {
 			.orderNumber(accountCreateReqDto.getOrderNumber())
 			.bankName(accountCreateReqDto.getBankName())
 			.representativeAccount(representativeAccount)
+			.accountPassword(accountCreateReqDto.getAccountPassword())
 			.build();
 	}
 
-	private void updateStatus(boolean status) {
+	public void updateStatus(boolean status) {
 		this.status = status;
 	}
 

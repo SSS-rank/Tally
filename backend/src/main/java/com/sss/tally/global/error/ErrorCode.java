@@ -37,7 +37,11 @@ public enum ErrorCode {
 	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
 	NOT_EXIST_PARTICIPANT(HttpStatus.BAD_REQUEST, "003", "존재하지 않는 참가자입니다."),
 
-	// 여행,
+	// 계좌
+	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "001", "해당 계좌는 존재하지 않습니다."),
+
+	// 여행
+
 	NOT_EXIST_TRAVEL_TYPE(HttpStatus.BAD_REQUEST, "011", "잘못된 여행 타입입니다."),
 	NOT_EXIST_TRAVEL(HttpStatus.BAD_REQUEST, "012", "존재하지 않는 여행입니다."),
 	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),

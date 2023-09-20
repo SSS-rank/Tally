@@ -9,4 +9,8 @@ import com.sss.tally.api.account.dto.AccountDto;
 public interface AccountService {
 	void createAccount(Authentication authentication, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException;
+
+	void deleteAccount(Long accountId);
+
+	Long getBalance(Long accountId);
 }
