@@ -79,6 +79,10 @@ public class Member implements UserDetails {
 		this.transferSalt = transferSalt;
 	}
 
+	public void patchPassword(String transferPassword){
+		this.transferPassword = transferPassword;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
