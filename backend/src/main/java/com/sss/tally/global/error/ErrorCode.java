@@ -36,6 +36,9 @@ public enum ErrorCode {
 
 	// 여행
 	NOT_EXIST_TRAVEL_TYPE(HttpStatus.BAD_REQUEST, "011", "잘못된 여행 타입입니다."),
+	NOT_EXIST_TRAVEL(HttpStatus.BAD_REQUEST, "012", "존재하지 않는 여행입니다."),
+	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),
+	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
