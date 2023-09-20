@@ -71,14 +71,10 @@ public class AccountController {
 	@ApiOperation(value = "잔액 조회 for Tally", notes = "잔액을 조회한다")
 	@PostMapping("/get-balance/tally")
 	public ResponseEntity<AccountDto.AccountGetBalanceRespDto> getBalanceTally(
-		@RequestBody @Valid AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
-		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(memberId,
-			accountGetBalanceReqDto);
+		@RequestBody @Valid AccountDto.AccountGetBalanceTallyReqDto accountGetBalanceReqDto) throws NoSuchAlgorithmException {
+		AccountDto.AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalanceTally(accountGetBalanceReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(accountGetBalanceRespDto);
-
 	}
 
 	@ApiOperation(value = "계좌리스트 조회", notes = "계좌리스트를 조회한다")
