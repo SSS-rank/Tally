@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import DashLine from '../../components/DashLine';
+import Line from '../../components/Line';
 import { TextStyles } from '../../styles/CommonStyles';
 
 const GetAdjustScreen = ({ navigation }: any) => {
@@ -40,111 +41,7 @@ const GetAdjustScreen = ({ navigation }: any) => {
 				</View>
 				<View style={{ marginVertical: 10 }}>
 					<Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<View
-						style={{
-							borderStyle: 'solid',
-							borderWidth: 0.5,
-							borderColor: '#F0F0F0',
-							marginVertical: 10,
-							marginHorizontal: 0,
-						}}
-					/>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>개미집</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>21:17</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-12,500</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-78,500</Text>
-						</View>
-					</View>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>낙곱새 남포점</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>23:46</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-20,000</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-60,000</Text>
-						</View>
-					</View>
-				</View>
-				<View style={{ marginVertical: 10 }}>
-					<Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<View
-						style={{
-							borderStyle: 'solid',
-							borderWidth: 0.5,
-							borderColor: '#F0F0F0',
-							marginVertical: 10,
-							marginHorizontal: 0,
-						}}
-					/>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>개미집</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>21:17</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-12,500</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-78,500</Text>
-						</View>
-					</View>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>낙곱새 남포점</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>23:46</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-20,000</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-60,000</Text>
-						</View>
-					</View>
-				</View>
-				<View style={{ marginVertical: 10 }}>
-					<Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<View
-						style={{
-							borderStyle: 'solid',
-							borderWidth: 0.5,
-							borderColor: '#F0F0F0',
-							marginVertical: 10,
-							marginHorizontal: 0,
-						}}
-					/>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>개미집</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>21:17</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-12,500</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-78,500</Text>
-						</View>
-					</View>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>낙곱새 남포점</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>23:46</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-20,000</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-60,000</Text>
-						</View>
-					</View>
-				</View>
-				<View style={{ marginVertical: 10 }}>
-					<Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<View
-						style={{
-							borderStyle: 'solid',
-							borderWidth: 0.5,
-							borderColor: '#F0F0F0',
-							marginVertical: 10,
-							marginHorizontal: 0,
-						}}
-					/>
+					<Line marginVertical={10} />
 					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
 						<View>
 							<Text style={TextStyles({ align: 'left' }).regular}>개미집</Text>
