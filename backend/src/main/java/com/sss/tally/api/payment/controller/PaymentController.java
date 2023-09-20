@@ -3,6 +3,7 @@ package com.sss.tally.api.payment.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,12 @@ public class PaymentController {
 	public ResponseEntity<String> createPayment(Authentication authentication, @RequestBody PaymentDto.PaymentManualDto paymentManualDto){
 		paymentService.createPayment(authentication, paymentManualDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+	}
+
+	@PatchMapping("/memo")
+	public ResponseEntity<String> modifyPaymentMemo(Authentication authentication, @RequestBody
+		PaymentDto.PaymentMemoDto paymentMemoDto){
+		paymentService.modifyMemo(authentication, paymentMemoDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
 }
