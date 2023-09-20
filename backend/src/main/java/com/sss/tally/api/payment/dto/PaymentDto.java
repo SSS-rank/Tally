@@ -46,5 +46,15 @@ public class PaymentDto {
 
 		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
 	}
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class PaymentMemoDto{
+		private Long travelId;
+		private String paymentUuid;
+		private String memo;
+	}
 
 }
