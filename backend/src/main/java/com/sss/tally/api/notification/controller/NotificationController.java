@@ -1,9 +1,10 @@
-package com.sss.tally.api.notification.comtroller;
+package com.sss.tally.api.notification.controller;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.tally.api.notification.dto.NotificationDto;
+import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.notification.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,8 +40,9 @@ public class NotificationController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<NotificationDto.GetNotificationRespDto>> selectAlarm() {
-		String memberUuid = "1313";
+	public ResponseEntity<List<NotificationDto.GetNotificationRespDto>> selectAlarm(
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
 		List<NotificationDto.GetNotificationRespDto> getNotificationRespDtos = notificationService.getNotification(
 			memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getNotificationRespDtos);

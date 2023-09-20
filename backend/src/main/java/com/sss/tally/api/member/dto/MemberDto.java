@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,34 @@ public class MemberDto {
 		private String nickname;
 		@NotNull
 		private String profileImage;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class MemberPasswordDto{
+		@NotNull
+		private String transferPassword;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value=PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class MemberTravelDto{
+		private String image;
+		private String memberNickname;
+		private String memberUuid;
+
+		public static MemberTravelDto from(Member member){
+			return MemberTravelDto.builder()
+				.memberNickname(member.getNickname())
+				.memberUuid(member.getMemberUuid())
+				.image(member.getProfileImage())
+				.build();
+		}
 	}
 }

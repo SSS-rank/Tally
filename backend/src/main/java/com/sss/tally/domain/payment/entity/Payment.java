@@ -81,6 +81,9 @@ public class Payment {
 	@Column(nullable = false)
 	private Boolean status;
 
+	@Column(nullable = false)
+	private String paymentName;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private CalculateStatusEnum calculateStatus;

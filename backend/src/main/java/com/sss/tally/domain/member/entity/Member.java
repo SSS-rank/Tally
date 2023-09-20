@@ -74,6 +74,15 @@ public class Member implements UserDetails {
 		this.profileImage = profileImage;
 	}
 
+	public void createPassword(String transferPassword, String transferSalt){
+		this.transferPassword = transferPassword;
+		this.transferSalt = transferSalt;
+	}
+
+	public void patchPassword(String transferPassword){
+		this.transferPassword = transferPassword;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
