@@ -9,7 +9,7 @@ import com.sss.tally.domain.memberpayment.entity.MemberPayment;
 import com.sss.tally.domain.payment.entity.Payment;
 
 public interface MemberPaymentRepository extends JpaRepository<MemberPayment, Integer> {
-	List<MemberPayment> findMemberPaymentsByPaymentId(Payment payment);
+	List<MemberPayment> findMemberPaymentsByPaymentIdAndStatusIsFalse(Payment payment);
 
-	List<MemberPayment> findMemberPaymentsByPaymentIdAndMemberId(Payment payment, Member member);
+	List<MemberPayment> findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(Payment payment, Member member);
 }
