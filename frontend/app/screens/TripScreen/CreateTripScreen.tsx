@@ -8,10 +8,11 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TokenState, TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function CreateTripScreen() {
+function CreateTripScreen({ navigation }: TripStackProps) {
 	const [title, setTitle] = useState('');
 
 	const changeName = (value: string) => {
@@ -44,7 +45,8 @@ function CreateTripScreen() {
 		if (res.data === 'OK') {
 			console.log(res.data);
 			console.log('등록이 완료 되었습니다');
-			// TODO 여행 상세 페이지로 이동
+			// TODO 해당 여행 상세 페이지로 이동
+			navigation.navigate('TripDetail');
 		}
 	};
 
