@@ -55,13 +55,14 @@ public class TransferDto {
 		private String accountPassword;
 
 		public static TransferDepositReqDto of(String senderAccountNum, String receiverAccountNum, Long depositAmount,
-			String withdrawAccountContent, String depositAccountContent) {
+			String withdrawAccountContent, String depositAccountContent, String bankCode) {
 			return TransferDepositReqDto.builder()
 				.senderAccountNum(senderAccountNum)
 				.receiverAccountNum(receiverAccountNum)
 				.depositAmount(depositAmount)
 				.withdrawAccountContent(withdrawAccountContent)
 				.depositAccountContent(depositAccountContent)
+				.bankCode(bankCode)
 				.build();
 		}
 
