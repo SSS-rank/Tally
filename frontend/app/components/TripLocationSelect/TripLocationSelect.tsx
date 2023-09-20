@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { TripInfoState } from '../../recoil/recoil';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TokenState, TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface tripLocationSelectItem {
@@ -22,47 +23,81 @@ function TripLocationSelect() {
 
 	// 해외 선택 시 국가
 	const [openCountry, setOpenCountry] = useState(false);
-	const [country, setCountry] = useState('');
+	const [country, setCountry] = useState(0);
 	const [tripCountryItems, setTripCountryItems] = useState<tripLocationSelectItem[]>([]);
 
 	// 국내 선택 시 도
-	const [openArea, setOpenArea] = useState(false);
-	const [area, setArea] = useState('');
-	const [tripAreaItems, setTripAreaItems] = useState<tripLocationSelectItem[]>([]);
+	const [openState, setOpenState] = useState(false);
+	const [state, setState] = useState(0);
+	const [tripStateItems, setTripStateItems] = useState<tripLocationSelectItem[]>([]);
 
 	// recoil
 	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
 
 	useEffect(() => {
 		if (tripType === 'state') {
-			setTripAreaItems([
-				{ label: '서울', value: 'seoul' },
-				{ label: '부산', value: 'busan' },
-			]);
-			setCountry('');
+			getState();
+			setCountry(0);
 		} else if (tripType === 'global') {
 			setTripCountryItems([
 				{ label: '일본', value: 'japan' },
 				{ label: '태국', value: 'taiwan' },
 			]);
-			setArea('');
-			setCity('');
+			setState(0);
+			setCity(0);
 		}
 	}, [tripType]);
 
+	const accessToken = useRecoilValue(TokenState).accessToken;
+	const api = useAxiosWithAuth();
+	const getState = async () => {
+		try {
+			if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+			const res = await api.get(`/destination/state`);
+
+			if (res.status === 200) {
+				const states: tripLocationSelectItem[] = res.data.map((item: any) => ({
+					label: item.state_name,
+					value: item.state_id,
+				}));
+
+				setTripStateItems(states);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	// 국내 선택 시 도시
 	const [openCity, setOpenCity] = useState(false);
-	const [city, setCity] = useState('');
+	const [city, setCity] = useState(0);
 	const [tripCityItems, setTripCityItems] = useState<tripLocationSelectItem[]>([]);
 
 	useEffect(() => {
-		if (area !== '') {
-			setTripCityItems([
-				{ label: '강남', value: 'gangnam' },
-				{ label: '잠실', value: 'samsil' },
-			]);
+		if (state !== 0) {
+			setTripCityItems([]);
+			setCity(0);
+			getCity();
 		}
-	}, [area]);
+	}, [state]);
+
+	const getCity = async () => {
+		try {
+			if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+			const res = await api.get(`/destination/city?code=${state}`);
+
+			if (res.status === 200) {
+				const cities: tripLocationSelectItem[] = res.data.map((item: any) => ({
+					label: item.city_name,
+					value: item.city_id,
+				}));
+
+				if (cities.length !== 0) setTripCityItems(cities);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const changeTripType = (value: any) => {
 		const updatedTripInfo = {
@@ -77,7 +112,7 @@ function TripLocationSelect() {
 		setTripInfo(updatedTripInfo);
 	};
 
-	const changeArea = (value: any) => {
+	const changeState = (value: any) => {
 		const updatedTripInfo = { ...tripInfo, location: value };
 		setTripInfo(updatedTripInfo);
 	};
@@ -104,21 +139,21 @@ function TripLocationSelect() {
 			/>
 			{tripType === 'state' && (
 				<DropDownPicker
-					open={openArea}
-					value={area}
-					items={tripAreaItems}
-					setOpen={setOpenArea}
-					setValue={setArea}
-					setItems={setTripAreaItems}
+					open={openState}
+					value={state}
+					items={tripStateItems}
+					setOpen={setOpenState}
+					setValue={setState}
+					setItems={setTripStateItems}
 					style={styles.domesticInput}
 					textStyle={styles.text}
 					placeholder="선택해 주세요"
 					zIndex={2000}
 					zIndexInverse={2000}
-					onChangeValue={changeArea}
+					onChangeValue={changeState}
 				/>
 			)}
-			{tripType === 'state' && area !== '' && (
+			{tripType === 'state' && tripCityItems.length !== 0 && (
 				<DropDownPicker
 					open={openCity}
 					value={city}
