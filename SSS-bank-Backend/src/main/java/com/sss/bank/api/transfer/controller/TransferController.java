@@ -67,11 +67,9 @@ public class TransferController {
 
 	@PostMapping("/history/tally")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
-		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
+		@RequestBody @Valid TransferDto.TransferListReqTallyDto transferListReqDto) throws NoSuchAlgorithmException {
 
-		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(memberId,
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(
 			transferListReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
