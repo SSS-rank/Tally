@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +74,7 @@ public class TravelServiceImpl implements TravelService{
 	}
 
 	@Override
-	public List<TravelDto> getTravelList(Authentication authentication, String type) {
+	public List<TravelDto> getTravelList(Authentication authentication, String type, Pageable pageable) {
 		// access token으로 사용자 정보 받기
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
@@ -83,13 +84,13 @@ public class TravelServiceImpl implements TravelService{
 		List<Travel> travelList = new ArrayList<>();
 		switch (type) {
 			case "before":
-				travelList = travelRepository.findUpcomingTravelForMember(memberOptional.get(), LocalDate.now());
+				travelList = travelRepository.findUpcomingTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
 				break;
 			case "ongoing":
-				travelList = travelRepository.findOngoingTravelForMember(memberOptional.get(), LocalDate.now());
+				travelList = travelRepository.findOngoingTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
 				break;
 			case "after":
-				travelList = travelRepository.findPastTravelForMember(memberOptional.get(), LocalDate.now());
+				travelList = travelRepository.findPastTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
 				break;
 		}
 

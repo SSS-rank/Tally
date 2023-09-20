@@ -2,6 +2,7 @@ package com.sss.tally.api.travel.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -29,7 +30,7 @@ public class TravelController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<TravelDto>> getTravelList(Authentication authentication, @RequestParam("type")String type){
-		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type));
+	public ResponseEntity<List<TravelDto>> getTravelList(Authentication authentication, @RequestParam("type")String type, Pageable pageable){
+		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type, pageable));
 	}
 }

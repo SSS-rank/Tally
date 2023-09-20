@@ -3,6 +3,7 @@ package com.sss.tally.domain.travel.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,16 +16,16 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
 		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId) " +
 		"AND t.endDate < :now")
-	List<Travel> findUpcomingTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now);
+	List<Travel> findUpcomingTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
 
 
 	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
 		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId) " +
 		"AND t.startDate <= :now AND t.endDate >= :now")
-	List<Travel> findOngoingTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now);
+	List<Travel> findOngoingTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
 
 	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
 		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId) " +
 		"AND t.startDate > :now")
-	List<Travel> findPastTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now);
+	List<Travel> findPastTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
 }
