@@ -57,9 +57,14 @@ public class Account {
 	@CreatedDate
 	private LocalDateTime createDate;
 
-	public static Account from(AccountDto.AccountCreateReqDto accountCreateReqDto){
+	public static Account of(Member member, AccountDto.AccountCreateReqDto accountCreateReqDto, Boolean representativeAccount){
 		return Account.builder()
+			.memberId(member)
 			.accountNumber(accountCreateReqDto.getAccountNumber())
+			.status(false)
+			.orderNumber(accountCreateReqDto.getOrderNumber())
+			.bankName(accountCreateReqDto.getBankName())
+			.representativeAccount(representativeAccount)
 			.build();
 	}
 
