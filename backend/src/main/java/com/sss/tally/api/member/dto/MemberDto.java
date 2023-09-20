@@ -43,6 +43,16 @@ public class MemberDto {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class MemberPasswordDto{
+		@NotNull
+		private String transferPassword;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	@JsonNaming(value=PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class MemberTravelDto{
 		private String image;
