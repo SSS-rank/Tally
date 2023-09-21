@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TripStackProps } from '../navigation/TripStack';
-
 export interface TripListItemProps {
 	id: number;
 	title: string;
@@ -10,9 +9,9 @@ export interface TripListItemProps {
 	startDay: string;
 	endDay: string;
 	navigation: NativeStackScreenProps<TripStackProps, 'TripDetail'>;
-	travelParticipants: Array<member>;
+	travelParticipants: Array<TripMember>;
 }
-export interface member {
+export interface TripMember {
 	image: string;
 	member_nickname: string;
 	member_uuid: string;
