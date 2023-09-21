@@ -147,8 +147,10 @@ public class TransferDto {
 
 		private String transferUuid;
 
+		private Integer shopType;
+
 		public static TransferListRespDto of(LocalDateTime date, String flag, String content, long amount,
-			String uuid) {
+			String uuid, Integer shopType) {
 			return TransferListRespDto
 				.builder()
 				.transferDate(date)
@@ -156,6 +158,7 @@ public class TransferDto {
 				.content(content)
 				.amount(amount)
 				.transferUuid(uuid)
+				.shopType(shopType)
 				.build();
 		}
 	}
