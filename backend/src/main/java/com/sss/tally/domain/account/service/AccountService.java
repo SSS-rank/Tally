@@ -16,4 +16,6 @@ public interface AccountService {
 	Long getBalance(Long accountId);
 
 	List<AccountDto.AccountRespDto> getAccountList(Authentication authentication);
+
+	void updateMainAccount(Authentication authentication, Long accountId);
 }

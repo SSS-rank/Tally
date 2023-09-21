@@ -3,6 +3,7 @@ package com.sss.tally.domain.account.service;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -81,5 +82,15 @@ public class AccountServiceImpl implements AccountService{
 			}
 			return list;
 		}
+	}
+
+	@Override
+	public void updateMainAccount(Authentication authentication, Long accountId) {
+		Member auth = (Member)authentication.getPrincipal();
+		Optional<Account> account = accountRepository.findAccountByMemberIdAndStatusIsFalseAndRepresentativeAccountIsTrue(auth);
+		account.ifPresent(value -> value.updateRepresentative(false));
+
+		account = accountRepository.findAccountByAccountIdAndStatusIsFalse(accountId);
+		account.ifPresent(value -> value.updateRepresentative(true));
 	}
 }
