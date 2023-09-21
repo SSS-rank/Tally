@@ -43,6 +43,9 @@ function LoginScreen({ route }: RootStackProp) {
 							refreshTokenExpireTime: res.data.refreshTokenExpireTime,
 						};
 
+						if (res.data.accessToken)
+							api.defaults.headers.Authorization = `Bearer ${tokenState.accessToken}`;
+
 						setTokenState(tokenState);
 						setUserToken(res.data.accessToken);
 					}
