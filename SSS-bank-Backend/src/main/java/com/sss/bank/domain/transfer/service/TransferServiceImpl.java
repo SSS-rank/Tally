@@ -240,15 +240,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public TransferDto.TransferDepositRespDto createTransferTally(long memberId,
+	public TransferDto.TransferDepositRespDto createTransferTally(
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
-
-		// 회원 확인
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-
-		Member member = memberOptional.get();
 
 		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(transferDepositReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
@@ -278,11 +271,6 @@ public class TransferServiceImpl implements TransferService {
 		// 출금계좌와 입금계좌가 동일하면 안됨
 		if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
 			throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
-		}
-
-		//출금계좌 소유주와 로그인한 사용자가 동일한지 확인
-		if (senderAccount.getMemberId() != member) {
-			throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
 		}
 
 		//출금계좌 잔액 확인
@@ -315,7 +303,8 @@ public class TransferServiceImpl implements TransferService {
 		Account account = accountOptional.get();
 		long accountId = account.getAccountId();
 
-		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId);
+		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
+			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 

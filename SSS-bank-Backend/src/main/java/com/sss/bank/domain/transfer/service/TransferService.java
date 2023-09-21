@@ -17,7 +17,7 @@ public interface TransferService {
 
 	String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto);
 
-	TransferDto.TransferDepositRespDto createTransferTally(long memberId,
+	TransferDto.TransferDepositRespDto createTransferTally(
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws
 		NoSuchAlgorithmException;
 
