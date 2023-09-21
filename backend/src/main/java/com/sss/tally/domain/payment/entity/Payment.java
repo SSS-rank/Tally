@@ -105,6 +105,7 @@ public class Payment {
 			.paymentKoreaDate(dateTime)
 			.paymentMemo(payPaymentManualDto.getMemo())
 			.paymentMethod(paymentMethod)
+			.ratio(payPaymentManualDto.getRatio())
 			.visible(payPaymentManualDto.isVisible())
 			.paymentName(payPaymentManualDto.getTitle())
 			.calculateStatus(CalculateStatusEnum.NONE)
@@ -132,7 +133,13 @@ public class Payment {
 		this.visible = visible;
 	}
 
-	public static Payment from(PaymentDto.PaymentListRespDto paymentListRespDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, LocalDateTime datetime){
+	public void updatePaymentAuto(PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto, Category category){
+		this.categoryId = category;
+		this.paymentMemo = paymentCardUpdateDto.getMemo();
+		this.visible = paymentCardUpdateDto.isVisible();
+	}
+
+	public static Payment of(PaymentDto.PaymentListRespDto paymentListRespDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, LocalDateTime datetime){
 		return Payment.builder()
 			.paymentName(paymentListRespDto.getContent())
 			.amount(paymentListRespDto.getAmount())
@@ -145,7 +152,9 @@ public class Payment {
 			.paymentUnitId(paymentUnit)
 			.visible(true)
 			.status(false)
+			.paymentMemo("")
 			.paymentKoreaDate(datetime)
+			.paymentLocalDate(datetime)
 			.calculateStatus(CalculateStatusEnum.NONE)
 			.build();
 	}
