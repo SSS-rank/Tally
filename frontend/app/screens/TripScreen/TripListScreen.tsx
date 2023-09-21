@@ -103,6 +103,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 							type={trip.type}
 							startDay={trip.startDay}
 							endDay={trip.endDay}
+							navigation={navigation}
 						/>
 					))}
 				</View>
