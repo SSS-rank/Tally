@@ -15,5 +15,7 @@ public interface PaymentService {
 	List<PaymentDto.PaymentListDto> getPaymentList(Authentication authentication, Long travelId);
 	PaymentDto.PaymentDetailPayer getPaymentDetailForPayer(Authentication authentication, String paymentUuid);
 
+	PaymentDto.PaymentDetailTag getPaymentDetailForTag(Authentication authentication, String paymentUuid);
+
 	void removePayment(Authentication authentication, PaymentDto.RemovePaymentDto removePaymentDto);
 }

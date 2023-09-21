@@ -303,8 +303,39 @@ public class PaymentServiceImpl implements PaymentService{
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
-		return null;
+		List<MemberPayment> participants = memberPaymentRepository.findMemberPaymentsByPaymentId_PaymentUuid(paymentUuid);
 
+		List<MemberPaymentDto.MemberPaymentRespDto> participantList = participants.stream()
+				.map(participant -> {
+						if(participant.getMemberId().getMemberId().equals(member.getMemberId()))
+							return MemberPaymentDto.MemberPaymentRespDto.of(participant, true);
+						else return MemberPaymentDto.MemberPaymentRespDto.of(participant, false);
+				}).collect(Collectors.toList());
+		return PaymentDto.PaymentDetailPayer.of(paymentOptional.get(), participantList);
+
+	}
+
+	@Override
+	public PaymentDto.PaymentDetailTag getPaymentDetailForTag(Authentication authentication, String paymentUuid) {
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentUuid);
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+		Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsTrue(paymentOptional.get(), member);
+		if(memberPaymentOptional.isEmpty())
+			throw new PaymentException(ErrorCode.NOT_EXIST_VIEW_PERMISSION);
+
+		List<MemberPayment> participants = memberPaymentRepository.findMemberPaymentsByPaymentId_PaymentUuid(paymentUuid);
+
+		List<MemberPaymentDto.MemberPaymentRespDto> participantList = participants.stream()
+				.map(participant -> {
+					if(participant.getMemberId().getMemberId().equals(member.getMemberId()))
+						return MemberPaymentDto.MemberPaymentRespDto.of(participant, true);
+					else return MemberPaymentDto.MemberPaymentRespDto.of(participant, false);
+				}).collect(Collectors.toList());
+
+		return PaymentDto.PaymentDetailTag.of(paymentOptional.get(), participantList);
 	}
 
 	@Override
