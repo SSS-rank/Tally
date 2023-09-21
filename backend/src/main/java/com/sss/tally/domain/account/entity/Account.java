@@ -49,7 +49,7 @@ public class Account {
 	private int orderNumber; // 계좌 등록 순서
 
 	@Column(nullable = false)
-	private String bankName; // 은행 이름
+	private String bankCode; // 은행 코드
 
 	@Column(nullable = false)
 	private Boolean representativeAccount; // 대표 계좌 여부
@@ -67,7 +67,7 @@ public class Account {
 			.accountNumber(accountCreateReqDto.getAccountNumber())
 			.status(false)
 			.orderNumber(accountCreateReqDto.getOrderNumber())
-			.bankName(accountCreateReqDto.getBankName())
+			.bankCode(accountCreateReqDto.getBankCode())
 			.representativeAccount(representativeAccount)
 			.accountPassword(accountCreateReqDto.getAccountPassword())
 			.build();
