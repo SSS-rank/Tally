@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { Button, Portal, Modal } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import TripListFilter from '../../components/TripListFilter/TripListFilter';
 import TripListItem from '../../components/TripListItem/TripListItem';
 import TripSwitch from '../../components/TripSwitch/TripSwitch';
 import { TripListItemProps } from '../../model/trip';
@@ -32,16 +30,7 @@ const fakeTripListBefore: TripListItemProps[] = [
 
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
-	const [modalVisible, setModalVisible] = useState(false);
 	const [selectionMode, setSelectionMode] = useState('ongoing');
-
-	const openFilter = () => {
-		setModalVisible(true);
-	};
-
-	const hideModal = () => {
-		setModalVisible(false);
-	};
 
 	return (
 		<ScrollView style={styles.viewContainer}>
@@ -72,16 +61,6 @@ function TripListScreen({ navigation }: TripStackProp) {
 					</View>
 				</View>
 			</TouchableOpacity>
-			<Button
-				icon="chevron-down"
-				mode="text"
-				onPress={openFilter}
-				style={{ alignItems: 'flex-start', marginBottom: 5 }}
-				contentStyle={{ flexDirection: 'row-reverse' }}
-				labelStyle={TextStyles({ align: 'left', color: '#666666' }).regular}
-			>
-				필터
-			</Button>
 			{selectionMode === 'before' && (
 				<View style={styles.tripListContainer}>
 					<Text style={styles.listTitle}>다가오는 여행</Text>
@@ -127,21 +106,6 @@ function TripListScreen({ navigation }: TripStackProp) {
 			<View style={styles.switchView}>
 				<TripSwitch selectionMode={selectionMode} setSelectionMode={setSelectionMode} />
 			</View>
-
-			<Portal>
-				<Modal
-					visible={modalVisible}
-					onDismiss={hideModal}
-					contentContainerStyle={styles.modalContainer}
-				>
-					<View style={styles.modalView}>
-						<Text style={styles.filterTitle}>필터 선택</Text>
-						<TripListFilter filterName="다가오는 여행" />
-						<TripListFilter filterName="여행 중" />
-						<TripListFilter filterName="다가오는 여행" />
-					</View>
-				</Modal>
-			</Portal>
 		</ScrollView>
 	);
 }
@@ -179,24 +143,9 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		marginBottom: 40,
 	},
-	modalContainer: {
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		width: '100%',
-	},
-	modalView: {
-		backgroundColor: '#fff',
-		borderRadius: 8,
-		padding: 20,
-	},
 	tripListContainer: {
 		marginVertical: 10,
 		paddingBottom: 60,
-	},
-	filterTitle: {
-		...TextStyles({ align: 'left', weight: 'bold' }).title,
-		marginVertical: 16,
 	},
 	listTitle: {
 		...TextStyles({ align: 'left', mBottom: 10 }).medium,
