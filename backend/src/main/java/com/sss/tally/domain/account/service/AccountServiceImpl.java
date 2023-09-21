@@ -13,6 +13,7 @@ import com.sss.tally.api.account.dto.AccountDto;
 import com.sss.tally.domain.account.client.AccountInfoClient;
 import com.sss.tally.domain.account.entity.Account;
 import com.sss.tally.domain.account.repository.AccountRepository;
+import com.sss.tally.domain.bank.entity.Bank;
 import com.sss.tally.domain.bank.repository.BankRepository;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
@@ -50,15 +51,15 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public void deleteAccount(Long accountId) {
-		Account account = accountRepository.findAccountByAccountIdAndStatusIsFalse(accountId)
+	public void deleteAccount(String accountNumber) {
+		Account account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber)
 			.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_ACCOUNT));
 		account.updateStatus(false);
 	}
 
 	@Override
-	public Long getBalance(Long accountId) {
-		Account account = accountRepository.findAccountByAccountIdAndStatusIsFalse(accountId)
+	public Long getBalance(String accountNumber) {
+		Account account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber)
 			.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_ACCOUNT));
 		String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
 		AccountDto.AccountInfoReqDto accountInfoReqDto = AccountDto.AccountInfoReqDto.of(account);
@@ -74,23 +75,22 @@ public class AccountServiceImpl implements AccountService{
 		List<AccountDto.AccountRespDto> list = new ArrayList<>();
 
 		if(accountList.size()==0) return null;
-		else{
-			for(Account account:accountList){
-				Long balance = this.getBalance(account.getAccountId());
-				String bankName = bankRepository.findBankByBankCode(account.getBankCode()).get().getBankName();
-				list.add(AccountDto.AccountRespDto.of(account, balance, bankName));
-			}
-			return list;
+		for(Account account:accountList){
+			Long balance = this.getBalance(account.getAccountNumber());
+			Bank bank =  bankRepository.findBankByBankCode(account.getBankCode())
+				.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_BANK));
+			list.add(AccountDto.AccountRespDto.of(account, balance, bank.getBankName()));
 		}
+		return list;
 	}
 
 	@Override
-	public void updateMainAccount(Authentication authentication, Long accountId) {
+	public void updateMainAccount(Authentication authentication, String accountNumber) {
 		Member auth = (Member)authentication.getPrincipal();
 		Optional<Account> account = accountRepository.findAccountByMemberIdAndStatusIsFalseAndRepresentativeAccountIsTrue(auth);
 		account.ifPresent(value -> value.updateRepresentative(false));
 
-		account = accountRepository.findAccountByAccountIdAndStatusIsFalse(accountId);
+		account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber);
 		account.ifPresent(value -> value.updateRepresentative(true));
 	}
 }

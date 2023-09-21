@@ -11,11 +11,11 @@ public interface AccountService {
 	void createAccount(Authentication authentication, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException;
 
-	void deleteAccount(Long accountId);
+	void deleteAccount(String accountNumber);
 
-	Long getBalance(Long accountId);
+	Long getBalance(String accountNumber);
 
 	List<AccountDto.AccountRespDto> getAccountList(Authentication authentication);
 
-	void updateMainAccount(Authentication authentication, Long accountId);
+	void updateMainAccount(Authentication authentication, String accountNumber);
 }
