@@ -69,7 +69,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					}}
 				>
 					<Text style={TextStyles().title}>{title}</Text>
-					<Text style={[TextStyles().small, styles.type]}>{location}</Text>
+					<Text style={[TextStyles().small, styles.type]}>{type}</Text>
 				</View>
 				<View
 					style={{
