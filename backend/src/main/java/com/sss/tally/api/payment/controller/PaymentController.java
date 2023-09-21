@@ -60,4 +60,16 @@ public class PaymentController {
 		paymentService.removePayment(authentication, removePaymentDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
+
+	@GetMapping("/payer/{paymentUuid}")
+	public ResponseEntity<PaymentDto.PaymentDetailPayer> getPaymentDetailForPayer(Authentication authentication, @PathVariable("paymentUuid") String paymentUuid){
+		PaymentDto.PaymentDetailPayer paymentDetailForPayer = paymentService.getPaymentDetailForPayer(authentication, paymentUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentDetailForPayer);
+	}
+
+	@GetMapping("/tag/{paymentUuid}")
+	public ResponseEntity<PaymentDto.PaymentDetailTag> getPaymentDetailForTag(Authentication authentication, @PathVariable("paymentUuid") String paymentUuid){
+		PaymentDto.PaymentDetailTag paymentDetailForTag = paymentService.getPaymentDetailForTag(authentication, paymentUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentDetailForTag);
+	}
 }
