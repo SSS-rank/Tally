@@ -13,9 +13,9 @@ public interface TransferService {
 	List<TransferDto.TransferListRespDto> getTransferList(long memberId,
 		TransferDto.TransferListReqDto transferListReqDto) throws NoSuchAlgorithmException;
 
-	String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) throws NoSuchAlgorithmException;
+	String oneTransfer(TransferDto.OnetransferReqDto onetransferReqDto) throws NoSuchAlgorithmException;
 
-	String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto);
+	String oneTransferVerify(TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto);
 
 	TransferDto.TransferDepositRespDto createTransferTally(
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws

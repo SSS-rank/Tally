@@ -1,6 +1,8 @@
 package com.sss.tally.domain.travel.service;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import com.sss.tally.domain.travel.repository.TravelRepository;
 import com.sss.tally.domain.travelgroup.entity.TravelGroup;
 import com.sss.tally.domain.travelgroup.repository.TravelGroupRepository;
 import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.BusinessException;
 import com.sss.tally.global.error.exception.CityException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.TravelException;
@@ -128,5 +131,22 @@ public class TravelServiceImpl implements TravelService{
 				.collect(Collectors.toList())));
 		}
 		return travels;
+	}
+
+	@Override
+	public int getDay(Authentication authentication) {
+		Member auth = (Member)authentication.getPrincipal();
+		Member member = memberRepository.findByMemberUuid(auth.getMemberUuid())
+			.orElseThrow(()->new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
+
+		List<Travel> ongoingTravel = travelRepository.findOngoingTravelForMember(member, LocalDate.now(), null);
+		if(ongoingTravel.size()>0) return 0;
+
+		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member, LocalDate.now());
+		if(travelList.isEmpty()) return -1;
+
+		LocalDateTime travelStart = travelList.get(0).getStartDate().atStartOfDay();
+		LocalDateTime now = LocalDate.now().atStartOfDay();
+		return (int)Duration.between(travelStart, now).toDays() * -1;
 	}
 }

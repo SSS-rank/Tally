@@ -182,15 +182,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) throws
+	public String oneTransfer(TransferDto.OnetransferReqDto onetransferReqDto) throws
 		NoSuchAlgorithmException {
-
-		// 회원 검증
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
 
 		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
@@ -226,13 +219,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+	public String oneTransferVerify(TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
 
-		// 회원 검증
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
 		// 1원 이체 예금주 검증
 		String redisCode = redisService.getValues(String.valueOf(onetransferVerifyReqDto.getAccountNum()));
 		if (onetransferVerifyReqDto.getCode().equals(redisCode)) {
@@ -315,13 +303,16 @@ public class TransferServiceImpl implements TransferService {
 
 		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
 			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
-
+		if (Results.isEmpty()) {
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
+		}
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
-
+			Object accountIdObj = rawResult.get("accountId");
+			Object receiverObj = rawResult.get("receiver");
 			//보내는 자일 때 (출금)
-			if (((BigInteger)rawResult.get("accountId")).longValue() == accountId) {
+			if (accountIdObj != null && ((BigInteger)accountIdObj).longValue() == accountId) {
 				Integer value = (Integer)rawResult.get("shopType");
 				if (value == null) {
 					value = 7;  // 기본값 설정
@@ -337,7 +328,7 @@ public class TransferServiceImpl implements TransferService {
 				transferListRespDtos.add(dto);
 			}
 			//받는 자일 때 (입금)
-			if (((BigInteger)rawResult.get("receiver")).longValue() == accountId) {
+			if (receiverObj != null && ((BigInteger)receiverObj).longValue() == accountId) {
 				Integer value = (Integer)rawResult.get("shopType");
 				if (value == null) {
 					value = 7;  // 기본값 설정
