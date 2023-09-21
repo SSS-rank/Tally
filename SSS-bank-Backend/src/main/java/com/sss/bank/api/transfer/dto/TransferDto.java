@@ -136,7 +136,7 @@ public class TransferDto {
 	@Getter
 	public static class TransferListRespDto {
 
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:MM", timezone = "Asia/Seoul")
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
 		private LocalDateTime transferDate;
 
 		private String flag;
