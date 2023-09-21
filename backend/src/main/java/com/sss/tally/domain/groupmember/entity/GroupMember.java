@@ -43,6 +43,8 @@ public class GroupMember {
 	@Column(nullable = false)
 	private Boolean status;
 
+	private String accountNumber;
+
 	public static GroupMember of(Member member, CalculateGroup calculateGroup, Boolean status) {
 		return GroupMember.builder()
 			.calculateGroupId(calculateGroup)
@@ -50,4 +52,13 @@ public class GroupMember {
 			.status(status)
 			.build();
 	}
+
+	public void updateStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public void updateAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
 }

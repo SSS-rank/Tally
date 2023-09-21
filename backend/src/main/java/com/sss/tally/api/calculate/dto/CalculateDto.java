@@ -4,7 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -149,6 +154,87 @@ public class CalculateDto {
 		private int allAmount;
 
 		private LocalDateTime paymentDate;
+
+	}
+
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class CalculateAcceptReqDto {
+		@NotNull
+		private String calculateGroupUuid;
+
+		@NotNull
+		private String accountNumber;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	@Builder
+	public static class TransferDepositReqDto {
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String senderAccountNum;
+
+		@NotNull
+		private String bankCode;
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String receiverAccountNum;
+
+		@NotNull
+		@Max(100000000)
+		@Min(1)
+		private Long depositAmount;
+
+		@Column
+		private String withdrawAccountContent;
+
+		@Column
+		private String depositAccountContent;
+
+		@NotNull
+		private String accountPassword;
+
+		public static TransferDepositReqDto of(String senderAccountNum, String receiverAccountNum, Long depositAmount,
+			String withdrawAccountContent, String depositAccountContent, String bankCode, String accountPassword) {
+			return TransferDepositReqDto.builder()
+				.senderAccountNum(senderAccountNum)
+				.receiverAccountNum(receiverAccountNum)
+				.depositAmount(depositAmount)
+				.withdrawAccountContent(withdrawAccountContent)
+				.depositAccountContent(depositAccountContent)
+				.bankCode(bankCode)
+				.accountPassword(accountPassword)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	@Builder
+	public static class TransferDepositRespDto {
+
+		private String receiverName;
+
+		private Long depositAmount;
+
+		public static TransferDepositRespDto of(String receiverName, Long depositAmount) {
+			return TransferDepositRespDto.builder()
+				.receiverName(receiverName)
+				.depositAmount(depositAmount)
+				.build();
+		}
 
 	}
 
