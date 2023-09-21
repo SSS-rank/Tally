@@ -429,7 +429,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public String acceptCalculate(CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto, String memberUuid) {
-		memberUuid = "2345";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 		if (memberOptional.isEmpty()) {
