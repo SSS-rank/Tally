@@ -92,11 +92,20 @@ public class PaymentServiceImpl implements PaymentService{
 			Payment.of(paymentManualDto, member, travelOptional.get(), category.get(), paymentUnit.get(), uuid,
 				paymentMethodEnum, dateTime));
 
+		List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(travelOptional.get().getTravelId());
+		for(Long memberId : memberIds){
+			Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
+			if(optionalMember.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+			memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, 0));
+
+		}
+
 		for(MemberPaymentDto.MemberPaymentCreateDto participant :paymentManualDto.getPaymentParticipants()){
 			Optional<Member> partOptional = memberRepository.findByMemberUuid(participant.getMemberUuid());
 			if(partOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-
-			memberPaymentRepository.save(MemberPayment.of(participant, partOptional.get(), save));
+			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(save, partOptional.get());
+			memberPaymentOptional.get().updateMemberPayment(participant.getAmount(), true);
 		}
 	}
 
@@ -143,11 +152,7 @@ public class PaymentServiceImpl implements PaymentService{
 			if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), memberOptional.get());
-			if(memberPaymentOptional.isEmpty()) {
-				memberPaymentRepository.save(MemberPayment.of(memberPaymentCreateDto, memberOptional.get(), paymentOptional.get()));
-			}else{
-				memberPaymentOptional.get().updateMemberPayment(memberPaymentCreateDto.getAmount(), true);
-			}
+			memberPaymentOptional.get().updateMemberPayment(memberPaymentCreateDto.getAmount(), true);
 		}
 	}
 	@Override
@@ -224,11 +229,8 @@ public class PaymentServiceImpl implements PaymentService{
 			if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), memberOptional.get());
-			if(memberPaymentOptional.isEmpty()) {
-				memberPaymentRepository.save(MemberPayment.of(memberPaymentCreateDto, memberOptional.get(), paymentOptional.get()));
-			}else{
-				memberPaymentOptional.get().updateMemberPayment(memberPaymentCreateDto.getAmount(), true);
-			}
+			memberPaymentOptional.get().updateMemberPayment(memberPaymentCreateDto.getAmount(), true);
+
 		}
 	}
 
@@ -265,7 +267,21 @@ public class PaymentServiceImpl implements PaymentService{
 				LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
 				if(payment.isEmpty()){
-					paymentRepository.save(Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(), paymentUnitOptional.get(), dateTime));
+					Payment save = paymentRepository.save(
+						Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
+							paymentUnitOptional.get(), dateTime));
+
+					List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(travelOptional.get().getTravelId());
+					for(Long memberId : memberIds){
+						Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
+						if(optionalMember.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+						if(optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, save.getAmount()));
+						else
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, 0));
+
+					}
 				}
 			}
 
