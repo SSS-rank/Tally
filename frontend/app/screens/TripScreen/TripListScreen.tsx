@@ -1,36 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRecoilState } from 'recoil';
 
 import TripListItem from '../../components/TripListItem/TripListItem';
 import TripSwitch from '../../components/TripSwitch/TripSwitch';
-import { TripListItemProps } from '../../model/trip';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripStackProps } from '../../navigation/TripStack';
+import { ongoingTripListState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 
-const fakeTripListBefore: TripListItemProps[] = [
-	{
-		title: '축구보러 가자',
-		nationName: '영국',
-		date: '2023.09.01 ~ 2023.09.03',
-		image: '../../assets/images/kakao.png',
-	},
-	{
-		title: '부산 호캉스',
-		nationName: '',
-		date: '2023.09.01 ~ 2023.09.03',
-		image: '../../assets/images/kakao.png',
-	},
-];
-
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
 	const [selectionMode, setSelectionMode] = useState('ongoing');
+
+	const [ongoingListState, setOngoingListState] = useRecoilState(ongoingTripListState);
+	const api = useAxiosWithAuth();
+	useEffect(() => {
+		if (selectionMode === 'ongoing') {
+			getOngoingTripList();
+		}
+	}, [selectionMode]);
+
+	const getOngoingTripList = async () => {
+		try {
+			const res = await api.get(`/travel?type=ongoing&page=0&size=2&sort=createDate,DESC`);
+
+			if (res.status === 200) {
+				console.log(res.data);
+				const newData = res.data.map((trip: any) => ({
+					id: trip.travel_id,
+					title: trip.travel_title,
+					location: trip.travel_location,
+					type: trip.travel_type,
+					startDay: trip.start_date,
+					endDay: trip.end_date,
+				}));
+				setOngoingListState(newData);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	return (
 		<ScrollView style={styles.viewContainer}>
@@ -64,7 +80,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 			{selectionMode === 'before' && (
 				<View style={styles.tripListContainer}>
 					<Text style={styles.listTitle}>다가오는 여행</Text>
-					{fakeTripListBefore.map((tripBefore, index) => (
+					{/* {fakeTripListBefore.map((tripBefore, index) => (
 						<TripListItem
 							key={index}
 							title={tripBefore.title}
@@ -72,19 +88,21 @@ function TripListScreen({ navigation }: TripStackProp) {
 							date={tripBefore.date}
 							image={tripBefore.image}
 						/>
-					))}
+					))} */}
 				</View>
 			)}
 			{selectionMode === 'ongoing' && (
 				<View style={styles.tripListContainer}>
 					<Text style={styles.listTitle}>여행 중</Text>
-					{fakeTripListBefore.map((tripBefore, index) => (
+					{ongoingListState.map((trip) => (
 						<TripListItem
-							key={index}
-							title={tripBefore.title}
-							nationName={tripBefore.nationName}
-							date={tripBefore.date}
-							image={tripBefore.image}
+							key={trip.id}
+							id={trip.id}
+							title={trip.title}
+							location={trip.location}
+							type={trip.type}
+							startDay={trip.startDay}
+							endDay={trip.endDay}
 						/>
 					))}
 				</View>
@@ -92,7 +110,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 			{selectionMode === 'end' && (
 				<View style={styles.tripListContainer}>
 					<Text style={styles.listTitle}>다녀온 여행</Text>
-					{fakeTripListBefore.map((tripBefore, index) => (
+					{/* {fakeTripListBefore.map((tripBefore, index) => (
 						<TripListItem
 							key={index}
 							title={tripBefore.title}
@@ -100,7 +118,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 							date={tripBefore.date}
 							image={tripBefore.image}
 						/>
-					))}
+					))} */}
 				</View>
 			)}
 			<View style={styles.switchView}>
