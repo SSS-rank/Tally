@@ -112,6 +112,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 								type={item.type}
 								startDay={item.startDay}
 								endDay={item.endDay}
+								navigation={navigation}
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}
