@@ -276,4 +276,17 @@ public class PaymentServiceImpl implements PaymentService{
 			.map(PaymentDto.PaymentListDto::from)
 			.collect(Collectors.toList());
 	}
+
+	@Override
+	public PaymentDto.PaymentDetailPayer getPaymentDetailForPayer(Authentication authentication, String paymentUuid) {
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentUuid);
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
+			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
+		return null;
+
+	}
 }
