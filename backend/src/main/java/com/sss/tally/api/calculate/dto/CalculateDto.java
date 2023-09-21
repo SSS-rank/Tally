@@ -31,6 +31,14 @@ public class CalculateDto {
 		private String paymentUuid;
 	}
 
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class GetRequestCalculateListReqDto {
+		@NotNull
+		private Long travelId;
+	}
+
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
