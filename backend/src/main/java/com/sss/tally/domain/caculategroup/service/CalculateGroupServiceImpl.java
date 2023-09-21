@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.tally.api.calculate.dto.CalculateDto;
 import com.sss.tally.api.notification.dto.NotificationDto;
+import com.sss.tally.domain.account.entity.Account;
+import com.sss.tally.domain.account.repository.AccountRepository;
+import com.sss.tally.domain.caculategroup.client.CalculateGroupClient;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
 import com.sss.tally.domain.caculategroup.repository.CalculateGroupRepository;
@@ -34,6 +37,7 @@ import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.payment.repository.PaymentRepository;
 import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.AccountException;
 import com.sss.tally.global.error.exception.CalculateException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.NotificationException;
@@ -63,6 +67,10 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	private final NotificationRepository notificationRepository;
 
 	private final MemberRepository memberRepository;
+
+	private final AccountRepository accountRepository;
+
+	private final CalculateGroupClient calculateGroupClient;
 
 	@Override
 	public String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid) {
@@ -248,14 +256,14 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
-				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), member);
-				if (memberPaymentList.isEmpty()) {
-					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
+				if (memberPaymentOptional.isEmpty()) {
+					continue;
 				}
-				for (MemberPayment memberPayment : memberPaymentList) {
-					amount += memberPayment.getAmount();
-				}
+				MemberPayment memberPayment = memberPaymentOptional.get();
+				amount += memberPayment.getAmount();
+
 			}
 			//그룹 별 사용자가 줘야할 돈 및 정보 저장
 			CalculateDto.GetResponseCalculateListRespDto getResponseCalculateListRespDto
@@ -418,5 +426,185 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			detailList);
 		return getResponseCalculateDetailRespDto;
 	}
+
+	@Override
+	public String acceptCalculate(CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto, String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		//탈퇴한 멤버인지 검증
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		Optional<CalculateGroup> calculateGroupOptional =
+			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+				calculateAcceptReqDto.getCalculateGroupUuid());
+		if (calculateGroupOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
+		//반려 상태이거나 완료 상태인건 에러
+		if (!calculateGroup.getStatus().equals(CalculateGroupStatusEnum.ONGOING)) {
+			throw new CalculateException(ErrorCode.PAYMENT_NOT_ONGOING);
+		}
+
+		Optional<GroupMember> groupMemberOptional = groupMemberRepository.findGroupMemberByCalculateGroupIdAndMemberId(
+			calculateGroup, member);
+		if (groupMemberOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_CALCULATE_MEMBER);
+		}
+		//상태가 이미 true이면 예외
+		GroupMember groupMember = groupMemberOptional.get();
+		if (groupMember.getStatus()) {
+			throw new CalculateException(ErrorCode.ALREADY_CALCULATE_MEMBER);
+		}
+		groupMember.updateStatus(true);
+
+		//넘겨준 계좌를 저장하자 ! ! ! ! !!
+		groupMember.updateAccountNumber(calculateAcceptReqDto.getAccountNumber());
+		//모든 사람이 true인지 확인하자
+		boolean isAllTrue = false;
+		int cnt = 0;
+		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByCalculateGroupId(calculateGroup);
+		for (GroupMember memberOfGroup : groupMemberList) {
+
+			if (memberOfGroup.getStatus()) {
+				cnt++;
+			}
+		}
+		//모두 확인일 경우
+		if (cnt == groupMemberList.size()) {
+			//그룹을 정산 완료로 상태 변경
+			calculateGroup.updateStatus(CalculateGroupStatusEnum.COMPLETE);
+
+			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+				calculateGroup);
+			if (groupPaymentList.isEmpty()) {
+				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+			}
+			//각 결제별 상태 변경
+			for (GroupPayment groupPayment : groupPaymentList) {
+				//하나라도 상태가 ONGION이 아니라면 에러
+				if (groupPayment.getPaymentId().getCalculateStatus().equals(CalculateStatusEnum.ONGOING)) {
+
+				}
+				groupPayment.getPaymentId().updateCalculateStatusEnum(CalculateStatusEnum.AFTER);
+			}
+			//결제자 에게 돈 보내야 함 결제자 가져오기
+			Member payer = groupPaymentList.get(0).getPaymentId().getMemberId();
+			//결제자 계쫘
+			Optional<Account> payerAccountOptional = accountRepository.findAccountByMemberIdAndStatusIsFalseAndRepresentativeAccountIsTrue(
+				payer);
+			if (payerAccountOptional.isEmpty()) {
+				throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
+			}
+			Account payerAccount = payerAccountOptional.get();
+			//여행 이름
+			String travelName = groupPaymentList.get(0).getPaymentId().getTravelId().getTravelTitle();
+			//알림 리스트
+			List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
+			//사용자 별 보내줘야 할 금액 구하고 보내기....
+			for (GroupMember memberOfGroup : groupMemberList) {
+				Long amount = 0l;
+				for (GroupPayment groupPayment : groupPaymentList) {
+
+					//멤버 별 지불할 총 금액 구하기
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+						groupPayment.getPaymentId(), memberOfGroup.getMemberId());
+					if (memberPaymentOptional.isEmpty()) {
+						continue;
+					}
+					MemberPayment memberPayment = memberPaymentOptional.get();
+					amount += memberPayment.getAmount();
+
+				}
+				//이제 여기서 페인클라이언트로 보내고 나중에 알람 보내면 됨
+				System.out.println("re" + payerAccount.getAccountNumber());
+				System.out.println("se" + memberOfGroup.getAccountNumber());
+				Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+					memberOfGroup.getAccountNumber());
+				Account account = accountOptional.get();
+				CalculateDto.TransferDepositReqDto transferDepositReqDto = CalculateDto.TransferDepositReqDto.of(
+					memberOfGroup.getAccountNumber(), payerAccount.getAccountNumber(), amount,
+					"tally" + payer.getNickname(),
+					"tally" + memberOfGroup.getMemberId().getNickname(), payerAccount.getBankCode(),
+					account.getAccountPassword()
+				);
+				String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
+				calculateGroupClient.deposit(CONTENT_TYPE, transferDepositReqDto);
+
+				Notification notification = Notification.of("complete_calculate", "555",
+					"Tally", memberOfGroup.getMemberId().getMemberUuid(), memberOfGroup.getMemberId().getNickname(),
+					travelName);
+				//알림함에 저장
+				notificationRepository.save(notification);
+
+				//알림 DTO 생성
+				Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+					memberOfGroup.getMemberId());
+				if (deviceOptional.isEmpty()) {
+					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				}
+				Device device = deviceOptional.get();
+				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+					travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
+				notificationReqDtoList.add(notificationReqDto);
+
+			}
+			//결제자 알림 저장 및 알림 보내기 저장
+			Notification notification = Notification.of("complete_calculate", "555",
+				"Tally", payer.getMemberUuid(), payer.getNickname(), travelName);
+			//알림함에 저장
+			notificationRepository.save(notification);
+
+			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+				payer);
+			if (deviceOptional.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			}
+			Device device = deviceOptional.get();
+			NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+				travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
+			notificationReqDtoList.add(notificationReqDto);
+
+			//알림 전송
+
+			//알림 보내기
+			List<NotificationDto.NotificationRespDto> notificationRespDtoList = notificationService.sendNotificationList(
+				notificationReqDtoList);
+
+			List<NotificationDto.NotificationReqDto> notificationReqDtoFailList = new ArrayList<>();
+			boolean flag = false;
+			// 빈 리스트에 대한 처리
+			if (notificationRespDtoList.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			} else { //실패한 애들이이 있다면 따로 또 모으기
+				for (NotificationDto.NotificationRespDto notificationRespDto : notificationRespDtoList) {
+					if (notificationRespDto.getCode() == -1) {
+						notificationReqDtoFailList.add(notificationRespDto.getNotificationReqDto());
+						flag = true;
+					}
+				}
+			}
+			//실패한 애들 다시 모아서 다시 보내기
+			if (flag) {
+				List<NotificationDto.NotificationRespDto> reNotificationRespDtoList = notificationService.sendNotificationList(
+					notificationReqDtoList);
+				if (reNotificationRespDtoList.isEmpty()) {
+					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				}//이번에도 보내기 실패하면 예외처리
+				for (NotificationDto.NotificationRespDto notificationRespDto : reNotificationRespDtoList) {
+					if (notificationRespDto.getCode() == -1) {
+						throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
+					}
+				}
+			}
+
+			return "ok";
+		} else {
+			return "ok";
+		}
+
+	}
 }
+
 

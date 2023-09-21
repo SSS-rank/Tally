@@ -67,10 +67,19 @@ public class CalculateController {
 
 	@PatchMapping("/rejection")
 	public ResponseEntity<String> rejectCalculate(
-		@RequestBody CalculateDto.CalculateRejectReqDto calculateCreateDto,
+		@RequestBody CalculateDto.CalculateRejectReqDto calculateRejectReqDto,
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
-		String result = calculateGroupService.rejectCalculate(calculateCreateDto, memberUuid);
+		String result = calculateGroupService.rejectCalculate(calculateRejectReqDto, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
+
+	@PostMapping("/accept")
+	public ResponseEntity<String> acceptCalculate(
+		@RequestBody CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+		String result = calculateGroupService.acceptCalculate(calculateAcceptReqDto, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }
