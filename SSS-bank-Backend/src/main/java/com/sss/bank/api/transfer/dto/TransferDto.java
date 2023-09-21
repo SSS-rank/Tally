@@ -1,6 +1,7 @@
 package com.sss.bank.api.transfer.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Max;
@@ -90,6 +91,21 @@ public class TransferDto {
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
+	@Builder
+	@AllArgsConstructor
+	@Getter
+	public static class TransferTallyRespDto{
+		private List<TransferListRespDto> tranferList;
+
+		public static TransferTallyRespDto from(List<TransferListRespDto> transferList){
+			return TransferTallyRespDto.builder()
+				.tranferList(transferList)
+				.build();
+		}
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
 	public static class TransferListReqDto {
@@ -128,6 +144,20 @@ public class TransferDto {
 		private String endDate;
 
 	}
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@Builder
+	@AllArgsConstructor
+	@Getter
+	public static class TransferTallyRespDto{
+		private List<TransferListRespDto> tranferList;
+
+		public static TransferTallyRespDto from(List<TransferListRespDto> transferList){
+			return TransferTallyRespDto.builder()
+				.tranferList(transferList)
+				.build();
+		}
+	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
@@ -147,8 +177,10 @@ public class TransferDto {
 
 		private String transferUuid;
 
+		private Integer shopType;
+
 		public static TransferListRespDto of(LocalDateTime date, String flag, String content, long amount,
-			String uuid) {
+			String uuid, Integer shopType) {
 			return TransferListRespDto
 				.builder()
 				.transferDate(date)
@@ -156,6 +188,7 @@ public class TransferDto {
 				.content(content)
 				.amount(amount)
 				.transferUuid(uuid)
+				.shopType(shopType)
 				.build();
 		}
 	}

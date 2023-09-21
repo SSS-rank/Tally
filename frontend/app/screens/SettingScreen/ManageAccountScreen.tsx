@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Button, Avatar } from 'react-native-paper';
 
-import Icon from 'react-native-vector-icons/Ionicons';
-
 import { TextStyles } from '../../styles/CommonStyles';
 const ManageAccountScreen = ({ navigation }: any) => {
-	const [isCheck, setIsCheck] = useState(false);
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
