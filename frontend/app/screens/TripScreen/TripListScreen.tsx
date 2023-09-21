@@ -1,44 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { Button, Portal, Modal } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRecoilState } from 'recoil';
 
-import TripListFilter from '../../components/TripListFilter/TripListFilter';
 import TripListItem from '../../components/TripListItem/TripListItem';
-import { TripListItemProps } from '../../model/trip';
+import TripSwitch from '../../components/TripSwitch/TripSwitch';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripStackProps } from '../../navigation/TripStack';
+import { ongoingTripListState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 
-const fakeTripListBefore: TripListItemProps[] = [
-	{
-		title: '축구보러 가자',
-		nationName: '영국',
-		date: '2023.09.01 ~ 2023.09.03',
-		image: '../../assets/images/kakao.png',
-	},
-	{
-		title: '부산 호캉스',
-		nationName: '',
-		date: '2023.09.01 ~ 2023.09.03',
-		image: '../../assets/images/kakao.png',
-	},
-];
-
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
-	const [modalVisible, setModalVisible] = useState(false);
+	const [selectionMode, setSelectionMode] = useState('ongoing');
 
-	const openFilter = () => {
-		setModalVisible(true);
-	};
+	const [ongoingListState, setOngoingListState] = useRecoilState(ongoingTripListState);
+	const api = useAxiosWithAuth();
+	useEffect(() => {
+		if (selectionMode === 'ongoing') {
+			getOngoingTripList();
+		}
+	}, [selectionMode]);
 
-	const hideModal = () => {
-		setModalVisible(false);
+	const getOngoingTripList = async () => {
+		try {
+			const res = await api.get(`/travel?type=ongoing&page=0&size=4&sort=createDate,DESC`);
+
+			if (res.status === 200) {
+				console.log(res.data);
+				const newData = res.data.map((trip: any) => ({
+					id: trip.travel_id,
+					title: trip.travel_title,
+					location: trip.travel_location,
+					type: trip.travel_type,
+					startDay: trip.start_date,
+					endDay: trip.end_date,
+				}));
+				setOngoingListState(newData);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -70,69 +77,53 @@ function TripListScreen({ navigation }: TripStackProp) {
 					</View>
 				</View>
 			</TouchableOpacity>
-			<Button
-				icon="chevron-down"
-				mode="text"
-				onPress={openFilter}
-				style={{ alignItems: 'flex-start', marginBottom: 5 }}
-				contentStyle={{ flexDirection: 'row-reverse' }}
-				labelStyle={TextStyles({ align: 'left', color: '#666666' }).regular}
-			>
-				필터
-			</Button>
-			<View style={styles.tripListContainer}>
-				<Text style={styles.listTitle}>다가오는 여행</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
+			{selectionMode === 'before' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>다가오는 여행</Text>
+					{/* {fakeTripListBefore.map((tripBefore, index) => (
+						<TripListItem
+							key={index}
+							title={tripBefore.title}
+							nationName={tripBefore.nationName}
+							date={tripBefore.date}
+							image={tripBefore.image}
+						/>
+					))} */}
+				</View>
+			)}
+			{selectionMode === 'ongoing' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>여행 중</Text>
+					{ongoingListState.map((trip) => (
+						<TripListItem
+							key={trip.id}
+							id={trip.id}
+							title={trip.title}
+							location={trip.location}
+							type={trip.type}
+							startDay={trip.startDay}
+							endDay={trip.endDay}
+						/>
+					))}
+				</View>
+			)}
+			{selectionMode === 'end' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>다녀온 여행</Text>
+					{/* {fakeTripListBefore.map((tripBefore, index) => (
+						<TripListItem
+							key={index}
+							title={tripBefore.title}
+							nationName={tripBefore.nationName}
+							date={tripBefore.date}
+							image={tripBefore.image}
+						/>
+					))} */}
+				</View>
+			)}
+			<View style={styles.switchView}>
+				<TripSwitch selectionMode={selectionMode} setSelectionMode={setSelectionMode} />
 			</View>
-			<View>
-				<Text style={styles.listTitle}>여행 중</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
-			</View>
-			<View>
-				<Text style={styles.listTitle}>다녀온 여행</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
-			</View>
-			{/* <Button title="여행 추가" onPress={() => navigation.navigate('CreateTrip')} />
-				<Button title="상세" onPress={() => navigation.navigate('TripDetail')} /> */}
-
-			<Portal>
-				<Modal
-					visible={modalVisible}
-					onDismiss={hideModal}
-					contentContainerStyle={styles.modalContainer}
-				>
-					<View style={styles.modalView}>
-						<Text style={styles.filterTitle}>필터 선택</Text>
-						<TripListFilter filterName="다가오는 여행" />
-						<TripListFilter filterName="여행 중" />
-						<TripListFilter filterName="다가오는 여행" />
-					</View>
-				</Modal>
-			</Portal>
 		</ScrollView>
 	);
 }
@@ -170,26 +161,20 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		marginBottom: 40,
 	},
-	modalContainer: {
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		width: '100%',
-	},
-	modalView: {
-		backgroundColor: '#fff',
-		borderRadius: 8,
-		padding: 20,
-	},
 	tripListContainer: {
 		marginVertical: 10,
-	},
-	filterTitle: {
-		...TextStyles({ align: 'left', weight: 'bold' }).title,
-		marginVertical: 16,
+		paddingBottom: 60,
 	},
 	listTitle: {
 		...TextStyles({ align: 'left', mBottom: 10 }).medium,
+	},
+	switchView: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		width: '100%',
+		bottom: 0,
 	},
 });
 

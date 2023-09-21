@@ -141,6 +141,10 @@ public class TransferServiceImpl implements TransferService {
 
 			// 보내는 자일 때 (출금)
 			if (accountIdObj != null && ((BigInteger)accountIdObj).longValue() == accountId) {
+				Integer value = (Integer)rawResult.get("shopType");
+				if (value == null) {
+					value = 7;  // 기본값 설정
+				}
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
@@ -148,13 +152,18 @@ public class TransferServiceImpl implements TransferService {
 					"출금",
 					(String)rawResult.get("withdrawAccountContent"),
 					((BigInteger)rawResult.get("amount")).longValue(),
-					(String)rawResult.get("uuid")
+					(String)rawResult.get("uuid"),
+					value
 				);
 				transferListRespDtos.add(dto);
 			}
 
 			// 받는 자일 때 (입금)
 			if (receiverObj != null && ((BigInteger)receiverObj).longValue() == accountId) {
+				Integer value = (Integer)rawResult.get("shopType");
+				if (value == null) {
+					value = 7;  // 기본값 설정
+				}
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
@@ -162,7 +171,8 @@ public class TransferServiceImpl implements TransferService {
 					"입금",
 					(String)rawResult.get("name"),
 					((BigInteger)rawResult.get("amount")).longValue(),
-					(String)rawResult.get("uuid")
+					(String)rawResult.get("uuid"),
+					value
 				);
 				transferListRespDtos.add(dto);
 			}
@@ -309,25 +319,37 @@ public class TransferServiceImpl implements TransferService {
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
+
 			//보내는 자일 때 (출금)
 			if (((BigInteger)rawResult.get("accountId")).longValue() == accountId) {
+				Integer value = (Integer)rawResult.get("shopType");
+				if (value == null) {
+					value = 7;  // 기본값 설정
+				}
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
 					localDateTime
 					, "출금", (String)rawResult.get("withdrawAccountContent"),
-					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
+					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid")
+					, value);
 
 				transferListRespDtos.add(dto);
 			}
 			//받는 자일 때 (입금)
 			if (((BigInteger)rawResult.get("receiver")).longValue() == accountId) {
+				Integer value = (Integer)rawResult.get("shopType");
+				if (value == null) {
+					value = 7;  // 기본값 설정
+				}
+
 				java.sql.Timestamp timestamp = (java.sql.Timestamp)rawResult.get("date");
 				LocalDateTime localDateTime = timestamp.toLocalDateTime();
 				TransferDto.TransferListRespDto dto = TransferDto.TransferListRespDto.of(
 					localDateTime
 					, "입금", (String)rawResult.get("name"),
-					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid"));
+					((BigInteger)rawResult.get("amount")).longValue(), (String)rawResult.get("uuid")
+					, value);
 
 				transferListRespDtos.add(dto);
 			}

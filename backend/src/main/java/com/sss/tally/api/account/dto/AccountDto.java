@@ -1,5 +1,7 @@
 package com.sss.tally.api.account.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +20,8 @@ public class AccountDto {
 
 	@Getter
 	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class AccountNumberReqDto{
 		@NotNull
@@ -80,5 +84,21 @@ public class AccountDto {
 		private String bankName;
 		private String accountNumber;
 		private Long balance;
+	}
+
+	@Getter
+	@Builder
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class AccountOrder{
+		private String accountNumber;
+		private int orderNumber;
+	}
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class AccountOrderReqDto{
+		private List<AccountOrder> accountOrder;
 	}
 }
