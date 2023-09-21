@@ -7,6 +7,7 @@ import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
 import PaymentScreen from '../screens/AdjustScreen/PaymentScreen';
 import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
+import PaymentAddScreen from '../screens/PaymentScreen/PaymentAddScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
 import TripListScreen from '../screens/TripScreen/TripListScreen';
@@ -20,6 +21,7 @@ export type TripStackProps = {
 	SendAdjust: undefined;
 	GetAdjust: undefined;
 	PayAdjust: undefined;
+	AddPayment: undefined;
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
@@ -53,6 +55,7 @@ function TripStack() {
 			<Stack.Screen name="SendAdjust" component={SendAdjustScreen} options={{ title: '' }} />
 			<Stack.Screen name="GetAdjust" component={GetAdjustScreen} options={{ title: '' }} />
 			<Stack.Screen name="PayAdjust" component={PaymentScreen} options={{ title: '' }} />
+			<Stack.Screen name="AddPayment" component={PaymentAddScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }

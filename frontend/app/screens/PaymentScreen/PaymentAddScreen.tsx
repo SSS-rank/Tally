@@ -30,6 +30,13 @@ function PaymentAddScreen() {
 		const selectedDate = new Date(p_date);
 		return currentDate.getDate() >= selectedDate.getDate();
 	};
+	function handleSubmit() {
+		console.log(`금액 : ${amount}`);
+		console.log(`날짜 : ${date}`);
+		console.log(`결제처: ${store}`);
+		console.log(`메모: ${text}`);
+		console.log(`카테고리:${selectedcategory}`);
+	}
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.header_button}>
@@ -43,7 +50,6 @@ function PaymentAddScreen() {
 					value={amount}
 					onChangeText={(memo) => {
 						setAmount(memo);
-						console.log(amount);
 					}}
 					returnKeyType="next"
 					keyboardType="numeric"
@@ -84,7 +90,6 @@ function PaymentAddScreen() {
 					value={store}
 					onChangeText={(memo) => {
 						setStore(memo);
-						console.log(store);
 					}}
 					returnKeyType="next"
 					style={styles.textInput}
@@ -96,7 +101,6 @@ function PaymentAddScreen() {
 					value={text}
 					onChangeText={(memo) => {
 						setText(memo);
-						console.log(text);
 					}}
 					returnKeyType="next"
 					style={styles.textInput}
@@ -199,7 +203,7 @@ function PaymentAddScreen() {
 				dark={true} // 어두운 테마 사용 여부
 				compact={true} // 작은 크기의 버튼 여부
 				uppercase={false} // 레이블 텍스트 대문자 변환 여부
-				onPress={() => console.log('Button pressed')} // 클릭 이벤트 핸들러
+				onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
 				style={{ marginTop: 10, marginBottom: 70 }}
 			>
 				{' '}
@@ -245,6 +249,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		paddingHorizontal: 15,
 		paddingTop: 15,
+		backgroundColor: 'white',
 		flex: 1,
 	},
 	amount_container: {

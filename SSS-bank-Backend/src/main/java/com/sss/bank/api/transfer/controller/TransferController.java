@@ -61,16 +61,16 @@ public class TransferController {
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
 	}
 
-	@ApiOperation(value = "거래내역 조회 for Tally", notes = "거래내역을 조회한다 page:0이 1페이지 page:10 이 2페이지")
+	@ApiOperation(value = "거래내역 조회 for Tally")
 
 	@PostMapping("/history/tally")
-	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
+	public ResponseEntity<TransferDto.TransferTallyRespDto> getTransferListTally(
 		@RequestBody @Valid TransferDto.TransferListReqTallyDto transferListReqDto) throws NoSuchAlgorithmException {
 
 		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(
 			transferListReqDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
+		return ResponseEntity.status(HttpStatus.OK).body(TransferDto.TransferTallyRespDto.from(transferListRespDto));
 	}
 
 	@ApiOperation(value = "1원인증", notes = "1원 인증을 진행 후 인증 코드를 받는다 거래내역 조회로 확인")

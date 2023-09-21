@@ -31,4 +31,10 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 	List<Travel> findPastTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
 
 	Optional<Travel> findTravelByTravelId(Long travelId);
+
+	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
+		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId) " +
+		"AND t.startDate > :now ORDER BY t.startDate ASC")
+	List<Travel> findUpcomingTravelForMemberOrderByTravelDate(@Param("memberId") Member memberId, @Param("now") LocalDate now);
+
 }

@@ -30,15 +30,22 @@ public class Country {
 	private String countryCode;
 
 	@Column(nullable = false)
-	private int visa;
+	private String countryName;
 
 	@Column(nullable = false)
+	private String visa;
+
 	private String language;
 
-	@Column(nullable = false)
 	private String monetaryUnit;
 
-	@Column(nullable = false)
 	private int timeDifference;
 
+	public static Country of(String countryCode, String countryName, String visa){
+		return Country.builder()
+			.countryCode(countryCode)
+			.countryName(countryName)
+			.visa(visa)
+			.build();
+	}
 }

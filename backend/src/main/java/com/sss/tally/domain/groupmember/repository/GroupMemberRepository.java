@@ -1,6 +1,7 @@
 package com.sss.tally.domain.groupmember.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,6 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Intege
 	List<GroupMember> findGroupMembersByMemberId(Member member);
 
 	List<GroupMember> findGroupMembersByCalculateGroupId(CalculateGroup calculateGroup);
+
+	Optional<GroupMember> findGroupMemberByCalculateGroupIdAndMemberId(CalculateGroup calculateGroup, Member member);
 }

@@ -31,3 +31,7 @@ token:
   secret: ${TOKEN_SECRET}
   access-token-expiration-time: 1800000 # 30분 1000(ms) x 60(s) x 30(m)
   refresh-token-expiration-time: 1209600000 # 2주 1000(ms) x 60 (s) x 60(m) x 24(h) x 14(d)
+
+country:
+  service:
+    key: ${COUNTRY_SERVICE_KEY}
