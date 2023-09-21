@@ -39,6 +39,7 @@ public enum ErrorCode {
 
 	// 계좌
 	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "001", "해당 계좌는 존재하지 않습니다."),
+	NOT_EXIST_BANK(HttpStatus.NOT_FOUND, "002", "해당 은행이 존재하지 않습니다."),
 
 	// 여행
 
