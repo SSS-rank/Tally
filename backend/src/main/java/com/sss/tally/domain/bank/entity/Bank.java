@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Bank {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long bankId;
 	@Column(nullable = false, unique = true)
 	private String bankName;
 	@Column(nullable = false, unique = true)
