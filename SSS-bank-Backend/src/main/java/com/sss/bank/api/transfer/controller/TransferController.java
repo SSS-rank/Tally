@@ -42,10 +42,8 @@ public class TransferController {
 	@ApiOperation(value = "이체하기 for Tally", notes = "돈을 이체한다")
 	@PostMapping("/deposit/tally")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransferTally(
-		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
-		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransferTally(memberId,
+		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
+		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransferTally(
 			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
