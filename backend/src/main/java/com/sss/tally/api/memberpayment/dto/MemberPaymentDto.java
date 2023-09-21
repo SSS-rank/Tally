@@ -19,4 +19,18 @@ public class MemberPaymentDto {
 		private String memberUuid;
 		private int amount;
 	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class MemberPaymentRespDto{
+		private String memberUuid;
+		private int amount;
+		private String nickname;
+		private String profileImage;
+		private boolean payer;
+		private boolean with;
+	}
 }

@@ -218,4 +218,22 @@ public class PaymentDto {
 		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
 	}
 
+	public static class PaymentDetailPayer{
+		private String paymentUuid;
+
+		private Long category;
+
+		private String memo;
+
+		private boolean visible;
+
+		private int amount;
+
+		private String paymentUnit;
+
+		private String paymentDate;
+
+		private List<MemberPaymentDto.MemberPaymentRespDto> paymentParticipants;
+	}
+
 }
