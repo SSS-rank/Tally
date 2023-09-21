@@ -6,7 +6,10 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-	//알림
+	// 권한
+	NOT_EXIST_EDIT_PERMISSION(HttpStatus.BAD_REQUEST, "001", "알림 전송이 실패했습니다."),
+
+	//알림,
 	FAIL_SEND_NOTIFICATION(HttpStatus.BAD_REQUEST, "001", "알림 전송이 실패했습니다."),
 	NOT_VALID_DEVICETOKEN(HttpStatus.BAD_REQUEST, "002", "유효하지 않은 디바이스토큰 입니다."),
 
@@ -36,6 +39,7 @@ public enum ErrorCode {
 	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다."),
 	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
 	NOT_EXIST_PARTICIPANT(HttpStatus.BAD_REQUEST, "003", "존재하지 않는 참가자입니다."),
+	DIFFERENT_TOTAL_AMOUNT(HttpStatus.BAD_REQUEST, "004", "결제 총 금액이 틀립니다."),
 
 	// 계좌
 	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "001", "해당 계좌는 존재하지 않습니다."),
