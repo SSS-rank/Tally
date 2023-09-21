@@ -53,7 +53,10 @@ public class Payment {
 	private Category categoryId;
 
 	@Column(nullable = false)
-	private Double amount;
+	private int amount;
+
+	@Column(nullable = false)
+	private Double ratio;
 
 	@Column(nullable = false)
 	private String paymentUuid;
@@ -114,5 +117,16 @@ public class Payment {
 
 	public void updateMemo(String memo){
 		this.paymentMemo = memo;
+	}
+
+	public void updatePayment(int amount, Double ratio, PaymentUnit paymentUnitId, Category category, LocalDateTime paymentDateTime, String memo, boolean visible, String title){
+		this.paymentName = title;
+		this.amount = amount;
+		this.ratio = ratio;
+		this.categoryId = category;
+		this.paymentUnitId = paymentUnitId;
+		this.paymentLocalDate = paymentDateTime;
+		this.paymentMemo = memo;
+		this.visible = visible;
 	}
 }
