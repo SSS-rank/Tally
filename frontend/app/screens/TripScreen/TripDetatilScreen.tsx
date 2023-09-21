@@ -3,11 +3,13 @@ import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Button, Chip, Text } from 'react-native-paper';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
-import { PaymentStackProps } from '../../navigation/PaymentStack';
+import { Payment } from '../../model/payment';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -18,6 +20,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 		label: string;
 		value: string;
 	}
+	const [payData, setPayData] = useState<Payment[]>([]);
 	const currentDate = new Date();
 	const [modalVisible, setModalVisible] = useState(false);
 	const year = currentDate.getFullYear();
@@ -26,8 +29,29 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
 	const [orderType, setOrderType] = useState('오래된 순');
 
+	useFocusEffect(
+		React.useCallback(() => {
+			const fetchData = async () => {
+				try {
+					const res = await api.get(`/payment/${id}`);
+
+					if (res.status === 200) {
+						const payList = res.data;
+
+						setPayData((prevPayData) => [...prevPayData, ...payList]);
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			};
+
+			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
+			console.log(payData);
+		}, []), // 두 번째 인자는 종속성 배열. 빈 배열이면 최초 렌더링 때만 실행됨.
+	);
+
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<View style={styles.header}>
 				<Icon name="chevron-left" size={50} color="black" />
 				<View style={styles.header_button_group}>
@@ -188,59 +212,17 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 				</View>
 			</Modal>
-			<ScrollView>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-			</ScrollView>
-		</View>
+			<TouchableOpacity style={styles.detail_item_box}>
+				<Text>여행 준비</Text>
+				<DetailListItem
+					title={'런던 센텀 호텔'}
+					time={'21:17'}
+					balance={300000}
+					party={'김싸피, 이싸피, 김호피'}
+					abroad={false}
+				/>
+			</TouchableOpacity>
+		</ScrollView>
 	);
 }
 

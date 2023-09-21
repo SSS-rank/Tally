@@ -86,14 +86,6 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 	async function handleSubmit() {
-		console.log(`금액 : ${totAmount}`);
-		console.log(`날짜 : ${date}`);
-		console.log(`결제처: ${store}`);
-		console.log(`메모: ${text}`);
-		console.log(`카테고리:${selectedcategory}`);
-		const payReq = {
-			payment_participants: participants,
-		};
 		setDirectPayReq((prevState: DirectPayReq) => ({
 			...prevState,
 			payment_date_time: formatDate(date),
@@ -106,15 +98,13 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 			payment_participants: partyMembers || [],
 			visible: !selfCheck,
 		}));
-		console.log(directPayReq);
 		try {
-			// console.log(page);
-			// console.log(ongoingListState.length);
+			console.log(directPayReq);
+
 			const res = await api.post(`/payment/manual`, directPayReq);
 
-			if (res.status === 200) {
-				// console.log(res.data);
-				console.log(res.data);
+			if (res.status === 201) {
+				navigation.goBack();
 			}
 		} catch (err) {
 			console.log(err);
@@ -122,11 +112,10 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 	}
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.header_button}>
+			{/* <View style={styles.header_button}>
 				<AntIcon name="close" size={30} color="#900" />
 				<MIcon name="dots-horizontal" size={30} color="#900" />
-			</View>
-
+			</View> */}
 			<View style={styles.amount_container}>
 				<Text style={TextStyles({ align: 'left' }).small}>krw(원)</Text>
 				<TextInput
@@ -325,7 +314,7 @@ const styles = StyleSheet.create({
 	amount_container: {
 		flex: 2,
 		padding: 30,
-		marginTop: 20,
+		// marginTop: 20,
 		backgroundColor: '#F6F6F6',
 	},
 
