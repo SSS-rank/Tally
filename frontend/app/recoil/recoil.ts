@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
+import { TripListItemProps, TripInfo } from './../model/trip';
 import { Token } from '../model/token';
-import { TripInfo } from '../model/trip';
 
 export const TokenState = atom<Token>({
 	key: 'tokenState',
@@ -13,6 +13,7 @@ export const TokenState = atom<Token>({
 	},
 });
 
+// 등록하는 여행지 정보
 export const TripInfoState = atom<TripInfo>({
 	key: 'tripInfoState',
 	default: {
@@ -22,4 +23,10 @@ export const TripInfoState = atom<TripInfo>({
 		startDay: '',
 		endDay: '',
 	},
+});
+
+// 여행 중인 여행지 목록
+export const ongoingTripListState = atom<TripListItemProps[]>({
+	key: 'ongoingTripListState',
+	default: [],
 });

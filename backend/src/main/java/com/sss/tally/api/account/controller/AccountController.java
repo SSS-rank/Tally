@@ -1,6 +1,7 @@
 package com.sss.tally.api.account.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +29,34 @@ public class AccountController {
 	public ResponseEntity<String> createAccount(Authentication authentication, @RequestBody AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException {
 		accountService.createAccount(authentication, accountCreateReqDto);
-		return ResponseEntity.status(HttpStatus.OK).body("Success");
+		return ResponseEntity.status(HttpStatus.OK).body("Create Success");
 	}
 
-	@PatchMapping("/{accountId}")
-	public ResponseEntity<String> deleteAccount(@PathVariable Long accountId){
-		accountService.deleteAccount(accountId);
+	@PatchMapping
+	public ResponseEntity<String> deleteAccount(@RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		accountService.deleteAccount(accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
 	}
 
-	@GetMapping("/balance/{accountId}")
-	public ResponseEntity<Long> getBalance(@PathVariable Long accountId){
-		Long balance = accountService.getBalance(accountId);
+	@GetMapping("/balance")
+	public ResponseEntity<Long> getBalance(@RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		Long balance = accountService.getBalance(accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(balance);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<AccountDto.AccountRespDto>> getAccountList(Authentication authentication){
+		List<AccountDto.AccountRespDto> accountRespDtoList = accountService.getAccountList(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(accountRespDtoList);
+	}
+
+	@PatchMapping("/main")
+	public ResponseEntity<String> updateMainAccount(
+		Authentication authentication, @RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		accountService.updateMainAccount(authentication, accountNumber);
+		return ResponseEntity.status(HttpStatus.OK).body("Update Success");
 	}
 }

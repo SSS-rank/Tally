@@ -1,8 +1,10 @@
 export interface TripListItemProps {
+	id: number;
 	title: string;
-	nationName: string;
-	date: string;
-	image: string;
+	location: string; // 국가 코드
+	type: string; // 여행지 이름
+	startDay: string;
+	endDay: string;
 }
 
 export interface TripInfo {

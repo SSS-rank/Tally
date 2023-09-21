@@ -66,4 +66,13 @@ public class MemberPayment {
 			.build();
 	}
 
+	public void updateStatus(boolean status){
+		this.status = status;
+	}
+
+	public void updateMemberPayment(int amount, boolean status){
+		this.amount = amount;
+		this.status = status;
+	}
+
 }
