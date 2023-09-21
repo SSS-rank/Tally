@@ -6,18 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { TripListItemProps } from '../../model/trip';
 import { TextStyles } from '../../styles/CommonStyles';
-function TripListItem({ title, nationName, date, image }: TripListItemProps) {
+function TripListItem({ id, title, location, type, startDay, endDay }: TripListItemProps) {
 	return (
 		<TouchableOpacity>
 			<View style={styles.listItemContainer}>
 				<View style={styles.listView}>
-					<Avatar.Image size={50} style={{ marginRight: 20 }} source={{ uri: image }} />
+					<Avatar.Image
+						size={50}
+						style={{ marginRight: 20 }}
+						source={{ uri: `../../assets/images/country/${location}.png` }}
+					/>
 					<View>
 						<View style={styles.listItemTop}>
 							<Text style={styles.listItemTitle}>{title}</Text>
-							<Text style={styles.listItemNationName}>{nationName}</Text>
+							<Text style={styles.listItemNationName}>{type}</Text>
 						</View>
-						<Text style={styles.listItemDate}>{date}</Text>
+						<Text style={styles.listItemDate}>{`${startDay}~${endDay}`}</Text>
 					</View>
 					<View></View>
 				</View>
