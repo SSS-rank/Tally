@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { TokenState, TripInfoState } from '../../recoil/recoil';
+import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface tripLocationSelectItem {
@@ -48,11 +48,9 @@ function TripLocationSelect() {
 		}
 	}, [tripType]);
 
-	const accessToken = useRecoilValue(TokenState).accessToken;
 	const api = useAxiosWithAuth();
 	const getState = async () => {
 		try {
-			if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
 			const res = await api.get(`/destination/state`);
 
 			if (res.status === 200) {
@@ -83,7 +81,6 @@ function TripLocationSelect() {
 
 	const getCity = async () => {
 		try {
-			if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
 			const res = await api.get(`/destination/city?code=${state}`);
 
 			if (res.status === 200) {
