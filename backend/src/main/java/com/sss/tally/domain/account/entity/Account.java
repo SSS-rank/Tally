@@ -77,6 +77,9 @@ public class Account {
 		this.status = status;
 	}
 
+	public void updateRepresentative(Boolean representative){
+		this.representativeAccount = representative;
+	}
 	private void updateOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}
