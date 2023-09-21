@@ -193,12 +193,12 @@ public class PaymentServiceImpl implements PaymentService{
 			member);
 
 		for(Account account: memberAccounts){
-			String contentType = "application/json";
-			List<PaymentDto.PaymentListRespDto> paymentListRespDtos = paymentClient.requestTransferList(contentType,
-				PaymentDto.PaymentListReqDto.from(account.getAccountNumber(),
-					account.getAccountPassword(), travelOptional.get().getStartDate().toString(),
-					travelOptional.get().getEndDate().toString()));
-			for(PaymentDto.PaymentListRespDto paymentListRespDto: paymentListRespDtos){
+			String contentType = "application/x-www-form-urlencoded;charset=utf-8";
+			PaymentDto.PaymentListReqDto from = PaymentDto.PaymentListReqDto.from(account.getAccountNumber(),
+				account.getAccountPassword(), travelOptional.get().getStartDate().toString(),
+				travelOptional.get().getEndDate().toString());
+			PaymentDto.PaymentResDto paymentListRespDtos = paymentClient.requestTransferList(contentType,from);
+			for(PaymentDto.PaymentListRespDto paymentListRespDto: paymentListRespDtos.getTranferList()){
 
 				if(paymentListRespDto.getFlag().equals("입금")) continue;
 
@@ -215,7 +215,7 @@ public class PaymentServiceImpl implements PaymentService{
 				LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
 				if(payment.isEmpty()){
-					paymentRepository.save(Payment.from(paymentListRespDto, member, travelOptional.get(), category.get(), paymentUnitOptional.get(), dateTime));
+					paymentRepository.save(Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(), paymentUnitOptional.get(), dateTime));
 				}
 			}
 
