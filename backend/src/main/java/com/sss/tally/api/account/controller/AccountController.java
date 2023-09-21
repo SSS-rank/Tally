@@ -52,7 +52,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(accountRespDtoList);
 	}
 
-	@PatchMapping("/main}")
+	@PatchMapping("/main")
 	public ResponseEntity<String> updateMainAccount(
 		Authentication authentication, @RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
 		String accountNumber = accountNumberReqDto.getAccountNumber();
