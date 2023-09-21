@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import AddAccountScreen from '../screens/SettingScreen/AddAccountScreen';
+import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
 import ManageAccountScreen from '../screens/SettingScreen/ManageAccountScreen';
 import SettingScreen from '../screens/SettingScreen/SettingScreen';
 
@@ -20,6 +21,7 @@ function HomeStack() {
 			/>
 			<Stack.Screen name="Account" component={ManageAccountScreen} options={{ title: '' }} />
 			<Stack.Screen name="AddAccount" component={AddAccountScreen} options={{ title: '' }} />
+			<Stack.Screen name="AuthAccount" component={AuthAccountScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }
