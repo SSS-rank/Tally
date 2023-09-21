@@ -121,6 +121,12 @@ public class TransferDto {
 		@NotNull
 		private String accountPasswd;
 
+		@NotNull
+		private String startDate;
+
+		@NotNull
+		private String endDate;
+
 	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
