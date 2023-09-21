@@ -207,8 +207,8 @@ public class TransferServiceImpl implements TransferService {
 		String depositAccountContent = stringBuilder.toString();
 		TransferDto.TransferDepositReqDto transferDepositReqDto = TransferDto.TransferDepositReqDto.of(
 			senderAccountNum, receiverAccountNum, depositAmount, withdrawAccountContent, depositAccountContent
-		);
-		createTransfer(1, transferDepositReqDto);
+			, onetransferReqDto.getBankCode());
+		createOneTransfer(5, transferDepositReqDto);
 		redisService.setOneTrnasferValues(String.valueOf(onetransferReqDto.getAccountNum()), depositAccountContent);
 
 		return depositAccountContent;
@@ -240,15 +240,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public TransferDto.TransferDepositRespDto createTransferTally(long memberId,
+	public TransferDto.TransferDepositRespDto createTransferTally(
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
-
-		// 회원 확인
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-
-		Member member = memberOptional.get();
 
 		Optional<Bank> bankOptional = bankRepository.findBankByBankCode(transferDepositReqDto.getBankCode());
 		if (bankOptional.isEmpty()) {
@@ -280,11 +273,6 @@ public class TransferServiceImpl implements TransferService {
 			throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
 		}
 
-		//출금계좌 소유주와 로그인한 사용자가 동일한지 확인
-		if (senderAccount.getMemberId() != member) {
-			throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
-		}
-
 		//출금계좌 잔액 확인
 		if (senderAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
 			throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
@@ -306,23 +294,17 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public List<TransferDto.TransferListRespDto> getTransferListTally(long memberId,
-		TransferDto.TransferListReqDto transferListReqDto) throws NoSuchAlgorithmException {
-
-		// 회원 인증
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+	public List<TransferDto.TransferListRespDto> getTransferListTally(
+		TransferDto.TransferListReqTallyDto transferListReqDto) throws NoSuchAlgorithmException {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
 
-		int page = transferListReqDto.getPage();
-		int limit = transferListReqDto.getLimit();
 		Account account = accountOptional.get();
 		long accountId = account.getAccountId();
 
-		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId, limit, page);
+		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
+			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
@@ -353,5 +335,48 @@ public class TransferServiceImpl implements TransferService {
 		}
 
 		return transferListRespDtos;
+	}
+
+	public TransferDto.TransferDepositRespDto createOneTransfer(long memberId,
+		TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
+
+		// 회원 확인
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+		if (memberOptional.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		Member member = memberOptional.get();
+
+		//출금 계좌 인증
+		Optional<Account> senderAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getSenderAccountNum());
+		if (senderAccountOptional.isEmpty())
+			throw new AccountException(ErrorCode.INVALID_WITHDRAW_ACCOUNT);
+		Account senderAccount = senderAccountOptional.get();
+
+		Optional<Account> recAccountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
+			transferDepositReqDto.getReceiverAccountNum());
+		Account recAccount = recAccountOptional.get();
+
+		// 출금계좌와 입금계좌가 동일하면 안됨
+		if (transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())) {
+			throw new BusinessException(ErrorCode.DUPLICATE_ACCOUNT);
+		}
+		//출금계좌 잔액 확인
+		if (senderAccount.getBalance() < transferDepositReqDto.getDepositAmount()) {
+			throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
+		}
+		//이체하기(계좌 잔액 조정)
+		Long depositAmount = transferDepositReqDto.getDepositAmount();
+		senderAccount.updateBalance(senderAccount.getBalance() - depositAmount);
+		recAccount.updateBalance(recAccount.getBalance() + depositAmount);
+		// 이체 내역 생성
+		String Uuid = UUID.randomUUID().toString();
+		transferRepository.save(
+			Transfer.of(transferDepositReqDto, Uuid, senderAccount, recAccount));
+
+		return TransferDto.TransferDepositRespDto.of(
+			recAccount.getMemberId().getName(),
+			depositAmount);
+
 	}
 }

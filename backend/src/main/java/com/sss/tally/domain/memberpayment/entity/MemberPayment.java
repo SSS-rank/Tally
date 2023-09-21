@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.tally.api.memberpayment.dto.MemberPaymentDto;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.payment.entity.Payment;
 
@@ -54,5 +55,24 @@ public class MemberPayment {
 
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static MemberPayment of(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto, Member member, Payment payment){
+		return MemberPayment.builder()
+			.paymentDate(payment.getPaymentLocalDate())
+			.memberId(member)
+			.amount(memberPaymentCreateDto.getAmount())
+			.status(true)
+			.paymentId(payment)
+			.build();
+	}
+
+	public void updateStatus(boolean status){
+		this.status = status;
+	}
+
+	public void updateMemberPayment(int amount, boolean status){
+		this.amount = amount;
+		this.status = status;
+	}
 
 }

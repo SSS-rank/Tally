@@ -55,13 +55,14 @@ public class TransferDto {
 		private String accountPassword;
 
 		public static TransferDepositReqDto of(String senderAccountNum, String receiverAccountNum, Long depositAmount,
-			String withdrawAccountContent, String depositAccountContent) {
+			String withdrawAccountContent, String depositAccountContent, String bankCode) {
 			return TransferDepositReqDto.builder()
 				.senderAccountNum(senderAccountNum)
 				.receiverAccountNum(receiverAccountNum)
 				.depositAmount(depositAmount)
 				.withdrawAccountContent(withdrawAccountContent)
 				.depositAccountContent(depositAccountContent)
+				.bankCode(bankCode)
 				.build();
 		}
 
@@ -108,12 +109,34 @@ public class TransferDto {
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class TransferListReqTallyDto {
+
+		@NotNull
+		@NotEmpty
+		@Size(max = 20)
+		private String accountNum;
+
+		@NotNull
+		private String accountPasswd;
+
+		@NotNull
+		private String startDate;
+
+		@NotNull
+		private String endDate;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
 	@Builder
 	@AllArgsConstructor
 	@Getter
 	public static class TransferListRespDto {
 
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:MM", timezone = "Asia/Seoul")
 		private LocalDateTime transferDate;
 
 		private String flag;

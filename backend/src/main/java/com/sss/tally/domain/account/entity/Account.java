@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.tally.api.account.dto.AccountDto;
 import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -39,27 +40,46 @@ public class Account {
 	private Member memberId;
 
 	@Column(nullable = false, unique = true)
-	private String accountNumber;
+	private String accountNumber; // 계좌 번호
 
 	@Column(nullable = false)
-	private Boolean status;
+	private Boolean status; //삭제 여부
 
 	@Column(nullable = false)
-	private int orderNumber;
+	private int orderNumber; // 계좌 등록 순서
 
 	@Column(nullable = false)
-	private String bankName;
+	private String bankCode; // 은행 코드
 
 	@Column(nullable = false)
-	private Boolean representativeAccount;
+	private Boolean representativeAccount; // 대표 계좌 여부
+
+	@Column(nullable = false)
+	private String accountPassword;
 
 	@CreatedDate
 	private LocalDateTime createDate;
 
-	private void updateStatus(boolean status) {
+	public static Account of(
+		Member member, AccountDto.AccountCreateReqDto accountCreateReqDto, Boolean representativeAccount){
+		return Account.builder()
+			.memberId(member)
+			.accountNumber(accountCreateReqDto.getAccountNumber())
+			.status(false)
+			.orderNumber(accountCreateReqDto.getOrderNumber())
+			.bankCode(accountCreateReqDto.getBankCode())
+			.representativeAccount(representativeAccount)
+			.accountPassword(accountCreateReqDto.getAccountPassword())
+			.build();
+	}
+
+	public void updateStatus(boolean status) {
 		this.status = status;
 	}
 
+	public void updateRepresentative(Boolean representative){
+		this.representativeAccount = representative;
+	}
 	private void updateOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}

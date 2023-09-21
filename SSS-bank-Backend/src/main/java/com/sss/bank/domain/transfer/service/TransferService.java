@@ -17,11 +17,11 @@ public interface TransferService {
 
 	String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto);
 
-	TransferDto.TransferDepositRespDto createTransferTally(long memberId,
+	TransferDto.TransferDepositRespDto createTransferTally(
 		TransferDto.TransferDepositReqDto transferDepositReqDto) throws
 		NoSuchAlgorithmException;
 
-	List<TransferDto.TransferListRespDto> getTransferListTally(long memberId,
-		TransferDto.TransferListReqDto transferListReqDto) throws
+	List<TransferDto.TransferListRespDto> getTransferListTally(
+		TransferDto.TransferListReqTallyDto transferListReqDto) throws
 		NoSuchAlgorithmException;
 }

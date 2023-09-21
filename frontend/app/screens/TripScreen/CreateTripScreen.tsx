@@ -3,19 +3,51 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TripStackProps } from '../../navigation/TripStack';
+import { TokenState, TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function CreateTripScreen() {
-	const [name, setName] = useState('');
-	const reset = () => {
-		setName('');
+function CreateTripScreen({ navigation }: TripStackProps) {
+	const [title, setTitle] = useState('');
+
+	const changeName = (value: string) => {
+		setTitle(value);
+
+		const updatedTripInfo = { ...tripInfo, title: value };
+		setTripInfo(updatedTripInfo);
 	};
 
-	const regist = () => {
+	const reset = () => {
+		setTitle('');
+	};
+
+	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
+	const accessToken = useRecoilValue(TokenState).accessToken;
+	const api = useAxiosWithAuth();
+	const regist = async () => {
 		console.log('여행지 등록하기');
+		console.log(tripInfo);
+		const tripAddReq = {
+			travel_title: tripInfo.title,
+			travel_location: tripInfo.location,
+			travel_type: tripInfo.type,
+			start_date: tripInfo.startDay,
+			end_date: tripInfo.endDay,
+		};
+
+		if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+		const res = await api.post(`/travel`, tripAddReq);
+		if (res.data === 'OK') {
+			console.log(res.data);
+			console.log('등록이 완료 되었습니다');
+			// TODO 해당 여행 상세 페이지로 이동
+			navigation.navigate('TripDetail');
+		}
 	};
 
 	return (
@@ -25,8 +57,8 @@ function CreateTripScreen() {
 				<View style={styles.searchView}>
 					<TextInput
 						style={styles.nameInput}
-						value={name}
-						onChangeText={setName}
+						value={title}
+						onChangeText={changeName}
 						placeholder="별명을 입력해주세요"
 					/>
 					<Icon name="close-circle" style={styles.closeIcon} onPress={reset} />

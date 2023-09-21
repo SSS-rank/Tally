@@ -31,4 +31,19 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 		"LIMIT :limit OFFSET :offset", nativeQuery = true)
 	List<Map<String, Object>> findTransferPaymentList(@Param("accountId") long accountId, @Param("limit") int limit,
 		@Param("offset") int offset);
+
+	@Query(value = "SELECT * FROM (" +
+		"(SELECT account_id AS accountId, shop_name AS withdrawAccountContent, payment_uuid AS uuid, amount AS amount, payment_date AS date, NULL AS name, NULL AS receiver "
+		+
+		"FROM payment p INNER JOIN shop s ON p.shop_id = s.shop_id WHERE account_id = :accountId)" +
+		" UNION ALL " +
+		"(SELECT sender AS accountId, withdraw_account_content, transfer_uuid AS uuid, amount AS amount, transfer_date AS date,  deposit_account_content AS name, receiver "
+		+
+		"FROM transfer WHERE sender = :accountId OR receiver = :accountId)" +
+		") AS combined " +
+		"WHERE DATE(date) BETWEEN :startDate AND :endDate " +
+		"ORDER BY combined.date DESC "
+		, nativeQuery = true)
+	List<Map<String, Object>> findTransferPaymentList(@Param("accountId") long accountId,
+		@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

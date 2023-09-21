@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,10 +42,8 @@ public class TransferController {
 	@ApiOperation(value = "이체하기 for Tally", notes = "돈을 이체한다")
 	@PostMapping("/deposit/tally")
 	public ResponseEntity<TransferDto.TransferDepositRespDto> createTransferTally(
-		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
-		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransferTally(memberId,
+		@RequestBody @Valid TransferDto.TransferDepositReqDto transferDepositReqDto) throws NoSuchAlgorithmException {
+		TransferDto.TransferDepositRespDto transferDepositRespDto = transferService.createTransferTally(
 			transferDepositReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(transferDepositRespDto);
 	}
@@ -68,11 +65,9 @@ public class TransferController {
 
 	@PostMapping("/history/tally")
 	public ResponseEntity<List<TransferDto.TransferListRespDto>> getTransferListTally(
-		@RequestBody @Valid TransferDto.TransferListReqDto transferListReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
+		@RequestBody @Valid TransferDto.TransferListReqTallyDto transferListReqDto) throws NoSuchAlgorithmException {
 
-		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(memberId,
+		List<TransferDto.TransferListRespDto> transferListRespDto = transferService.getTransferListTally(
 			transferListReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(transferListRespDto);
@@ -92,7 +87,7 @@ public class TransferController {
 
 	@ApiOperation(value = "1원인증 검증", notes = "거래내역 조회로 확인한 code를 3분안에 입력한다.")
 
-	@GetMapping("/1transfer-verify")
+	@PostMapping("/1transfer-verify")
 	public ResponseEntity<String> oneTransferVerify(
 		@RequestBody @Valid TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto,
 		@MemberInfo MemberInfoDto memberInfoDto) {
