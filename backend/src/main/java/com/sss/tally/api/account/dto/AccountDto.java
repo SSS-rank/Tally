@@ -22,13 +22,28 @@ public class AccountDto {
 		@NotBlank
 		private String accountNumber;
 		@NotNull
-		private String bankName;
+		private String bankCode;
 		@NotNull
 		private int orderNumber;
 		@NotNull
 		private String accountPassword;
 
 		private String transferPassword;
+	}
+
+	@Getter
+	@Builder
+	public static class AccountRespDto{
+		private String accountNumber;
+		private String bankName;
+		private Long balance;
+		public static AccountRespDto of(Account account, Long balance, String bankName){
+			return AccountRespDto.builder()
+				.accountNumber(account.getAccountNumber())
+				.bankName(bankName)
+				.balance(balance)
+				.build();
+		}
 	}
 
 	@Getter
