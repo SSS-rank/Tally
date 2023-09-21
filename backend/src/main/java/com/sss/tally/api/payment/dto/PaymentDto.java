@@ -133,7 +133,6 @@ public class PaymentDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	@ToString
 	public static class PaymentListRespDto{
 		private String transferDate;
 		private String flag;
