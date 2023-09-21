@@ -22,6 +22,7 @@ import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
 import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
 import com.sss.tally.domain.payment.client.PaymentClient;
+import com.sss.tally.domain.payment.entity.CalculateStatusEnum;
 import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.payment.entity.PaymentMethodEnum;
 import com.sss.tally.domain.payment.repository.PaymentRepository;
@@ -291,5 +292,20 @@ public class PaymentServiceImpl implements PaymentService{
 		return payments.stream()
 			.map(PaymentDto.PaymentListDto::from)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public void removePayment(Authentication authentication, PaymentDto.RemovePaymentDto removePaymentDto) {
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(removePaymentDto.getPaymentUuid());
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+		if(!paymentOptional.get().getMemberId().getMemberUuid().equals(member.getMemberUuid()))
+			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
+
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER))
+			throw new PaymentException(ErrorCode.NOT_EXIST_DELETE_PERMISSION);
+		paymentOptional.get().updateStatus(true);
 	}
 }

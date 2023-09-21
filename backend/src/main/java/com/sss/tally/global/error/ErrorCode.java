@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 	// 권한
-	NOT_EXIST_EDIT_PERMISSION(HttpStatus.BAD_REQUEST, "001", "알림 전송이 실패했습니다."),
+	NOT_EXIST_EDIT_PERMISSION(HttpStatus.BAD_REQUEST, "001", "편집 및 삭제 권한은 결제자에게만 있습니다."),
+	NOT_EXIST_DELETE_PERMISSION(HttpStatus.BAD_REQUEST, "002", "결제 완료 건은 삭제할 수 없습니다."),
 
 	//알림,
 	FAIL_SEND_NOTIFICATION(HttpStatus.BAD_REQUEST, "001", "알림 전송이 실패했습니다."),

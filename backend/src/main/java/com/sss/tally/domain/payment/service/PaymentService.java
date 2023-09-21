@@ -13,4 +13,6 @@ public interface PaymentService {
 
 	void modifyPaymentAuto(Authentication authentication, PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto);
 	List<PaymentDto.PaymentListDto> getPaymentList(Authentication authentication, Long travelId);
+
+	void removePayment(Authentication authentication, PaymentDto.RemovePaymentDto removePaymentDto);
 }
