@@ -29,7 +29,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 
 	const getOngoingTripList = async () => {
 		try {
-			const res = await api.get(`/travel?type=ongoing&page=0&size=2&sort=createDate,DESC`);
+			const res = await api.get(`/travel?type=ongoing&page=0&size=4&sort=createDate,DESC`);
 
 			if (res.status === 200) {
 				console.log(res.data);
