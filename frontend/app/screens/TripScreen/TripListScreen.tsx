@@ -8,6 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TripListFilter from '../../components/TripListFilter/TripListFilter';
 import TripListItem from '../../components/TripListItem/TripListItem';
+import TripSwitch from '../../components/TripSwitch/TripSwitch';
 import { TripListItemProps } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -32,6 +33,7 @@ const fakeTripListBefore: TripListItemProps[] = [
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
 	const [modalVisible, setModalVisible] = useState(false);
+	const [selectionMode, setSelectionMode] = useState('ongoing');
 
 	const openFilter = () => {
 		setModalVisible(true);
@@ -80,44 +82,51 @@ function TripListScreen({ navigation }: TripStackProp) {
 			>
 				필터
 			</Button>
-			<View style={styles.tripListContainer}>
-				<Text style={styles.listTitle}>다가오는 여행</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
+			{selectionMode === 'before' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>다가오는 여행</Text>
+					{fakeTripListBefore.map((tripBefore, index) => (
+						<TripListItem
+							key={index}
+							title={tripBefore.title}
+							nationName={tripBefore.nationName}
+							date={tripBefore.date}
+							image={tripBefore.image}
+						/>
+					))}
+				</View>
+			)}
+			{selectionMode === 'ongoing' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>여행 중</Text>
+					{fakeTripListBefore.map((tripBefore, index) => (
+						<TripListItem
+							key={index}
+							title={tripBefore.title}
+							nationName={tripBefore.nationName}
+							date={tripBefore.date}
+							image={tripBefore.image}
+						/>
+					))}
+				</View>
+			)}
+			{selectionMode === 'end' && (
+				<View style={styles.tripListContainer}>
+					<Text style={styles.listTitle}>다녀온 여행</Text>
+					{fakeTripListBefore.map((tripBefore, index) => (
+						<TripListItem
+							key={index}
+							title={tripBefore.title}
+							nationName={tripBefore.nationName}
+							date={tripBefore.date}
+							image={tripBefore.image}
+						/>
+					))}
+				</View>
+			)}
+			<View style={styles.switchView}>
+				<TripSwitch selectionMode={selectionMode} setSelectionMode={setSelectionMode} />
 			</View>
-			<View>
-				<Text style={styles.listTitle}>여행 중</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
-			</View>
-			<View>
-				<Text style={styles.listTitle}>다녀온 여행</Text>
-				{fakeTripListBefore.map((tripBefore, index) => (
-					<TripListItem
-						key={index}
-						title={tripBefore.title}
-						nationName={tripBefore.nationName}
-						date={tripBefore.date}
-						image={tripBefore.image}
-					/>
-				))}
-			</View>
-			{/* <Button title="여행 추가" onPress={() => navigation.navigate('CreateTrip')} />
-				<Button title="상세" onPress={() => navigation.navigate('TripDetail')} /> */}
 
 			<Portal>
 				<Modal
@@ -183,6 +192,7 @@ const styles = StyleSheet.create({
 	},
 	tripListContainer: {
 		marginVertical: 10,
+		paddingBottom: 60,
 	},
 	filterTitle: {
 		...TextStyles({ align: 'left', weight: 'bold' }).title,
@@ -190,6 +200,14 @@ const styles = StyleSheet.create({
 	},
 	listTitle: {
 		...TextStyles({ align: 'left', mBottom: 10 }).medium,
+	},
+	switchView: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		width: '100%',
+		bottom: 0,
 	},
 });
 
