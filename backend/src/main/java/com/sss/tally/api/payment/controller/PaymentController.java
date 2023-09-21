@@ -1,5 +1,7 @@
 package com.sss.tally.api.payment.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,15 +22,20 @@ import lombok.RequiredArgsConstructor;
 public class PaymentController {
 	private final PaymentService paymentService;
 	@PostMapping("/manual")
-	public ResponseEntity<String> createPayment(Authentication authentication, @RequestBody PaymentDto.PaymentManualDto paymentManualDto){
+	public ResponseEntity<String> createPayment(Authentication authentication, @RequestBody @Valid PaymentDto.PaymentManualDto paymentManualDto){
 		paymentService.createPayment(authentication, paymentManualDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
 	}
 
 	@PatchMapping("/memo")
 	public ResponseEntity<String> modifyPaymentMemo(Authentication authentication, @RequestBody
-		PaymentDto.PaymentMemoDto paymentMemoDto){
+		@Valid PaymentDto.PaymentMemoDto paymentMemoDto){
 		paymentService.modifyMemo(authentication, paymentMemoDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
+	}
+	@PatchMapping("/manual")
+	public ResponseEntity<String> modifyPaymentManual(Authentication authentication, @RequestBody @Valid PaymentDto.PaymentUpdateDto paymentUpdateDto){
+		paymentService.modifyPaymentManual(authentication, paymentUpdateDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
 }

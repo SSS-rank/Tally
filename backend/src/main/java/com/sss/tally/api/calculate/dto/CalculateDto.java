@@ -146,7 +146,7 @@ public class CalculateDto {
 
 		private int myAmount;
 
-		private Double allAmount;
+		private int allAmount;
 
 		private LocalDateTime paymentDate;
 
