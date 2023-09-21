@@ -63,6 +63,14 @@ public class PaymentServiceImpl implements PaymentService{
 			paymentManualDto.getPaymentUnitId());
 		if(paymentUnit.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
 
+		int total = 0; boolean flag = false;
+		for(MemberPaymentDto.MemberPaymentCreateDto participant :paymentManualDto.getPaymentParticipants()){
+			total += participant.getAmount();
+			if(participant.getMemberUuid().equals(member.getMemberUuid())) flag = true;
+		}
+		if(total != paymentManualDto.getAmount()) throw new PaymentException(ErrorCode.DIFFERENT_TOTAL_AMOUNT);
+		if(!flag) throw new PaymentException(ErrorCode.NOT_EXIST_PAYER_PAYMENT);
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime dateTime = LocalDateTime.parse(paymentManualDto.getPaymentDateTime(), formatter);
 
@@ -77,12 +85,6 @@ public class PaymentServiceImpl implements PaymentService{
 		Payment save = paymentRepository.save(
 			Payment.of(paymentManualDto, member, travelOptional.get(), category.get(), paymentUnit.get(), uuid,
 				paymentMethodEnum, dateTime));
-
-		int total = 0;
-		for(MemberPaymentDto.MemberPaymentCreateDto participant :paymentManualDto.getPaymentParticipants()){
-			total += participant.getAmount();
-		}
-		if(total != paymentManualDto.getAmount()) throw new PaymentException(ErrorCode.DIFFERENT_TOTAL_AMOUNT);
 
 		for(MemberPaymentDto.MemberPaymentCreateDto participant :paymentManualDto.getPaymentParticipants()){
 			Optional<Member> partOptional = memberRepository.findByMemberUuid(participant.getMemberUuid());
