@@ -29,18 +29,20 @@ public class AccountController {
 	public ResponseEntity<String> createAccount(Authentication authentication, @RequestBody AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException {
 		accountService.createAccount(authentication, accountCreateReqDto);
-		return ResponseEntity.status(HttpStatus.OK).body("Success");
+		return ResponseEntity.status(HttpStatus.OK).body("Create Success");
 	}
 
-	@PatchMapping("/{accountId}")
-	public ResponseEntity<String> deleteAccount(@PathVariable Long accountId){
-		accountService.deleteAccount(accountId);
+	@PatchMapping
+	public ResponseEntity<String> deleteAccount(@RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		accountService.deleteAccount(accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
 	}
 
-	@GetMapping("/balance/{accountId}")
-	public ResponseEntity<Long> getBalance(@PathVariable Long accountId){
-		Long balance = accountService.getBalance(accountId);
+	@GetMapping("/balance")
+	public ResponseEntity<Long> getBalance(@RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		Long balance = accountService.getBalance(accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(balance);
 	}
 
@@ -50,9 +52,11 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(accountRespDtoList);
 	}
 
-	@PatchMapping("/main/{accountId}")
-	public ResponseEntity<String> updateMainAccount(Authentication authentication, @PathVariable Long accountId){
-		accountService.updateMainAccount(authentication, accountId);
+	@PatchMapping("/main}")
+	public ResponseEntity<String> updateMainAccount(
+		Authentication authentication, @RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
+		String accountNumber = accountNumberReqDto.getAccountNumber();
+		accountService.updateMainAccount(authentication, accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body("Update Success");
 	}
 }
