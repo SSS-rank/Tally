@@ -1,6 +1,8 @@
 package com.sss.tally.domain.account.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.sss.tally.api.account.dto.AccountDto;
 import com.sss.tally.domain.account.client.AccountInfoClient;
 import com.sss.tally.domain.account.entity.Account;
 import com.sss.tally.domain.account.repository.AccountRepository;
+import com.sss.tally.domain.bank.repository.BankRepository;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.global.error.ErrorCode;
@@ -26,6 +29,7 @@ public class AccountServiceImpl implements AccountService{
 	private final AccountRepository accountRepository;
 	private final MemberRepository memberRepository;
 	private final AccountInfoClient accountInfoClient;
+	private final BankRepository bankRepository;
 	@Override
 	public void createAccount(Authentication authentication, AccountDto.AccountCreateReqDto accountCreateReqDto) throws
 		NoSuchAlgorithmException {
@@ -60,5 +64,22 @@ public class AccountServiceImpl implements AccountService{
 		AccountDto.AccountInfoRespDto accountInfoRespDto = accountInfoClient.getAccountBalance(
 			CONTENT_TYPE, accountInfoReqDto);
 		return accountInfoRespDto.getBalance();
+	}
+
+	@Override
+	public List<AccountDto.AccountRespDto> getAccountList(Authentication authentication) {
+		Member auth = (Member)authentication.getPrincipal();
+		List<Account> accountList = accountRepository.findAllByMemberIdAndStatusIsFalseOrderByOrderNumberAsc(auth);
+		List<AccountDto.AccountRespDto> list = new ArrayList<>();
+
+		if(accountList.size()==0) return null;
+		else{
+			for(Account account:accountList){
+				Long balance = this.getBalance(account.getAccountId());
+				String bankName = bankRepository.findBankByBankCode(account.getBankCode()).get().getBankName();
+				list.add(AccountDto.AccountRespDto.of(account, balance, bankName));
+			}
+			return list;
+		}
 	}
 }
