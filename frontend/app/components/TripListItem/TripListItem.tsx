@@ -14,7 +14,7 @@ function TripListItem({ id, title, location, type, startDay, endDay }: TripListI
 					<Avatar.Image
 						size={50}
 						style={{ marginRight: 20 }}
-						source={{ uri: `../../assets/images/country/${location}.png` }}
+						source={require('../../assets/images/country/KOR.png')}
 					/>
 					<View>
 						<View style={styles.listItemTop}>
