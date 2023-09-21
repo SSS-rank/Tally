@@ -100,6 +100,56 @@ public class PaymentServiceImpl implements PaymentService{
 		}
 	}
 
+	public void modifyPaymentAuto(Authentication authentication, PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto){
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(paymentCardUpdateDto.getTravelId());
+		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+
+		Optional<Category> categoryOptional = categoryRepository.findCategoryByCategoryId(
+			paymentCardUpdateDto.getCategory());
+		if(categoryOptional.isEmpty()) throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
+
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(
+			paymentCardUpdateDto.getPaymentUuid());
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
+			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
+
+		paymentOptional.get().updatePaymentAuto(paymentCardUpdateDto, categoryOptional.get());
+
+		List<MemberPayment> participants = memberPaymentRepository.findMemberPaymentsByPaymentId_PaymentUuid(paymentCardUpdateDto.getPaymentUuid());
+
+		for(MemberPayment participant : participants){
+			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
+			participant.updateStatus(false);
+		}
+		if(!paymentCardUpdateDto.isVisible()) {
+			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
+			memberPaymentOptional.get().updateMemberPayment(paymentOptional.get().getAmount(), true);
+			return;
+		}
+
+		int total = 0;
+		for(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto: paymentCardUpdateDto.getPaymentParticipants()){
+			total += memberPaymentCreateDto.getAmount();
+		}
+
+		if(total != paymentOptional.get().getAmount()) throw new PaymentException(ErrorCode.DIFFERENT_TOTAL_AMOUNT);
+
+		for(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto: paymentCardUpdateDto.getPaymentParticipants()){
+			Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberPaymentCreateDto.getMemberUuid());
+			if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), memberOptional.get());
+			if(memberPaymentOptional.isEmpty()) {
+				memberPaymentRepository.save(MemberPayment.of(memberPaymentCreateDto, memberOptional.get(), paymentOptional.get()));
+			}else{
+				memberPaymentOptional.get().updateMemberPayment(memberPaymentCreateDto.getAmount(), true);
+			}
+		}
+	}
 	@Override
 	public void modifyMemo(Authentication authentication, PaymentDto.PaymentMemoDto paymentMemoDto) {
 		Member member = (Member) authentication.getPrincipal();
