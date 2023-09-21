@@ -23,15 +23,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
-	const { id, title, location, type, startDay, endDay } = route.params || {};
+	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
 	const [orderType, setOrderType] = useState('오래된 순');
 
-	function showModal() {
-		setModalVisible(true);
-	}
-	function hideModal() {
-		setModalVisible(false);
-	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -104,7 +98,17 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					style={styles.button}
 					labelStyle={TextStyles().regular}
 					mode="text"
-					onPress={() => navigation.navigate('AddPayment')}
+					onPress={() =>
+						navigation.navigate('AddPayment', {
+							id,
+							title,
+							location,
+							type,
+							startDay,
+							endDay,
+							travelParticipants,
+						})
+					}
 				>
 					내역 추가
 				</Button>
@@ -129,7 +133,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				style={styles.selectInput}
 			/> */}
 			<View style={styles.order_button}>
-				<Button onPress={() => showModal()}>{orderType}</Button>
+				<Button onPress={() => setModalVisible(!modalVisible)}>{orderType}</Button>
 			</View>
 			<Modal
 				animationType="slide"

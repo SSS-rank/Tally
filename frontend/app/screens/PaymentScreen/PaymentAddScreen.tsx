@@ -3,25 +3,30 @@ import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-
 import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import api from '../../api/api';
 import PartyListItem from '../../components/PartyList/PartyListItem';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function PaymentAddScreen() {
+type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
+function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 	const [amount, setAmount] = useState('');
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
-	const [selectedcategory, setSelectedCategory] = useState('');
+	const [selectedcategory, setSelectedCategory] = useState(0);
 	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
-	// const [party, setParty] = useState('')
 
-	const handleIconClick = (category: string) => {
+	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
+
+	const handleIconClick = (category: number) => {
 		setSelectedCategory(category);
 	};
 
@@ -30,12 +35,47 @@ function PaymentAddScreen() {
 		const selectedDate = new Date(p_date);
 		return currentDate.getDate() >= selectedDate.getDate();
 	};
-	function handleSubmit() {
+	function formatDate(in_date: Date) {
+		const year = in_date.getFullYear();
+		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
+		const day = String(in_date.getDate()).padStart(2, '0'); // 일자를 2자리로 포맷팅
+		const hours = String(in_date.getHours()).padStart(2, '0'); // 시간을 2자리로 포맷팅
+		const minutes = String(in_date.getMinutes()).padStart(2, '0'); // 분을 2자리로 포맷팅
+
+		return `${year}-${month}-${day} ${hours}:${minutes}`;
+	}
+	async function handleSubmit() {
 		console.log(`금액 : ${amount}`);
 		console.log(`날짜 : ${date}`);
 		console.log(`결제처: ${store}`);
 		console.log(`메모: ${text}`);
 		console.log(`카테고리:${selectedcategory}`);
+		const payReq = {
+			amount: parseFloat(amount),
+			category: selectedcategory,
+			memo: text,
+			payment_date_time: formatDate(date),
+			payment_participants: travelParticipants,
+			payment_type: 'cash',
+			payment_unit_id: 8,
+			ratio: 1,
+			title: title,
+			travel_id: id,
+			visible: !selfCheck,
+		};
+		console.log(payReq);
+		try {
+			// console.log(page);
+			// console.log(ongoingListState.length);
+			const res = await api.post(`/payment/manual`, payReq);
+
+			if (res.status === 200) {
+				// console.log(res.data);
+				console.log(res.data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 	return (
 		<ScrollView style={styles.container}>
@@ -109,51 +149,39 @@ function PaymentAddScreen() {
 			<View style={styles.category_box}>
 				<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
 				<View style={styles.category_line}>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('숙소')}>
-						<MIcon name="home" size={40} color={selectedcategory === '숙소' ? '#91C0EB' : 'gray'} />
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
+						<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>숙소</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('항공')}>
-						<FIcon
-							name="plane"
-							size={40}
-							color={selectedcategory === '항공' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
+						<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>항공</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('교통')}>
-						<FIcon name="car" size={40} color={selectedcategory === '교통' ? '#91C0EB' : 'gray'} />
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
+						<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>교통</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('관광')}>
-						<MIcon
-							name="ticket"
-							size={40}
-							color={selectedcategory === '관광' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
+						<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>관광</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('식비')}>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
 						<MIcon
 							name="silverware-fork-knife"
 							size={40}
-							color={selectedcategory === '식비' ? '#91C0EB' : 'gray'}
+							color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
 						/>
-						<Text style={TextStyles().small}>식비</Text>
+						<Text style={TextStyles().small}>식사</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('쇼핑')}>
-						<MIcon
-							name="shopping"
-							size={40}
-							color={selectedcategory === '쇼핑' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
+						<MIcon name="shopping" size={40} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>쇼핑</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('기타')}>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
 						<MIcon
 							name="dots-horizontal-circle"
 							size={40}
-							color={selectedcategory === '기타' ? '#91C0EB' : 'gray'}
+							color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
 						/>
 						<Text style={TextStyles().small}>기타</Text>
 					</TouchableOpacity>
@@ -168,7 +196,18 @@ function PaymentAddScreen() {
 			>
 				<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
 				<ScrollView>
-					<PartyListItem
+					<FlatList
+						data={travelParticipants}
+						renderItem={({ item }) => (
+							<PartyListItem
+								name={item.member_nickname}
+								img={{ uri: item.image }}
+								self={selfCheck}
+							/>
+						)}
+						keyExtractor={(item) => item.id + ''}
+					/>
+					{/* <PartyListItem
 						name="김싸피"
 						img={require('../../assets/images/kakao.png')}
 						self={selfCheck}
@@ -177,7 +216,7 @@ function PaymentAddScreen() {
 						name="김싸피"
 						img={require('../../assets/images/kakao.png')}
 						self={selfCheck}
-					/>
+					/> */}
 				</ScrollView>
 			</View>
 
