@@ -33,11 +33,11 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 		@Param("offset") int offset);
 
 	@Query(value = "SELECT * FROM (" +
-		"(SELECT account_id AS accountId, shop_name AS withdrawAccountContent, payment_uuid AS uuid, amount AS amount, payment_date AS date, NULL AS name, NULL AS receiver "
+		"(SELECT account_id AS accountId, shop_name AS withdrawAccountContent, payment_uuid AS uuid, amount AS amount, payment_date AS date, NULL AS name, NULL AS receiver, shop_type as shopType "
 		+
 		"FROM payment p INNER JOIN shop s ON p.shop_id = s.shop_id WHERE account_id = :accountId)" +
 		" UNION ALL " +
-		"(SELECT sender AS accountId, withdraw_account_content, transfer_uuid AS uuid, amount AS amount, transfer_date AS date,  deposit_account_content AS name, receiver "
+		"(SELECT sender AS accountId, withdraw_account_content, transfer_uuid AS uuid, amount AS amount, transfer_date AS date,  deposit_account_content AS name, receiver,  NULL AS shopType "
 		+
 		"FROM transfer WHERE sender = :accountId OR receiver = :accountId)" +
 		") AS combined " +
