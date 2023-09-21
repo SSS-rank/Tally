@@ -80,7 +80,7 @@ public class Account {
 	public void updateRepresentative(Boolean representative){
 		this.representativeAccount = representative;
 	}
-	private void updateOrderNumber(int orderNumber) {
+	public void updateOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 }

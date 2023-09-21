@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +56,12 @@ public class AccountController {
 		Authentication authentication, @RequestBody AccountDto.AccountNumberReqDto accountNumberReqDto){
 		String accountNumber = accountNumberReqDto.getAccountNumber();
 		accountService.updateMainAccount(authentication, accountNumber);
+		return ResponseEntity.status(HttpStatus.OK).body("Update Success");
+	}
+
+	@PatchMapping("/order")
+	public ResponseEntity<String> updateAccountOrder(@RequestBody AccountDto.AccountOrderReqDto accountOrderReqDto){
+		accountService.updateAccountOrder(accountOrderReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("Update Success");
 	}
 }
