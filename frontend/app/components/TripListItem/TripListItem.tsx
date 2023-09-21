@@ -14,11 +14,20 @@ function TripListItem({
 	startDay,
 	endDay,
 	navigation,
+	travelParticipants,
 }: TripListItemProps) {
 	return (
 		<TouchableOpacity
 			onPress={() => {
-				navigation.navigate('TripDetail', { id, title, location, type, startDay, endDay });
+				navigation.navigate('TripDetail', {
+					id,
+					title,
+					location,
+					type,
+					startDay,
+					endDay,
+					travelParticipants,
+				});
 			}}
 		>
 			<View style={styles.listItemContainer}>
