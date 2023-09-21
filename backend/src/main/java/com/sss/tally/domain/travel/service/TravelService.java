@@ -11,4 +11,5 @@ public interface TravelService {
 	void createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto);
 	List<TravelDto> getTravelList(Authentication authentication, String type, Pageable pageable);
 
+	int getDay(Authentication authentication);
 }
