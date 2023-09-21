@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,10 +18,13 @@ type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
 	const [selectionMode, setSelectionMode] = useState('ongoing');
+	const [page, setPage] = useState(0);
 
 	const [ongoingListState, setOngoingListState] = useRecoilState(ongoingTripListState);
 	const api = useAxiosWithAuth();
 	useEffect(() => {
+		setPage(0);
+		setOngoingListState([]);
 		if (selectionMode === 'ongoing') {
 			getOngoingTripList();
 		}
@@ -29,10 +32,12 @@ function TripListScreen({ navigation }: TripStackProp) {
 
 	const getOngoingTripList = async () => {
 		try {
-			const res = await api.get(`/travel?type=ongoing&page=0&size=4&sort=createDate,DESC`);
+			// console.log(page);
+			// console.log(ongoingListState.length);
+			const res = await api.get(`/travel?type=ongoing&page=${page}&size=7&sort=createDate,DESC`);
 
 			if (res.status === 200) {
-				console.log(res.data);
+				// console.log(res.data);
 				const newData = res.data.map((trip: any) => ({
 					id: trip.travel_id,
 					title: trip.travel_title,
@@ -41,7 +46,9 @@ function TripListScreen({ navigation }: TripStackProp) {
 					startDay: trip.start_date,
 					endDay: trip.end_date,
 				}));
-				setOngoingListState(newData);
+				if (page === 0) setOngoingListState(newData);
+				else setOngoingListState((prev) => prev.concat(newData));
+				setPage((prev) => prev + 1);
 			}
 		} catch (err) {
 			console.log(err);
@@ -49,7 +56,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 	};
 
 	return (
-		<ScrollView style={styles.viewContainer}>
+		<View style={styles.viewContainer}>
 			<View>
 				<Text style={styles.titleText}>나의 여행지</Text>
 				<View style={styles.searchView}>
@@ -78,7 +85,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 				</View>
 			</TouchableOpacity>
 			{selectionMode === 'before' && (
-				<View style={styles.tripListContainer}>
+				<>
 					<Text style={styles.listTitle}>다가오는 여행</Text>
 					{/* {fakeTripListBefore.map((tripBefore, index) => (
 						<TripListItem
@@ -89,26 +96,32 @@ function TripListScreen({ navigation }: TripStackProp) {
 							image={tripBefore.image}
 						/>
 					))} */}
-				</View>
+				</>
 			)}
 			{selectionMode === 'ongoing' && (
-				<View style={styles.tripListContainer}>
+				<>
 					<Text style={styles.listTitle}>여행 중</Text>
-					{ongoingListState.map((trip) => (
-						<TripListItem
-							key={trip.id}
-							id={trip.id}
-							title={trip.title}
-							location={trip.location}
-							type={trip.type}
-							startDay={trip.startDay}
-							endDay={trip.endDay}
-						/>
-					))}
-				</View>
+					<FlatList
+						data={ongoingListState}
+						renderItem={({ item }) => (
+							<TripListItem
+								key={item.id}
+								id={item.id}
+								title={item.title}
+								location={item.location}
+								type={item.type}
+								startDay={item.startDay}
+								endDay={item.endDay}
+							/>
+						)}
+						keyExtractor={(item) => item.id + ''}
+						onEndReached={getOngoingTripList}
+						onEndReachedThreshold={0}
+					/>
+				</>
 			)}
 			{selectionMode === 'end' && (
-				<View style={styles.tripListContainer}>
+				<>
 					<Text style={styles.listTitle}>다녀온 여행</Text>
 					{/* {fakeTripListBefore.map((tripBefore, index) => (
 						<TripListItem
@@ -119,12 +132,12 @@ function TripListScreen({ navigation }: TripStackProp) {
 							image={tripBefore.image}
 						/>
 					))} */}
-				</View>
+				</>
 			)}
 			<View style={styles.switchView}>
 				<TripSwitch selectionMode={selectionMode} setSelectionMode={setSelectionMode} />
 			</View>
-		</ScrollView>
+		</View>
 	);
 }
 
@@ -174,7 +187,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		position: 'absolute',
 		width: '100%',
-		bottom: 0,
+		bottom: 20,
 	},
 });
 
