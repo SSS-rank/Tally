@@ -102,6 +102,7 @@ public class Payment {
 			.paymentUuid(uuid)
 			.amount(payPaymentManualDto.getAmount())
 			.paymentLocalDate(dateTime)
+			.paymentKoreaDate(dateTime)
 			.paymentMemo(payPaymentManualDto.getMemo())
 			.paymentMethod(paymentMethod)
 			.visible(payPaymentManualDto.isVisible())
@@ -126,7 +127,26 @@ public class Payment {
 		this.categoryId = category;
 		this.paymentUnitId = paymentUnitId;
 		this.paymentLocalDate = paymentDateTime;
+		this.paymentKoreaDate = paymentDateTime;
 		this.paymentMemo = memo;
 		this.visible = visible;
+	}
+
+	public static Payment from(PaymentDto.PaymentListRespDto paymentListRespDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, LocalDateTime datetime){
+		return Payment.builder()
+			.paymentName(paymentListRespDto.getContent())
+			.amount(paymentListRespDto.getAmount())
+			.memberId(member)
+			.travelId(travel)
+			.ratio(1.0)
+			.categoryId(category)
+			.paymentUuid(paymentListRespDto.getTransferUuid())
+			.paymentMethod(PaymentMethodEnum.CARD)
+			.paymentUnitId(paymentUnit)
+			.visible(true)
+			.status(false)
+			.paymentKoreaDate(datetime)
+			.calculateStatus(CalculateStatusEnum.NONE)
+			.build();
 	}
 }
