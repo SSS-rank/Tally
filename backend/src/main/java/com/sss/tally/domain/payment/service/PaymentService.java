@@ -11,5 +11,6 @@ public interface PaymentService {
 	void modifyMemo(Authentication authentication, PaymentDto.PaymentMemoDto paymentMemoDto);
 	void modifyPaymentManual(Authentication authentication, PaymentDto.PaymentUpdateDto paymentUpdateDto);
 
+	void modifyPaymentAuto(Authentication authentication, PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto);
 	List<PaymentDto.PaymentListDto> getPaymentList(Authentication authentication, Long travelId);
 }

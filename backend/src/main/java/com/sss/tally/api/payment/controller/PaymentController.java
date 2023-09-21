@@ -42,6 +42,12 @@ public class PaymentController {
 		paymentService.modifyPaymentManual(authentication, paymentUpdateDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
+	@PatchMapping
+	public ResponseEntity<String> modifyPayment(Authentication authentication, @RequestBody @Valid
+		PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto){
+		paymentService.modifyPaymentAuto(authentication, paymentCardUpdateDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
+	}
 
 	@GetMapping("/{travelId}")
 	public ResponseEntity<List<PaymentDto.PaymentListDto>> getPaymentList(Authentication authentication, @PathVariable("travelId") Long travelId){
