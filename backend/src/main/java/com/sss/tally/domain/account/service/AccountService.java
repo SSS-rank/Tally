@@ -18,4 +18,6 @@ public interface AccountService {
 	List<AccountDto.AccountRespDto> getAccountList(Authentication authentication);
 
 	void updateMainAccount(Authentication authentication, String accountNumber);
+
+	void updateAccountOrder(AccountDto.AccountOrderReqDto accountOrderReqDto);
 }

@@ -54,7 +54,7 @@ public class AccountServiceImpl implements AccountService{
 	public void deleteAccount(String accountNumber) {
 		Account account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber)
 			.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_ACCOUNT));
-		account.updateStatus(false);
+		account.updateStatus(true);
 	}
 
 	@Override
