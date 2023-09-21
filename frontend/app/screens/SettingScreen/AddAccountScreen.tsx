@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-	Text,
-	View,
-	StyleSheet,
-	TextInput,
-	Alert,
-	Modal,
-	Pressable,
-	TouchableOpacity,
-} from 'react-native';
+import { Text, View, StyleSheet, TextInput, Alert, Modal, Pressable } from 'react-native';
 import { Button, Avatar } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import { TextStyles } from '../../styles/CommonStyles';
 
-function AddAccountScreen() {
+function AddAccountScreen({ navigation }: any) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [name, setName] = useState('');
 	const reset = () => {
@@ -25,19 +16,19 @@ function AddAccountScreen() {
 	return (
 		<View style={styles.viewContainer}>
 			<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).title }}>
-				내역을 확인할 수 있는{'\n'}계좌의 정보를 입력해주세요.
+				실명인증을 위해 보유하고 있는{'\n'}계좌 정보를 입력해주세요.
 			</Text>
 			<Text style={{ ...TextStyles({ align: 'left', mBottom: 10, color: '#666666' }).small }}>
 				본인인증을 위해 계좌 인증이 필요합니다.
 			</Text>
 			<View style={styles.sectionView}>
 				<Pressable onPress={() => setModalVisible(true)}>
-					<Text style={TextStyles({ align: 'left', color: '#91C0EB' }).regular}>
-						<MaterialCommunityIcons name="bank-plus" color={'#91C0EB'} size={26} />
+					<Text style={[TextStyles({ align: 'left', color: '#91C0EB' }).regular]}>
+						<MaterialCommunityIcons name="bank-outline" color={'#91C0EB'} size={24} />
 						은행 선택
 					</Text>
 				</Pressable>
-				<View style={styles.searchView}>
+				<View style={styles.inputBox}>
 					<TextInput
 						style={{
 							...TextStyles({ align: 'left' }).regular,
@@ -58,6 +49,14 @@ function AddAccountScreen() {
 					/>
 				</View>
 			</View>
+			<Button
+				mode="elevated"
+				buttonColor="#91C0EB"
+				textColor="white"
+				onPress={() => navigation.navigate('AuthAccount')}
+			>
+				다음
+			</Button>
 			<Modal
 				animationType="slide"
 				transparent={true}
@@ -67,19 +66,21 @@ function AddAccountScreen() {
 					setModalVisible(!modalVisible);
 				}}
 			>
-				<View style={styles.centeredView}>
-					<View style={styles.modalView}>
-						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
-								은행 선택
-							</Text>
-							<Icon
-								name="close"
-								size={32}
-								color={'#666666'}
-								onPress={() => setModalVisible(!modalVisible)}
-							/>
-						</View>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(!modalVisible)}
+				/>
+				<View style={styles.modalView}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+							은행 선택
+						</Text>
+						<Icon
+							name="close"
+							size={32}
+							color={'#666666'}
+							onPress={() => setModalVisible(!modalVisible)}
+						/>
 					</View>
 				</View>
 			</Modal>
@@ -94,13 +95,14 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 	},
 	sectionView: {
-		marginVertical: 10,
+		marginVertical: 30,
 	},
-	searchView: {
+	inputBox: {
 		alignItems: 'center',
 		borderBottomColor: '#A0A0A0',
 		borderBottomWidth: 0.5,
 		flexDirection: 'row',
+		marginVertical: 5,
 	},
 	title: {
 		...TextStyles({ align: 'left', weight: 'bold' }).regular,
@@ -111,18 +113,20 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#00000070',
+		// position: 'absolute',
+		// width: '100%',
 	},
 	modalView: {
 		marginTop: '50%',
-		flex: 1,
+		height: '100%',
+		// flex: 1,
 		width: '100%',
-		// margin: 20,
-		// borderRadius: 20,
+		alignSelf: 'stretch',
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		backgroundColor: 'white',
-
 		padding: 35,
+		position: 'absolute',
 		// alignItems: 'center',
 		shadowColor: '#000',
 		shadowOffset: {
@@ -132,6 +136,8 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5,
+
+		justifyContent: 'flex-start',
 	},
 	button: {
 		borderRadius: 20,
