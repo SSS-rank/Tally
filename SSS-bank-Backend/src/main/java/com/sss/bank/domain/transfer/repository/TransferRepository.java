@@ -41,6 +41,9 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 		+
 		"FROM transfer WHERE sender = :accountId OR receiver = :accountId)" +
 		") AS combined " +
-		"ORDER BY combined.date DESC ", nativeQuery = true)
-	List<Map<String, Object>> findTransferPaymentList(@Param("accountId") long accountId);
+		"WHERE date BETWEEN :startDate AND :endDate " +
+		"ORDER BY combined.date DESC "
+		, nativeQuery = true)
+	List<Map<String, Object>> findTransferPaymentList(@Param("accountId") long accountId,
+		@Param("startDate") String startDate, @Param("endDate") String endDate);
 }
