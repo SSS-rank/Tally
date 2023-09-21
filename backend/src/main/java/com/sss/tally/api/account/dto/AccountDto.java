@@ -35,11 +35,13 @@ public class AccountDto {
 	@Builder
 	public static class AccountRespDto{
 		private String accountNumber;
+		private String bankCode;
 		private String bankName;
 		private Long balance;
 		public static AccountRespDto of(Account account, Long balance, String bankName){
 			return AccountRespDto.builder()
 				.accountNumber(account.getAccountNumber())
+				.bankCode(account.getBankCode())
 				.bankName(bankName)
 				.balance(balance)
 				.build();
