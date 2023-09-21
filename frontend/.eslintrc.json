@@ -38,6 +38,7 @@
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "react/no-unescaped-entities" : "off",
+    "react-hooks/exhaustive-deps" : "off",
     "import/order": [
       "error",
       {
