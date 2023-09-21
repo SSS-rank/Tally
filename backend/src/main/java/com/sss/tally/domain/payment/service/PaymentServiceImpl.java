@@ -132,7 +132,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateStatus(false);
+			participant.updateMemberPayment(0, false);
 		}
 		if(!paymentCardUpdateDto.isVisible()) {
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
@@ -209,7 +209,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateStatus(false);
+			participant.updateMemberPayment(0, false);
 		}
 		if(!paymentUpdateDto.isVisible()) {
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
