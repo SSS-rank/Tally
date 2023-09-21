@@ -49,4 +49,10 @@ public class AccountController {
 		List<AccountDto.AccountRespDto> accountRespDtoList = accountService.getAccountList(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(accountRespDtoList);
 	}
+
+	@PatchMapping("/main/{accountId}")
+	public ResponseEntity<String> updateMainAccount(Authentication authentication, @PathVariable Long accountId){
+		accountService.updateMainAccount(authentication, accountId);
+		return ResponseEntity.status(HttpStatus.OK).body("Update Success");
+	}
 }
