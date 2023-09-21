@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
@@ -11,12 +11,14 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../../api/api';
 import PartyListItem from '../../components/PartyList/PartyListItem';
+import { DirectPayMember, DirectPayReq } from '../../model/payment';
+import { TripMember } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
-	const [amount, setAmount] = useState('');
+	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
@@ -24,17 +26,56 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 
-	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
+	const [partyMembers, setPartyMembers] = useState<DirectPayMember[]>([]); // 결제 멤버
+	const [participants, setParticipants] = useState<TripMember[]>([]); // 여행 참여 멤버
+	const [directPayReq, setDirectPayReq] = useState<DirectPayReq>({
+		amount: 0,
+		category: 0,
+		memo: '',
+		payment_date_time: '',
+		payment_participants: [],
+		payment_type: '',
+		payment_unit_id: 0,
+		ratio: 0,
+		title: '',
+		travel_id: 0,
+		visible: false,
+	});
+	useEffect(() => {
+		// route.params에 접근하는 부분
+		const { id, type, title, travelParticipants } = route.params;
+		setParticipants(travelParticipants);
+		const directPayMembers = travelParticipants.map((member: TripMember) => ({
+			amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
+			member_uuid: member.member_uuid,
+		}));
+		setPartyMembers(directPayMembers);
+
+		setDirectPayReq((prevState: DirectPayReq) => ({
+			...prevState,
+			title: title || '',
+			travel_id: id || 0,
+		}));
+		// route.params에 의존하는 추가적인 코드 작성
+	}, [route.params]);
 
 	const handleIconClick = (category: number) => {
 		setSelectedCategory(category);
 	};
 
-	const isPossibleDay = (p_date: Date) => {
-		const currentDate = new Date();
-		const selectedDate = new Date(p_date);
-		return currentDate.getDate() >= selectedDate.getDate();
+	const handleAmountChange = (memberUuid: string, amount: string) => {
+		setPartyMembers((prevMemebers) => {
+			const updatedAmounts = [...prevMemebers];
+			const index = updatedAmounts.findIndex((item) => item.member_uuid === memberUuid);
+			if (index !== -1) {
+				updatedAmounts[index] = { member_uuid: memberUuid, amount: parseFloat(amount) };
+			} else {
+				updatedAmounts.push({ member_uuid: memberUuid, amount: parseFloat(amount) });
+			}
+			return updatedAmounts;
+		});
 	};
+
 	function formatDate(in_date: Date) {
 		const year = in_date.getFullYear();
 		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
@@ -45,29 +86,31 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 	async function handleSubmit() {
-		console.log(`금액 : ${amount}`);
+		console.log(`금액 : ${totAmount}`);
 		console.log(`날짜 : ${date}`);
 		console.log(`결제처: ${store}`);
 		console.log(`메모: ${text}`);
 		console.log(`카테고리:${selectedcategory}`);
 		const payReq = {
-			amount: parseFloat(amount),
-			category: selectedcategory,
-			memo: text,
+			payment_participants: participants,
+		};
+		setDirectPayReq((prevState: DirectPayReq) => ({
+			...prevState,
 			payment_date_time: formatDate(date),
-			payment_participants: travelParticipants,
 			payment_type: 'cash',
 			payment_unit_id: 8,
 			ratio: 1,
-			title: title,
-			travel_id: id,
+			amount: parseFloat(totAmount),
+			category: selectedcategory,
+			memo: text,
+			payment_participants: partyMembers || [],
 			visible: !selfCheck,
-		};
-		console.log(payReq);
+		}));
+		console.log(directPayReq);
 		try {
 			// console.log(page);
 			// console.log(ongoingListState.length);
-			const res = await api.post(`/payment/manual`, payReq);
+			const res = await api.post(`/payment/manual`, directPayReq);
 
 			if (res.status === 200) {
 				// console.log(res.data);
@@ -87,9 +130,9 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 			<View style={styles.amount_container}>
 				<Text style={TextStyles({ align: 'left' }).small}>krw(원)</Text>
 				<TextInput
-					value={amount}
+					value={totAmount}
 					onChangeText={(memo) => {
-						setAmount(memo);
+						setTotAmount(memo);
 					}}
 					returnKeyType="next"
 					keyboardType="numeric"
@@ -196,27 +239,15 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 			>
 				<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
 				<ScrollView>
-					<FlatList
-						data={travelParticipants}
-						renderItem={({ item }) => (
-							<PartyListItem
-								name={item.member_nickname}
-								img={{ uri: item.image }}
-								self={selfCheck}
-							/>
-						)}
-						keyExtractor={(item) => item.id + ''}
-					/>
-					{/* <PartyListItem
-						name="김싸피"
-						img={require('../../assets/images/kakao.png')}
-						self={selfCheck}
-					/>
-					<PartyListItem
-						name="김싸피"
-						img={require('../../assets/images/kakao.png')}
-						self={selfCheck}
-					/> */}
+					{participants.map((item) => (
+						<PartyListItem
+							key={item.member_uuid}
+							name={item.member_nickname}
+							img={{ uri: item.image }}
+							self={selfCheck}
+							onAmountChange={(input) => handleAmountChange(item.member_uuid, input)}
+						/>
+					))}
 				</ScrollView>
 			</View>
 
