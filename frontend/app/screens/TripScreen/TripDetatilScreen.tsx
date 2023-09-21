@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Button, Text } from 'react-native-paper';
@@ -8,15 +8,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import { PaymentStackProps } from '../../navigation/PaymentStack';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
-type PaymentStackProp = NativeStackScreenProps<PaymentStackProps, 'TripDetail'>;
+type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 
-function TripDetailScreen({ navigation }: PaymentStackProp) {
+function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	interface OrderTypeSelectItem {
 		label: string;
 		value: string;
 	}
+	const currentDate = new Date();
+	const year = currentDate.getFullYear();
+	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+	const day = currentDate.getDate();
+	const { id, title, location, type, startDay, endDay } = route.params || {};
 	const [openOrderType, setOpenOrderType] = useState(false);
 	const [orderType, setOrderType] = useState('오래된 순');
 	const [orderTypeItems, setOrderTypeItems] = useState<OrderTypeSelectItem[]>([
@@ -62,8 +68,8 @@ function TripDetailScreen({ navigation }: PaymentStackProp) {
 						flexWrap: 'wrap',
 					}}
 				>
-					<Text style={TextStyles().title}>부산 호캉스</Text>
-					<Text style={[TextStyles().small, styles.type]}>국내</Text>
+					<Text style={TextStyles().title}>{title}</Text>
+					<Text style={[TextStyles().small, styles.type]}>{location}</Text>
 				</View>
 				<View
 					style={{
@@ -72,7 +78,9 @@ function TripDetailScreen({ navigation }: PaymentStackProp) {
 						flexWrap: 'wrap',
 					}}
 				>
-					<Text style={TextStyles().regular}>2023.09.01~2023.09.03</Text>
+					<Text style={TextStyles().regular}>
+						{startDay}~{endDay}
+					</Text>
 				</View>
 			</View>
 			<View style={styles.party_box}>
@@ -89,7 +97,9 @@ function TripDetailScreen({ navigation }: PaymentStackProp) {
 				</Button>
 			</View>
 			<View style={styles.center_box}>
-				<Text style={[TextStyles().small, styles.end_date]}>9.1금까지</Text>
+				<Text style={[TextStyles().small, styles.end_date]}>
+					현재 날짜: {year}-{month}-{day}
+				</Text>
 				<Text style={[TextStyles().header, styles.balance]}>500,00원</Text>
 			</View>
 			<View style={styles.body_button_group}>
