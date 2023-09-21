@@ -76,11 +76,10 @@ public class TransferController {
 	@ApiOperation(value = "1원인증", notes = "1원 인증을 진행 후 인증 코드를 받는다 거래내역 조회로 확인")
 	@PostMapping("/1transfer")
 	public ResponseEntity<String> oneTransfer(
-		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) throws NoSuchAlgorithmException {
-		long memberId = memberInfoDto.getMemberId();
+		@RequestBody @Valid TransferDto.OnetransferReqDto onetransferReqDto
+	) throws NoSuchAlgorithmException {
 
-		String code = transferService.oneTransfer(memberId, onetransferReqDto);
+		String code = transferService.oneTransfer(onetransferReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
@@ -89,11 +88,10 @@ public class TransferController {
 
 	@PostMapping("/1transfer-verify")
 	public ResponseEntity<String> oneTransferVerify(
-		@RequestBody @Valid TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto,
-		@MemberInfo MemberInfoDto memberInfoDto) {
-		long memberId = memberInfoDto.getMemberId();
+		@RequestBody @Valid TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto
+	) {
 
-		String isVerify = transferService.oneTransferVerify(memberId, onetransferVerifyReqDto);
+		String isVerify = transferService.oneTransferVerify(onetransferVerifyReqDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(isVerify);
 	}
