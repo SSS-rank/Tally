@@ -16,6 +16,8 @@ public interface MemberPaymentRepository extends JpaRepository<MemberPayment, Lo
 
 	Optional<MemberPayment> findMemberPaymentsByPaymentIdAndMemberId(Payment payment, Member member);
 
+	Optional<MemberPayment> findMemberPaymentByPaymentIdAndMemberIdAndStatusIsTrue(Payment payment, Member member);
+
 	boolean existsByPaymentIdAndMemberIdAndStatusIsTrue(Payment paymentId, Member memberId);
 
 	Optional<MemberPayment> findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(Payment payment, Member member);
