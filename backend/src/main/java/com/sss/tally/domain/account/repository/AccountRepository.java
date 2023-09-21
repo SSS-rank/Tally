@@ -11,9 +11,7 @@ import com.sss.tally.domain.member.entity.Member;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 	Optional<Account> findAccountByMemberIdAndStatusIsFalseAndRepresentativeAccountIsTrue(Member member);
 
-	Optional<Account> findAccountByAccountIdAndStatusIsFalse(Long accountId);
-
-	List<Account> findAllByMemberId_MemberUuid(String memberUuid);
+	Optional<Account> findAccountByAccountNumberAndStatusIsFalse(String accountNumber);
 
 	List<Account> findAllByMemberIdAndStatusIsFalseOrderByOrderNumberAsc(Member member);
 }
