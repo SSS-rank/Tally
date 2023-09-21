@@ -16,11 +16,14 @@ public interface MemberPaymentRepository extends JpaRepository<MemberPayment, Lo
 
 	Optional<MemberPayment> findMemberPaymentsByPaymentIdAndMemberId(Payment payment, Member member);
 
-	Optional<MemberPayment> findMemberPaymentByPaymentIdAndMemberIdAndStatusIsTrue(Payment payment, Member member);
+	Optional<MemberPayment> findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(Payment payment, Member member);
 
-	boolean existsByPaymentIdAndMemberIdAndStatusIsTrue(Payment paymentId, Member memberId);
+	boolean existsByPaymentIdAndMemberIdAndStatusIsFalse(Payment paymentId, Member memberId);
 
 	Optional<MemberPayment> findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(Payment payment, Member member);
+
+	@Query("SELECT mp.memberId.nickname FROM MemberPayment mp WHERE mp.paymentId.paymentId = :paymentId AND mp.status = false")
+	List<String> findNicknamesByPaymentId(@Param("paymentId") Long paymentId);
 
 	@Query("SELECT SUM(mp.amount) FROM MemberPayment mp WHERE mp.memberId = :memberId AND mp.paymentId = :paymentId")
 	Optional<Long> sumAmountByMemberIdAndPaymentId(@Param("memberId") Member memberId,
