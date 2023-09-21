@@ -3,11 +3,10 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 interface TripSwitchProp {
 	selectionMode: string;
+	setSelectionMode: (mode: string) => void;
 }
 
-function TripSwitch({ selectionMode }: TripSwitchProp) {
-	const [getSelectionMode, setSelectionMode] = useState(selectionMode);
-
+function TripSwitch({ selectionMode, setSelectionMode }: TripSwitchProp) {
 	return (
 		<View>
 			<View style={styles.switchContainer}>
@@ -16,12 +15,12 @@ function TripSwitch({ selectionMode }: TripSwitchProp) {
 					onPress={() => setSelectionMode('before')}
 					style={{
 						...styles.switchInner,
-						backgroundColor: getSelectionMode == 'before' ? '#91C0EB' : 'white',
+						backgroundColor: selectionMode == 'before' ? '#91C0EB' : 'white',
 					}}
 				>
 					<Text
 						style={{
-							color: getSelectionMode == 'before' ? 'white' : '#91C0EB',
+							color: selectionMode == 'before' ? 'white' : '#91C0EB',
 						}}
 					>
 						여행 전
@@ -32,12 +31,12 @@ function TripSwitch({ selectionMode }: TripSwitchProp) {
 					onPress={() => setSelectionMode('ongoing')}
 					style={{
 						...styles.switchInner,
-						backgroundColor: getSelectionMode == 'ongoing' ? '#91C0EB' : 'white',
+						backgroundColor: selectionMode == 'ongoing' ? '#91C0EB' : 'white',
 					}}
 				>
 					<Text
 						style={{
-							color: getSelectionMode == 'ongoing' ? 'white' : '#91C0EB',
+							color: selectionMode == 'ongoing' ? 'white' : '#91C0EB',
 						}}
 					>
 						여행 중
@@ -48,12 +47,12 @@ function TripSwitch({ selectionMode }: TripSwitchProp) {
 					onPress={() => setSelectionMode('end')}
 					style={{
 						...styles.switchInner,
-						backgroundColor: getSelectionMode == 'end' ? '#91C0EB' : 'white',
+						backgroundColor: selectionMode == 'end' ? '#91C0EB' : 'white',
 					}}
 				>
 					<Text
 						style={{
-							color: getSelectionMode == 'end' ? 'white' : '#91C0EB',
+							color: selectionMode == 'end' ? 'white' : '#91C0EB',
 						}}
 					>
 						여행 후
