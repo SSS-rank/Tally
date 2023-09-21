@@ -45,6 +45,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 					type: trip.travel_type,
 					startDay: trip.start_date,
 					endDay: trip.end_date,
+					travelParticipants: trip.travel_participants,
 				}));
 				if (page === 0) setOngoingListState(newData);
 				else setOngoingListState((prev) => prev.concat(newData));
@@ -113,6 +114,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 								startDay={item.startDay}
 								endDay={item.endDay}
 								navigation={navigation}
+								travelParticipants={item.travelParticipants}
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}
