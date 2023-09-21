@@ -315,7 +315,9 @@ public class TransferServiceImpl implements TransferService {
 
 		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
 			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
-
+		if (Results.isEmpty()) {
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
+		}
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
