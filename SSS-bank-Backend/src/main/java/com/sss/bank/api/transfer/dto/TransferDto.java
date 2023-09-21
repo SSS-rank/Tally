@@ -149,11 +149,11 @@ public class TransferDto {
 	@Builder
 	@AllArgsConstructor
 	@Getter
-	public static class TransferTallyRespDto{
+	public static class TransferListTallyRespDto{
 		private List<TransferListRespDto> tranferList;
 
-		public static TransferTallyRespDto from(List<TransferListRespDto> transferList){
-			return TransferTallyRespDto.builder()
+		public static TransferListTallyRespDto from(List<TransferListRespDto> transferList){
+			return TransferListTallyRespDto.builder()
 				.tranferList(transferList)
 				.build();
 		}
