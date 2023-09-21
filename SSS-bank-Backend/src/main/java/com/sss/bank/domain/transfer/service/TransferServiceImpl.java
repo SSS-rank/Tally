@@ -315,7 +315,8 @@ public class TransferServiceImpl implements TransferService {
 		Account account = accountOptional.get();
 		long accountId = account.getAccountId();
 
-		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId);
+		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
+			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
 
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
