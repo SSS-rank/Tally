@@ -15,6 +15,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class AccountDto {
+
+	@Getter
+	@Builder
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class AccountNumberReqDto{
+		@NotNull
+		String accountNumber;
+	}
+
 	@Getter
 	@Builder
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -50,16 +59,6 @@ public class AccountDto {
 
 	@Getter
 	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class AccountInfoRespDto{
-		private String bankName;
-		private String accountNumber;
-		private Long balance;
-	}
-
-	@Getter
-	@Builder
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class AccountInfoReqDto{
 		private String accountNum;
@@ -71,5 +70,15 @@ public class AccountDto {
 				.accountPassword(account.getAccountPassword())
 				.build();
 		}
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class AccountInfoRespDto{
+		private String bankName;
+		private String accountNumber;
+		private Long balance;
 	}
 }
