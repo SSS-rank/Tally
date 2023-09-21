@@ -218,6 +218,20 @@ public class PaymentDto {
 		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class RemovePaymentDto{
+		private String paymentUuid;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class PaymentDetailPayer{
 		private String paymentUuid;
 
