@@ -33,4 +33,10 @@ public class TravelController {
 	public ResponseEntity<List<TravelDto>> getTravelList(Authentication authentication, @RequestParam("type")String type, Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type, pageable));
 	}
+
+	@GetMapping("/day")
+	public ResponseEntity<Integer> getDay(Authentication authentication){
+		int day = travelService.getDay(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(day);
+	}
 }
