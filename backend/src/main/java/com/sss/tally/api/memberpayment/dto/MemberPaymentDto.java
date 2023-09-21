@@ -3,6 +3,7 @@ package com.sss.tally.api.memberpayment.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import com.sss.tally.domain.memberpayment.entity.MemberPayment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,5 +33,17 @@ public class MemberPaymentDto {
 		private String profileImage;
 		private boolean payer;
 		private boolean with;
+
+		public static MemberPaymentRespDto of(MemberPayment memberPayment, boolean payer){
+			return MemberPaymentRespDto.builder()
+					.memberUuid(memberPayment.getMemberId().getMemberUuid())
+					.amount(memberPayment.getAmount())
+					.nickname(memberPayment.getMemberId().getNickname())
+					.nickname(memberPayment.getMemberId().getNickname())
+					.profileImage(memberPayment.getMemberId().getProfileImage())
+					.with(memberPayment.getStatus())
+					.payer(payer)
+					.build();
+		}
 	}
 }
