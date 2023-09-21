@@ -119,12 +119,21 @@ public class PaymentDto {
 				.build();
 		}
 	}
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class PaymentResDto{
+		List<PaymentListRespDto> tranferList;
+	}
 
 	@Getter
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@ToString
 	public static class PaymentListRespDto{
 		private String transferDate;
 		private String flag;
@@ -180,6 +189,32 @@ public class PaymentDto {
 
 		@NotNull
 		private String title;
+		@NotNull
+		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class PaymentCardUpdateDto{
+
+		@NotNull
+		private String paymentUuid;
+
+		@NotNull
+		private Long travelId;
+
+		@NotNull
+		private Long category;
+
+		@NotNull
+		private String memo;
+
+		@NotNull
+		private boolean visible;
+
 		@NotNull
 		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
 	}
