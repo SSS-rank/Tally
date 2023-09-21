@@ -321,9 +321,10 @@ public class TransferServiceImpl implements TransferService {
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
-
+			Object accountIdObj = rawResult.get("accountId");
+			Object receiverObj = rawResult.get("receiver");
 			//보내는 자일 때 (출금)
-			if (((BigInteger)rawResult.get("accountId")).longValue() == accountId) {
+			if (accountIdObj != null && ((BigInteger)accountIdObj).longValue() == accountId) {
 				Integer value = (Integer)rawResult.get("shopType");
 				if (value == null) {
 					value = 7;  // 기본값 설정
@@ -339,7 +340,7 @@ public class TransferServiceImpl implements TransferService {
 				transferListRespDtos.add(dto);
 			}
 			//받는 자일 때 (입금)
-			if (((BigInteger)rawResult.get("receiver")).longValue() == accountId) {
+			if (receiverObj != null && ((BigInteger)receiverObj).longValue() == accountId) {
 				Integer value = (Integer)rawResult.get("shopType");
 				if (value == null) {
 					value = 7;  // 기본값 설정
