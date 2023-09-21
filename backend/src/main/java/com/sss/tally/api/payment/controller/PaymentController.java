@@ -42,7 +42,7 @@ public class PaymentController {
 		paymentService.modifyPaymentManual(authentication, paymentUpdateDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
-	@PatchMapping
+	@PatchMapping("/auto")
 	public ResponseEntity<String> modifyPayment(Authentication authentication, @RequestBody @Valid
 		PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto){
 		paymentService.modifyPaymentAuto(authentication, paymentCardUpdateDto);
@@ -53,5 +53,11 @@ public class PaymentController {
 	public ResponseEntity<List<PaymentDto.PaymentListDto>> getPaymentList(Authentication authentication, @PathVariable("travelId") Long travelId){
 		List<PaymentDto.PaymentListDto> paymentList = paymentService.getPaymentList(authentication, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(paymentList);
+	}
+	@PatchMapping
+	public ResponseEntity<String> removePayment(Authentication authentication, @RequestBody @Valid
+		PaymentDto.RemovePaymentDto removePaymentDto){
+		paymentService.removePayment(authentication, removePaymentDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
 }
