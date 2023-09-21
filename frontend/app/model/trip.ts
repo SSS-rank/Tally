@@ -10,6 +10,12 @@ export interface TripListItemProps {
 	startDay: string;
 	endDay: string;
 	navigation: NativeStackScreenProps<TripStackProps, 'TripDetail'>;
+	travelParticipants: Array<member>;
+}
+export interface member {
+	image: string;
+	member_nickname: string;
+	member_uuid: string;
 }
 
 export interface TripInfo {
