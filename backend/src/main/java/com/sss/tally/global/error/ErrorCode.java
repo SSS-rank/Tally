@@ -43,6 +43,7 @@ public enum ErrorCode {
 	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
 	NOT_EXIST_PARTICIPANT(HttpStatus.BAD_REQUEST, "003", "존재하지 않는 참가자입니다."),
 	DIFFERENT_TOTAL_AMOUNT(HttpStatus.BAD_REQUEST, "004", "결제 총 금액이 틀립니다."),
+	NOT_EXIST_PAYER_PAYMENT(HttpStatus.BAD_REQUEST, "004", "결제자는 반드시 결제 내역에 존재해야합니다.(금액을 0으로 하여 넣어도 됩니다.)"),
 
 	// 계좌
 	NOT_EXIST_ACCOUNT(HttpStatus.BAD_REQUEST, "001", "해당 계좌는 존재하지 않습니다."),
