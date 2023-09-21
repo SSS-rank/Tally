@@ -6,9 +6,21 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { TripListItemProps } from '../../model/trip';
 import { TextStyles } from '../../styles/CommonStyles';
-function TripListItem({ id, title, location, type, startDay, endDay }: TripListItemProps) {
+function TripListItem({
+	id,
+	title,
+	location,
+	type,
+	startDay,
+	endDay,
+	navigation,
+}: TripListItemProps) {
 	return (
-		<TouchableOpacity>
+		<TouchableOpacity
+			onPress={() => {
+				navigation.navigate('TripDetail', { id, title, location, type, startDay, endDay });
+			}}
+		>
 			<View style={styles.listItemContainer}>
 				<View style={styles.listView}>
 					<Avatar.Image
