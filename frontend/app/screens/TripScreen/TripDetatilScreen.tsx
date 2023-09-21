@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Button, Text } from 'react-native-paper';
+import { Button, Chip, Text } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -19,23 +19,19 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 		value: string;
 	}
 	const currentDate = new Date();
+	const [modalVisible, setModalVisible] = useState(false);
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
 	const { id, title, location, type, startDay, endDay } = route.params || {};
-	const [openOrderType, setOpenOrderType] = useState(false);
 	const [orderType, setOrderType] = useState('오래된 순');
-	const [orderTypeItems, setOrderTypeItems] = useState<OrderTypeSelectItem[]>([
-		{
-			label: '최신순',
-			value: '최신순',
-		},
-		{
-			label: '오래된 순',
-			value: '오래된 순',
-		},
-	]);
 
+	function showModal() {
+		setModalVisible(true);
+	}
+	function hideModal() {
+		setModalVisible(false);
+	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -121,7 +117,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					정산
 				</Button>
 			</View>
-			<DropDownPicker
+			{/* <DropDownPicker
 				open={openOrderType}
 				value={orderType}
 				items={orderTypeItems}
@@ -131,7 +127,63 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				textStyle={TextStyles().small}
 				placeholder={orderType}
 				style={styles.selectInput}
-			/>
+			/> */}
+			<View style={styles.order_button}>
+				<Button onPress={() => showModal()}>{orderType}</Button>
+			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(!modalVisible)}
+				/>
+				<View style={styles.modalView}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+							정렬
+						</Text>
+						<Icon
+							name="close"
+							size={32}
+							color={'#666666'}
+							onPress={() => setModalVisible(!modalVisible)}
+						/>
+					</View>
+					<View style={styles.order_type_container}>
+						<Button
+							style={styles.order_type}
+							mode="elevated"
+							buttonColor="#91C0EB"
+							textColor="white"
+							onPress={() => {
+								setOrderType('최신순');
+								setModalVisible(!modalVisible);
+							}}
+						>
+							최신순
+						</Button>
+
+						<Button
+							style={styles.order_type}
+							mode="elevated"
+							buttonColor="#91C0EB"
+							textColor="white"
+							onPress={() => {
+								setOrderType('오래된 순');
+								setModalVisible(!modalVisible);
+							}}
+						>
+							오래된 순
+						</Button>
+					</View>
+				</View>
+			</Modal>
 			<ScrollView>
 				<TouchableOpacity style={styles.detail_item_box}>
 					<Text>여행 준비</Text>
@@ -189,6 +241,41 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 }
 
 const styles = StyleSheet.create({
+	order_type: {
+		width: 350,
+		padding: 10,
+		margin: 10,
+	},
+	order_type_container: {
+		padding: 50,
+		alignItems: 'center',
+	},
+	modalView: {
+		marginTop: '100%',
+		height: '100%',
+		// flex: 1,
+		width: '100%',
+		alignSelf: 'stretch',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		// alignItems: 'center',
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+	},
+	order_button: {
+		flexDirection: 'row',
+	},
 	container: {
 		flexDirection: 'column',
 		paddingTop: 10,
