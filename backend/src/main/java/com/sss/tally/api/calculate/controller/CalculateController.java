@@ -36,21 +36,21 @@ public class CalculateController {
 
 	@GetMapping("/request")
 	public ResponseEntity<List<CalculateDto.GetRequestCalculateListRespDto>> getRequestCalculate(
-		@AuthenticationPrincipal Member member) {
+		@AuthenticationPrincipal Member member ,CalculateDto.GetRequestCalculateListReqDto getRequestCalculateListReqDto) {
 		String memberUuid = member.getMemberUuid();
 
 		List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculateListRespDto
-			= calculateGroupService.getRequestCalculate(memberUuid);
+			= calculateGroupService.getRequestCalculate(memberUuid , getRequestCalculateListReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateListRespDto);
 	}
 
 	@GetMapping("/receive")
 	public ResponseEntity<List<CalculateDto.GetResponseCalculateListRespDto>> getResponseCalculate(
-		@AuthenticationPrincipal Member member) {
+		@AuthenticationPrincipal Member member ,CalculateDto.GetRequestCalculateListReqDto getRequestCalculateListReqDto) {
 		String memberUuid = member.getMemberUuid();
 
 		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList
-			= calculateGroupService.getResponseCalculate(memberUuid);
+			= calculateGroupService.getResponseCalculate(memberUuid , getRequestCalculateListReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
 	}
 
