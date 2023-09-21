@@ -93,4 +93,14 @@ public class AccountServiceImpl implements AccountService{
 		account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountNumber);
 		account.ifPresent(value -> value.updateRepresentative(true));
 	}
+
+	@Override
+	public void updateAccountOrder(AccountDto.AccountOrderReqDto accountOrderReqDto) {
+		List<AccountDto.AccountOrder> list = accountOrderReqDto.getAccountOrder();
+		for(AccountDto.AccountOrder accountOrder : list){
+			Account account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountOrder.getAccountNumber())
+				.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_ACCOUNT));
+			account.updateOrderNumber(accountOrder.getOrderNumber());
+		}
+	}
 }
