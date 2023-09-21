@@ -21,7 +21,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			textAlign: props?.align ? props.align : 'center',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 		title: {
@@ -32,7 +32,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 		regular: {
@@ -43,7 +43,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 		medium: {
@@ -54,7 +54,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 		light: {
@@ -65,7 +65,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 		small: {
@@ -76,7 +76,7 @@ export const TextStyles = (props?: textStyleProps) =>
 			fontWeight: props?.weight ? props?.weight : 'normal',
 			marginBottom: props?.mBottom,
 			marginTop: props?.mTop,
-			marginRight: props?.mTop,
+			marginRight: props?.mRight,
 			marginLeft: props?.mLeft,
 		},
 	});
