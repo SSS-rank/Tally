@@ -104,4 +104,16 @@ public class CalculateController {
 		String result = calculateGroupService.acceptCalculate(calculateAcceptReqDto, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
+
+	@GetMapping("/final-receipt/{calculateGroupUuid}")
+	public ResponseEntity<CalculateDto.GetCalculateFinalReceiptRespDto> getFinalReceipt(
+		@PathVariable String calculateGroupUuid,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+
+		CalculateDto.GetCalculateFinalReceiptRespDto getCalculateFinalReceiptRespDto
+			= calculateGroupService.getCalculateFinalReceipt(calculateGroupUuid, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(getCalculateFinalReceiptRespDto);
+	}
+
 }
