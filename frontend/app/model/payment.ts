@@ -22,6 +22,7 @@ export interface Payment {
 	visible: boolean; // 공개여부(boolean)
 	payment_name: string; // 예금주(String)
 	calculate_status: string;
+	participants: string[];
 }
 
 export interface DirectPayMember {
