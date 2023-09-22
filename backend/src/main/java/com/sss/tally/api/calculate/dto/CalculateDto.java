@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
 import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.travel.entity.Travel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -347,6 +348,88 @@ public class CalculateDto {
 				.paymentDate(paymentDate)
 				.myAmount(myAmount)
 				.allAmount(allAmount)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetCalculateFinalReceiptRespDto {
+
+		private String travelName;
+
+		private String startDate;
+
+		private String endDate;
+
+		private List<MemberInfo> memberInfos;
+
+		private List<FinalReceiptDetail> finalReceiptDetails;
+
+		public static GetCalculateFinalReceiptRespDto of
+			(Travel travel, List<FinalReceiptDetail> finalReceiptDetails, List<MemberInfo> memberInfo) {
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String formattedStartTime = travel.getStartDate().format(formatter);
+			String formattedEndTime = travel.getEndDate().format(formatter);
+			return GetCalculateFinalReceiptRespDto.builder()
+				.travelName(travel.getTravelTitle())
+				.startDate(formattedStartTime)
+				.endDate(formattedEndTime)
+				.finalReceiptDetails(finalReceiptDetails)
+				.memberInfos(memberInfo)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class FinalReceiptDetail {
+
+		private String paymentName;
+
+		private LocalDateTime paymentDate;
+
+		private Long amount;
+
+		private List<String> memberName;
+
+		public static FinalReceiptDetail of(String paymentName, LocalDateTime paymentDate, Long amount,
+			List<String> memberName
+		) {
+			return FinalReceiptDetail.builder()
+				.paymentName(paymentName)
+				.paymentDate(paymentDate)
+				.amount(amount)
+				.memberName(memberName)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class MemberInfo {
+
+		private String memberName;
+
+		private String profileImage;
+
+		public static MemberInfo of(String memberName, String profileImage) {
+			return MemberInfo.builder()
+				.memberName(memberName)
+				.profileImage(profileImage)
 				.build();
 		}
 
