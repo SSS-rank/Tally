@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
+import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -264,12 +265,13 @@ public class CalculateDto {
 
 		private List<RequestDetail> requestDetails;
 
-		public static GetResponseCalculateDetailRespDto of
-			(String travelType, String travelName, LocalDateTime date, Long totalAmount, List<Detail> detailList) {
+		public static GetRequestCalculateDetailRespDto of
+			(String travelType, String travelName, LocalDateTime date, Long totalAmount,
+				List<RequestDetail> requestDetails) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 			String formattedTime = date.format(formatter);
-			return GetResponseCalculateDetailRespDto.builder()
-				.detailList(detailList)
+			return GetRequestCalculateDetailRespDto.builder()
+				.requestDetails(requestDetails)
 				.totalAmount(totalAmount)
 				.travelName(travelName)
 				.travelType(travelType)
@@ -292,7 +294,16 @@ public class CalculateDto {
 
 		private Long amount;
 
-		private CalculateGroupStatusEnum status;
+		private String status;
+
+		public static RequestDetail of(Member member, String status, Long amount) {
+			return RequestDetail.builder()
+				.memberName(member.getNickname())
+				.memberProfile(member.getProfileImage())
+				.status(status)
+				.amount(amount)
+				.build();
+		}
 
 	}
 

@@ -23,6 +23,8 @@ import com.sss.tally.domain.category.entity.Category;
 import com.sss.tally.domain.category.repository.CategoryRepository;
 import com.sss.tally.domain.city.entity.City;
 import com.sss.tally.domain.city.repository.CityRepository;
+import com.sss.tally.domain.country.entity.Country;
+import com.sss.tally.domain.country.repository.CountryRepository;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
@@ -60,6 +62,7 @@ public class TravelServiceImpl implements TravelService{
 	private final StateRepository stateRepository;
 	private final PaymentRepository paymentRepository;
 	private final AccountRepository accountRepository;
+	private final CountryRepository countryRepository;
 	private final PaymentClient paymentClient;
 	private final CategoryRepository categoryRepository;
 	private final MemberPaymentRepository memberPaymentRepository;
@@ -164,7 +167,10 @@ public class TravelServiceImpl implements TravelService{
 				travelLocation = stateByStateId.get().getStateName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-				// country 정보가 구현된 후, 수정 예정
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
 			// travelId를 통해 여행 참여자들의 정보를 받아옴.
@@ -212,15 +218,18 @@ public class TravelServiceImpl implements TravelService{
 				travelLocation = stateByStateId.get().getStateName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-				// country 정보가 구현된 후, 수정 예정
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
 			// travelId를 통해 여행 참여자들의 정보를 받아옴.
 			List<Member> members = memberRepository.findMembersInTravel(travel);
 
-			Long totalAmount = this.totalTravelMoney(member.getMemberUuid(), members, travel);
+			Long totalAmount = this.totalTravelMoney(member, members, travel);
 
-			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travelsInfo에 추가
 			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation, members.stream()
 				.map(MemberDto.MemberTravelDto::from)
 				.collect(Collectors.toList())));
@@ -318,18 +327,23 @@ public class TravelServiceImpl implements TravelService{
 			.collect(Collectors.toList()));
 	}
 
-	public Long totalTravelMoney(String memberUuid, List<Member> members, Travel travel){
+	@Override
+	public Long totalTravelMoney(Member user, List<Member> members, Travel travel){
 		long totalAmount = 0L;
 		for(Member member : members){
 			List<Payment> payments;
-			if(member.getMemberUuid().equals(memberUuid))
+			if(member.equals(user))
 				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalse(travel, member);
 			else
 				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(travel, member);
 
-			for(Payment payment : payments)
-				totalAmount+=payment.getAmount();
+			for(Payment payment : payments){
+				Optional<MemberPayment> memberPayment = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(payment, user);
+				if(memberPayment.isEmpty()) continue;
+				totalAmount+=memberPayment.get().getAmount();
+			}
 		}
 		return totalAmount;
 	}
+
 }

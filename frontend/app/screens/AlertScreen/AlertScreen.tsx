@@ -14,7 +14,7 @@ function AlertScreen({ navigation }: any) {
 		<View style={styles.viewContainer}>
 			<Button
 				mode="text"
-				onPress={() => navigation.navigate('TripStack', { screen: 'AdjustTrip' })}
+				onPress={() => navigation.navigate('TripStack', { screen: 'AdjustTrip', initial: false })}
 			>
 				정산 현황
 			</Button>

@@ -650,15 +650,39 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		if (groupPaymentList.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 		}
-
+		List<CalculateDto.RequestDetail> requestDetails = new ArrayList<>();
+		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		String travelName = travel.getTravelTitle();
+		LocalDateTime requestTime = calculateGroup.getCreateDate();
+		Long totalAmount = 0l;
+		String travelType = travel.getTravelType().toString();
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
 			for (GroupPayment groupPayment : groupPaymentList) {
 				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), groupMember.getMemberId());
+				if (memberPaymentOptional.isEmpty()) {
+					continue;
+				}
+				MemberPayment memberPayment = memberPaymentOptional.get();
+				amount += memberPayment.getAmount();
+
 			}
+			String status = "";
+			if (groupMember.getStatus()) {
+				status = "확인 완료";
+			} else {
+				status = "요청 중";
+			}
+			CalculateDto.RequestDetail requestDetail = CalculateDto.RequestDetail.of(groupMember.getMemberId(), status,
+				amount);
+			requestDetails.add(requestDetail);
+			totalAmount += amount;
 		}
-		return null;
+		CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetailRespDto = CalculateDto.GetRequestCalculateDetailRespDto.of(
+			travelType, travelName, requestTime, totalAmount, requestDetails
+		);
+		return getRequestCalculateDetailRespDto;
 	}
 }
 
