@@ -684,6 +684,61 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		);
 		return getRequestCalculateDetailRespDto;
 	}
+
+	@Override
+	public CalculateDto.GetRequestCalculateDetailByMemberRespDto getRequestCalculateDetailByMember(
+		String calculateGroupUuid, String memberUuid, String loginMemberUuid) {
+		Optional<Member> loginMemberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(
+			loginMemberUuid);
+		//탈퇴한 멤버인지 검증
+		if (loginMemberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(
+			memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		}
+		Member member = memberOptional.get();
+
+		Optional<CalculateGroup> calculateGroupOptional = calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+			calculateGroupUuid);
+		if (calculateGroupOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
+		List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+			calculateGroup);
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+		}
+		List<CalculateDto.RequestDetailByMember> requestDetailByMembers = new ArrayList<>();
+		Long totalAmount = 0l;
+		for (GroupPayment groupPayment : groupPaymentList) {
+			Payment payment = groupPayment.getPaymentId();
+			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				payment, member);
+			if (memberPaymentOptional.isEmpty()) {
+				continue;
+			}
+			MemberPayment memberPayment = memberPaymentOptional.get();
+			Long myAmount = memberPayment.getAmount();
+			String paymentName = payment.getPaymentName();
+			Long allAmount = payment.getAmount();
+			LocalDateTime paymentDate = payment.getPaymentKoreaDate();
+			totalAmount += myAmount;
+			CalculateDto.RequestDetailByMember requestDetailByMember = CalculateDto.RequestDetailByMember.of(
+				paymentName, paymentDate, myAmount, allAmount
+			);
+			requestDetailByMembers.add(requestDetailByMember);
+		}
+		
+		CalculateDto.GetRequestCalculateDetailByMemberRespDto getRequestCalculateDetailByMemberRespDto =
+			CalculateDto.GetRequestCalculateDetailByMemberRespDto.of(
+				member.getNickname(), totalAmount, requestDetailByMembers
+			);
+		return getRequestCalculateDetailByMemberRespDto;
+	}
 }
 
 
