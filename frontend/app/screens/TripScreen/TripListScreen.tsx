@@ -31,10 +31,12 @@ function TripListScreen({ navigation }: TripStackProp) {
 		setOngoingListState([]);
 		if (selectionMode === 'ongoing') {
 			getOngoingTripList();
-		} else if (selectionMode === 'before') {
-			getBeforeTripList();
-		} else {
+		} else if (selectionMode === 'after') {
+			// 다가오는 여행
 			getAfterTripList();
+		} else {
+			// 다녀온 여행
+			getBeforeTripList();
 		}
 	}, [selectionMode]);
 
@@ -66,14 +68,41 @@ function TripListScreen({ navigation }: TripStackProp) {
 	};
 
 	// 다가오는 여행 리스트
+	const [afterTripList, setAfterTripList] = useState<TripListItemProps[]>([]);
+	const [afterPage, setAfterPage] = useState(0);
+	const getAfterTripList = async () => {
+		try {
+			// console.log(afterPage);
+			// console.log(ongoingListState.length);
+			const res = await api.get(`/travel?type=after&page=${afterPage}&size=7&sort=createDate,DESC`);
+
+			if (res.status === 200) {
+				// console.log(res.data);
+				const newData = res.data.map((trip: any) => ({
+					id: trip.travel_id,
+					title: trip.travel_title,
+					location: trip.travel_location,
+					type: trip.travel_type,
+					startDay: trip.start_date,
+					endDay: trip.end_date,
+				}));
+				if (afterPage === 0) setAfterTripList(newData);
+				else setAfterTripList((prev) => prev.concat(newData));
+				setAfterPage((prev) => prev + 1);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	// 다녀온 여행 리스트
 	const [beforeTripList, setBeforeTripList] = useState<TripListItemProps[]>([]);
 	const [beforePage, setBeforePage] = useState(0);
 	const getBeforeTripList = async () => {
 		try {
-			console.log(beforePage);
-			// console.log(ongoingListState.length);
+			// console.log(beforePage);
 			const res = await api.get(
-				`/travel?type=after&page=${beforePage}&size=7&sort=createDate,DESC`,
+				`/travel?type=before&page=${beforePage}&size=7&sort=createDate,DESC`,
 			);
 
 			if (res.status === 200) {
@@ -89,35 +118,6 @@ function TripListScreen({ navigation }: TripStackProp) {
 				if (beforePage === 0) setBeforeTripList(newData);
 				else setBeforeTripList((prev) => prev.concat(newData));
 				setBeforePage((prev) => prev + 1);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	// 종료된 여행 리스트
-	const [afterTripList, setAfterTripList] = useState<TripListItemProps[]>([]);
-	const [afterPage, setAfterPage] = useState(0);
-	const getAfterTripList = async () => {
-		try {
-			console.log(afterPage);
-			const res = await api.get(
-				`/travel?type=before&page=${afterPage}&size=7&sort=createDate,DESC`,
-			);
-
-			if (res.status === 200) {
-				// console.log(res.data);
-				const newData = res.data.map((trip: any) => ({
-					id: trip.travel_id,
-					title: trip.travel_title,
-					location: trip.travel_location,
-					type: trip.travel_type,
-					startDay: trip.start_date,
-					endDay: trip.end_date,
-				}));
-				if (beforePage === 0) setAfterTripList(newData);
-				else setAfterTripList((prev) => prev.concat(newData));
-				setAfterPage((prev) => prev + 1);
 			}
 		} catch (err) {
 			console.log(err);
@@ -153,11 +153,11 @@ function TripListScreen({ navigation }: TripStackProp) {
 					</View>
 				</View>
 			</TouchableOpacity>
-			{selectionMode === 'before' && (
+			{selectionMode === 'after' && (
 				<>
 					<Text style={styles.listTitle}>다가오는 여행</Text>
 					<FlatList
-						data={beforeTripList}
+						data={afterTripList}
 						renderItem={({ item }) => (
 							<TripListItem
 								key={item.id}
@@ -170,7 +170,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}
-						onEndReached={getBeforeTripList}
+						onEndReached={getAfterTripList}
 						onEndReachedThreshold={0}
 					/>
 				</>
@@ -198,11 +198,11 @@ function TripListScreen({ navigation }: TripStackProp) {
 					/>
 				</>
 			)}
-			{selectionMode === 'after' && (
+			{selectionMode === 'before' && (
 				<>
 					<Text style={styles.listTitle}>다녀온 여행</Text>
 					<FlatList
-						data={afterTripList}
+						data={beforeTripList}
 						renderItem={({ item }) => (
 							<TripListItem
 								key={item.id}
@@ -215,7 +215,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}
-						onEndReached={getAfterTripList}
+						onEndReached={getBeforeTripList}
 						onEndReachedThreshold={0}
 					/>
 				</>
