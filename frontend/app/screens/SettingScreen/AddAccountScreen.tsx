@@ -15,7 +15,7 @@ import { Button, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import banApi from '../../api/banApi';
+import bankApi from '../../api/bankApi';
 import BankItem from '../../components/BankItem/BankItem';
 import { bankList } from '../../model/bank';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -28,6 +28,17 @@ function AddAccountScreen({ navigation }: any) {
 
 	const reset = () => {
 		setAccountNumber('');
+	};
+
+	const checkAccount = async () => {
+		const request = {
+			account_num: accountNumber,
+			bank_code: bankCode,
+		};
+		const res = await bankApi.post(`/transfer/1transfer`, request);
+		if (res.data === 'OK') {
+			navigation.navigate('AuthAccount');
+		}
 	};
 
 	return (
@@ -72,7 +83,7 @@ function AddAccountScreen({ navigation }: any) {
 					/>
 				</View>
 			</View>
-			<Button mode="elevated" buttonColor="#91C0EB" textColor="white">
+			<Button mode="elevated" buttonColor="#91C0EB" textColor="white" onPress={checkAccount}>
 				다음
 			</Button>
 			<Modal
