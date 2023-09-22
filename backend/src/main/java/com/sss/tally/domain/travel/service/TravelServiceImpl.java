@@ -285,7 +285,7 @@ public class TravelServiceImpl implements TravelService{
 						if(optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
 							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
 						else
-							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0));
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
 					}
 				}
@@ -294,7 +294,7 @@ public class TravelServiceImpl implements TravelService{
 		}
 
 		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDate(travelOptional.get(), member);
-		int[] totalAmount = {0};
+		Long[] totalAmount = {0L};
 		List<PaymentDto.PaymentListDto> paymentListDtos = payments.stream()
 			.map(
 				payment -> {
@@ -334,7 +334,7 @@ public class TravelServiceImpl implements TravelService{
 
 	@Override
 	public Long totalTravelMoney(Member user, List<Member> members, Travel travel){
-		long totalAmount = 0L;
+		Long totalAmount = 0L;
 		for(Member member : members){
 			List<Payment> payments;
 			if(member.equals(user))

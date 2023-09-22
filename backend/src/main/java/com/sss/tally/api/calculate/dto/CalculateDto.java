@@ -141,9 +141,9 @@ public class CalculateDto {
 
 		private String paymentName;
 
-		private int myAmount;
+		private Long myAmount;
 
-		private int allAmount;
+		private Long allAmount;
 
 		private LocalDateTime paymentDate;
 
