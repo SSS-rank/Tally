@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.tally.api.login.dto.OauthLoginDto;
+import com.sss.tally.domain.defaultchecklist.service.DefaultCheckListService;
 import com.sss.tally.domain.device.entity.Device;
 import com.sss.tally.domain.device.repository.DeviceRepository;
 import com.sss.tally.domain.member.entity.Member;
@@ -31,6 +32,7 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 	private final RedisService redisService;
 	private final JwtProvider jwtProvider;
 	private final DeviceRepository deviceRepository;
+	private final DefaultCheckListService defaultCheckListService;
 
 	@Override
 	public OauthLoginDto.OauthLoginRespDto oauthLogin(OauthLoginDto.OauthLoginReqDto oauthLoginReqDto) {
@@ -39,7 +41,7 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 		JwtTokenDto jwtTokenDto;
 		Optional<Member> optionalMember = memberRepository.findMemberByKakaoId(userInfo.getKakaoId());
 
-		if(optionalMember.isEmpty()){ //신규 회원
+		if (optionalMember.isEmpty()) { //신규 회원
 			String memberUuid = UUID.randomUUID().toString();
 			Member oauthMember = Member.of(memberUuid, userInfo);
 			oauthMember = memberRepository.save(oauthMember);
@@ -47,13 +49,17 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberUuid());
 			redisService.setValues(memberUuid, jwtTokenDto.getRefreshToken());
 			// device 등록
-			Optional<Device> checkDevice = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(oauthLoginReqDto.getDeviceToken());
+			Optional<Device> checkDevice = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(
+				oauthLoginReqDto.getDeviceToken());
 			checkDevice.ifPresent(device -> device.updateLogin(false));
 
 			deviceRepository.save(Device.of(oauthMember, oauthLoginReqDto.getDeviceToken()));
+			//체크리스트 생성
+			defaultCheckListService.createInitCheckList(oauthMember);
 		} else { //이미 존재하는 회원
 			Member oauthMember = optionalMember.get();
-			if(oauthMember.getWithdrawalDate()!=null && oauthMember.getWithdrawalDate().isBefore(LocalDateTime.now()))
+			if (oauthMember.getWithdrawalDate() != null && oauthMember.getWithdrawalDate()
+				.isBefore(LocalDateTime.now()))
 				throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 			// 토큰 생성
 			jwtTokenDto = jwtProvider.createJwtTokenDto(oauthMember.getMemberUuid());
@@ -64,7 +70,7 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			);
 			// 해당 멤버 + 기기토큰으로 검색했는데 이미 존재하면 true 처리
 			// 한 기기에서 로그아웃 하고 다시 로그인 하는 경우
-			if(checkDevice.isPresent()){
+			if (checkDevice.isPresent()) {
 				checkDevice.get().updateLogin(true);
 			} else {
 				// 기기가 다른 멤버 아이디로 로그인 되어 있는 경우
