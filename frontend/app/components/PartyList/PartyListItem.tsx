@@ -29,7 +29,7 @@ function PartyListItem(props: partyItemprops) {
 				<TextInput
 					value={amount}
 					onChangeText={(input) => {
-						setAmount(input);
+						handleAmountChange(input);
 					}}
 					returnKeyType="next"
 					style={[styles.textInput, props.self ? { color: 'gray' } : null]}
