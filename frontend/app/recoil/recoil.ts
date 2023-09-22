@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
 import { TripListItemProps, TripInfo } from './../model/trip';
+import { Account } from '../model/account';
 import { Token } from '../model/token';
 
 export const TokenState = atom<Token>({
@@ -28,5 +29,11 @@ export const TripInfoState = atom<TripInfo>({
 // 여행 중인 여행지 목록
 export const ongoingTripListState = atom<TripListItemProps[]>({
 	key: 'ongoingTripListState',
+	default: [],
+});
+
+// 연결된 계좌 목록
+export const tallyAccountListState = atom<Account[]>({
+	key: 'tallyAccountListState',
 	default: [],
 });

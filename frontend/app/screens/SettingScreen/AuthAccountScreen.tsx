@@ -3,11 +3,13 @@ import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRecoilValue } from 'recoil';
 
 import { HomeStackProps } from './../../navigation/HomeStack';
 import bankApi from '../../api/bankApi';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { AccountResgistReq } from '../../model/account';
+import { tallyAccountListState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
@@ -81,11 +83,13 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 	};
 
 	const api = useAxiosWithAuth();
+	const accountListState = useRecoilValue(tallyAccountListState);
 	const registerAccount = async (password: string) => {
+		console.log('accountListState.length ', accountListState.length);
 		const accountResgisterReq: AccountResgistReq = {
 			account_number: accountNumber,
 			bank_code: bankCode,
-			order_number: 2,
+			order_number: accountListState.length + 1,
 			account_password: password,
 			transfer_password: '123456',
 		};

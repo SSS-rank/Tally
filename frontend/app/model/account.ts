@@ -2,7 +2,7 @@ export interface Account {
 	accountNumber: string;
 	bankCode: string;
 	bankName: string;
-	balace: number;
+	balance: number;
 }
 
 export interface AccountResgistReq {
