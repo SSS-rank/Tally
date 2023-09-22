@@ -24,9 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class TravelController {
 	private final TravelService travelService;
 	@PostMapping
-	public ResponseEntity<String> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
-		travelService.createTravel(authentication, travelCreateDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+	public ResponseEntity<TravelDto.TravelCreateRespDto> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
+		TravelDto.TravelCreateRespDto travel = travelService.createTravel(authentication, travelCreateDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(travel);
 	}
 
 	@GetMapping
