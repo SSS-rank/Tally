@@ -17,6 +17,8 @@ import com.sss.tally.api.member.dto.MemberDto;
 import com.sss.tally.api.travel.dto.TravelDto;
 import com.sss.tally.domain.city.entity.City;
 import com.sss.tally.domain.city.repository.CityRepository;
+import com.sss.tally.domain.country.entity.Country;
+import com.sss.tally.domain.country.repository.CountryRepository;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.payment.entity.Payment;
@@ -46,6 +48,7 @@ public class TravelServiceImpl implements TravelService{
 	private final CityRepository cityRepository;
 	private final StateRepository stateRepository;
 	private final PaymentRepository paymentRepository;
+	private final CountryRepository countryRepository;
 
 	@Override
 	public void createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
@@ -122,7 +125,10 @@ public class TravelServiceImpl implements TravelService{
 				travelLocation = stateByStateId.get().getStateName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-				// country 정보가 구현된 후, 수정 예정
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
 			// travelId를 통해 여행 참여자들의 정보를 받아옴.
@@ -170,7 +176,10 @@ public class TravelServiceImpl implements TravelService{
 				travelLocation = stateByStateId.get().getStateName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-				// country 정보가 구현된 후, 수정 예정
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
 			// travelId를 통해 여행 참여자들의 정보를 받아옴.
@@ -178,7 +187,7 @@ public class TravelServiceImpl implements TravelService{
 
 			Long totalAmount = this.totalTravelMoney(member.getMemberUuid(), members, travel);
 
-			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travelsInfo에 추가
 			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation, members.stream()
 				.map(MemberDto.MemberTravelDto::from)
 				.collect(Collectors.toList())));
