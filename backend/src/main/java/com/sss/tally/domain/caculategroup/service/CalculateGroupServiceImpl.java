@@ -661,23 +661,11 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			for (GroupPayment groupPayment : groupPaymentList) {
 				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), groupMember.getMemberId());
-				//1, 2, 3 멤버
-				// 1 2 3 결제건
-				//멤버 1 -> 결제 1에 얼마?
-				//멤버 1- > 결제 2에 얼마?
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
 				}
 				MemberPayment memberPayment = memberPaymentOptional.get();
 				amount += memberPayment.getAmount();
-
-				// memberName;
-				//
-				// private String memberProfile;
-				//
-				// private Long amount;
-				//
-				// private CalculateGroupStatusEnum status;
 
 			}
 			String status = "";
