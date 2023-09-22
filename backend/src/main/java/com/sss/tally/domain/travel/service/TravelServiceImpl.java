@@ -45,7 +45,7 @@ public class TravelServiceImpl implements TravelService{
 	private final StateRepository stateRepository;
 
 	@Override
-	public void createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
+	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
 
@@ -73,7 +73,31 @@ public class TravelServiceImpl implements TravelService{
 
 		Travel travel = Travel.of(travelCreateDto, travelTypeEnum, startLocalDate, endLocalDate, false);
 		Travel save = travelRepository.save(travel);
+
+		String travelLocation = "";
+		String travelType ="";
+
+		// 여행지 정보를 받아옴
+		// travelType은 국가 코드
+		// travelLocation은 여행지 명
+		if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+			travelType="KOR";
+			Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
+			if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+			travelLocation = cityByCityId.get().getCityName();
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+			travelType="KOR";
+			Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
+			if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
+			travelLocation = stateByStateId.get().getStateName();
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+			// country 정보가 구현된 후, 수정 예정
+		}
+
 		travelGroupRepository.save(TravelGroup.of(memberOptional.get(), save));
+		return TravelDto.TravelCreateRespDto.of(save, travelType, travelLocation, memberOptional.get());
 	}
 
 	@Override
