@@ -50,6 +50,7 @@ const ManageAccountScreen = ({ navigation }: any) => {
 						balance={item.balance}
 						bankCode={item.bankCode}
 						bankName={item.bankName}
+						representativeAccount={item.representativeAccount}
 					/>
 				)}
 				keyExtractor={(item) => item.accountNumber}
