@@ -56,7 +56,7 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateDetailRespDto);
 	}
 
-	@GetMapping("/request-detail/{member_uuid}")
+	@GetMapping("/request-detail/{calculateGroupUuid}/{member_uuid}")
 	public ResponseEntity<CalculateDto.GetRequestCalculateDetailRespDto> getRequestCalculateDetailbyMember(
 		@RequestBody CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto,
 		@AuthenticationPrincipal Member member) {
