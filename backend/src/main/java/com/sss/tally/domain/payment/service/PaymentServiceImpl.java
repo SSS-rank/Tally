@@ -293,6 +293,7 @@ public class PaymentServiceImpl implements PaymentService{
 			.map(
 					payment -> {
 						List<String> memberPayments = memberPaymentRepository.findNicknamesByPaymentId(payment.getPaymentId());
+						memberPayments.remove(member.getNickname());
 						return PaymentDto.PaymentListDto.of(payment, memberPayments);
 					})
 			.collect(Collectors.toList());
