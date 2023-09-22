@@ -37,4 +37,11 @@ public class DefaultCheckList {
 	private String content;
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static DefaultCheckList of(Member member, String content) {
+		return DefaultCheckList.builder()
+			.memberId(member)
+			.content(content)
+			.build();
+	}
 }
