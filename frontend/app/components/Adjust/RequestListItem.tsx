@@ -63,11 +63,11 @@ const Item = ({ item, navigation }: ItemProps) => (
 );
 
 const RequestListItem = ({
-	test,
+	data,
 	navigation,
 	route,
 }: {
-	test: any[];
+	data: any[];
 	navigation?: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'>;
 	route?: RouteProp<TripStackProps, 'SendAdjust'>;
 }) => {
@@ -80,7 +80,7 @@ const RequestListItem = ({
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-				data={test}
+				data={data}
 				renderItem={renderItem}
 				keyExtractor={(item) => item.calculate_group_uuid}
 				extraData={selectedId}
