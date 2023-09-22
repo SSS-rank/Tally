@@ -45,15 +45,23 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateListRespDto);
 	}
 
-	@GetMapping("/request-detail")
+	@GetMapping("/request-detail/{calculateGroupUuid}")
 	public ResponseEntity<CalculateDto.GetRequestCalculateDetailRespDto> getRequestCalculateDetail(
-		@RequestBody CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto,
+		@PathVariable String calculateGroupUuid,
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
 
 		CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetailRespDto
-			= calculateGroupService.getRequestCalculateDetail(getRequestCalculateDetailReqDto, memberUuid);
+			= calculateGroupService.getRequestCalculateDetail(calculateGroupUuid, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateDetailRespDto);
+	}
+
+	@GetMapping("/request-detail/{member_uuid}")
+	public ResponseEntity<CalculateDto.GetRequestCalculateDetailRespDto> getRequestCalculateDetailbyMember(
+		@RequestBody CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+		return null;
 	}
 
 	@GetMapping("/receive/{travelId}")
@@ -66,14 +74,14 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
 	}
 
-	@GetMapping("/receive-detail")
+	@GetMapping("/receive-detail/{calculateGroupUuid}")
 	public ResponseEntity<CalculateDto.GetResponseCalculateDetailRespDto> getResponseCalculateDetail(
-		@RequestBody CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto,
+		@PathVariable String calculateGroupUuid,
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
 
 		CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetailRespDto
-			= calculateGroupService.getResponseCalculateDetail(getResponseCalculateDetailReqDto, memberUuid);
+			= calculateGroupService.getResponseCalculateDetail(calculateGroupUuid, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateDetailRespDto);
 	}
 
