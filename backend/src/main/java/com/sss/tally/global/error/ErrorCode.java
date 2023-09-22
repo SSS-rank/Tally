@@ -64,6 +64,10 @@ public enum ErrorCode {
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
+
+	// 이미지
+	IMAGE_DELETE_FAIL(HttpStatus.EXPECTATION_FAILED, "001", "이미지 삭제에 실패했습니다."),
+	CONVERT_FILE_FAIL(HttpStatus.EXPECTATION_FAILED, "002", "파일 전환에 실패했습니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
