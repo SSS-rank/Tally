@@ -100,15 +100,6 @@ public class CalculateDto {
 		private String content;
 	}
 
-	@NoArgsConstructor
-	@Getter
-	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class GetResponseCalculateDetailReqDto {
-		@NotNull
-		private String calculateGroupUuid;
-
-	}
-
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
