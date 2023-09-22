@@ -293,7 +293,7 @@ public class TravelServiceImpl implements TravelService{
 
 		}
 
-		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDate(travelOptional.get(), member);
+		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travelOptional.get(), member);
 		Long[] totalAmount = {0L};
 		List<PaymentDto.PaymentListDto> paymentListDtos = payments.stream()
 			.map(
