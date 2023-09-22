@@ -36,12 +36,14 @@ import com.sss.tally.domain.payment.entity.CalculateStatusEnum;
 import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.payment.repository.PaymentRepository;
 import com.sss.tally.domain.travel.entity.Travel;
+import com.sss.tally.domain.travel.repository.TravelRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.AccountException;
 import com.sss.tally.global.error.exception.CalculateException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.NotificationException;
 import com.sss.tally.global.error.exception.PaymentException;
+import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.AllArgsConstructor;
 
@@ -71,6 +73,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	private final AccountRepository accountRepository;
 
 	private final CalculateGroupClient calculateGroupClient;
+
+	private final TravelRepository travelRepository;
 
 	@Override
 	public String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid) {
@@ -197,7 +201,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	}
 
 	@Override
-	public List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculate(String memberUuid) {
+	public List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculate(String memberUuid, Long travelId) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
@@ -205,15 +209,21 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		Member member = memberOptional.get();
 		List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculateListRespDtoList = new ArrayList<>();
 		List<CalculateGroup> calculateGroupList = calculateGroupRepository.findCalculateGroupsByMemberId(member);
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(
+			travelId);
+		if (travelOptional.isEmpty()) {
+			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		}
+		Travel travel = travelOptional.get();
 		if (calculateGroupList.isEmpty()) {
 			return getRequestCalculateListRespDtoList;
 		}
 		for (CalculateGroup calculateGroup : calculateGroupList) {
 			Long amount = 0l;
-			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
-				calculateGroup);
+			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
+				calculateGroup, travel);
 			if (groupPaymentList.isEmpty()) {
-				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+				return null;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
 				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(
@@ -233,7 +243,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	}
 
 	@Override
-	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid) {
+	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid, Long travelId) {
 		//탈퇴한 회원인지 검증
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		if (memberOptional.isEmpty()) {
@@ -247,13 +257,19 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		if (groupMemberList.isEmpty()) {
 			return getResponseCalculateListRespDtoList;
 		}
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(
+			travelId);
+		if (travelOptional.isEmpty()) {
+			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		}
+		Travel travel = travelOptional.get();
 		//해당 그룹에 속한 결제건들을 전부 가져오고 해당 결제건 중 로그인 사용자가 지불 해야 할 돈만 가져오기
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
-			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
-				groupMember.getCalculateGroupId());
+			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
+				groupMember.getCalculateGroupId(), travel);
 			if (groupPaymentList.isEmpty()) {
-				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+				return null;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
 				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
@@ -382,7 +398,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
-		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid) {
+		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -393,7 +409,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getResponseCalculateDetailReqDto.getCalculateGroupUuid());
+				calculateGroupUuid);
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
@@ -604,6 +620,69 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			return "ok";
 		}
 
+	}
+
+	@Override
+	public CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
+		String calculateGroupUuid, String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		//탈퇴한 멤버인지 검증
+
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		//payment들 가져오기
+		Optional<CalculateGroup> calculateGroupOptional =
+			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+				calculateGroupUuid);
+		if (calculateGroupOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
+		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByCalculateGroupId(calculateGroup);
+		if (groupMemberList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_MEMBER);
+		}
+
+		List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+			calculateGroup);
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+		}
+		List<CalculateDto.RequestDetail> requestDetails = new ArrayList<>();
+		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		String travelName = travel.getTravelTitle();
+		LocalDateTime requestTime = calculateGroup.getCreateDate();
+		Long totalAmount = 0l;
+		String travelType = travel.getTravelType().toString();
+		for (GroupMember groupMember : groupMemberList) {
+			Long amount = 0l;
+			for (GroupPayment groupPayment : groupPaymentList) {
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+					groupPayment.getPaymentId(), groupMember.getMemberId());
+				if (memberPaymentOptional.isEmpty()) {
+					continue;
+				}
+				MemberPayment memberPayment = memberPaymentOptional.get();
+				amount += memberPayment.getAmount();
+
+			}
+			String status = "";
+			if (groupMember.getStatus()) {
+				status = "확인 완료";
+			} else {
+				status = "요청 중";
+			}
+			CalculateDto.RequestDetail requestDetail = CalculateDto.RequestDetail.of(groupMember.getMemberId(), status,
+				amount);
+			requestDetails.add(requestDetail);
+			totalAmount += amount;
+		}
+		CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetailRespDto = CalculateDto.GetRequestCalculateDetailRespDto.of(
+			travelType, travelName, requestTime, totalAmount, requestDetails
+		);
+		return getRequestCalculateDetailRespDto;
 	}
 }
 

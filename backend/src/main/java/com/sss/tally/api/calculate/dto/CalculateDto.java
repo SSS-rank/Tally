@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
+import com.sss.tally.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -97,15 +98,6 @@ public class CalculateDto {
 
 		@NotNull
 		private String content;
-	}
-
-	@NoArgsConstructor
-	@Getter
-	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class GetResponseCalculateDetailReqDto {
-		@NotNull
-		private String calculateGroupUuid;
-
 	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -233,6 +225,77 @@ public class CalculateDto {
 			return TransferDepositRespDto.builder()
 				.receiverName(receiverName)
 				.depositAmount(depositAmount)
+				.build();
+		}
+
+	}
+
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class GetRequestCalculateDetailReqDto {
+		@NotNull
+		private String calculateGroupUuid;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetRequestCalculateDetailRespDto {
+
+		private String travelType;
+
+		private String travelName;
+
+		private String requestDate;
+
+		private Long totalAmount;
+
+		private List<RequestDetail> requestDetails;
+
+		public static GetRequestCalculateDetailRespDto of
+			(String travelType, String travelName, LocalDateTime date, Long totalAmount,
+				List<RequestDetail> requestDetails) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String formattedTime = date.format(formatter);
+			return GetRequestCalculateDetailRespDto.builder()
+				.requestDetails(requestDetails)
+				.totalAmount(totalAmount)
+				.travelName(travelName)
+				.travelType(travelType)
+				.requestDate(formattedTime)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class RequestDetail {
+
+		private String memberName;
+
+		private String memberUuid;
+
+		private String memberProfile;
+
+		private Long amount;
+
+		private String status;
+
+		public static RequestDetail of(Member member, String status, Long amount) {
+			return RequestDetail.builder()
+				.memberName(member.getNickname())
+				.memberProfile(member.getProfileImage())
+				.status(status)
+				.amount(amount)
+				.memberUuid(member.getMemberUuid())
 				.build();
 		}
 

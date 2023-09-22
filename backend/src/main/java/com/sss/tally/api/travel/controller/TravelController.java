@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +25,9 @@ import lombok.RequiredArgsConstructor;
 public class TravelController {
 	private final TravelService travelService;
 	@PostMapping
-	public ResponseEntity<String> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
-		travelService.createTravel(authentication, travelCreateDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+	public ResponseEntity<TravelDto.TravelCreateRespDto> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
+		TravelDto.TravelCreateRespDto travel = travelService.createTravel(authentication, travelCreateDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(travel);
 	}
 
 	@GetMapping
@@ -34,9 +35,16 @@ public class TravelController {
 		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type, pageable));
 	}
 
-	@GetMapping("/day")
-	public ResponseEntity<Integer> getDay(Authentication authentication){
-		int day = travelService.getDay(authentication);
-		return ResponseEntity.status(HttpStatus.OK).body(day);
+	@GetMapping("/info")
+	public ResponseEntity<List<TravelDto.TravelNotStartDto>> getNotStartTravel(Authentication authentication){
+		List<TravelDto.TravelNotStartDto> notStartTravel = travelService.getNotStartTravel(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(notStartTravel);
+	}
+
+	@GetMapping("/{travelId}")
+	public ResponseEntity<TravelDto.TravelDetailDto> getTravelDetail(Authentication authentication, @PathVariable Long travelId){
+		TravelDto.TravelDetailDto travelDetail = travelService.getTravelDetail(authentication, travelId);
+		return ResponseEntity.status(HttpStatus.OK).body(travelDetail);
+
 	}
 }

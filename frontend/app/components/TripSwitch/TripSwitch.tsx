@@ -12,15 +12,15 @@ function TripSwitch({ selectionMode, setSelectionMode }: TripSwitchProp) {
 			<View style={styles.switchContainer}>
 				<TouchableOpacity
 					activeOpacity={1}
-					onPress={() => setSelectionMode('before')}
+					onPress={() => setSelectionMode('after')}
 					style={{
 						...styles.switchInner,
-						backgroundColor: selectionMode == 'before' ? '#91C0EB' : 'white',
+						backgroundColor: selectionMode == 'after' ? '#91C0EB' : 'white',
 					}}
 				>
 					<Text
 						style={{
-							color: selectionMode == 'before' ? 'white' : '#91C0EB',
+							color: selectionMode == 'after' ? 'white' : '#91C0EB',
 						}}
 					>
 						여행 전
@@ -44,15 +44,15 @@ function TripSwitch({ selectionMode, setSelectionMode }: TripSwitchProp) {
 				</TouchableOpacity>
 				<TouchableOpacity
 					activeOpacity={1}
-					onPress={() => setSelectionMode('end')}
+					onPress={() => setSelectionMode('before')}
 					style={{
 						...styles.switchInner,
-						backgroundColor: selectionMode == 'end' ? '#91C0EB' : 'white',
+						backgroundColor: selectionMode == 'before' ? '#91C0EB' : 'white',
 					}}
 				>
 					<Text
 						style={{
-							color: selectionMode == 'end' ? 'white' : '#91C0EB',
+							color: selectionMode == 'before' ? 'white' : '#91C0EB',
 						}}
 					>
 						여행 후

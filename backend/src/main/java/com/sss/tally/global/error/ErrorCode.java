@@ -10,6 +10,7 @@ public enum ErrorCode {
 	NOT_EXIST_EDIT_PERMISSION(HttpStatus.BAD_REQUEST, "001", "편집 및 삭제 권한은 결제자에게만 있습니다."),
 	NOT_EXIST_VIEW_PERMISSION(HttpStatus.BAD_REQUEST, "002", "열람할 권한이 없습니다."),
 	NOT_EXIST_DELETE_PERMISSION(HttpStatus.BAD_REQUEST, "003", "결제 완료 건은 삭제할 수 없습니다."),
+	NOT_EDIT_PERMISSION_PAYMENT(HttpStatus.BAD_REQUEST, "003", "정산 진행/완료 건은 수정할 수 없습니다."),
 
 	//알림,
 	FAIL_SEND_NOTIFICATION(HttpStatus.BAD_REQUEST, "001", "알림 전송이 실패했습니다."),
@@ -40,6 +41,7 @@ public enum ErrorCode {
 	ALREADY_CALCULATE_MEMBER(HttpStatus.BAD_REQUEST, "010", "이미 정산 확인한 사용자입니다."),
 	ALREADY_REJECT_COMPLETE(HttpStatus.BAD_REQUEST, "011", "정산 그룹이 반려이거나 정산 완료 된 상태입니다."),
 	PAYMENT_NOT_ONGOING(HttpStatus.BAD_REQUEST, "012", "결제가 정산 진행중 상태가 아닙니다"),
+	NOT_EXIST_GROUP_MEMBER(HttpStatus.BAD_REQUEST, "003", "정산에 포함된 인원 정보들이 없습니다"),
 	//결제
 	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다."),
 	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
@@ -58,6 +60,7 @@ public enum ErrorCode {
 	NOT_EXIST_TRAVEL(HttpStatus.BAD_REQUEST, "012", "존재하지 않는 여행입니다."),
 	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),
 	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
+	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "015", "존재하지 않는 국가입니다."),
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),

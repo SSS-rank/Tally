@@ -14,4 +14,6 @@ public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> 
 
 	@Query("SELECT tg.memberId.memberId FROM TravelGroup tg WHERE tg.travelId.travelId = :travelId")
 	List<Long> findMemberIdsByTravelId(Long travelId);
+	@Query("SELECT tg.memberId FROM TravelGroup tg WHERE tg.travelId.travelId = :travelId")
+	List<Member> findMembersByTravelId(Long travelId);
 }

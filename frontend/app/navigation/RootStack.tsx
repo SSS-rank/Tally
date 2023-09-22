@@ -37,26 +37,13 @@ function RootStack() {
 		return <SplashScreen />;
 	}
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			{userToken === null ? (
 				// No token found, user isn't signed in
-				<Stack.Screen
-					name="SignIn"
-					component={LoginScreen}
-					options={{
-						headerShown: false,
-					}}
-					initialParams={{ setUserToken }}
-				/>
+				<Stack.Screen name="SignIn" component={LoginScreen} initialParams={{ setUserToken }} />
 			) : (
 				// User is signed in
-				<Stack.Screen
-					name="MainTabs"
-					component={MainTabs}
-					options={{
-						headerShown: false,
-					}}
-				/>
+				<Stack.Screen name="MainTabs" component={MainTabs} />
 			)}
 		</Stack.Navigator>
 	);
