@@ -30,6 +30,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 		"AND MP.status = false ")
 	CalculateDto.Detail findDetail(@Param("payment") Payment payment, @Param("memberId") Member memberId);
 
+	List<Payment> findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDate(Travel travelId, Member memberId);
+
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalse(Travel travel, Member member);
 
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(Travel travel, Member member);

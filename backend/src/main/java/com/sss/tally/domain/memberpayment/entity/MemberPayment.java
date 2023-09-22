@@ -65,7 +65,15 @@ public class MemberPayment {
 			.paymentId(payment)
 			.build();
 	}
-
+	public static MemberPayment from(Member member, Payment payment, boolean status, int amount){
+		return MemberPayment.builder()
+			.paymentDate(payment.getPaymentKoreaDate())
+			.memberId(member)
+			.status(status)
+			.paymentId(payment)
+			.amount(amount)
+			.build();
+	}
 	public void updateStatus(boolean status){
 		this.status = status;
 	}
