@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Alert, Modal, Pressable } from 'react-native';
+import {
+	Text,
+	View,
+	StyleSheet,
+	TextInput,
+	Alert,
+	Modal,
+	Pressable,
+	FlatList,
+	TouchableOpacity,
+} from 'react-native';
 import { Button, Avatar } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import banApi from '../../api/banApi';
+import BankItem from '../../components/BankItem/BankItem';
+import { bankList } from '../../model/bank';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function AddAccountScreen({ navigation }: any) {
 	const [modalVisible, setModalVisible] = useState(false);
-	const [name, setName] = useState('');
+	const [accountNumber, setAccountNumber] = useState('');
+	const [bankCode, setBankCode] = useState('');
+	const [bankName, setBankName] = useState('');
+
 	const reset = () => {
-		setName('');
+		setAccountNumber('');
 	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).title }}>
@@ -22,20 +39,26 @@ function AddAccountScreen({ navigation }: any) {
 				본인인증을 위해 계좌 인증이 필요합니다.
 			</Text>
 			<View style={styles.sectionView}>
-				<Pressable onPress={() => setModalVisible(true)}>
-					<Text style={[TextStyles({ align: 'left', color: '#91C0EB' }).regular]}>
-						<MaterialCommunityIcons name="bank-outline" color={'#91C0EB'} size={24} />
-						은행 선택
-					</Text>
-				</Pressable>
+				<TouchableOpacity onPress={() => setModalVisible(true)} style={styles.bankSelectView}>
+					<MaterialCommunityIcons name="bank-outline" color={'#91C0EB'} size={24} />
+					<View style={styles.inputBox}>
+						<TextInput
+							style={styles.backSelectText}
+							value={bankName}
+							placeholder="은행을 선택해주세요"
+							readOnly={true}
+						/>
+					</View>
+				</TouchableOpacity>
+
 				<View style={styles.inputBox}>
 					<TextInput
 						style={{
 							...TextStyles({ align: 'left' }).regular,
 							flex: 1,
 						}}
-						value={name}
-						onChangeText={setName}
+						value={accountNumber}
+						onChangeText={setAccountNumber}
 						placeholder="계좌 번호"
 						keyboardType="number-pad"
 					/>
@@ -49,12 +72,7 @@ function AddAccountScreen({ navigation }: any) {
 					/>
 				</View>
 			</View>
-			<Button
-				mode="elevated"
-				buttonColor="#91C0EB"
-				textColor="white"
-				onPress={() => navigation.navigate('AuthAccount')}
-			>
+			<Button mode="elevated" buttonColor="#91C0EB" textColor="white">
 				다음
 			</Button>
 			<Modal
@@ -82,6 +100,19 @@ function AddAccountScreen({ navigation }: any) {
 							onPress={() => setModalVisible(!modalVisible)}
 						/>
 					</View>
+					<FlatList
+						data={bankList}
+						renderItem={({ item }) => (
+							<BankItem
+								bankName={item}
+								setBankName={setBankName}
+								setBankCode={setBankCode}
+								setModalVisible={setModalVisible}
+							/>
+						)}
+						numColumns={3}
+						style={styles.bankList}
+					/>
 				</View>
 			</Modal>
 		</View>
@@ -117,17 +148,14 @@ const styles = StyleSheet.create({
 		// width: '100%',
 	},
 	modalView: {
-		marginTop: '50%',
-		height: '100%',
-		// flex: 1,
+		bottom: 0,
+		height: '50%',
 		width: '100%',
-		alignSelf: 'stretch',
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		backgroundColor: 'white',
 		padding: 35,
 		position: 'absolute',
-		// alignItems: 'center',
 		shadowColor: '#000',
 		shadowOffset: {
 			width: 0,
@@ -136,8 +164,10 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5,
-
-		justifyContent: 'flex-start',
+		justifyContent: 'center',
+	},
+	bankList: {
+		marginTop: 40,
 	},
 	button: {
 		borderRadius: 20,
@@ -158,6 +188,16 @@ const styles = StyleSheet.create({
 	modalText: {
 		marginBottom: 15,
 		textAlign: 'center',
+	},
+	bankSelectView: {
+		flexDirection: 'row',
+		width: '100%',
+		alignItems: 'center',
+	},
+	backSelectText: {
+		...TextStyles({ align: 'left' }).regular,
+		marginLeft: 10,
+		width: '90%',
 	},
 });
 export default AddAccountScreen;
