@@ -123,6 +123,7 @@ public class PaymentServiceImpl implements PaymentService{
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(
 			paymentCardUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -169,6 +170,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuidAndStatusIsFalse(paymentMemoDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 
 		if(!memberPaymentRepository.existsByPaymentIdAndMemberIdAndStatusIsFalse(paymentOptional.get(), member))
@@ -196,6 +198,7 @@ public class PaymentServiceImpl implements PaymentService{
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(
 			paymentUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -305,6 +308,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentUuid);
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -326,6 +330,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(paymentUuid);
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 		Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(paymentOptional.get(), member);
 		if(memberPaymentOptional.isEmpty())
@@ -349,6 +354,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(removePaymentDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberUuid().equals(member.getMemberUuid()))
 			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
