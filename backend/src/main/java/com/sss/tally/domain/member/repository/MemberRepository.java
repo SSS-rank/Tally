@@ -19,6 +19,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findMemberByMemberUuidAndWithdrawalDateIsNull(String uuid);
 	Optional<Member> findByMemberUuid(String memberUuid);
 
+	Optional<Member> findMemberByMemberId(Long memberId);
+
 	@Query("SELECT m FROM Member m WHERE m.memberId IN "
 		+ "(SELECT tg.memberId FROM TravelGroup tg WHERE tg.travelId = :travelId)")
 	List<Member> findMembersInTravel(Travel travelId);

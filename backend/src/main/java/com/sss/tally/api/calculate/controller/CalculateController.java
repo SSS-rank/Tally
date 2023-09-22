@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,23 +35,34 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
-	@GetMapping("/request")
+	@GetMapping("/request/{travelId}")
 	public ResponseEntity<List<CalculateDto.GetRequestCalculateListRespDto>> getRequestCalculate(
-		@AuthenticationPrincipal Member member) {
+		@AuthenticationPrincipal Member member, @PathVariable Long travelId) {
 		String memberUuid = member.getMemberUuid();
 
 		List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculateListRespDto
-			= calculateGroupService.getRequestCalculate(memberUuid);
+			= calculateGroupService.getRequestCalculate(memberUuid, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateListRespDto);
 	}
 
-	@GetMapping("/receive")
-	public ResponseEntity<List<CalculateDto.GetResponseCalculateListRespDto>> getResponseCalculate(
+	@GetMapping("/request-detail")
+	public ResponseEntity<CalculateDto.GetRequestCalculateDetailRespDto> getRequestCalculateDetail(
+		@RequestBody CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto,
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
 
+		CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetailRespDto
+			= calculateGroupService.getRequestCalculateDetail(getRequestCalculateDetailReqDto, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateDetailRespDto);
+	}
+
+	@GetMapping("/receive/{travelId}")
+	public ResponseEntity<List<CalculateDto.GetResponseCalculateListRespDto>> getResponseCalculate(
+		@AuthenticationPrincipal Member member, @PathVariable Long travelId) {
+		String memberUuid = member.getMemberUuid();
+
 		List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculateListRespDtoList
-			= calculateGroupService.getResponseCalculate(memberUuid);
+			= calculateGroupService.getResponseCalculate(memberUuid, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(getResponseCalculateListRespDtoList);
 	}
 
@@ -67,10 +79,19 @@ public class CalculateController {
 
 	@PatchMapping("/rejection")
 	public ResponseEntity<String> rejectCalculate(
-		@RequestBody CalculateDto.CalculateRejectReqDto calculateCreateDto,
+		@RequestBody CalculateDto.CalculateRejectReqDto calculateRejectReqDto,
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
-		String result = calculateGroupService.rejectCalculate(calculateCreateDto, memberUuid);
+		String result = calculateGroupService.rejectCalculate(calculateRejectReqDto, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
+
+	@PostMapping("/accept")
+	public ResponseEntity<String> acceptCalculate(
+		@RequestBody CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+		String result = calculateGroupService.acceptCalculate(calculateAcceptReqDto, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

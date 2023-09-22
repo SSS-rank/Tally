@@ -24,13 +24,19 @@ import lombok.RequiredArgsConstructor;
 public class TravelController {
 	private final TravelService travelService;
 	@PostMapping
-	public ResponseEntity<String> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
-		travelService.createTravel(authentication, travelCreateDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+	public ResponseEntity<TravelDto.TravelCreateRespDto> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
+		TravelDto.TravelCreateRespDto travel = travelService.createTravel(authentication, travelCreateDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(travel);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<TravelDto>> getTravelList(Authentication authentication, @RequestParam("type")String type, Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type, pageable));
+	}
+
+	@GetMapping("/info")
+	public ResponseEntity<List<TravelDto.TravelNotStartDto>> getNotStartTravel(Authentication authentication){
+		List<TravelDto.TravelNotStartDto> notStartTravel = travelService.getNotStartTravel(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(notStartTravel);
 	}
 }
