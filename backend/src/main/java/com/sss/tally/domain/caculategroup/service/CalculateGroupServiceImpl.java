@@ -732,12 +732,80 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			);
 			requestDetailByMembers.add(requestDetailByMember);
 		}
-		
+
 		CalculateDto.GetRequestCalculateDetailByMemberRespDto getRequestCalculateDetailByMemberRespDto =
 			CalculateDto.GetRequestCalculateDetailByMemberRespDto.of(
 				member.getNickname(), totalAmount, requestDetailByMembers
 			);
 		return getRequestCalculateDetailByMemberRespDto;
+	}
+
+	@Override
+	public CalculateDto.GetCalculateFinalReceiptRespDto getCalculateFinalReceipt(String calculateGroupUuid,
+		String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(
+			memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		}
+		Member member = memberOptional.get();
+
+		Optional<CalculateGroup> calculateGroupOptional = calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
+			calculateGroupUuid);
+		if (calculateGroupOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
+		}
+		CalculateGroup calculateGroup = calculateGroupOptional.get();
+
+		List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
+			calculateGroup);
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
+		}
+		List<CalculateDto.MemberInfo> memberInfos = new ArrayList<>();
+		List<CalculateDto.FinalReceiptDetail> finalReceiptDetails = new ArrayList<>();
+
+		//그룹 멤버 리스트
+		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByCalculateGroupId(calculateGroup);
+		if (groupPaymentList.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_CALCULATE_MEMBER);
+		}
+		for (GroupMember groupMember : groupMemberList) {
+			Member memberOfGroup = groupMember.getMemberId();
+			CalculateDto.MemberInfo memberInfo = CalculateDto.MemberInfo.of(memberOfGroup.getNickname(),
+				memberOfGroup.getProfileImage());
+			memberInfos.add(memberInfo);
+		}
+		//결제자 넣기
+		String payerName = calculateGroup.getMemberId().getNickname();
+		CalculateDto.MemberInfo memberInfo = CalculateDto.MemberInfo.of(payerName,
+			calculateGroup.getMemberId().getProfileImage());
+		memberInfos.add(memberInfo);
+		//결제 리스트 별 결제정보 넣기
+		for (GroupPayment groupPayment : groupPaymentList) {
+			Payment payment = groupPayment.getPaymentId();
+			List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(
+				payment);
+			if (memberPaymentList.isEmpty()) {
+				throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
+			}
+			List<String> memberName = new ArrayList<>();
+			//결제자는 무조건 넣기
+			memberName.add(payerName);
+			for (MemberPayment memberPayment : memberPaymentList) {
+				memberName.add(memberPayment.getMemberId().getNickname());
+			}
+			CalculateDto.FinalReceiptDetail finalReceiptDetail = CalculateDto.FinalReceiptDetail.of(
+				payment.getPaymentName(), payment.getPaymentKoreaDate(), payment.getAmount(), memberName
+			);
+			finalReceiptDetails.add(finalReceiptDetail);
+		}
+		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		CalculateDto.GetCalculateFinalReceiptRespDto getCalculateFinalReceiptRespDto =
+			CalculateDto.GetCalculateFinalReceiptRespDto.of(
+				travel, finalReceiptDetails, memberInfos
+			);
+		return getCalculateFinalReceiptRespDto;
 	}
 }
 
