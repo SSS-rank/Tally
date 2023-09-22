@@ -9,6 +9,7 @@ import { useRecoilState } from 'recoil';
 import TripListItem from '../../components/TripListItem/TripListItem';
 import TripSwitch from '../../components/TripSwitch/TripSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TripListItemProps } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { ongoingTripListState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -18,15 +19,24 @@ type TripStackProp = NativeStackScreenProps<TripStackProps, 'TripList'>;
 function TripListScreen({ navigation }: TripStackProp) {
 	const [searchText, setSearchText] = useState('');
 	const [selectionMode, setSelectionMode] = useState('ongoing');
-	const [page, setPage] = useState(0);
+	const [ongoingPage, setOngoingPage] = useState(0);
 
 	const [ongoingListState, setOngoingListState] = useRecoilState(ongoingTripListState);
 	const api = useAxiosWithAuth();
 	useEffect(() => {
-		setPage(0);
+		console.log(selectionMode);
+		setBeforePage(0);
+		setOngoingPage(0);
+		setAfterPage(0);
 		setOngoingListState([]);
 		if (selectionMode === 'ongoing') {
 			getOngoingTripList();
+		} else if (selectionMode === 'after') {
+			// 다가오는 여행
+			getAfterTripList();
+		} else {
+			// 다녀온 여행
+			getBeforeTripList();
 		}
 	}, [selectionMode]);
 
@@ -34,7 +44,38 @@ function TripListScreen({ navigation }: TripStackProp) {
 		try {
 			// console.log(page);
 			// console.log(ongoingListState.length);
-			const res = await api.get(`/travel?type=ongoing&page=${page}&size=7&sort=createDate,DESC`);
+			const res = await api.get(
+				`/travel?type=ongoing&page=${ongoingPage}&size=7&sort=createDate,DESC`,
+			);
+
+			if (res.status === 200) {
+				// console.log(res.data);
+				const newData = res.data.map((trip: any) => ({
+					id: trip.travel_id,
+					title: trip.travel_title,
+					location: trip.travel_location,
+					type: trip.travel_type,
+					startDay: trip.start_date,
+					endDay: trip.end_date,
+					travelParticipants: trip.travel_participants,
+				}));
+				if (ongoingPage === 0) setOngoingListState(newData);
+				else setOngoingListState((prev) => prev.concat(newData));
+				setOngoingPage((prev) => prev + 1);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	// 다가오는 여행 리스트
+	const [afterTripList, setAfterTripList] = useState<TripListItemProps[]>([]);
+	const [afterPage, setAfterPage] = useState(0);
+	const getAfterTripList = async () => {
+		try {
+			// console.log(afterPage);
+			// console.log(ongoingListState.length);
+			const res = await api.get(`/travel?type=after&page=${afterPage}&size=7&sort=createDate,DESC`);
 
 			if (res.status === 200) {
 				// console.log(res.data);
@@ -46,9 +87,38 @@ function TripListScreen({ navigation }: TripStackProp) {
 					startDay: trip.start_date,
 					endDay: trip.end_date,
 				}));
-				if (page === 0) setOngoingListState(newData);
-				else setOngoingListState((prev) => prev.concat(newData));
-				setPage((prev) => prev + 1);
+				if (afterPage === 0) setAfterTripList(newData);
+				else setAfterTripList((prev) => prev.concat(newData));
+				setAfterPage((prev) => prev + 1);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	// 다녀온 여행 리스트
+	const [beforeTripList, setBeforeTripList] = useState<TripListItemProps[]>([]);
+	const [beforePage, setBeforePage] = useState(0);
+	const getBeforeTripList = async () => {
+		try {
+			// console.log(beforePage);
+			const res = await api.get(
+				`/travel?type=before&page=${beforePage}&size=7&sort=createDate,DESC`,
+			);
+
+			if (res.status === 200) {
+				// console.log(res.data);
+				const newData = res.data.map((trip: any) => ({
+					id: trip.travel_id,
+					title: trip.travel_title,
+					location: trip.travel_location,
+					type: trip.travel_type,
+					startDay: trip.start_date,
+					endDay: trip.end_date,
+				}));
+				if (beforePage === 0) setBeforeTripList(newData);
+				else setBeforeTripList((prev) => prev.concat(newData));
+				setBeforePage((prev) => prev + 1);
 			}
 		} catch (err) {
 			console.log(err);
@@ -84,18 +154,27 @@ function TripListScreen({ navigation }: TripStackProp) {
 					</View>
 				</View>
 			</TouchableOpacity>
-			{selectionMode === 'before' && (
+			{selectionMode === 'after' && (
 				<>
 					<Text style={styles.listTitle}>다가오는 여행</Text>
-					{/* {fakeTripListBefore.map((tripBefore, index) => (
-						<TripListItem
-							key={index}
-							title={tripBefore.title}
-							nationName={tripBefore.nationName}
-							date={tripBefore.date}
-							image={tripBefore.image}
-						/>
-					))} */}
+					<FlatList
+						data={afterTripList}
+						renderItem={({ item }) => (
+							<TripListItem
+								key={item.id}
+								id={item.id}
+								title={item.title}
+								location={item.location}
+								type={item.type}
+								startDay={item.startDay}
+								endDay={item.endDay}
+								navigation={navigation}
+							/>
+						)}
+						keyExtractor={(item) => item.id + ''}
+						onEndReached={getAfterTripList}
+						onEndReachedThreshold={0}
+					/>
 				</>
 			)}
 			{selectionMode === 'ongoing' && (
@@ -113,6 +192,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 								startDay={item.startDay}
 								endDay={item.endDay}
 								navigation={navigation}
+								travelParticipants={item.travelParticipants}
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}
@@ -121,18 +201,27 @@ function TripListScreen({ navigation }: TripStackProp) {
 					/>
 				</>
 			)}
-			{selectionMode === 'end' && (
+			{selectionMode === 'before' && (
 				<>
 					<Text style={styles.listTitle}>다녀온 여행</Text>
-					{/* {fakeTripListBefore.map((tripBefore, index) => (
-						<TripListItem
-							key={index}
-							title={tripBefore.title}
-							nationName={tripBefore.nationName}
-							date={tripBefore.date}
-							image={tripBefore.image}
-						/>
-					))} */}
+					<FlatList
+						data={beforeTripList}
+						renderItem={({ item }) => (
+							<TripListItem
+								key={item.id}
+								id={item.id}
+								title={item.title}
+								location={item.location}
+								type={item.type}
+								startDay={item.startDay}
+								endDay={item.endDay}
+								navigation={navigation}
+							/>
+						)}
+						keyExtractor={(item) => item.id + ''}
+						onEndReached={getBeforeTripList}
+						onEndReachedThreshold={0}
+					/>
 				</>
 			)}
 			<View style={styles.switchView}>

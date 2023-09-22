@@ -219,7 +219,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			return getRequestCalculateListRespDtoList;
 		}
 		for (CalculateGroup calculateGroup : calculateGroupList) {
-			Long amount = 0l;
+			Long amount = 0L;
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
 				calculateGroup, travel);
 			if (groupPaymentList.isEmpty()) {
@@ -265,7 +265,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		Travel travel = travelOptional.get();
 		//해당 그룹에 속한 결제건들을 전부 가져오고 해당 결제건 중 로그인 사용자가 지불 해야 할 돈만 가져오기
 		for (GroupMember groupMember : groupMemberList) {
-			Long amount = 0l;
+			Long amount = 0L;
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
 				groupMember.getCalculateGroupId(), travel);
 			if (groupPaymentList.isEmpty()) {
@@ -398,7 +398,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
-		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid) {
+		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -409,7 +409,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getResponseCalculateDetailReqDto.getCalculateGroupUuid());
+				calculateGroupUuid);
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
@@ -425,7 +425,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
 		String travelName = travel.getTravelTitle();
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
-		Long totalAmount = 0l;
+		Long totalAmount = 0L;
 		String travelType = travel.getTravelType().toString();
 		List<CalculateDto.Detail> detailList = new ArrayList<>();
 
@@ -624,7 +624,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
-		CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto, String memberUuid) {
+		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -635,7 +635,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getRequestCalculateDetailReqDto.getCalculateGroupUuid());
+				calculateGroupUuid);
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}

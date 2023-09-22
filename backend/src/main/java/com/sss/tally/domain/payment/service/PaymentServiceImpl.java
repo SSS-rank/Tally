@@ -98,9 +98,14 @@ public class PaymentServiceImpl implements PaymentService{
 			Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
 			if(optionalMember.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-			memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0));
+			memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
 		}
+		if(paymentManualDto.getPaymentParticipants().size() == 0)
+			throw new PaymentException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		if(paymentManualDto.getPaymentParticipants().size() > 1)
+			save.updateCalculateStatusEnum(CalculateStatusEnum.BEFORE);
 
 		for(MemberPaymentDto.MemberPaymentCreateDto participant :paymentManualDto.getPaymentParticipants()){
 			Optional<Member> partOptional = memberRepository.findByMemberUuid(participant.getMemberUuid());
@@ -124,18 +129,30 @@ public class PaymentServiceImpl implements PaymentService{
 			paymentCardUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
 
 		paymentOptional.get().updatePaymentAuto(paymentCardUpdateDto, categoryOptional.get());
 
+		if(paymentCardUpdateDto.getPaymentParticipants().size() == 0)
+			throw new PaymentException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		if(paymentCardUpdateDto.getPaymentParticipants().size() == 1)
+			paymentOptional.get().updateCalculateStatusEnum(CalculateStatusEnum.NONE);
+
+		if(paymentCardUpdateDto.getPaymentParticipants().size() > 1)
+			paymentOptional.get().updateCalculateStatusEnum(CalculateStatusEnum.BEFORE);
+
 		List<MemberPayment> participants = memberPaymentRepository.findMemberPaymentsByPaymentId_PaymentUuid(paymentCardUpdateDto.getPaymentUuid());
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateMemberPayment(0, true);
+			participant.updateMemberPayment(0L, true);
 		}
+
 		if(!paymentCardUpdateDto.isVisible()) {
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
 			memberPaymentOptional.get().updateMemberPayment(paymentOptional.get().getAmount(), false);
@@ -199,6 +216,8 @@ public class PaymentServiceImpl implements PaymentService{
 			paymentUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -209,17 +228,32 @@ public class PaymentServiceImpl implements PaymentService{
 		paymentOptional.get().updatePayment(paymentUpdateDto.getAmount(), paymentUpdateDto.getRatio(), paymentUnitOptional.get(), categoryOptional.get(), dateTime,
 			paymentUpdateDto.getMemo(), paymentUpdateDto.isVisible(), paymentUpdateDto.getTitle());
 
+		if(paymentUpdateDto.getPaymentParticipants().size() == 0)
+			throw new PaymentException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		if(paymentUpdateDto.getPaymentParticipants().size() == 1)
+			paymentOptional.get().updateCalculateStatusEnum(CalculateStatusEnum.NONE);
+
+		if(paymentUpdateDto.getPaymentParticipants().size() > 1)
+			paymentOptional.get().updateCalculateStatusEnum(CalculateStatusEnum.BEFORE);
+
 		List<MemberPayment> participants = memberPaymentRepository.findMemberPaymentsByPaymentId_PaymentUuid(paymentUpdateDto.getPaymentUuid());
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateMemberPayment(0, true);
+			participant.updateMemberPayment(0L, true);
 		}
 		if(!paymentUpdateDto.isVisible()) {
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
 			memberPaymentOptional.get().updateMemberPayment(paymentUpdateDto.getAmount(), false);
 			return;
 		}
+		if(paymentUpdateDto.getPaymentParticipants().size() == 0)
+			throw new PaymentException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		if(paymentUpdateDto.getPaymentParticipants().size() > 1)
+			paymentOptional.get().updateCalculateStatusEnum(CalculateStatusEnum.BEFORE);
+
 		int total = 0;
 		for(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto: paymentUpdateDto.getPaymentParticipants()){
 			total += memberPaymentCreateDto.getAmount();
@@ -283,7 +317,7 @@ public class PaymentServiceImpl implements PaymentService{
 						if(optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
 							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
 						else
-							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0));
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
 					}
 				}
@@ -291,7 +325,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		}
 
-		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDate(travelOptional.get(), member);
+		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travelOptional.get(), member);
 		return payments.stream()
 			.map(
 					payment -> {
@@ -355,12 +389,12 @@ public class PaymentServiceImpl implements PaymentService{
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(removePaymentDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberUuid().equals(member.getMemberUuid()))
 			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
 
-		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER))
-			throw new PaymentException(ErrorCode.NOT_EXIST_DELETE_PERMISSION);
 		paymentOptional.get().updateStatus(true);
 	}
 }

@@ -1,11 +1,13 @@
 package com.sss.tally.api.travel.dto;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.api.member.dto.MemberDto;
+import com.sss.tally.api.payment.dto.PaymentDto;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.travel.entity.Travel;
 
@@ -110,6 +112,39 @@ public class TravelDto {
 				.memberUuid(member.getMemberUuid())
 				.travelLocation(travelLocation)
 				.travelType(travelType)
+				.build();
+		}
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class TravelDetailDto {
+		private Long travelId;
+		private String travelTitle;
+		private String travelLocation;
+		private String travelPeriod;
+
+		private Long totalAmount;
+
+		private List<MemberDto.MemberTravelDto> participants;
+
+		private List<PaymentDto.PaymentListDto> paymentList;
+
+		public static TravelDetailDto of(Travel travel, List<PaymentDto.PaymentListDto> paymentListDtos, Long totalAmount, String travelLocation, List<MemberDto.MemberTravelDto> memberTravelDtos){
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String dateStart = travel.getStartDate().format(dateTimeFormatter);
+			String dateEnd = travel.getEndDate().format(dateTimeFormatter);
+			return TravelDetailDto.builder()
+				.totalAmount(totalAmount)
+				.travelTitle(travel.getTravelTitle())
+				.travelId(travel.getTravelId())
+				.travelPeriod(dateStart+"~"+dateEnd)
+				.travelLocation(travelLocation)
+				.paymentList(paymentListDtos)
+				.participants(memberTravelDtos)
 				.build();
 		}
 	}

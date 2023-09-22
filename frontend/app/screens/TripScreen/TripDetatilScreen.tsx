@@ -1,43 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Button, Text } from 'react-native-paper';
+import { Button, Chip, Text } from 'react-native-paper';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
-import { PaymentStackProps } from '../../navigation/PaymentStack';
+import { Payment } from '../../model/payment';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
-	interface OrderTypeSelectItem {
-		label: string;
-		value: string;
-	}
+	const [payData, setPayData] = useState<Payment[]>([]);
 	const currentDate = new Date();
+	const [modalVisible, setModalVisible] = useState(false);
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
-	const { id, title, location, type, startDay, endDay } = route.params || {};
-	const [openOrderType, setOpenOrderType] = useState(false);
-	const [orderType, setOrderType] = useState('오래된 순');
-	const [orderTypeItems, setOrderTypeItems] = useState<OrderTypeSelectItem[]>([
-		{
-			label: '최신순',
-			value: '최신순',
-		},
-		{
-			label: '오래된 순',
-			value: '오래된 순',
-		},
-	]);
+	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
+	const [orderType, setOrderType] = useState('최신순');
+
+	useFocusEffect(
+		React.useCallback(() => {
+			setPayData([]);
+			const fetchData = async () => {
+				try {
+					const res = await api.get(`/payment/${id}`);
+
+					if (res.status === 200) {
+						const payList = res.data;
+						console.log(payList);
+
+						setPayData((prevPayData) => [...prevPayData, ...payList]);
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			};
+
+			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
+		}, []),
+	);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<View style={styles.header}>
 				<Icon name="chevron-left" size={50} color="black" />
 				<View style={styles.header_button_group}>
@@ -97,10 +108,10 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				</Button>
 			</View>
 			<View style={styles.center_box}>
-				<Text style={[TextStyles().small, styles.end_date]}>
-					현재 날짜: {year}-{month}-{day}
+				<Text style={[TextStyles().medium, styles.end_date]}>
+					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={[TextStyles().header, styles.balance]}>500,00원</Text>
+				<Text style={[TextStyles().header, styles.balance]}>0원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
@@ -108,7 +119,17 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					style={styles.button}
 					labelStyle={TextStyles().regular}
 					mode="text"
-					onPress={() => navigation.navigate('AddPayment')}
+					onPress={() =>
+						navigation.navigate('AddPayment', {
+							id,
+							title,
+							location,
+							type,
+							startDay,
+							endDay,
+							travelParticipants,
+						})
+					}
 				>
 					내역 추가
 				</Button>
@@ -121,74 +142,119 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					정산
 				</Button>
 			</View>
-			<DropDownPicker
-				open={openOrderType}
-				value={orderType}
-				items={orderTypeItems}
-				setOpen={setOpenOrderType}
-				setValue={setOrderType}
-				setItems={setOrderTypeItems}
-				textStyle={TextStyles().small}
-				placeholder={orderType}
-				style={styles.selectInput}
-			/>
-			<ScrollView>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.detail_item_box}>
-					<Text>여행 준비</Text>
-					<DetailListItem
-						title={'런던 센텀 호텔'}
-						time={'21:17'}
-						balance={300000}
-						party={'김싸피, 이싸피, 김호피'}
-						abroad={false}
-					/>
-				</TouchableOpacity>
-			</ScrollView>
-		</View>
+
+			<View style={styles.order_button}>
+				<Button onPress={() => setModalVisible(!modalVisible)}>{orderType}</Button>
+			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(!modalVisible)}
+				/>
+				<View style={styles.modalView}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+							정렬
+						</Text>
+						<Icon
+							name="close"
+							size={32}
+							color={'#666666'}
+							onPress={() => setModalVisible(!modalVisible)}
+						/>
+					</View>
+					<View style={styles.order_type_container}>
+						<Button
+							style={styles.order_type}
+							mode="elevated"
+							buttonColor="#91C0EB"
+							textColor="white"
+							onPress={() => {
+								setOrderType('최신순');
+								setModalVisible(!modalVisible);
+							}}
+						>
+							최신순
+						</Button>
+
+						<Button
+							style={styles.order_type}
+							mode="elevated"
+							buttonColor="#91C0EB"
+							textColor="white"
+							onPress={() => {
+								setOrderType('오래된 순');
+								setModalVisible(!modalVisible);
+							}}
+						>
+							오래된 순
+						</Button>
+					</View>
+				</View>
+			</Modal>
+
+			{payData.map((item) => (
+				<View key={item.payment_uuid}>
+					<TouchableOpacity style={styles.detail_item_box}>
+						<Text>{item.payment_date.split('일 ')[0]}일</Text>
+						<DetailListItem
+							title={item.payment_memo}
+							time={item.payment_date.split(' ')[3]}
+							balance={item.amount}
+							party={item.participants ? item.participants.join(',') : ''}
+							abroad={false}
+							calculateStatus={item.calculate_status}
+						/>
+					</TouchableOpacity>
+				</View>
+			))}
+		</ScrollView>
 	);
 }
 
 const styles = StyleSheet.create({
+	order_type: {
+		width: 350,
+		padding: 10,
+		margin: 10,
+	},
+	order_type_container: {
+		padding: 50,
+		alignItems: 'center',
+	},
+	modalView: {
+		marginTop: '100%',
+		height: '100%',
+		// flex: 1,
+		width: '100%',
+		alignSelf: 'stretch',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		// alignItems: 'center',
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+	},
+	order_button: {
+		flexDirection: 'row',
+	},
 	container: {
 		flexDirection: 'column',
 		paddingTop: 10,
