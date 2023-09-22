@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.api.member.dto.MemberDto;
+import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.travel.entity.Travel;
 
 import lombok.AllArgsConstructor;
@@ -51,5 +52,37 @@ public class TravelDto {
 		private String travelType;
 		private String startDate;
 		private String endDate;
+	}
+
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class TravelCreateRespDto{
+		private Long travelId;
+		private String travelTitle;
+		private String travelLocation;
+		private String travelType;
+		private String profileImage;
+		private String profileNickname;
+		private String memberUuid;
+		private LocalDate startDate;
+		private LocalDate endDate;
+
+		public static TravelCreateRespDto of(Travel travel, String travelLocation, String travelType, Member member){
+			return TravelCreateRespDto.builder()
+				.travelId(travel.getTravelId())
+				.travelTitle(travel.getTravelTitle())
+				.startDate(travel.getStartDate())
+				.endDate(travel.getEndDate())
+				.profileImage(member.getProfileImage())
+				.profileNickname(member.getNickname())
+				.memberUuid(member.getMemberUuid())
+				.travelLocation(travelLocation)
+				.travelType(travelType)
+				.build();
+		}
 	}
 }
