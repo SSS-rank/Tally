@@ -182,15 +182,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public String oneTransfer(long memberId, TransferDto.OnetransferReqDto onetransferReqDto) throws
+	public String oneTransfer(TransferDto.OnetransferReqDto onetransferReqDto) throws
 		NoSuchAlgorithmException {
-
-		// 회원 검증
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
-
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
 
 		// 계좌 검증
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
@@ -226,13 +219,8 @@ public class TransferServiceImpl implements TransferService {
 	}
 
 	@Override
-	public String oneTransferVerify(long memberId, TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberId(memberId);
+	public String oneTransferVerify(TransferDto.OnetransferVerifyReqDto onetransferVerifyReqDto) {
 
-		// 회원 검증
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
 		// 1원 이체 예금주 검증
 		String redisCode = redisService.getValues(String.valueOf(onetransferVerifyReqDto.getAccountNum()));
 		if (onetransferVerifyReqDto.getCode().equals(redisCode)) {

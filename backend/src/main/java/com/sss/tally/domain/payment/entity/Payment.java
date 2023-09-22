@@ -112,7 +112,9 @@ public class Payment {
 			.status(false)
 			.build();
 	}
-
+	public void updateStatus(boolean status){
+		this.status = status;
+	}
 	public void updateCalculateStatusEnum(CalculateStatusEnum calculateStatus) {
 		this.calculateStatus = calculateStatus;
 	}
