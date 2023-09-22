@@ -9,7 +9,7 @@ export interface TripListItemProps {
 	type: string; // 여행지 이름
 	startDay: string;
 	endDay: string;
-	navigation?: NativeStackScreenProps<TripStackProps, 'TripDetail'>;
+	navigation: NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 }
 
 export interface TripInfo {
