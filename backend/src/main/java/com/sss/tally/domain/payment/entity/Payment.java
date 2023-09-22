@@ -53,7 +53,7 @@ public class Payment {
 	private Category categoryId;
 
 	@Column(nullable = false)
-	private int amount;
+	private Long amount;
 
 	@Column(nullable = false)
 	private Double ratio;
@@ -123,7 +123,7 @@ public class Payment {
 		this.paymentMemo = memo;
 	}
 
-	public void updatePayment(int amount, Double ratio, PaymentUnit paymentUnitId, Category category, LocalDateTime paymentDateTime, String memo, boolean visible, String title){
+	public void updatePayment(Long amount, Double ratio, PaymentUnit paymentUnitId, Category category, LocalDateTime paymentDateTime, String memo, boolean visible, String title){
 		this.paymentName = title;
 		this.amount = amount;
 		this.ratio = ratio;

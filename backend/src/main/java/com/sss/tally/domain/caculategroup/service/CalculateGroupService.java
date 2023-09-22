@@ -14,10 +14,10 @@ public interface CalculateGroupService {
 	String rejectCalculate(CalculateDto.CalculateRejectReqDto calculateRejectReqDto, String memberUuid);
 
 	CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
-		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid);
+		String calculateGroupUuid, String memberUuid);
 
 	String acceptCalculate(CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto, String memberUuid);
 
 	CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
-		CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto, String memberUuid);
+		String calculateGroupUuid, String memberUuid);
 }
