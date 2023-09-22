@@ -66,7 +66,7 @@ public class MemberServiceImpl implements MemberService{
 				.orElseThrow(()->new MemberException(ErrorCode.NOT_EXIST_MEMBER));
 
 		String imageSrc;
-		if(!file.isEmpty())
+		if(file!=null)
 			imageSrc = s3Uploader.upload(file);
 		else
 			imageSrc = member.getProfileImage();
