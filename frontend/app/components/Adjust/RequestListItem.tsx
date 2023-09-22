@@ -29,36 +29,12 @@ type ItemData = {
 	receiver_name?: string;
 };
 
-const DATA: ItemData[] = [
-	{
-		calculate_group_uuid: '1',
-		created_time: '09-23',
-		amount: 13000,
-		status: '진행중',
-	},
-	{
-		calculate_group_uuid: '2',
-		created_time: '09-23',
-		amount: 15000,
-		status: '진행중',
-	},
-	{
-		calculate_group_uuid: '3',
-		created_time: '09-23',
-		amount: 17000,
-		status: '진행중',
-	},
-];
-
 type ItemProps = {
 	item: ItemData;
 	navigation: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'> | undefined;
 };
 
 const Item = ({ item, navigation }: ItemProps) => (
-	// <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
-	// 	<Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
-	// </TouchableOpacity>
 	<TouchableOpacity
 		style={{
 			flexDirection: 'row',
@@ -116,14 +92,6 @@ const RequestListItem = ({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	},
-	item: {
-		padding: 20,
-		marginVertical: 8,
-		marginHorizontal: 16,
-	},
-	title: {
-		// fontSize: 32,
 	},
 });
 
