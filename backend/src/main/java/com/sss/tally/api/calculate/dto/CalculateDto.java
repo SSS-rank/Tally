@@ -301,4 +301,55 @@ public class CalculateDto {
 
 	}
 
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetRequestCalculateDetailByMemberRespDto {
+
+		private String memberName;
+
+		private Long totalAmount;
+
+		private List<RequestDetailByMember> requestDetailsByMember;
+
+		public static GetRequestCalculateDetailByMemberRespDto of
+			(String memberName, Long totalAmount, List<RequestDetailByMember> requestDetailsByMember) {
+			return GetRequestCalculateDetailByMemberRespDto.builder()
+				.memberName(memberName)
+				.requestDetailsByMember(requestDetailsByMember)
+				.totalAmount(totalAmount)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class RequestDetailByMember {
+
+		private String paymentName;
+
+		private LocalDateTime paymentDate;
+
+		private Long myAmount;
+
+		private Long allAmount;
+
+		public static RequestDetailByMember of(String paymentName, LocalDateTime paymentDate, Long myAmount,
+			Long allAmount) {
+			return RequestDetailByMember.builder()
+				.paymentName(paymentName)
+				.paymentDate(paymentDate)
+				.myAmount(myAmount)
+				.allAmount(allAmount)
+				.build();
+		}
+
+	}
+
 }
