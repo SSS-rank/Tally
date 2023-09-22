@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-	FlatList,
-	SafeAreaView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-} from 'react-native';
+import { FlatList, SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,11 +7,9 @@ import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-naviga
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
-// type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'AdjustTrip'>;
-
 type TripDetailScreenProps = {
 	navigation?: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'>;
-	route?: RouteProp<TripStackProps, 'SendAdjust'>;
+	route?: RouteProp<TripStackProps, 'GetAdjust'>;
 };
 
 type ItemData = {
@@ -28,7 +19,6 @@ type ItemData = {
 	status: string;
 	receiver_name?: string;
 };
-
 type ItemProps = {
 	item: ItemData;
 	navigation: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'> | undefined;
@@ -44,25 +34,29 @@ const Item = ({ item, navigation }: ItemProps) => (
 			marginTop: 20,
 			paddingHorizontal: 10,
 		}}
-		onPress={() => {
-			console.log(navigation);
-			navigation?.navigate('SendAdjust');
-		}}
+		onPress={() => navigation?.navigate('GetAdjust')}
 	>
-		<Text style={TextStyles().regular}>{item.created_time}</Text>
-		<Text
-			style={{
-				...TextStyles({ align: 'right' }).title,
-				flex: 1,
-				lineHeight: 60,
-			}}
-		>
-			{item.amount}원
-		</Text>
+		<Text style={{ ...TextStyles({ align: 'left' }).regular }}>{item.created_time}</Text>
+		<View style={{ flex: 1 }}>
+			<Text
+				style={{
+					...TextStyles({ align: 'right' }).title,
+				}}
+			>
+				-{item.amount}원
+			</Text>
+			<Text
+				style={{
+					...TextStyles({ align: 'right', color: '666666' }).small,
+				}}
+			>
+				요청자 {item.receiver_name}
+			</Text>
+		</View>
 	</TouchableOpacity>
 );
 
-const RequestListItem = ({
+const ResponseListItem = ({
 	data,
 	navigation,
 	route,
@@ -93,6 +87,14 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
+	item: {
+		padding: 20,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
+	title: {
+		// fontSize: 32,
+	},
 });
 
-export default RequestListItem;
+export default ResponseListItem;

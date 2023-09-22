@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import RequestListItem from '../../components/Adjust/RequestListItem';
+import ResponseListItem from '../../components/Adjust/ResponseListItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import DashLine from '../../components/DashLine';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -18,9 +19,9 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 	const [isSend, setIsSend] = useState(true);
 
 	const [requestItems, setReqeustItems] = useState<adjustListItem[]>([]);
+	const [responseItems, setResponseItems] = useState<adjustListItem[]>([]);
 
 	const onSelectSwitch = (index: any) => {
-		// Alert.alert('Selected index: ' + index);
 		if (index == 2) setIsSend(false);
 		else setIsSend(true);
 	};
@@ -54,6 +55,8 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 			console.log(tripId);
 			if (res.status === 200) {
 				console.log(res.data);
+				setResponseItems(res.data);
+				console.log(responseItems);
 			}
 		} catch (err) {
 			console.log(err);
@@ -78,7 +81,7 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 					<DashLine />
 					<View style={{ flexGrow: 1 }}>
-						<RequestListItem navigation={navigation} test={requestItems} />
+						<RequestListItem navigation={navigation} data={requestItems} />
 					</View>
 				</>
 			) : (
@@ -97,39 +100,7 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 					<DashLine />
 					<View style={{ flexGrow: 1 }}>
-						<TouchableOpacity
-							style={{
-								flexDirection: 'row',
-								backgroundColor: '#F6F6F6',
-								alignItems: 'center',
-								height: 80,
-								marginTop: 20,
-								paddingHorizontal: 10,
-								// alignSelf: 'center',
-								// alignContent: 'center',
-								// borderBottomColor: '#D6D6D6',
-								// borderBottomWidth: 0.5,
-							}}
-							onPress={() => navigation.navigate('GetAdjust', { adjustId: 1 })}
-						>
-							<Text style={{ ...TextStyles({ align: 'left' }).regular }}>23.09.01</Text>
-							<View style={{ flex: 1 }}>
-								<Text
-									style={{
-										...TextStyles({ align: 'right' }).title,
-									}}
-								>
-									-200,000원
-								</Text>
-								<Text
-									style={{
-										...TextStyles({ align: 'right', color: '666666' }).small,
-									}}
-								>
-									요청자 최싸피
-								</Text>
-							</View>
-						</TouchableOpacity>
+						<ResponseListItem navigation={navigation} data={responseItems} />
 					</View>
 				</>
 			)}
