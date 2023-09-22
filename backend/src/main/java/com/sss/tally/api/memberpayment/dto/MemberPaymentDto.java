@@ -2,8 +2,8 @@ package com.sss.tally.api.memberpayment.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class MemberPaymentDto {
 					.nickname(memberPayment.getMemberId().getNickname())
 					.nickname(memberPayment.getMemberId().getNickname())
 					.profileImage(memberPayment.getMemberId().getProfileImage())
-					.with(memberPayment.getStatus())
+					.with(!memberPayment.getStatus())
 					.payer(payer)
 					.build();
 		}
