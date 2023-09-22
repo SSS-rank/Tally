@@ -31,11 +31,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			const fetchData = async () => {
 				try {
 					const res = await api.get(`/payment/${id}`);
-
 					if (res.status === 200) {
 						const payList = res.data;
 						console.log(payList);
-
 						setPayData((prevPayData) => [...prevPayData, ...payList]);
 					}
 				} catch (err) {
@@ -56,7 +54,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						style={styles.button}
 						mode="text"
 						labelStyle={TextStyles().regular}
-						onPress={() => console.log('Pressed')}
+						onPress={() => navigation.navigate('AdjustTrip', { tripId: id })}
 					>
 						정산 현황
 					</Button>
