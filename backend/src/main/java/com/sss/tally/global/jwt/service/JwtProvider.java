@@ -1,6 +1,7 @@
 package com.sss.tally.global.jwt.service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,9 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.AuthenticationException;
+import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.jwt.constant.GrantType;
 import com.sss.tally.global.jwt.constant.TokenType;
 import com.sss.tally.global.jwt.dto.JwtTokenDto;
@@ -112,6 +115,12 @@ public class JwtProvider {
 	public Authentication getAuthentication(String token){
 		Claims claims = this.getTokenClaims(token);
 		String memberUuid = (String)claims.get("memberUuid");
+		Member member = memberRepository.findByMemberUuid(memberUuid)
+			.orElseThrow(()->new MemberException(ErrorCode.NOT_EXIST_MEMBER));
+		if(member.getWithdrawalDate()!=null && member.getWithdrawalDate().isBefore(LocalDateTime.now())){
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+
 		UserDetails userDetails = memberRepository.findMemberByMemberUuid(memberUuid);
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
