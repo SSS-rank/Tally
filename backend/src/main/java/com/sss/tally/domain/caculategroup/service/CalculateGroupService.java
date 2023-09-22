@@ -20,4 +20,7 @@ public interface CalculateGroupService {
 
 	CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
 		String calculateGroupUuid, String memberUuid);
+
+	CalculateDto.GetRequestCalculateDetailByMemberRespDto getRequestCalculateDetailByMember(String calculateGroupUuid,
+		String memberUuid, String loginMemberUuid);
 }
