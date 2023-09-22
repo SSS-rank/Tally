@@ -398,7 +398,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
-		CalculateDto.GetResponseCalculateDetailReqDto getResponseCalculateDetailReqDto, String memberUuid) {
+		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -409,7 +409,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getResponseCalculateDetailReqDto.getCalculateGroupUuid());
+				calculateGroupUuid);
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
@@ -624,7 +624,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
-		CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto, String memberUuid) {
+		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -635,7 +635,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//payment들 가져오기
 		Optional<CalculateGroup> calculateGroupOptional =
 			calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
-				getRequestCalculateDetailReqDto.getCalculateGroupUuid());
+				calculateGroupUuid);
 		if (calculateGroupOptional.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_VALID_CALCULATE_UUID);
 		}
