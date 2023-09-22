@@ -124,6 +124,8 @@ public class PaymentServiceImpl implements PaymentService{
 			paymentCardUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -199,6 +201,8 @@ public class PaymentServiceImpl implements PaymentService{
 			paymentUpdateDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberId().equals(member.getMemberId()))
 			throw new BusinessException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
@@ -355,12 +359,12 @@ public class PaymentServiceImpl implements PaymentService{
 		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuid(removePaymentDto.getPaymentUuid());
 		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
 		if(paymentOptional.get().getStatus()) throw new PaymentException(ErrorCode.DELETE_PAYMENT);
+		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER) || paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.ONGOING))
+			throw new PaymentException(ErrorCode.NOT_EDIT_PERMISSION_PAYMENT);
 
 		if(!paymentOptional.get().getMemberId().getMemberUuid().equals(member.getMemberUuid()))
 			throw new PaymentException(ErrorCode.NOT_EXIST_EDIT_PERMISSION);
 
-		if(paymentOptional.get().getCalculateStatus().equals(CalculateStatusEnum.AFTER))
-			throw new PaymentException(ErrorCode.NOT_EXIST_DELETE_PERMISSION);
 		paymentOptional.get().updateStatus(true);
 	}
 }
