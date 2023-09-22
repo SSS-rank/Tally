@@ -31,12 +31,12 @@ public class MemberDto {
 
 	@Getter
 	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class MemberReqDto{
 		@NotNull
 		private String nickname;
-		@NotNull
-		private String profileImage;
 	}
 
 	@Getter

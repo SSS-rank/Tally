@@ -8,7 +8,9 @@ interface partyItemprops {
 	name: string;
 	img: AvatarImageSource;
 	self: boolean;
+	involveCheck: boolean;
 	onAmountChange: (amount: string) => void;
+	onInvolveChange: (involveCheck: boolean) => void;
 }
 function PartyListItem(props: partyItemprops) {
 	const [payCheck, setPayCheck] = useState(false);
@@ -17,6 +19,9 @@ function PartyListItem(props: partyItemprops) {
 	const handleAmountChange = (input: string) => {
 		setAmount(input); // 입력값 업데이트
 		props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
+	};
+	const handleInVolveChange = () => {
+		props.onInvolveChange(!involveCheck);
 	};
 	return (
 		<View style={styles.partyItem}>
@@ -29,7 +34,7 @@ function PartyListItem(props: partyItemprops) {
 				<TextInput
 					value={amount}
 					onChangeText={(input) => {
-						setAmount(input);
+						handleAmountChange(input);
 					}}
 					returnKeyType="next"
 					style={[styles.textInput, props.self ? { color: 'gray' } : null]}
@@ -51,6 +56,7 @@ function PartyListItem(props: partyItemprops) {
 					style={{ marginLeft: 5 }}
 					onPress={() => {
 						setInvolveCheck(!involveCheck);
+						handleInVolveChange();
 					}}
 				/>
 			</View>

@@ -51,12 +51,14 @@ public class AccountDto {
 		private String bankCode;
 		private String bankName;
 		private Long balance;
+		private Boolean representativeAccount;
 		public static AccountRespDto of(Account account, Long balance, String bankName){
 			return AccountRespDto.builder()
 				.accountNumber(account.getAccountNumber())
 				.bankCode(account.getBankCode())
 				.bankName(bankName)
 				.balance(balance)
+				.representativeAccount(account.getRepresentativeAccount())
 				.build();
 		}
 	}

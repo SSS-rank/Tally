@@ -29,3 +29,10 @@ export interface DirectPayMember {
 	amount: number;
 	member_uuid: string;
 }
+export interface SelectPayMember {
+	amount: number;
+	member_uuid: string;
+	checked: boolean;
+	member_nickname: string;
+	image: string;
+}

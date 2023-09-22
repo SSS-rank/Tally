@@ -11,7 +11,7 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayMember, DirectPayReq } from '../../model/payment';
+import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -27,8 +27,7 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 
-	const [partyMembers, setPartyMembers] = useState<DirectPayMember[]>([]); // 결제 멤버
-	const [participants, setParticipants] = useState<TripMember[]>([]); // 여행 참여 멤버
+	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 	const [directPayReq, setDirectPayReq] = useState<DirectPayReq>({
 		amount: 0,
 		category: 0,
@@ -52,14 +51,15 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		setDate(new Date());
 		setOpen(false);
 		const { id, type, title, travelParticipants } = route.params;
-		setParticipants(travelParticipants);
 		const directPayMembers = travelParticipants.map((member: TripMember) => ({
 			amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
 			member_uuid: member.member_uuid,
+			checked: false,
+			member_nickname: member.member_nickname,
+			image: member.image,
 		}));
 
 		setPartyMembers(directPayMembers);
-		console.log(directPayMembers);
 		setDirectPayReq((prevState: DirectPayReq) => ({
 			...prevState,
 			title: title || '',
@@ -72,14 +72,62 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		setSelectedCategory(category);
 	};
 
-	const handleAmountChange = (memberUuid: string, amount: string) => {
+	const handleInVolveChange = (
+		memberUuid: string,
+		amount: number,
+		checked: boolean,
+		memberNickname: string,
+		image: string,
+	) => {
+		setPartyMembers((prevMemebers: SelectPayMember[]) => {
+			const updatedInvolveState = [...prevMemebers];
+			const index = updatedInvolveState.findIndex((item) => item.member_uuid === memberUuid);
+			if (index !== -1) {
+				updatedInvolveState[index] = {
+					member_uuid: memberUuid,
+					amount: amount,
+					checked: checked,
+					member_nickname: memberNickname,
+					image: image,
+				};
+			} else {
+				updatedInvolveState.push({
+					member_uuid: memberUuid,
+					amount: amount,
+					checked: checked,
+					member_nickname: memberNickname,
+					image: image,
+				});
+			}
+			return updatedInvolveState;
+		});
+	};
+	const handleAmountChange = (
+		memberUuid: string,
+		amount: string,
+		checked: boolean,
+		memberNickname: string,
+		image: string,
+	) => {
 		setPartyMembers((prevMemebers) => {
 			const updatedAmounts = [...prevMemebers];
 			const index = updatedAmounts.findIndex((item) => item.member_uuid === memberUuid);
 			if (index !== -1) {
-				updatedAmounts[index] = { member_uuid: memberUuid, amount: parseFloat(amount) };
+				updatedAmounts[index] = {
+					member_uuid: memberUuid,
+					amount: parseFloat(amount),
+					checked: checked,
+					member_nickname: memberNickname,
+					image: image,
+				};
 			} else {
-				updatedAmounts.push({ member_uuid: memberUuid, amount: parseFloat(amount) });
+				updatedAmounts.push({
+					member_uuid: memberUuid,
+					amount: parseFloat(amount),
+					checked: checked,
+					member_nickname: memberNickname,
+					image: image,
+				});
 			}
 			return updatedAmounts;
 		});
@@ -96,6 +144,12 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 	}
 	async function handleSubmit() {
 		try {
+			const partyData = partyMembers
+				.filter((item) => item.checked) // checked가 true인 아이템들만 필터링합니다.
+				.map((item) => ({
+					amount: item.amount,
+					member_uuid: item.member_uuid,
+				}));
 			setDirectPayReq((prevState: DirectPayReq) => ({
 				...prevState,
 				payment_date_time: formatDate(date),
@@ -105,16 +159,16 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 				amount: parseFloat(totAmount),
 				category: selectedcategory,
 				memo: text,
-				payment_participants: partyMembers || [],
+				payment_participants: partyData || [],
 				visible: !selfCheck,
 			}));
-			console.log(directPayReq);
 
 			const res = await api.post(`/payment/manual`, directPayReq);
 
 			if (res.status === 201) {
 				navigation.goBack();
 			}
+			console.log(partyMembers);
 		} catch (err) {
 			console.log(err);
 		}
@@ -243,13 +297,31 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 				</View>
 				<ScrollView>
-					{participants.map((item) => (
+					{partyMembers.map((item) => (
 						<PartyListItem
 							key={item.member_uuid}
 							name={item.member_nickname}
 							img={{ uri: item.image }}
 							self={selfCheck}
-							onAmountChange={(input) => handleAmountChange(item.member_uuid, input)}
+							involveCheck={item.checked}
+							onAmountChange={(input) =>
+								handleAmountChange(
+									item.member_uuid,
+									input,
+									item.checked,
+									item.member_nickname,
+									item.image,
+								)
+							}
+							onInvolveChange={(input) =>
+								handleInVolveChange(
+									item.member_uuid,
+									item.amount,
+									input,
+									item.member_nickname,
+									item.image,
+								)
+							}
 						/>
 					))}
 				</ScrollView>

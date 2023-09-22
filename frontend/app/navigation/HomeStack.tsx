@@ -8,6 +8,14 @@ import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
 import ManageAccountScreen from '../screens/SettingScreen/ManageAccountScreen';
 import SettingScreen from '../screens/SettingScreen/SettingScreen';
 
+export type HomeStackProps = {
+	Home: undefined;
+	Setting: undefined;
+	Account: undefined;
+	AddAccount: undefined;
+	AuthAccount: undefined;
+};
+
 const Stack = createNativeStackNavigator();
 
 function HomeStack() {

@@ -17,9 +17,9 @@ export type TripStackProps = {
 	CreateTrip: undefined;
 	TripDetail: undefined;
 	AnalysisTrip: undefined;
-	AdjustTrip: undefined;
-	SendAdjust: undefined;
-	GetAdjust: undefined;
+	AdjustTrip: { tripId: number };
+	SendAdjust: undefined | { adjustId?: number };
+	GetAdjust: undefined | { adjustId?: number };
 	PayAdjust: undefined;
 	AddPayment: undefined;
 };
