@@ -16,10 +16,6 @@ import { TextStyles } from '../../styles/CommonStyles';
 type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
-	interface OrderTypeSelectItem {
-		label: string;
-		value: string;
-	}
 	const [payData, setPayData] = useState<Payment[]>([]);
 	const currentDate = new Date();
 	const [modalVisible, setModalVisible] = useState(false);
@@ -146,17 +142,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					정산
 				</Button>
 			</View>
-			{/* <DropDownPicker
-				open={openOrderType}
-				value={orderType}
-				items={orderTypeItems}
-				setOpen={setOpenOrderType}
-				setValue={setOrderType}
-				setItems={setOrderTypeItems}
-				textStyle={TextStyles().small}
-				placeholder={orderType}
-				style={styles.selectInput}
-			/> */}
+
 			<View style={styles.order_button}>
 				<Button onPress={() => setModalVisible(!modalVisible)}>{orderType}</Button>
 			</View>
