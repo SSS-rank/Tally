@@ -22,42 +22,40 @@ type TripDetailScreenProps = {
 };
 
 type ItemData = {
-	id: string;
-	title: string;
-	createDate: string;
-	totalAmount: number;
+	calculate_group_uuid: string;
+	created_time: string;
+	amount: number;
+	status: string;
+	receiver_name?: string;
 };
 
 const DATA: ItemData[] = [
 	{
-		id: '1',
-		title: 'First Item',
-		createDate: '09-23',
-		totalAmount: 10000,
+		calculate_group_uuid: '1',
+		created_time: '09-23',
+		amount: 13000,
+		status: '진행중',
 	},
 	{
-		id: '2',
-		title: 'Second Item',
-		createDate: '09-23',
-		totalAmount: 10000,
+		calculate_group_uuid: '2',
+		created_time: '09-23',
+		amount: 15000,
+		status: '진행중',
 	},
 	{
-		id: '3',
-		title: 'Third Item',
-		createDate: '09-23',
-		totalAmount: 10000,
+		calculate_group_uuid: '3',
+		created_time: '09-23',
+		amount: 17000,
+		status: '진행중',
 	},
 ];
 
 type ItemProps = {
 	item: ItemData;
-	onPress: () => void;
-	backgroundColor: string;
-	textColor: string;
 	navigation: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'> | undefined;
 };
 
-const Item = ({ item, onPress, backgroundColor, textColor, navigation }: ItemProps) => (
+const Item = ({ item, navigation }: ItemProps) => (
 	// <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
 	// 	<Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
 	// </TouchableOpacity>
@@ -75,7 +73,7 @@ const Item = ({ item, onPress, backgroundColor, textColor, navigation }: ItemPro
 			navigation?.navigate('SendAdjust');
 		}}
 	>
-		<Text style={TextStyles().regular}>23.09.01</Text>
+		<Text style={TextStyles().regular}>{item.created_time}</Text>
 		<Text
 			style={{
 				...TextStyles({ align: 'right' }).title,
@@ -83,37 +81,32 @@ const Item = ({ item, onPress, backgroundColor, textColor, navigation }: ItemPro
 				lineHeight: 60,
 			}}
 		>
-			200,000원
+			{item.amount}원
 		</Text>
 	</TouchableOpacity>
 );
 
-const RequestListItem = ({ navigation }: TripDetailScreenProps) => {
+const RequestListItem = ({
+	test,
+	navigation,
+	route,
+}: {
+	test: any[];
+	navigation?: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'>;
+	route?: RouteProp<TripStackProps, 'SendAdjust'>;
+}) => {
 	const [selectedId, setSelectedId] = useState<string>();
 
 	const renderItem = ({ item }: { item: ItemData }) => {
-		const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
-		const color = item.id === selectedId ? 'white' : 'black';
-		console.log(navigation);
-		// item.navigation = navigation?.navigate('SendAdjust');
-
-		return (
-			<Item
-				item={item}
-				onPress={() => setSelectedId(item.id)}
-				backgroundColor={backgroundColor}
-				textColor={color}
-				navigation={navigation}
-			/>
-		);
+		return <Item item={item} navigation={navigation} />;
 	};
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-				data={DATA}
+				data={test}
 				renderItem={renderItem}
-				keyExtractor={(item) => item.id}
+				keyExtractor={(item) => item.calculate_group_uuid}
 				extraData={selectedId}
 			/>
 		</SafeAreaView>
@@ -123,7 +116,6 @@ const RequestListItem = ({ navigation }: TripDetailScreenProps) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		marginTop: StatusBar.currentHeight || 0,
 	},
 	item: {
 		padding: 20,
@@ -131,7 +123,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 	},
 	title: {
-		fontSize: 32,
+		// fontSize: 32,
 	},
 });
 

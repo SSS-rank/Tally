@@ -1,16 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import RequestListItem from '../../components/Adjust/RequestListItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import DashLine from '../../components/DashLine';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { adjustListItem } from '../../model/adjust';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function AdjustScreen({ navigation }: any) {
+type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'AdjustTrip'>;
+
+function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
+	const { tripId } = route.params;
 	const [isSend, setIsSend] = useState(true);
+
+	const [requestItems, setReqeustItems] = useState<adjustListItem[]>([]);
+
 	const onSelectSwitch = (index: any) => {
 		// Alert.alert('Selected index: ' + index);
 		if (index == 2) setIsSend(false);
 		else setIsSend(true);
+	};
+
+	const api = useAxiosWithAuth();
+	useEffect(() => {
+		if (isSend === true) {
+			getRequestAdjustList();
+		} else {
+			getReceiveAdjustList();
+		}
+	}, [isSend]);
+
+	const getRequestAdjustList = async () => {
+		try {
+			const res = await api.get(`calculate/request/${tripId}`);
+			console.log(tripId);
+			if (res.status === 200) {
+				console.log(res.data);
+				setReqeustItems(res.data);
+				console.log(requestItems);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const getReceiveAdjustList = async () => {
+		try {
+			const res = await api.get(`calculate/receive/${tripId}`);
+			console.log(tripId);
+			if (res.status === 200) {
+				console.log(res.data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -31,28 +78,7 @@ function AdjustScreen({ navigation }: any) {
 					</View>
 					<DashLine />
 					<View style={{ flexGrow: 1 }}>
-						<TouchableOpacity
-							style={{
-								flexDirection: 'row',
-								backgroundColor: '#F6F6F6',
-								alignItems: 'center',
-								height: 80,
-								marginTop: 20,
-								paddingHorizontal: 10,
-							}}
-							onPress={() => navigation.navigate('TripStack', { screen: 'SendAdjust' })}
-						>
-							<Text style={{ ...TextStyles().regular }}>23.09.01</Text>
-							<Text
-								style={{
-									...TextStyles({ align: 'right' }).title,
-									flex: 1,
-									lineHeight: 60,
-								}}
-							>
-								200,000원
-							</Text>
-						</TouchableOpacity>
+						<RequestListItem navigation={navigation} test={requestItems} />
 					</View>
 				</>
 			) : (
@@ -84,7 +110,7 @@ function AdjustScreen({ navigation }: any) {
 								// borderBottomColor: '#D6D6D6',
 								// borderBottomWidth: 0.5,
 							}}
-							onPress={() => navigation.navigate('TripStack', { screen: 'GetAdjust' })}
+							onPress={() => navigation.navigate('GetAdjust', { adjustId: 1 })}
 						>
 							<Text style={{ ...TextStyles({ align: 'left' }).regular }}>23.09.01</Text>
 							<View style={{ flex: 1 }}>
