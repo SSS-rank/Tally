@@ -100,15 +100,6 @@ public class CalculateDto {
 		private String content;
 	}
 
-	@NoArgsConstructor
-	@Getter
-	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-	public static class GetResponseCalculateDetailReqDto {
-		@NotNull
-		private String calculateGroupUuid;
-
-	}
-
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -290,6 +281,8 @@ public class CalculateDto {
 
 		private String memberName;
 
+		private String memberUuid;
+
 		private String memberProfile;
 
 		private Long amount;
@@ -302,6 +295,7 @@ public class CalculateDto {
 				.memberProfile(member.getProfileImage())
 				.status(status)
 				.amount(amount)
+				.memberUuid(member.getMemberUuid())
 				.build();
 		}
 
