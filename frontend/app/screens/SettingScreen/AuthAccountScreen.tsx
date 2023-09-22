@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
-import { Button, Avatar } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -11,73 +11,45 @@ function AuthAccountScreen() {
 	};
 	return (
 		<View style={styles.viewContainer}>
-			<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).title }}>
+			<Text style={{ ...TextStyles({ align: 'left', weight: 'bold', mBottom: 5 }).title }}>
 				인증하신 계좌로 1원을 입금하였습니다.
 			</Text>
-			<Text style={{ ...TextStyles({ align: 'left', mBottom: 10, color: '#666666' }).small }}>
+			<Text style={{ ...TextStyles({ align: 'left', mBottom: 10, color: '#666666' }).regular }}>
 				입금내역에 표시된 숫자 4자리를 입력해주세요.
 			</Text>
 			<Image style={styles.img} source={require('../../assets/images/1won.png')} />
 			<View style={styles.sectionView}>
 				<View style={styles.inputBox}>
 					<TextInput
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							flex: 1,
-							borderWidth: 2,
-							borderRadius: 20,
-							borderColor: '#91C0EB',
-							marginHorizontal: 20,
-						}}
+						style={styles.input}
 						value={name}
 						onChangeText={setName}
 						keyboardType="number-pad"
 						textAlign="center"
 					/>
 					<TextInput
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							flex: 1,
-							borderWidth: 2,
-							borderRadius: 20,
-							borderColor: '#91C0EB',
-							marginHorizontal: 20,
-						}}
+						style={styles.input}
 						value={name}
 						onChangeText={setName}
 						keyboardType="number-pad"
 						textAlign="center"
 					/>
 					<TextInput
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							flex: 1,
-							borderWidth: 2,
-							borderRadius: 20,
-							borderColor: '#91C0EB',
-							marginHorizontal: 20,
-						}}
+						style={styles.input}
 						value={name}
 						onChangeText={setName}
 						keyboardType="number-pad"
 						textAlign="center"
 					/>
 					<TextInput
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							flex: 1,
-							borderWidth: 2,
-							borderRadius: 20,
-							borderColor: '#91C0EB',
-							marginHorizontal: 20,
-						}}
+						style={styles.input}
 						value={name}
 						onChangeText={setName}
 						keyboardType="number-pad"
 						textAlign="center"
 					/>
 				</View>
-				<Button mode="elevated" buttonColor="#91C0EB" textColor="white">
+				<Button mode="elevated" style={styles.button} textColor="#ffffff">
 					확인
 				</Button>
 				<Text
@@ -103,12 +75,18 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 	},
 	inputBox: {
-		// alignItems: 'center',
-		borderBottomColor: '#A0A0A0',
 		flexDirection: 'row',
 		marginTop: 30,
 		marginBottom: 60,
 		justifyContent: 'space-around',
+	},
+	input: {
+		...TextStyles().regular,
+		flex: 1,
+		borderWidth: 2,
+		borderRadius: 16,
+		borderColor: '#91C0EB',
+		marginHorizontal: 20,
 	},
 	img: {
 		alignSelf: 'center',
@@ -116,6 +94,10 @@ const styles = StyleSheet.create({
 		// height: 50,
 		resizeMode: 'contain',
 		// marginVertical: 50,
+	},
+	button: {
+		backgroundColor: '#91C0EB',
+		shadowColor: 'transparent',
 	},
 });
 export default AuthAccountScreen;
