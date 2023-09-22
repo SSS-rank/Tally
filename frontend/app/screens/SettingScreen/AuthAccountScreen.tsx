@@ -6,11 +6,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { HomeStackProps } from './../../navigation/HomeStack';
 import bankApi from '../../api/bankApi';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { AccountResgistReq } from '../../model/account';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
 
-function AuthAccountScreen({ route }: AuthAccountScreenProps) {
+function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 	const [first, setFirst] = useState('');
 	const [second, setSecond] = useState('');
 	const [third, setThird] = useState('');
@@ -52,9 +54,9 @@ function AuthAccountScreen({ route }: AuthAccountScreenProps) {
 		}
 	};
 
+	const { accountNumber, bankCode }: any = route.params;
 	const verifyTransfer = async () => {
 		console.log(route.params);
-		const { accountNumber, bankCode }: any = route.params;
 		if (accountNumber !== undefined) {
 			console.log(accountNumber);
 
@@ -63,8 +65,6 @@ function AuthAccountScreen({ route }: AuthAccountScreenProps) {
 				code: `${first}${second}${third}${last}`,
 			};
 
-			console.log(verifyData);
-
 			try {
 				const res = await bankApi.post(`/transfer/1transfer-verify`, verifyData);
 
@@ -72,10 +72,36 @@ function AuthAccountScreen({ route }: AuthAccountScreenProps) {
 					console.log(res.data);
 
 					// TODO : 첫 등록 여부에 따라 계좌 등록 다르게 처리하기
+					registerAccount(res.data);
 				}
 			} catch (error: any) {
 				console.error(error.response.data.errorMessage);
 			}
+		}
+	};
+
+	const api = useAxiosWithAuth();
+	const registerAccount = async (password: string) => {
+		const accountResgisterReq: AccountResgistReq = {
+			account_number: accountNumber,
+			bank_code: bankCode,
+			order_number: 2,
+			account_password: password,
+			transfer_password: '123456',
+		};
+
+		console.log(accountResgisterReq);
+
+		try {
+			const res = await api.post(`/account`, accountResgisterReq);
+			console.log(res.data);
+			console.log(res.status);
+
+			if (res.status === 200) {
+				navigation.navigate('Account');
+			}
+		} catch (error: any) {
+			console.log(error.response.data.errorMessage);
 		}
 	};
 
