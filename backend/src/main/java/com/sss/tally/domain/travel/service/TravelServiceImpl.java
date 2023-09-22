@@ -117,7 +117,10 @@ public class TravelServiceImpl implements TravelService{
 			travelLocation = stateByStateId.get().getStateName();
 		}
 		else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
-			// country 정보가 구현된 후, 수정 예정
+			Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+			if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+			travelType=countryByCountryId.get().getCountryCode();
+			travelLocation = countryByCountryId.get().getCountryName();
 		}
 
 		travelGroupRepository.save(TravelGroup.of(memberOptional.get(), save));
@@ -316,7 +319,9 @@ public class TravelServiceImpl implements TravelService{
 			travelLocation = stateByStateId.get().getStateName();
 		}
 		else if(travelOptional.get().getTravelType().equals(TravelTypeEnum.GLOBAL)){
-			// country 정보가 구현된 후, 수정 예정
+			Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travelOptional.get().getTravelLocation());
+			if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+			travelLocation = countryByCountryId.get().getCountryName();
 		}
 
 		List<Member> membersByTravelId = travelGroupRepository.findMembersByTravelId(travelOptional.get().getTravelId());
