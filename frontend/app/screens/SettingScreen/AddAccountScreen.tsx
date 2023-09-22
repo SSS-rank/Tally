@@ -37,7 +37,7 @@ function AddAccountScreen({ navigation }: any) {
 		};
 		const res = await bankApi.post(`/transfer/1transfer`, request);
 		if (res.data === 'OK') {
-			navigation.navigate('AuthAccount');
+			navigation.navigate('AuthAccount', { accountNumber, bankCode });
 		}
 	};
 
