@@ -39,6 +39,34 @@ public class TravelDto {
 			.build();
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class TravelNotStartDto {
+		private String travelTitle;
+		private String travelLocation;
+		private String travelType;
+		private LocalDate startDate;
+		private LocalDate endDate;
+		private int remainDate;
+		private List<MemberDto.MemberTravelDto> travelParticipants;
+		private Long money;
+
+		public static TravelNotStartDto of(Long money, int remainDate, Travel travel, String travelLocation, String travelType, List<MemberDto.MemberTravelDto> members){
+			return TravelNotStartDto.builder()
+				.travelTitle(travel.getTravelTitle())
+				.travelLocation(travelLocation)
+				.travelType(travelType)
+				.startDate(travel.getStartDate())
+				.endDate(travel.getEndDate())
+				.remainDate(remainDate)
+				.travelParticipants(members)
+				.money(money)
+				.build();
+		}
+	}
+
 
 	@Getter
 	@Builder
