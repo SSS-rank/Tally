@@ -30,8 +30,6 @@ function PartyListItem(props: partyItemprops) {
 					value={amount}
 					onChangeText={(input) => {
 						setAmount(input);
-						handleAmountChange(input);
-						console.log(amount);
 					}}
 					returnKeyType="next"
 					style={[styles.textInput, props.self ? { color: 'gray' } : null]}
