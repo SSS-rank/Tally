@@ -27,16 +27,18 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
 	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
-	const [orderType, setOrderType] = useState('오래된 순');
+	const [orderType, setOrderType] = useState('최신순');
 
 	useFocusEffect(
 		React.useCallback(() => {
+			setPayData([]);
 			const fetchData = async () => {
 				try {
 					const res = await api.get(`/payment/${id}`);
 
 					if (res.status === 200) {
 						const payList = res.data;
+						console.log(payList);
 
 						setPayData((prevPayData) => [...prevPayData, ...payList]);
 					}
@@ -46,8 +48,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			};
 
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
-			console.log(payData);
-		}, []), // 두 번째 인자는 종속성 배열. 빈 배열이면 최초 렌더링 때만 실행됨.
+		}, []),
 	);
 
 	return (
@@ -111,10 +112,10 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				</Button>
 			</View>
 			<View style={styles.center_box}>
-				<Text style={[TextStyles().small, styles.end_date]}>
-					현재 날짜: {year}-{month}-{day}
+				<Text style={[TextStyles().medium, styles.end_date]}>
+					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={[TextStyles().header, styles.balance]}>500,00원</Text>
+				<Text style={[TextStyles().header, styles.balance]}>0원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
@@ -212,16 +213,22 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 				</View>
 			</Modal>
-			<TouchableOpacity style={styles.detail_item_box}>
-				<Text>여행 준비</Text>
-				<DetailListItem
-					title={'런던 센텀 호텔'}
-					time={'21:17'}
-					balance={300000}
-					party={'김싸피, 이싸피, 김호피'}
-					abroad={false}
-				/>
-			</TouchableOpacity>
+
+			{payData.map((item) => (
+				<View key={item.payment_uuid}>
+					<TouchableOpacity style={styles.detail_item_box}>
+						<Text>{item.payment_date.split('일 ')[0]}일</Text>
+						<DetailListItem
+							title={item.payment_memo}
+							time={item.payment_date.split(' ')[3]}
+							balance={item.amount}
+							party={item.participants ? item.participants.join(',') : ''}
+							abroad={false}
+							calculateStatus={item.calculate_status}
+						/>
+					</TouchableOpacity>
+				</View>
+			))}
 		</ScrollView>
 	);
 }
