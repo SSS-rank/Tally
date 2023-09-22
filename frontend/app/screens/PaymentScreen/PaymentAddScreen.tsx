@@ -1,55 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { DirectPayMember, DirectPayReq } from '../../model/payment';
+import { TripMember } from '../../model/trip';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function PaymentAddScreen() {
-	const [amount, setAmount] = useState('');
+type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
+function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
+	const api = useAxiosWithAuth();
+	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
-	const [selectedcategory, setSelectedCategory] = useState('');
+	const [selectedcategory, setSelectedCategory] = useState(0);
 	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
-	// const [party, setParty] = useState('')
 
-	const handleIconClick = (category: string) => {
+	const [partyMembers, setPartyMembers] = useState<DirectPayMember[]>([]); // 결제 멤버
+	const [participants, setParticipants] = useState<TripMember[]>([]); // 여행 참여 멤버
+	const [directPayReq, setDirectPayReq] = useState<DirectPayReq>({
+		amount: 0,
+		category: 0,
+		memo: '',
+		payment_date_time: '',
+		payment_participants: [],
+		payment_type: '',
+		payment_unit_id: 0,
+		ratio: 0,
+		title: '',
+		travel_id: 0,
+		visible: false,
+	});
+	useEffect(() => {
+		// route.params에 접근하는 부분
+		setTotAmount('');
+		setText('');
+		setStore('');
+		setSelectedCategory(0);
+		setSelfCheck(false);
+		setDate(new Date());
+		setOpen(false);
+		const { id, type, title, travelParticipants } = route.params;
+		setParticipants(travelParticipants);
+		const directPayMembers = travelParticipants.map((member: TripMember) => ({
+			amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
+			member_uuid: member.member_uuid,
+		}));
+
+		setPartyMembers(directPayMembers);
+		console.log(directPayMembers);
+		setDirectPayReq((prevState: DirectPayReq) => ({
+			...prevState,
+			title: title || '',
+			travel_id: id || 0,
+		}));
+		// route.params에 의존하는 추가적인 코드 작성
+	}, [route.params]);
+
+	const handleIconClick = (category: number) => {
 		setSelectedCategory(category);
 	};
 
-	const isPossibleDay = (p_date: Date) => {
-		const currentDate = new Date();
-		const selectedDate = new Date(p_date);
-		return currentDate.getDate() >= selectedDate.getDate();
+	const handleAmountChange = (memberUuid: string, amount: string) => {
+		setPartyMembers((prevMemebers) => {
+			const updatedAmounts = [...prevMemebers];
+			const index = updatedAmounts.findIndex((item) => item.member_uuid === memberUuid);
+			if (index !== -1) {
+				updatedAmounts[index] = { member_uuid: memberUuid, amount: parseFloat(amount) };
+			} else {
+				updatedAmounts.push({ member_uuid: memberUuid, amount: parseFloat(amount) });
+			}
+			return updatedAmounts;
+		});
 	};
-	function handleSubmit() {
-		console.log(`금액 : ${amount}`);
-		console.log(`날짜 : ${date}`);
-		console.log(`결제처: ${store}`);
-		console.log(`메모: ${text}`);
-		console.log(`카테고리:${selectedcategory}`);
+
+	function formatDate(in_date: Date) {
+		const year = in_date.getFullYear();
+		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
+		const day = String(in_date.getDate()).padStart(2, '0'); // 일자를 2자리로 포맷팅
+		const hours = String(in_date.getHours()).padStart(2, '0'); // 시간을 2자리로 포맷팅
+		const minutes = String(in_date.getMinutes()).padStart(2, '0'); // 분을 2자리로 포맷팅
+
+		return `${year}-${month}-${day} ${hours}:${minutes}`;
+	}
+	async function handleSubmit() {
+		try {
+			setDirectPayReq((prevState: DirectPayReq) => ({
+				...prevState,
+				payment_date_time: formatDate(date),
+				payment_type: 'cash',
+				payment_unit_id: 8,
+				ratio: 1,
+				amount: parseFloat(totAmount),
+				category: selectedcategory,
+				memo: text,
+				payment_participants: partyMembers || [],
+				visible: !selfCheck,
+			}));
+			console.log(directPayReq);
+
+			const res = await api.post(`/payment/manual`, directPayReq);
+
+			if (res.status === 201) {
+				navigation.goBack();
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.header_button}>
+			{/* <View style={styles.header_button}>
 				<AntIcon name="close" size={30} color="#900" />
 				<MIcon name="dots-horizontal" size={30} color="#900" />
-			</View>
-
+			</View> */}
 			<View style={styles.amount_container}>
 				<Text style={TextStyles({ align: 'left' }).small}>krw(원)</Text>
 				<TextInput
-					value={amount}
+					value={totAmount}
 					onChangeText={(memo) => {
-						setAmount(memo);
+						setTotAmount(memo);
 					}}
 					returnKeyType="next"
 					keyboardType="numeric"
@@ -109,51 +190,39 @@ function PaymentAddScreen() {
 			<View style={styles.category_box}>
 				<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
 				<View style={styles.category_line}>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('숙소')}>
-						<MIcon name="home" size={40} color={selectedcategory === '숙소' ? '#91C0EB' : 'gray'} />
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
+						<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>숙소</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('항공')}>
-						<FIcon
-							name="plane"
-							size={40}
-							color={selectedcategory === '항공' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
+						<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>항공</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('교통')}>
-						<FIcon name="car" size={40} color={selectedcategory === '교통' ? '#91C0EB' : 'gray'} />
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
+						<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>교통</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('관광')}>
-						<MIcon
-							name="ticket"
-							size={40}
-							color={selectedcategory === '관광' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
+						<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>관광</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('식비')}>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
 						<MIcon
 							name="silverware-fork-knife"
 							size={40}
-							color={selectedcategory === '식비' ? '#91C0EB' : 'gray'}
+							color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
 						/>
-						<Text style={TextStyles().small}>식비</Text>
+						<Text style={TextStyles().small}>식사</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('쇼핑')}>
-						<MIcon
-							name="shopping"
-							size={40}
-							color={selectedcategory === '쇼핑' ? '#91C0EB' : 'gray'}
-						/>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
+						<MIcon name="shopping" size={40} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
 						<Text style={TextStyles().small}>쇼핑</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick('기타')}>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
 						<MIcon
 							name="dots-horizontal-circle"
 							size={40}
-							color={selectedcategory === '기타' ? '#91C0EB' : 'gray'}
+							color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
 						/>
 						<Text style={TextStyles().small}>기타</Text>
 					</TouchableOpacity>
@@ -166,18 +235,23 @@ function PaymentAddScreen() {
 					selfCheck ? { backgroundColor: 'gray', pointerEvents: 'none' } : null,
 				]}
 			>
-				<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+					<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+					<View style={{ flexDirection: 'row' }}>
+						<Text style={TextStyles({ mLeft: 10 }).medium}>결제</Text>
+						<Text style={TextStyles({ mLeft: 10 }).medium}>함께</Text>
+					</View>
+				</View>
 				<ScrollView>
-					<PartyListItem
-						name="김싸피"
-						img={require('../../assets/images/kakao.png')}
-						self={selfCheck}
-					/>
-					<PartyListItem
-						name="김싸피"
-						img={require('../../assets/images/kakao.png')}
-						self={selfCheck}
-					/>
+					{participants.map((item) => (
+						<PartyListItem
+							key={item.member_uuid}
+							name={item.member_nickname}
+							img={{ uri: item.image }}
+							self={selfCheck}
+							onAmountChange={(input) => handleAmountChange(item.member_uuid, input)}
+						/>
+					))}
 				</ScrollView>
 			</View>
 
@@ -206,7 +280,6 @@ function PaymentAddScreen() {
 				onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
 				style={{ marginTop: 10, marginBottom: 70 }}
 			>
-				{' '}
 				등록
 			</Button>
 		</ScrollView>
@@ -255,7 +328,7 @@ const styles = StyleSheet.create({
 	amount_container: {
 		flex: 2,
 		padding: 30,
-		marginTop: 20,
+		// marginTop: 20,
 		backgroundColor: '#F6F6F6',
 	},
 
