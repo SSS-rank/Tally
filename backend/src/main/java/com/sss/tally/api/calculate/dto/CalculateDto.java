@@ -238,4 +238,62 @@ public class CalculateDto {
 
 	}
 
+	@NoArgsConstructor
+	@Getter
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class GetRequestCalculateDetailReqDto {
+		@NotNull
+		private String calculateGroupUuid;
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetRequestCalculateDetailRespDto {
+
+		private String travelType;
+
+		private String travelName;
+
+		private String requestDate;
+
+		private Long totalAmount;
+
+		private List<RequestDetail> requestDetails;
+
+		public static GetResponseCalculateDetailRespDto of
+			(String travelType, String travelName, LocalDateTime date, Long totalAmount, List<Detail> detailList) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String formattedTime = date.format(formatter);
+			return GetResponseCalculateDetailRespDto.builder()
+				.detailList(detailList)
+				.totalAmount(totalAmount)
+				.travelName(travelName)
+				.travelType(travelType)
+				.requestDate(formattedTime)
+				.build();
+		}
+
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class RequestDetail {
+
+		private String memberName;
+
+		private String memberProfile;
+
+		private Long amount;
+
+		private CalculateGroupStatusEnum status;
+
+	}
+
 }

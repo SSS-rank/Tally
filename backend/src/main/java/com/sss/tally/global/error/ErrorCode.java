@@ -40,6 +40,7 @@ public enum ErrorCode {
 	ALREADY_CALCULATE_MEMBER(HttpStatus.BAD_REQUEST, "010", "이미 정산 확인한 사용자입니다."),
 	ALREADY_REJECT_COMPLETE(HttpStatus.BAD_REQUEST, "011", "정산 그룹이 반려이거나 정산 완료 된 상태입니다."),
 	PAYMENT_NOT_ONGOING(HttpStatus.BAD_REQUEST, "012", "결제가 정산 진행중 상태가 아닙니다"),
+	NOT_EXIST_GROUP_MEMBER(HttpStatus.BAD_REQUEST, "003", "정산에 포함된 인원 정보들이 없습니다"),
 	//결제
 	NOT_EXIST_PAYMENT(HttpStatus.BAD_REQUEST, "001", "결제정보가 존재하지 않습니다."),
 	NOT_EXIST_PAYMENT_UNIT(HttpStatus.BAD_REQUEST, "002", "결제 단위가 존재하지 않습니다."),
