@@ -33,8 +33,9 @@ public class PaymentDto {
 		private boolean visible;
 		private String paymentName;
 		private String calculateStatus;
+		private List<String> participants;
 
-		public static PaymentListDto from(Payment payment){
+		public static PaymentListDto of(Payment payment, List<String> participants){
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
 			String dateTime = payment.getPaymentLocalDate().format(dateTimeFormatter);
 
@@ -43,6 +44,7 @@ public class PaymentDto {
 				.categoryId(payment.getCategoryId().getCategoryId())
 				.amount(payment.getAmount())
 				.paymentDate(dateTime)
+				.participants(participants)
 				.paymentMemo(payment.getPaymentMemo())
 				.paymentMethod(payment.getPaymentMethod().toString())
 				.paymentUnit(payment.getPaymentUnitId().getUnit())
@@ -216,6 +218,82 @@ public class PaymentDto {
 
 		@NotNull
 		private List<MemberPaymentDto.MemberPaymentCreateDto> paymentParticipants;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class RemovePaymentDto{
+		private String paymentUuid;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class PaymentDetailPayer{
+		private String paymentUuid;
+
+		private Long category;
+
+		private String memo;
+
+		private boolean visible;
+
+		private int amount;
+
+		private String paymentUnit;
+
+		private String paymentDate;
+
+		private List<MemberPaymentDto.MemberPaymentRespDto> paymentParticipants;
+
+		public static PaymentDetailPayer of(Payment payment, List<MemberPaymentDto.MemberPaymentRespDto> participantList) {
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
+			String dateTime = payment.getPaymentLocalDate().format(dateTimeFormatter);
+
+			return PaymentDetailPayer.builder()
+					.paymentUuid(payment.getPaymentUuid())
+					.category(payment.getCategoryId().getCategoryId())
+					.memo(payment.getPaymentMemo())
+					.visible(payment.getVisible())
+					.amount(payment.getAmount())
+					.paymentUnit(payment.getPaymentUnitId().getUnit())
+					.paymentDate(dateTime)
+					.paymentParticipants(participantList)
+					.build();
+		}
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class PaymentDetailTag{
+		private String paymentUuid;
+
+		private String memo;
+
+		private int amount;
+
+		private String paymentUnit;
+
+		private List<MemberPaymentDto.MemberPaymentRespDto> paymentParticipants;
+
+		public static PaymentDetailTag of(Payment payment, List<MemberPaymentDto.MemberPaymentRespDto> participantList) {
+
+			return PaymentDetailTag.builder()
+					.paymentUuid(payment.getPaymentUuid())
+					.memo(payment.getPaymentMemo())
+					.amount(payment.getAmount())
+					.paymentUnit(payment.getPaymentUnitId().getUnit())
+					.paymentParticipants(participantList)
+					.build();
+		}
 	}
 
 }
