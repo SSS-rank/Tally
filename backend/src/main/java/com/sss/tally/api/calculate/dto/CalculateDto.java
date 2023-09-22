@@ -290,6 +290,8 @@ public class CalculateDto {
 
 		private String memberName;
 
+		private String memberUuid;
+
 		private String memberProfile;
 
 		private Long amount;
@@ -302,6 +304,7 @@ public class CalculateDto {
 				.memberProfile(member.getProfileImage())
 				.status(status)
 				.amount(amount)
+				.memberUuid(member.getMemberUuid())
 				.build();
 		}
 
