@@ -127,13 +127,13 @@ public class TravelDto {
 		private String travelLocation;
 		private String travelPeriod;
 
-		private int totalAmount;
+		private Long totalAmount;
 
 		private List<MemberDto.MemberTravelDto> participants;
 
 		private List<PaymentDto.PaymentListDto> paymentList;
 
-		public static TravelDetailDto of(Travel travel, List<PaymentDto.PaymentListDto> paymentListDtos, int totalAmount, String travelLocation, List<MemberDto.MemberTravelDto> memberTravelDtos){
+		public static TravelDetailDto of(Travel travel, List<PaymentDto.PaymentListDto> paymentListDtos, Long totalAmount, String travelLocation, List<MemberDto.MemberTravelDto> memberTravelDtos){
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 			String dateStart = travel.getStartDate().format(dateTimeFormatter);
 			String dateEnd = travel.getEndDate().format(dateTimeFormatter);

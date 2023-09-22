@@ -98,7 +98,7 @@ public class PaymentServiceImpl implements PaymentService{
 			Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
 			if(optionalMember.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-			memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0));
+			memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
 		}
 		if(paymentManualDto.getPaymentParticipants().size() == 0)
@@ -150,7 +150,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateMemberPayment(0, true);
+			participant.updateMemberPayment(0L, true);
 		}
 
 		if(!paymentCardUpdateDto.isVisible()) {
@@ -241,7 +241,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		for(MemberPayment participant : participants){
 			if(participant.getMemberId().getMemberId().equals(paymentOptional.get().getMemberId().getMemberId())) continue;
-			participant.updateMemberPayment(0, true);
+			participant.updateMemberPayment(0L, true);
 		}
 		if(!paymentUpdateDto.isVisible()) {
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberId(paymentOptional.get(), member);
@@ -317,7 +317,7 @@ public class PaymentServiceImpl implements PaymentService{
 						if(optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
 							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
 						else
-							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0));
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
 					}
 				}

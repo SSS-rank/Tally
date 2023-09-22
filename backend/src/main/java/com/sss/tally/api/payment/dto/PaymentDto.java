@@ -25,7 +25,7 @@ public class PaymentDto {
 	public static class PaymentListDto{
 		private String paymentUuid;
 		private Long categoryId;
-		private int amount;
+		private Long amount;
 		private String paymentDate;
 		private String paymentMemo;
 		private String paymentMethod;
@@ -68,7 +68,7 @@ public class PaymentDto {
 		private Long travelId;
 
 		@NotNull
-		private int amount;
+		private Long amount;
 		@NotNull
 		private Double ratio;
 		@NotNull
@@ -138,7 +138,7 @@ public class PaymentDto {
 	public static class PaymentListRespDto{
 		private String transferDate;
 		private String flag;
-		private int amount;
+		private Long amount;
 		private String content;
 		private String transferUuid;
 		private Integer shopType;
@@ -150,7 +150,7 @@ public class PaymentDto {
 	@NoArgsConstructor
 	public static class PaymentRespDto{
 		private String paymentDate;
-		private int amount;
+		private Long amount;
 		private String paymentName;
 		private String paymentUuid;
 	}
@@ -169,7 +169,7 @@ public class PaymentDto {
 		private Long travelId;
 
 		@NotNull
-		private int amount;
+		private Long amount;
 
 		@NotNull
 		private Double ratio;
@@ -243,7 +243,7 @@ public class PaymentDto {
 
 		private boolean visible;
 
-		private int amount;
+		private Long amount;
 
 		private String paymentUnit;
 
@@ -274,11 +274,11 @@ public class PaymentDto {
 	@NoArgsConstructor
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class PaymentDetailTag{
-		private String paymentUuid;
+ 		private String paymentUuid;
 
 		private String memo;
 
-		private int amount;
+		private Long amount;
 
 		private String paymentUnit;
 
