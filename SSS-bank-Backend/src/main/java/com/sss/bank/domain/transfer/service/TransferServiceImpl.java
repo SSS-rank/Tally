@@ -223,6 +223,9 @@ public class TransferServiceImpl implements TransferService {
 
 		// 1원 이체 예금주 검증
 		String redisCode = redisService.getValues(String.valueOf(onetransferVerifyReqDto.getAccountNum()));
+		if (redisCode == null) {
+			throw new AccountException(ErrorCode.EXPIRE_ONE_VALUE);
+		}
 		if (onetransferVerifyReqDto.getCode().equals(redisCode)) {
 			Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 				onetransferVerifyReqDto.getAccountNum());

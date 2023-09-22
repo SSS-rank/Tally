@@ -8,11 +8,16 @@ interface partyItemprops {
 	name: string;
 	img: AvatarImageSource;
 	self: boolean;
+	onAmountChange: (amount: string) => void;
 }
 function PartyListItem(props: partyItemprops) {
 	const [payCheck, setPayCheck] = useState(false);
 	const [involveCheck, setInvolveCheck] = useState(false);
 	const [amount, setAmount] = useState('');
+	const handleAmountChange = (input: string) => {
+		setAmount(input); // 입력값 업데이트
+		props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
+	};
 	return (
 		<View style={styles.partyItem}>
 			<View style={styles.profile_group}>
@@ -24,8 +29,7 @@ function PartyListItem(props: partyItemprops) {
 				<TextInput
 					value={amount}
 					onChangeText={(input) => {
-						setAmount(input);
-						console.log(amount);
+						handleAmountChange(input);
 					}}
 					returnKeyType="next"
 					style={[styles.textInput, props.self ? { color: 'gray' } : null]}

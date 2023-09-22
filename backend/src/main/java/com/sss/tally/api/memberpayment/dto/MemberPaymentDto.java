@@ -18,7 +18,7 @@ public class MemberPaymentDto {
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class MemberPaymentCreateDto{
 		private String memberUuid;
-		private int amount;
+		private Long amount;
 	}
 
 	@Getter
@@ -28,7 +28,7 @@ public class MemberPaymentDto {
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class MemberPaymentRespDto{
 		private String memberUuid;
-		private int amount;
+		private Long amount;
 		private String nickname;
 		private String profileImage;
 		private boolean payer;

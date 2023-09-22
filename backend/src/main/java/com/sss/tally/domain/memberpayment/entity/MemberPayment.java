@@ -45,7 +45,7 @@ public class MemberPayment {
 	private Payment paymentId;
 
 	@Column(nullable = false)
-	private int amount;
+	private Long amount;
 
 	@Column(nullable = false)
 	private Boolean status;
@@ -58,14 +58,14 @@ public class MemberPayment {
 
 	public static MemberPayment of(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto, Member member, Payment payment){
 		return MemberPayment.builder()
-			.paymentDate(payment.getPaymentLocalDate())
+			.paymentDate(payment.getPaymentKoreaDate())
 			.memberId(member)
 			.amount(memberPaymentCreateDto.getAmount())
 			.status(true)
 			.paymentId(payment)
 			.build();
 	}
-	public static MemberPayment from(Member member, Payment payment, boolean status, int amount){
+	public static MemberPayment from(Member member, Payment payment, boolean status, Long amount){
 		return MemberPayment.builder()
 			.paymentDate(payment.getPaymentKoreaDate())
 			.memberId(member)
@@ -78,7 +78,7 @@ public class MemberPayment {
 		this.status = status;
 	}
 
-	public void updateMemberPayment(int amount, boolean status){
+	public void updateMemberPayment(Long amount, boolean status){
 		this.amount = amount;
 		this.status = status;
 	}

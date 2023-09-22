@@ -34,6 +34,7 @@ public enum ErrorCode {
 	INVALID_ACCOUNT_PASSWORD(HttpStatus.BAD_REQUEST, "020", "잘못된 계좌 비밀번호입니다."),
 	INVALID_ACCOUNT_NUMBER(HttpStatus.BAD_REQUEST, "021", "잘못된 계좌 번호입니다."),
 	INVALID_ONE_VALUE(HttpStatus.BAD_REQUEST, "022", "잘못된 1원 이체 예금주 명입니다."),
+	EXPIRE_ONE_VALUE(HttpStatus.BAD_REQUEST, "023", "1원이체 입력 제한시간 초과입니다."),
 
 	// 가게
 	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "023", "해당 가게는 존재하지 않습니다."),
