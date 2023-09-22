@@ -64,6 +64,9 @@ public enum ErrorCode {
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
+
+	//체크리스트
+	NOT_EXIST_DEFAULT_CHECKLIST(HttpStatus.BAD_REQUEST, "015", "기본 체크리스트가 없습니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
