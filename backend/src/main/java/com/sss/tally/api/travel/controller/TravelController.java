@@ -34,9 +34,9 @@ public class TravelController {
 		return ResponseEntity.status(HttpStatus.OK).body(travelService.getTravelList(authentication, type, pageable));
 	}
 
-	@GetMapping("/day")
-	public ResponseEntity<Integer> getDay(Authentication authentication){
-		int day = travelService.getDay(authentication);
-		return ResponseEntity.status(HttpStatus.OK).body(day);
+	@GetMapping("/info")
+	public ResponseEntity<List<TravelDto.TravelNotStartDto>> getNotStartTravel(Authentication authentication){
+		List<TravelDto.TravelNotStartDto> notStartTravel = travelService.getNotStartTravel(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(notStartTravel);
 	}
 }
