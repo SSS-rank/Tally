@@ -19,6 +19,8 @@ import com.sss.tally.domain.city.entity.City;
 import com.sss.tally.domain.city.repository.CityRepository;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
+import com.sss.tally.domain.payment.entity.Payment;
+import com.sss.tally.domain.payment.repository.PaymentRepository;
 import com.sss.tally.domain.state.entity.State;
 import com.sss.tally.domain.state.repository.StateRepository;
 import com.sss.tally.domain.travel.entity.Travel;
@@ -43,9 +45,10 @@ public class TravelServiceImpl implements TravelService{
 	private final TravelGroupRepository travelGroupRepository;
 	private final CityRepository cityRepository;
 	private final StateRepository stateRepository;
+	private final PaymentRepository paymentRepository;
 
 	@Override
-	public void createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
+	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
 
@@ -73,7 +76,31 @@ public class TravelServiceImpl implements TravelService{
 
 		Travel travel = Travel.of(travelCreateDto, travelTypeEnum, startLocalDate, endLocalDate, false);
 		Travel save = travelRepository.save(travel);
+
+		String travelLocation = "";
+		String travelType ="";
+
+		// 여행지 정보를 받아옴
+		// travelType은 국가 코드
+		// travelLocation은 여행지 명
+		if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+			travelType="KOR";
+			Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
+			if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+			travelLocation = cityByCityId.get().getCityName();
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+			travelType="KOR";
+			Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
+			if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
+			travelLocation = stateByStateId.get().getStateName();
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+			// country 정보가 구현된 후, 수정 예정
+		}
+
 		travelGroupRepository.save(TravelGroup.of(memberOptional.get(), save));
+		return TravelDto.TravelCreateRespDto.of(save, travelType, travelLocation, memberOptional.get());
 	}
 
 	@Override
@@ -134,19 +161,67 @@ public class TravelServiceImpl implements TravelService{
 	}
 
 	@Override
-	public int getDay(Authentication authentication) {
+	public List<TravelDto.TravelNotStartDto> getNotStartTravel(Authentication authentication) {
 		Member auth = (Member)authentication.getPrincipal();
 		Member member = memberRepository.findByMemberUuid(auth.getMemberUuid())
 			.orElseThrow(()->new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
 
-		List<Travel> ongoingTravel = travelRepository.findOngoingTravelForMember(member, LocalDate.now(), null);
-		if(ongoingTravel.size()>0) return 0;
-
 		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member, LocalDate.now());
-		if(travelList.isEmpty()) return -1;
+		if(travelList.isEmpty()) return null;
 
-		LocalDateTime travelStart = travelList.get(0).getStartDate().atStartOfDay();
-		LocalDateTime now = LocalDate.now().atStartOfDay();
-		return (int)Duration.between(travelStart, now).toDays() * -1;
+		// for문을 통해 Travel entity를 TravelDto로 변환
+		List<TravelDto.TravelNotStartDto> travelsInfo = new ArrayList<>();
+		for(Travel travel: travelList){
+			String travelLocation = "";
+			String travelType ="";
+
+			LocalDateTime travelStart = travel.getStartDate().atStartOfDay();
+			LocalDateTime now = LocalDate.now().atStartOfDay();
+			int remainDate = (int)Duration.between(travelStart, now).toDays() * -1;
+			// 여행지 정보를 받아옴
+			// travelType은 국가 코드
+			// travelLocation은 여행지 명
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
+				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
+				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+				travelLocation = cityByCityId.get().getCityName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				travelType="KOR";
+				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
+				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
+				travelLocation = stateByStateId.get().getStateName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				// country 정보가 구현된 후, 수정 예정
+			}
+
+			// travelId를 통해 여행 참여자들의 정보를 받아옴.
+			List<Member> members = memberRepository.findMembersInTravel(travel);
+
+			Long totalAmount = this.totalTravelMoney(member.getMemberUuid(), members, travel);
+
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
+			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation, members.stream()
+				.map(MemberDto.MemberTravelDto::from)
+				.collect(Collectors.toList())));
+		}
+		return travelsInfo;
+	}
+
+	public Long totalTravelMoney(String memberUuid, List<Member> members, Travel travel){
+		long totalAmount = 0L;
+		for(Member member : members){
+			List<Payment> payments;
+			if(member.getMemberUuid().equals(memberUuid))
+				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalse(travel, member);
+			else
+				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(travel, member);
+
+			for(Payment payment : payments)
+				totalAmount+=payment.getAmount();
+		}
+		return totalAmount;
 	}
 }

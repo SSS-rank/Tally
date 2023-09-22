@@ -42,7 +42,7 @@ public class PaymentController {
 		paymentService.modifyPaymentManual(authentication, paymentUpdateDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
-	@PatchMapping
+	@PatchMapping("/auto")
 	public ResponseEntity<String> modifyPayment(Authentication authentication, @RequestBody @Valid
 		PaymentDto.PaymentCardUpdateDto paymentCardUpdateDto){
 		paymentService.modifyPaymentAuto(authentication, paymentCardUpdateDto);
@@ -53,5 +53,23 @@ public class PaymentController {
 	public ResponseEntity<List<PaymentDto.PaymentListDto>> getPaymentList(Authentication authentication, @PathVariable("travelId") Long travelId){
 		List<PaymentDto.PaymentListDto> paymentList = paymentService.getPaymentList(authentication, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(paymentList);
+	}
+	@PatchMapping
+	public ResponseEntity<String> removePayment(Authentication authentication, @RequestBody @Valid
+		PaymentDto.RemovePaymentDto removePaymentDto){
+		paymentService.removePayment(authentication, removePaymentDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
+	}
+
+	@GetMapping("/payer/{paymentUuid}")
+	public ResponseEntity<PaymentDto.PaymentDetailPayer> getPaymentDetailForPayer(Authentication authentication, @PathVariable("paymentUuid") String paymentUuid){
+		PaymentDto.PaymentDetailPayer paymentDetailForPayer = paymentService.getPaymentDetailForPayer(authentication, paymentUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentDetailForPayer);
+	}
+
+	@GetMapping("/tag/{paymentUuid}")
+	public ResponseEntity<PaymentDto.PaymentDetailTag> getPaymentDetailForTag(Authentication authentication, @PathVariable("paymentUuid") String paymentUuid){
+		PaymentDto.PaymentDetailTag paymentDetailForTag = paymentService.getPaymentDetailForTag(authentication, paymentUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(paymentDetailForTag);
 	}
 }
