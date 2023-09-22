@@ -56,12 +56,14 @@ public class CalculateController {
 		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateDetailRespDto);
 	}
 
-	@GetMapping("/request-detail/{calculateGroupUuid}/{member_uuid}")
-	public ResponseEntity<CalculateDto.GetRequestCalculateDetailRespDto> getRequestCalculateDetailbyMember(
-		@RequestBody CalculateDto.GetRequestCalculateDetailReqDto getRequestCalculateDetailReqDto,
+	@GetMapping("/request-detail/{calculateGroupUuid}/{memberUuid}")
+	public ResponseEntity<CalculateDto.GetRequestCalculateDetailByMemberRespDto> getRequestCalculateDetailbyMember(
+		@PathVariable String calculateGroupUuid, @PathVariable String memberUuid,
 		@AuthenticationPrincipal Member member) {
-		String memberUuid = member.getMemberUuid();
-		return null;
+		String loginMemberUuid = member.getMemberUuid();
+		CalculateDto.GetRequestCalculateDetailByMemberRespDto getRequestCalculateDetailByMemberRespDto
+			= calculateGroupService.getRequestCalculateDetailByMember(calculateGroupUuid, memberUuid, loginMemberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(getRequestCalculateDetailByMemberRespDto);
 	}
 
 	@GetMapping("/receive/{travelId}")
