@@ -37,7 +37,7 @@ public class PaymentDto {
 
 		public static PaymentListDto of(Payment payment, List<String> participants){
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
-			String dateTime = payment.getPaymentLocalDate().format(dateTimeFormatter);
+			String dateTime = payment.getPaymentKoreaDate().format(dateTimeFormatter);
 
 			return PaymentListDto.builder()
 				.paymentUuid(payment.getPaymentUuid())
