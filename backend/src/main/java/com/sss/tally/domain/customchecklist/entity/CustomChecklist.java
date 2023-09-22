@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sss.tally.domain.defaultchecklist.entity.DefaultCheckList;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.travel.entity.Travel;
 
@@ -49,4 +50,14 @@ public class CustomChecklist {
 	private Boolean status;
 	@CreatedDate
 	private LocalDateTime createDate;
+
+	public static CustomChecklist of(DefaultCheckList defaultCheckList, Travel travel) {
+		return CustomChecklist.builder()
+			.memberId(defaultCheckList.getMemberId())
+			.travelId(travel)
+			.content(defaultCheckList.getContent())
+			.status(false)
+			.build();
+	}
+
 }
