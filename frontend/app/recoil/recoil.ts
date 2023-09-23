@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
 import { TripListItemProps, TripInfo } from './../model/trip';
-import { Account } from '../model/account';
+import { Account, AccountResgistReq } from '../model/account';
 import { Token } from '../model/token';
 
 export const TokenState = atom<Token>({
@@ -38,7 +38,18 @@ export const tallyAccountListState = atom<Account[]>({
 	default: [],
 });
 
+// 이체 비밀번호
 export const transferPasswordState = atom<string>({
 	key: 'transferPasswordState',
 	default: '',
+});
+
+export const accountResgistReqState = atom<AccountResgistReq>({
+	key: 'accountResgistReqState',
+	default: {
+		account_number: '',
+		bank_code: '',
+		order_number: 0,
+		account_password: '',
+	},
 });
