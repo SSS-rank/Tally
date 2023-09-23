@@ -37,3 +37,8 @@ export const tallyAccountListState = atom<Account[]>({
 	key: 'tallyAccountListState',
 	default: [],
 });
+
+export const transferPasswordState = atom<string>({
+	key: 'transferPasswordState',
+	default: '',
+});
