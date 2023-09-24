@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,22 +24,24 @@ function TripListScreen({ navigation }: TripStackProp) {
 
 	const [ongoingListState, setOngoingListState] = useRecoilState(ongoingTripListState);
 	const api = useAxiosWithAuth();
-	useEffect(() => {
-		console.log(selectionMode);
-		setBeforePage(0);
-		setOngoingPage(0);
-		setAfterPage(0);
-		setOngoingListState([]);
-		if (selectionMode === 'ongoing') {
-			getOngoingTripList();
-		} else if (selectionMode === 'after') {
-			// 다가오는 여행
-			getAfterTripList();
-		} else {
-			// 다녀온 여행
-			getBeforeTripList();
-		}
-	}, [selectionMode]);
+	useFocusEffect(
+		useCallback(() => {
+			console.log(selectionMode);
+			setBeforePage(0);
+			setOngoingPage(0);
+			setAfterPage(0);
+			setOngoingListState([]);
+			if (selectionMode === 'ongoing') {
+				getOngoingTripList();
+			} else if (selectionMode === 'after') {
+				// 다가오는 여행
+				getAfterTripList();
+			} else {
+				// 다녀온 여행
+				getBeforeTripList();
+			}
+		}, [selectionMode]),
+	);
 
 	const getOngoingTripList = async () => {
 		try {
