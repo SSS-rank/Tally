@@ -1,6 +1,7 @@
 import React from 'react';
+import { IconButton } from 'react-native-paper';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
 import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
@@ -25,8 +26,9 @@ export type TripStackProps = {
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
+type TripDetailScreenProps = NativeStackScreenProps<TripStackProps>;
 
-function TripStack() {
+function TripStack({ navigation }: TripDetailScreenProps) {
 	return (
 		<Stack.Navigator screenOptions={{ headerShadowVisible: false }} initialRouteName="TripList">
 			<Stack.Screen
@@ -43,12 +45,42 @@ function TripStack() {
 			<Stack.Screen
 				name="CreateTrip"
 				component={CreateTripScreen}
-				options={{ title: '여행지 생성' }}
+				options={{
+					title: '여행지 생성',
+					headerLeft: () => (
+						<IconButton
+							icon="close"
+							iconColor="#232323"
+							size={24}
+							style={{
+								position: 'relative',
+								left: -15,
+								top: 2,
+							}}
+							onPress={() => navigation.navigate('TripList')}
+						/>
+					),
+				}}
 			/>
 			<Stack.Screen
 				name="TripDetail"
 				component={TripDetailScreen}
-				options={{ title: '상세 결제 내역' }}
+				options={{
+					title: '상세 결제 내역',
+					headerLeft: () => (
+						<IconButton
+							icon="arrow-left"
+							iconColor="#232323"
+							size={24}
+							style={{
+								position: 'relative',
+								left: -15,
+								top: 2,
+							}}
+							onPress={() => navigation.navigate('TripList')}
+						/>
+					),
+				}}
 			/>
 			<Stack.Screen name="AnalysisTrip" component={AnalysisScreen} options={{ title: '분석' }} />
 			<Stack.Screen name="AdjustTrip" component={AdjustScreen} options={{ title: '' }} />
