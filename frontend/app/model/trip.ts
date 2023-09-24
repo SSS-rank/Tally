@@ -24,3 +24,15 @@ export interface TripInfo {
 	startDay: string;
 	endDay: string;
 }
+
+export interface TripCreateRes {
+	travel_id: number;
+	travel_title: string;
+	travel_location: string;
+	travel_type: string;
+	profile_image: string;
+	profile_nickname: string;
+	member_uuid: string;
+	start_date: string;
+	end_date: string;
+}
