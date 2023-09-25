@@ -325,15 +325,21 @@ public class PaymentServiceImpl implements PaymentService{
 
 		}
 
-		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travelOptional.get(), member);
-		return payments.stream()
+		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberId(travelOptional.get(), member);
+		Long[] totalAmount = {0L};
+		List<PaymentDto.PaymentListDto> paymentListDtos = payments.stream()
 			.map(
-					payment -> {
-						List<String> memberPayments = memberPaymentRepository.findNicknamesByPaymentId(payment.getPaymentId());
-						memberPayments.remove(member.getNickname());
-						return PaymentDto.PaymentListDto.of(payment, memberPayments);
-					})
+				payment -> {
+					List<String> memberPayments = memberPaymentRepository.findNicknamesByPaymentId(
+						payment.getPaymentId());
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
+						payment, member);
+					memberPayments.remove(member.getNickname());
+					totalAmount[0]+=memberPaymentOptional.get().getAmount();
+					return PaymentDto.PaymentListDto.of(payment, memberPayments, memberPaymentOptional.get().getAmount());
+				})
 			.collect(Collectors.toList());
+		return paymentListDtos;
 	}
 
 	@Override
