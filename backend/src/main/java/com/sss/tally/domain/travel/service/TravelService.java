@@ -18,4 +18,6 @@ public interface TravelService {
 	Long totalTravelMoney(Member user, List<Member> members, Travel travel);
 
 	List<TravelDto> getInvisibleTravelList(Authentication authentication);
+
+	TravelDto.TravelVisitRespDto getTravelVisitCount(Authentication authentication);
 }

@@ -392,4 +392,17 @@ public class TravelServiceImpl implements TravelService{
 		}
 		return travels;
 	}
+
+	@Override
+	public TravelDto.TravelVisitRespDto getTravelVisitCount(Authentication authentication) {
+		Member member = (Member) authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		int domestic = 0; int overseas = 0;
+		for(Travel travel: travelList){
+			if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) overseas++;
+			else domestic++;
+		}
+		return TravelDto.TravelVisitRespDto.of(domestic, overseas);
+	}
 }
