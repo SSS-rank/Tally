@@ -65,7 +65,7 @@ public class AnalysisDto {
 			return MemberRespInfo.builder()
 				.categoryId(categoryId)
 				.categoryType(categoryType)
-				.percent(percent)
+				.percent(Math.round(percent*100.0)/100.0)
 				.money(money)
 				.build();
 		}
