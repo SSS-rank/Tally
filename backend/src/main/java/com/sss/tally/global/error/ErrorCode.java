@@ -61,6 +61,7 @@ public enum ErrorCode {
 	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),
 	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
 	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "015", "존재하지 않는 국가입니다."),
+	NOT_EXIST_MEMBER_TRAVEL(HttpStatus.BAD_REQUEST, "016", "여행에 해당 사용자가 참여중이지 않습니다."),
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
