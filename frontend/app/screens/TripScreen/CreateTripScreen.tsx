@@ -45,24 +45,7 @@ function CreateTripScreen({ navigation }: TripStackProps) {
 			const data: TripCreateRes = res.data;
 			navigation.navigate('TripDetail', {
 				id: data.travel_id,
-				title: data.travel_title,
-				location: data.travel_location,
-				type: data.travel_type,
-				startDay: data.start_date,
-				endDay: data.end_date,
-				travelParticipants: [
-					{
-						image: data.profile_image,
-						member_nickname: data.profile_nickname,
-						member_uuid: data.member_uuid,
-					},
-				],
 			});
-		}
-
-		if (res.data === 'OK') {
-			// TODO 해당 여행 상세 페이지로 이동
-			navigation.navigate('TripDetail');
 		}
 	};
 
