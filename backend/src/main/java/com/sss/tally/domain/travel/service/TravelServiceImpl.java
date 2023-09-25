@@ -154,9 +154,6 @@ public class TravelServiceImpl implements TravelService{
 			String travelLocation = "";
 			String travelType ="";
 
-			// 여행지 정보를 받아옴
-			// travelType은 국가 코드
-			// travelLocation은 여행지 명
 			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
 				travelType="KOR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
@@ -293,16 +290,18 @@ public class TravelServiceImpl implements TravelService{
 
 		}
 
-		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travelOptional.get(), member);
+		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberId(travelOptional.get(), member);
 		Long[] totalAmount = {0L};
 		List<PaymentDto.PaymentListDto> paymentListDtos = payments.stream()
 			.map(
 				payment -> {
 					List<String> memberPayments = memberPaymentRepository.findNicknamesByPaymentId(
 						payment.getPaymentId());
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
+						payment, member);
 					memberPayments.remove(member.getNickname());
-					totalAmount[0]+=payment.getAmount();
-					return PaymentDto.PaymentListDto.of(payment, memberPayments);
+					totalAmount[0]+=memberPaymentOptional.get().getAmount();
+					return PaymentDto.PaymentListDto.of(payment, memberPayments, memberPaymentOptional.get().getAmount());
 				})
 			.collect(Collectors.toList());
 
