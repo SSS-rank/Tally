@@ -48,7 +48,7 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
 		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
-		if(!travelGroupRepository.existsByTravelIdAndMemberId(travelOptional.get(), member))
+		if(!travelGroupRepository.existsByTravelIdAndMemberIdAndVisibleIsTrue(travelOptional.get(), member))
 			throw new TravelException(ErrorCode.NOT_EXIST_PARTICIPANT);
 
 		List<Member> memberIds = travelGroupRepository.findMembersByTravelId(travelId);
