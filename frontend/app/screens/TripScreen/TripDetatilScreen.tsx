@@ -11,6 +11,7 @@ import { useRecoilState } from 'recoil';
 import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import { Payment } from '../../model/payment';
+import { TripMember } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -31,6 +32,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
+	const [participants, setParticipants] = useState<TripMember[]>([]);
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
@@ -49,7 +51,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							startDay: period.split('~')[0],
 							endDay: period.split('~')[1],
 						};
-
+						setParticipants(trip_data.participants);
 						setCurTripInfo(updatedTripInfo);
 						setPayData(trip_data.payment_list);
 						console.log(payData);
@@ -135,7 +137,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					mode="text"
 					onPress={() =>
 						navigation.navigate('AddPayment', {
-							id,
+							travel_id: travel_id,
+							travel_title: title,
+							participants: participants,
 						})
 					}
 				>

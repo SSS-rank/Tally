@@ -50,8 +50,12 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		setSelfCheck(false);
 		setDate(new Date());
 		setOpen(false);
-		const { id, type, title, travelParticipants } = route.params;
-		const directPayMembers = travelParticipants.map((member: TripMember) => ({
+		const { travel_id, travel_title, participants } = route.params || {
+			travel_id: undefined,
+			travel_title: undefined,
+			participants: undefined,
+		};
+		const directPayMembers = participants.map((member: TripMember) => ({
 			amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
 			member_uuid: member.member_uuid,
 			checked: false,
@@ -62,8 +66,8 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 		setPartyMembers(directPayMembers);
 		setDirectPayReq((prevState: DirectPayReq) => ({
 			...prevState,
-			title: title || '',
-			travel_id: id || 0,
+			title: travel_title || '',
+			travel_id: travel_id || 0,
 		}));
 		// route.params에 의존하는 추가적인 코드 작성
 	}, [route.params]);
