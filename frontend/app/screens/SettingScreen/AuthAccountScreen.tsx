@@ -9,7 +9,11 @@ import { HomeStackProps } from './../../navigation/HomeStack';
 import bankApi from '../../api/bankApi';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { AccountResgistReq } from '../../model/account';
-import { accountResgistReqState, tallyAccountListState } from '../../recoil/recoil';
+import {
+	accountResgistReqState,
+	tallyAccountListState,
+	transferPasswordState,
+} from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
@@ -85,6 +89,7 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 	const api = useAxiosWithAuth();
 	const accountListState = useRecoilValue(tallyAccountListState);
 	const setAccountRegistInfo = useSetRecoilState(accountResgistReqState);
+	const transferPassword = useRecoilValue(transferPasswordState);
 
 	const registerAccount = async (password: string) => {
 		console.log('accountListState.length ', accountListState.length);
@@ -95,7 +100,7 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 			setAccountRegistInfo({
 				account_number: accountNumber,
 				bank_code: bankCode,
-				order_number: accountListState.length + 1,
+				order_number: 1,
 				account_password: password,
 			});
 			navigation.navigate('TransferPassword');
@@ -105,7 +110,7 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 				bank_code: bankCode,
 				order_number: accountListState.length + 1,
 				account_password: password,
-				transfer_password: '123456',
+				transfer_password: transferPassword,
 			};
 
 			try {
