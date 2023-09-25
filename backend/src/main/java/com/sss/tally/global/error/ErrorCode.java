@@ -67,6 +67,7 @@ public enum ErrorCode {
 
 	//체크리스트
 	NOT_EXIST_DEFAULT_CHECKLIST(HttpStatus.BAD_REQUEST, "015", "기본 체크리스트가 없습니다."),
+	NOT_EQUAL_CHECKLIST_MEMBER(HttpStatus.BAD_REQUEST, "015", "체크리스트 소유자와 로그인한 사용자가 일치하지 않습니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
