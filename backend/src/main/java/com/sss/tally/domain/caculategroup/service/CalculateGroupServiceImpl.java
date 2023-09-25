@@ -19,6 +19,10 @@ import com.sss.tally.domain.caculategroup.client.CalculateGroupClient;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.caculategroup.entity.CalculateGroupStatusEnum;
 import com.sss.tally.domain.caculategroup.repository.CalculateGroupRepository;
+import com.sss.tally.domain.city.entity.City;
+import com.sss.tally.domain.city.repository.CityRepository;
+import com.sss.tally.domain.country.entity.Country;
+import com.sss.tally.domain.country.repository.CountryRepository;
 import com.sss.tally.domain.device.entity.Device;
 import com.sss.tally.domain.device.repository.DeviceRepository;
 import com.sss.tally.domain.groupmember.entity.GroupMember;
@@ -35,6 +39,8 @@ import com.sss.tally.domain.notification.service.NotificationService;
 import com.sss.tally.domain.payment.entity.CalculateStatusEnum;
 import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.payment.repository.PaymentRepository;
+import com.sss.tally.domain.state.entity.State;
+import com.sss.tally.domain.state.repository.StateRepository;
 import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.domain.travel.repository.TravelRepository;
 import com.sss.tally.global.error.ErrorCode;
@@ -75,6 +81,12 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	private final CalculateGroupClient calculateGroupClient;
 
 	private final TravelRepository travelRepository;
+
+	private final CityRepository cityRepository;
+
+	private final StateRepository stateRepository;
+
+	private final CountryRepository countryRepository;
 
 	@Override
 	public String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid) {
@@ -427,6 +439,16 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
 		Long totalAmount = 0L;
 		String travelType = travel.getTravelType().toString();
+		if (travelType.equals("GLOBAL")) {
+			Optional<Country> countryOptional = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+			travelType = countryOptional.get().getCountryName();
+		} else if (travelType.equals("CITY")) {
+			Optional<City> cityOptional = cityRepository.findCityByCityId(travel.getTravelLocation());
+			travelType = cityOptional.get().getCityName();
+		} else {
+			Optional<State> stateOptional = stateRepository.findStateByStateId(travel.getTravelLocation());
+			travelType = stateOptional.get().getStateName();
+		}
 		List<CalculateDto.Detail> detailList = new ArrayList<>();
 
 		for (GroupPayment groupPayment : groupPaymentList) {
@@ -656,6 +678,16 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
 		Long totalAmount = 0l;
 		String travelType = travel.getTravelType().toString();
+		if (travelType.equals("GLOBAL")) {
+			Optional<Country> countryOptional = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+			travelType = countryOptional.get().getCountryName();
+		} else if (travelType.equals("CITY")) {
+			Optional<City> cityOptional = cityRepository.findCityByCityId(travel.getTravelLocation());
+			travelType = cityOptional.get().getCityName();
+		} else {
+			Optional<State> stateOptional = stateRepository.findStateByStateId(travel.getTravelLocation());
+			travelType = stateOptional.get().getStateName();
+		}
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
 			for (GroupPayment groupPayment : groupPaymentList) {
