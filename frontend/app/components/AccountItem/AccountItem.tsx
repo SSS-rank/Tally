@@ -49,8 +49,10 @@ function AccountItem({
 		>
 			<Avatar.Image
 				style={{ backgroundColor: 'transparent', marginHorizontal: 5 }}
-				size={48}
-				source={require('../../assets/images/kakao.png')}
+				size={36}
+				source={{
+					uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${bankCode}.png`,
+				}}
 			/>
 			<View style={{ paddingHorizontal: 10, flex: 1 }}>
 				<Text
