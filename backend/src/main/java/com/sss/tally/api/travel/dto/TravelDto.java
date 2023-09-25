@@ -70,6 +70,48 @@ public class TravelDto {
 		}
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class TravelVisibleReqDto{
+		private boolean visible;
+		private Long travelId;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class TravelVisitRespDto{
+		private int overseas;
+		private int national;
+
+		public static TravelVisitRespDto of(int national, int global){
+			return TravelVisitRespDto.builder()
+				.overseas(global)
+				.national(national)
+				.build();
+		}
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class TravelVisitListRespDto{
+		private List<String> overseas;
+		private List<String> national;
+
+		public static TravelVisitListRespDto of(List<String> national, List<String> global){
+			return TravelVisitListRespDto.builder()
+				.overseas(global)
+				.national(national)
+				.build();
+		}
+	}
+
 
 	@Getter
 	@Builder

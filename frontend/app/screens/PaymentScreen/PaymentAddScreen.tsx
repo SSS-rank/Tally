@@ -12,11 +12,10 @@ import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { DirectPayReq, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
-import { TripStackProps } from '../../navigation/TripStack';
+import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
-type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
-function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
+function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const api = useAxiosWithAuth();
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
