@@ -29,6 +29,9 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId And tg.visible = true) " +
 		"AND t.startDate > :now")
 	List<Travel> findPastTravelForMember(@Param("memberId") Member memberId, @Param("now") LocalDate now, Pageable pageable);
+	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
+		"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId And tg.visible = false) ")
+	List<Travel> findInvisibleTravelForMember(@Param("memberId") Member memberId);
 
 	Optional<Travel> findTravelByTravelId(Long travelId);
 
