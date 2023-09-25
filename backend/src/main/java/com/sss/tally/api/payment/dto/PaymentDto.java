@@ -26,6 +26,7 @@ public class PaymentDto {
 		private String paymentUuid;
 		private Long categoryId;
 		private Long amount;
+		private String payer;
 		private String paymentDate;
 		private String paymentMemo;
 		private String paymentMethod;
@@ -35,15 +36,16 @@ public class PaymentDto {
 		private String calculateStatus;
 		private List<String> participants;
 
-		public static PaymentListDto of(Payment payment, List<String> participants){
+		public static PaymentListDto of(Payment payment, List<String> participants, Long amount){
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
 			String dateTime = payment.getPaymentKoreaDate().format(dateTimeFormatter);
 
 			return PaymentListDto.builder()
 				.paymentUuid(payment.getPaymentUuid())
 				.categoryId(payment.getCategoryId().getCategoryId())
-				.amount(payment.getAmount())
+				.amount(amount)
 				.paymentDate(dateTime)
+				.payer(payment.getMemberId().getMemberUuid())
 				.participants(participants)
 				.paymentMemo(payment.getPaymentMemo())
 				.paymentMethod(payment.getPaymentMethod().toString())
