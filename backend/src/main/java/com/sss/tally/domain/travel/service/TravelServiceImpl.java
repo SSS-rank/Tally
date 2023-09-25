@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -46,8 +48,10 @@ import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.BusinessException;
 import com.sss.tally.global.error.exception.CategoryException;
 import com.sss.tally.global.error.exception.CityException;
+import com.sss.tally.global.error.exception.CountryException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.PaymentException;
+import com.sss.tally.global.error.exception.StateException;
 import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.RequiredArgsConstructor;
@@ -100,6 +104,7 @@ public class TravelServiceImpl implements TravelService {
 		String[] end = travelCreateDto.getEndDate().split("-");
 		LocalDate endLocalDate = LocalDate.of(Integer.parseInt(end[0]), Integer.parseInt(end[1]),
 			Integer.parseInt(end[2]));
+		if(startLocalDate.isAfter(endLocalDate)) throw new TravelException(ErrorCode.VALID_DATE_TIME);
 
 		Travel travel = Travel.of(travelCreateDto, travelTypeEnum, startLocalDate, endLocalDate, false);
 		Travel save = travelRepository.save(travel);
@@ -383,4 +388,87 @@ public class TravelServiceImpl implements TravelService {
 		return totalAmount;
 	}
 
+	@Override
+	public List<TravelDto> getInvisibleTravelList(Authentication authentication) {
+		Member member = (Member)authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findInvisibleTravelForMember(member);
+
+		// for문을 통해 Travel entity를 TravelDto로 변환
+		List<TravelDto> travels = new ArrayList<>();
+		for(Travel travel: travelList){
+			String travelLocation = "";
+			String travelType ="";
+
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
+				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
+				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+				travelLocation = cityByCityId.get().getCityName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				travelType="KOR";
+				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
+				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
+				travelLocation = stateByStateId.get().getStateName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
+			}
+
+			// travelId를 통해 여행 참여자들의 정보를 받아옴.
+			List<Member> members = memberRepository.findMembersInTravel(travel);
+
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
+			travels.add(TravelDto.of(travel, travelType, travelLocation, members.stream()
+				.map(MemberDto.MemberTravelDto::from)
+				.collect(Collectors.toList())));
+		}
+		return travels;
+	}
+
+	@Override
+	public TravelDto.TravelVisitRespDto getTravelVisitCount(Authentication authentication) {
+		Member member = (Member) authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		int domestic = 0; int overseas = 0;
+		for(Travel travel: travelList){
+			if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) overseas++;
+			else domestic++;
+		}
+		return TravelDto.TravelVisitRespDto.of(domestic, overseas);
+	}
+
+	@Override
+	public TravelDto.TravelVisitListRespDto getTravelVisitList(Authentication authentication) {
+		Member member = (Member) authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		Set<String> domestic = new HashSet<>();
+		Set<String> overseas = new HashSet<>();
+
+		for(Travel travel: travelList){
+			if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryOptional = countryRepository.findCountryByCountryId(
+					travel.getTravelLocation());
+				if(countryOptional.isEmpty()) throw new CountryException(ErrorCode.NOT_EXIST_COUNTRY);
+				overseas.add(countryOptional.get().getCountryName());
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				Optional<State> stateOptional = stateRepository.findStateByStateId(travel.getTravelLocation());
+				if(stateOptional.isEmpty()) throw new StateException(ErrorCode.NOT_EXIST_STATE);
+				domestic.add(stateOptional.get().getStateName());
+			}else{
+				Optional<City> cityOptional = cityRepository.findCityByCityId(travel.getTravelLocation());
+				if(cityOptional.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+
+				domestic.add(cityOptional.get().getStateId().getStateName());
+			}
+		}
+		return TravelDto.TravelVisitListRespDto.of(new ArrayList<>(domestic), new ArrayList<>(overseas));
+	}
 }
