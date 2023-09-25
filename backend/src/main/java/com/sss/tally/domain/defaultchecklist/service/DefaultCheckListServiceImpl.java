@@ -1,5 +1,6 @@
 package com.sss.tally.domain.defaultchecklist.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -99,5 +100,23 @@ public class DefaultCheckListServiceImpl implements DefaultCheckListService {
 		}
 		defaultCheckListRepository.delete(defaultCheckList);
 		return "ok";
+	}
+
+	@Override
+	public List<DefaultCheckListDto.GetDefaultCheckListRespDto> getContent(String memberUuid) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		List<DefaultCheckList> defaultCheckListList = defaultCheckListRepository.findDefaultCheckListByMemberId(member);
+		List<DefaultCheckListDto.GetDefaultCheckListRespDto> defaultCheckListResp = new ArrayList<>();
+		for (DefaultCheckList defaultCheckList : defaultCheckListList) {
+			defaultCheckListResp.add(DefaultCheckListDto.GetDefaultCheckListRespDto.from(defaultCheckList));
+		}
+		if (defaultCheckListResp.isEmpty()) {
+			return null;
+		}
+		return defaultCheckListResp;
 	}
 }
