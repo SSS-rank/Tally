@@ -20,4 +20,6 @@ public interface TravelService {
 	List<TravelDto> getInvisibleTravelList(Authentication authentication);
 
 	TravelDto.TravelVisitRespDto getTravelVisitCount(Authentication authentication);
+
+	TravelDto.TravelVisitListRespDto getTravelVisitList(Authentication authentication);
 }

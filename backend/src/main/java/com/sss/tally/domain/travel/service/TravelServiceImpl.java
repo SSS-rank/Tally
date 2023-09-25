@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -45,8 +47,10 @@ import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.BusinessException;
 import com.sss.tally.global.error.exception.CategoryException;
 import com.sss.tally.global.error.exception.CityException;
+import com.sss.tally.global.error.exception.CountryException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.PaymentException;
+import com.sss.tally.global.error.exception.StateException;
 import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.RequiredArgsConstructor;
@@ -404,5 +408,34 @@ public class TravelServiceImpl implements TravelService{
 			else domestic++;
 		}
 		return TravelDto.TravelVisitRespDto.of(domestic, overseas);
+	}
+
+	@Override
+	public TravelDto.TravelVisitListRespDto getTravelVisitList(Authentication authentication) {
+		Member member = (Member) authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		Set<String> domestic = new HashSet<>();
+		Set<String> overseas = new HashSet<>();
+
+		for(Travel travel: travelList){
+			if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryOptional = countryRepository.findCountryByCountryId(
+					travel.getTravelLocation());
+				if(countryOptional.isEmpty()) throw new CountryException(ErrorCode.NOT_EXIST_COUNTRY);
+				overseas.add(countryOptional.get().getCountryName());
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				Optional<State> stateOptional = stateRepository.findStateByStateId(travel.getTravelLocation());
+				if(stateOptional.isEmpty()) throw new StateException(ErrorCode.NOT_EXIST_STATE);
+				domestic.add(stateOptional.get().getStateName());
+			}else{
+				Optional<City> cityOptional = cityRepository.findCityByCityId(travel.getTravelLocation());
+				if(cityOptional.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+
+				domestic.add(cityOptional.get().getStateId().getStateName());
+			}
+		}
+		return TravelDto.TravelVisitListRespDto.of(new ArrayList<>(domestic), new ArrayList<>(overseas));
 	}
 }
