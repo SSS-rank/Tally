@@ -9,4 +9,6 @@ public interface CustomCheckListService {
 	public void createInitCustomCheckList(Member member, Travel travel);
 
 	String addContent(String memberUuid, CustomCheckListDto.AddCustomCheckListReqDto addCustomCheckListReqDto);
+
+	String updateContent(String memberUuid, CustomCheckListDto.UpdateCustomCheckListReqDto updateCustomCheckListReqDto);
 }
