@@ -15,7 +15,7 @@ const ManageAccountScreen = ({ navigation }: any) => {
 	useFocusEffect(
 		useCallback(() => {
 			getAccountList();
-		}, [accountListState]),
+		}, []),
 	);
 
 	const getAccountList = async () => {
