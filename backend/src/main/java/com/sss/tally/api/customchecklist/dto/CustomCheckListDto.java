@@ -19,4 +19,16 @@ public class CustomCheckListDto {
 
 		public Long travelId;
 	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class UpdateCustomCheckListReqDto {
+
+		private Long customCheckListId;
+
+		private String content;
+	}
 }
