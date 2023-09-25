@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import bankApi from '../../api/bankApi';
-import BankItem from '../../components/BankItem/BankItem';
+import BankItem from '../../components/common/BankItem';
 import { bankList } from '../../model/bank';
 import { TextStyles } from '../../styles/CommonStyles';
 
