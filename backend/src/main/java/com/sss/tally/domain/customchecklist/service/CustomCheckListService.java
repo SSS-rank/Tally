@@ -11,4 +11,6 @@ public interface CustomCheckListService {
 	String addContent(String memberUuid, CustomCheckListDto.AddCustomCheckListReqDto addCustomCheckListReqDto);
 
 	String updateContent(String memberUuid, CustomCheckListDto.UpdateCustomCheckListReqDto updateCustomCheckListReqDto);
+
+	String deleteContent(String memberUuid, Long checkListId);
 }
