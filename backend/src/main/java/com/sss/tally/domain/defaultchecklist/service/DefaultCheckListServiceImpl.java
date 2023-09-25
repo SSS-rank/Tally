@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sss.tally.api.defaultchecklist.dto.DefaultCheckListDto;
 import com.sss.tally.domain.defaultchecklist.entity.DefaultCheckList;
 import com.sss.tally.domain.defaultchecklist.repository.DefaultCheckListRepository;
 import com.sss.tally.domain.member.entity.Member;
@@ -42,5 +43,17 @@ public class DefaultCheckListServiceImpl implements DefaultCheckListService {
 
 		defaultCheckListRepository.saveAll(checkLists);
 
+	}
+
+	@Override
+	public String addContent(String memberUuid,
+		DefaultCheckListDto.AddDefaultCheckListReqDto addDefaultCheckListReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		defaultCheckListRepository.save(DefaultCheckList.of(member, addDefaultCheckListReqDto.getContent()));
+		return "ok";
 	}
 }
