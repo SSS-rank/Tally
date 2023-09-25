@@ -8,6 +8,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import TripDateInput from '../../components/TripDateInput/TripDateInput';
 import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TripCreateRes } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TokenState, TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -27,7 +28,6 @@ function CreateTripScreen({ navigation }: TripStackProps) {
 	};
 
 	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
-	const accessToken = useRecoilValue(TokenState).accessToken;
 	const api = useAxiosWithAuth();
 	const regist = async () => {
 		console.log('여행지 등록하기');
@@ -40,13 +40,12 @@ function CreateTripScreen({ navigation }: TripStackProps) {
 			end_date: tripInfo.endDay,
 		};
 
-		if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
 		const res = await api.post(`/travel`, tripAddReq);
-		if (res.data === 'OK') {
-			console.log(res.data);
-			console.log('등록이 완료 되었습니다');
-			// TODO 해당 여행 상세 페이지로 이동
-			navigation.navigate('TripDetail');
+		if (res.status === 201) {
+			const data: TripCreateRes = res.data;
+			navigation.navigate('TripDetail', {
+				id: data.travel_id,
+			});
 		}
 	};
 

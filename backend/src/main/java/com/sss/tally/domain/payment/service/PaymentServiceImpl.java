@@ -325,7 +325,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		}
 
-		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDate(travelOptional.get(), member);
+		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travelOptional.get(), member);
 		return payments.stream()
 			.map(
 					payment -> {

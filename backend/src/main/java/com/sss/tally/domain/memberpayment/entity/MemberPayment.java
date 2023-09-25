@@ -58,7 +58,7 @@ public class MemberPayment {
 
 	public static MemberPayment of(MemberPaymentDto.MemberPaymentCreateDto memberPaymentCreateDto, Member member, Payment payment){
 		return MemberPayment.builder()
-			.paymentDate(payment.getPaymentLocalDate())
+			.paymentDate(payment.getPaymentKoreaDate())
 			.memberId(member)
 			.amount(memberPaymentCreateDto.getAmount())
 			.status(true)

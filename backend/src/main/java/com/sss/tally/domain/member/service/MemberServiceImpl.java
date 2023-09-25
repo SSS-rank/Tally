@@ -1,5 +1,6 @@
 package com.sss.tally.domain.member.service;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sss.tally.api.member.dto.MemberDto;
 import com.sss.tally.domain.device.entity.Device;
@@ -17,6 +19,7 @@ import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.redis.service.RedisService;
+import com.sss.tally.global.s3.service.S3Uploader;
 import com.sss.tally.global.util.SHA256Util;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class MemberServiceImpl implements MemberService{
 	private final RedisService redisService;
 	private final DeviceRepository deviceRepository;
 	private final MemberRepository memberRepository;
+	private final S3Uploader s3Uploader;
 
 	@Override
 	public void withdrawal(Authentication authentication) {
@@ -55,11 +59,19 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public MemberDto.MemberRespDto patchMemberInfo(Authentication authentication, MemberDto.MemberReqDto memberReqDto) {
+	public MemberDto.MemberRespDto patchMemberInfo(Authentication authentication, String nickname, MultipartFile file) throws
+		IOException {
 		Member auth = (Member)authentication.getPrincipal();
 		Member member = memberRepository.findByMemberUuid(auth.getMemberUuid())
 				.orElseThrow(()->new MemberException(ErrorCode.NOT_EXIST_MEMBER));
-		member.patchMemberInfo(memberReqDto.getNickname(), memberReqDto.getProfileImage());
+
+		String imageSrc;
+		if(file!=null)
+			imageSrc = s3Uploader.upload(file);
+		else
+			imageSrc = member.getProfileImage();
+
+		member.patchMemberInfo(nickname, imageSrc);
 		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
 	}
 

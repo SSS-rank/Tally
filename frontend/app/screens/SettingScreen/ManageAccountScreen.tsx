@@ -1,9 +1,34 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Button, Avatar } from 'react-native-paper';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
+import { Button } from 'react-native-paper';
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
+
+import AccountItem from '../../components/AccountItem/AccountItem';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { tallyAccountListState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 const ManageAccountScreen = ({ navigation }: any) => {
+	const api = useAxiosWithAuth();
+	const [accountListState, setAccountListState] = useRecoilState(tallyAccountListState);
+	useFocusEffect(
+		useCallback(() => {
+			getAccountList();
+		}, [accountListState]),
+	);
+
+	const getAccountList = async () => {
+		try {
+			const res = await api.get(`/account`);
+
+			if (res.status === 200) {
+				setAccountListState(res.data);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
@@ -16,70 +41,20 @@ const ManageAccountScreen = ({ navigation }: any) => {
 					계좌 추가
 				</Button>
 			</View>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					marginVertical: 15,
-					marginHorizontal: 5,
-				}}
-			>
-				<Avatar.Image
-					style={{ backgroundColor: 'transparent', marginHorizontal: 5 }}
-					size={48}
-					source={require('../../assets/images/kakao.png')}
-				/>
-				<View style={{ paddingHorizontal: 10, flex: 1 }}>
-					<Text
-						style={{
-							...TextStyles({ align: 'left' }).medium,
-							lineHeight: 20,
-						}}
-					>
-						SSS뱅크 1002-111-222333
-					</Text>
-					<Text
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							lineHeight: 20,
-						}}
-					>
-						104,082원
-					</Text>
-				</View>
-			</View>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					marginVertical: 15,
-					marginHorizontal: 5,
-				}}
-			>
-				<Avatar.Image
-					style={{ backgroundColor: 'transparent', marginHorizontal: 5 }}
-					size={48}
-					source={require('../../assets/images/kakao.png')}
-				/>
-				<View style={{ paddingHorizontal: 10, flex: 1 }}>
-					<Text
-						style={{
-							...TextStyles({ align: 'left' }).medium,
-							lineHeight: 20,
-						}}
-					>
-						SSS뱅크 1002-111-222333
-					</Text>
-					<Text
-						style={{
-							...TextStyles({ align: 'left' }).regular,
-							lineHeight: 20,
-						}}
-					>
-						104,082원
-					</Text>
-				</View>
-			</View>
+			<FlatList
+				data={accountListState}
+				renderItem={({ item }) => (
+					<AccountItem
+						key={item.accountNumber}
+						accountNumber={item.accountNumber}
+						balance={item.balance}
+						bankCode={item.bankCode}
+						bankName={item.bankName}
+						representativeAccount={item.representativeAccount}
+					/>
+				)}
+				keyExtractor={(item) => item.accountNumber}
+			/>
 		</View>
 	);
 };

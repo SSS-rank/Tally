@@ -1,11 +1,14 @@
 package com.sss.tally.domain.travelgroup.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sss.tally.api.member.dto.MemberDto;
 import com.sss.tally.domain.customchecklist.service.CustomCheckListService;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.travel.entity.Travel;
@@ -27,14 +30,29 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 
 	@Override
 	public void addTravelGroup(Authentication authentication, Long travelId) {
-		Member member = (Member)authentication.getPrincipal();
+		Member member = (Member) authentication.getPrincipal();
 
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
-		if (travelOptional.isEmpty())
-			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
 		travelGroupRepository.save(TravelGroup.of(member, travelOptional.get()));
 		customCheckListService.createInitCustomCheckList(member, travelOptional.get());
 
+	}
+
+	@Override
+	public List<MemberDto.MemberTravelDto> getTravelGroup(Authentication authentication, Long travelId) {
+		Member member = (Member) authentication.getPrincipal();
+
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
+		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+
+		if(!travelGroupRepository.existsByTravelIdAndMemberId(travelOptional.get(), member))
+			throw new TravelException(ErrorCode.NOT_EXIST_PARTICIPANT);
+
+		List<Member> memberIds = travelGroupRepository.findMembersByTravelId(travelId);
+		return memberIds.stream()
+			.map(MemberDto.MemberTravelDto::from)
+			.collect(Collectors.toList());
 	}
 }
