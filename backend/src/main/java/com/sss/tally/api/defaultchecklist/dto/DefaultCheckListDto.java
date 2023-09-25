@@ -2,6 +2,7 @@ package com.sss.tally.api.defaultchecklist.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.sss.tally.domain.defaultchecklist.entity.DefaultCheckList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +29,24 @@ public class DefaultCheckListDto {
 		private Long defaultCheckListId;
 
 		private String content;
+	}
+
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	@Getter
+	public static class GetDefaultCheckListRespDto {
+
+		private Long defaultCheckListId;
+
+		private String content;
+
+		public static GetDefaultCheckListRespDto from(DefaultCheckList defaultCheckList) {
+			return GetDefaultCheckListRespDto.builder()
+				.defaultCheckListId(defaultCheckList.getDefaultChecklistId())
+				.content(defaultCheckList.getContent())
+				.build();
+		}
 	}
 }
