@@ -70,6 +70,16 @@ public class TravelDto {
 		}
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class TravelVisibleReqDto{
+		private boolean visible;
+		private Long travelId;
+	}
+
 
 	@Getter
 	@Builder
