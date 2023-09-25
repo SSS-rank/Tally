@@ -26,4 +26,12 @@ public class AnalysisController {
 		AnalysisDto.GroupMemberRespDto groupMemberRespDtoList = analysisService.getGroupAnalysis(authentication, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(groupMemberRespDtoList);
 	}
+
+	@GetMapping("/{travelId}/{memberUuid}")
+	public ResponseEntity<AnalysisDto.MemberRespDto> getMemberAnalysis(
+		Authentication authentication, @PathVariable Long travelId, @PathVariable String memberUuid
+	){
+		AnalysisDto.MemberRespDto memberRespDtoList = analysisService.getMemberAnalysis(authentication, travelId, memberUuid);
+		return ResponseEntity.status(HttpStatus.OK).body(memberRespDtoList);
+	}
 }
