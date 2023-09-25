@@ -16,7 +16,7 @@ import TripListScreen from '../screens/TripScreen/TripListScreen';
 export type TripStackProps = {
 	TripList: undefined;
 	CreateTrip: undefined;
-	TripDetail: undefined;
+	TripDetail: undefined | { id: number };
 	AnalysisTrip: undefined;
 	AdjustTrip: { tripId: number };
 	SendAdjust: undefined | { adjustId?: string };
