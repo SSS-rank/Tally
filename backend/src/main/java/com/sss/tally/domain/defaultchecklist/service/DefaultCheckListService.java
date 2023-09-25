@@ -8,4 +8,7 @@ public interface DefaultCheckListService {
 	public void createInitCheckList(Member member);
 
 	String addContent(String memberUuid, DefaultCheckListDto.AddDefaultCheckListReqDto addDefaultCheckListReqDto);
+
+	String updateContent(String memberUuid,
+		DefaultCheckListDto.UpdateDefaultCheckListReqDto updateDefaultCheckListReqDto);
 }
