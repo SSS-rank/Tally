@@ -272,7 +272,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				return null;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
-				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), member);
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
@@ -524,7 +524,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				for (GroupPayment groupPayment : groupPaymentList) {
 
 					//멤버 별 지불할 총 금액 구하기
-					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 						groupPayment.getPaymentId(), memberOfGroup.getMemberId());
 					if (memberPaymentOptional.isEmpty()) {
 						continue;
@@ -659,7 +659,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
 			for (GroupPayment groupPayment : groupPaymentList) {
-				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), groupMember.getMemberId());
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
@@ -716,7 +716,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		Long totalAmount = 0l;
 		for (GroupPayment groupPayment : groupPaymentList) {
 			Payment payment = groupPayment.getPaymentId();
-			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 				payment, member);
 			if (memberPaymentOptional.isEmpty()) {
 				continue;
