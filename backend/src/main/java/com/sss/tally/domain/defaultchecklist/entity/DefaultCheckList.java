@@ -45,7 +45,7 @@ public class DefaultCheckList {
 			.build();
 	}
 
-	public void UpdateContent(String content) {
+	public void updateContent(String content) {
 		this.content = content;
 	}
 }
