@@ -11,4 +11,6 @@ public interface DefaultCheckListService {
 
 	String updateContent(String memberUuid,
 		DefaultCheckListDto.UpdateDefaultCheckListReqDto updateDefaultCheckListReqDto);
+
+	String deleteContent(String memberUuid, Long checkListId);
 }
