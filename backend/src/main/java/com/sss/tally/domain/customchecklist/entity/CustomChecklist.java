@@ -73,4 +73,8 @@ public class CustomChecklist {
 		this.content = content;
 	}
 
+	public void updateStatus(Boolean status) {
+		this.status = status;
+	}
+
 }
