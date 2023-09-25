@@ -77,7 +77,7 @@ public class DefaultCheckListServiceImpl implements DefaultCheckListService {
 		if (!defaultCheckList.getMemberId().equals(member)) {
 			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
-		defaultCheckList.UpdateContent(updateDefaultCheckListReqDto.getContent());
+		defaultCheckList.updateContent(updateDefaultCheckListReqDto.getContent());
 		return "ok";
 	}
 
