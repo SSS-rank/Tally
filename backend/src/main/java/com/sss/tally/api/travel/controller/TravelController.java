@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.tally.api.travel.dto.TravelDto;
 import com.sss.tally.domain.travel.service.TravelService;
+import com.sss.tally.domain.travelgroup.service.TravelGroupService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/travel")
 public class TravelController {
 	private final TravelService travelService;
+	private final TravelGroupService travelGroupService;
 	@PostMapping
 	public ResponseEntity<TravelDto.TravelCreateRespDto> createTravel(Authentication authentication, @RequestBody TravelDto.TravelCreateDto travelCreateDto){
 		TravelDto.TravelCreateRespDto travel = travelService.createTravel(authentication, travelCreateDto);
@@ -46,5 +49,11 @@ public class TravelController {
 		TravelDto.TravelDetailDto travelDetail = travelService.getTravelDetail(authentication, travelId);
 		return ResponseEntity.status(HttpStatus.OK).body(travelDetail);
 
+	}
+
+	@PatchMapping("/visible")
+	public ResponseEntity<String> modifyTravelVisible(Authentication authentication, @RequestBody TravelDto.TravelVisibleReqDto travelVisibleReqDto){
+		travelGroupService.modifyTravelVisible(authentication, travelVisibleReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
 }
