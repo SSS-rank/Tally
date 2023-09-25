@@ -68,4 +68,10 @@ public class TravelController {
 		TravelDto.TravelVisitRespDto travelVisitCount = travelService.getTravelVisitCount(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(travelVisitCount);
 	}
+
+	@GetMapping("/visit/detail")
+	public ResponseEntity<TravelDto.TravelVisitListRespDto> getVisitLocation(Authentication authentication){
+		TravelDto.TravelVisitListRespDto travelVisitList = travelService.getTravelVisitList(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(travelVisitList);
+	}
 }
