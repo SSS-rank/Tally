@@ -39,7 +39,7 @@ function TripLocationSelect() {
 			if (res.status === 200) {
 				const countries: tripLocationSelectItem[] = res.data.map((item: any) => ({
 					label: item.countryName,
-					value: item.countryCode,
+					value: item.countryId,
 				}));
 
 				setTripCountryItems(countries);

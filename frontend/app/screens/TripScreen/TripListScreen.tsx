@@ -8,7 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
 import TripListItem from '../../components/TripListItem/TripListItem';
-import TripSwitch from '../../components/TripSwitch/TripSwitch';
+import TripSwitch from '../../components/TripScreen/TripSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripListItemProps } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
