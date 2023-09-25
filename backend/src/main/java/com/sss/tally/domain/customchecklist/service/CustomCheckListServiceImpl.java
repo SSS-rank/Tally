@@ -146,6 +146,22 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 
 	@Override
 	public String updateStatus(String memberUuid, Long checkListId) {
-		return null;
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Optional<CustomChecklist> customChecklistOptional = customCheckListRepository.findCustomChecklistByCustomChecklistId(
+			checkListId);
+		if (customChecklistOptional.isEmpty()) {
+			throw new CustomCheckListException(ErrorCode.NOT_EXIST_CUSTOM_CHECKLIST);
+		}
+		Member member = memberOptional.get();
+		CustomChecklist customChecklist = customChecklistOptional.get();
+		if (!customChecklist.getMemberId().equals(member)) {
+			throw new CustomCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
+		}
+
+		customChecklist.updateStatus(true);
+		return "ok";
 	}
 }
