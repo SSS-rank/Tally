@@ -4,14 +4,13 @@ import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
+import { DirectPayReq, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -55,20 +54,22 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 			travel_title: undefined,
 			participants: undefined,
 		};
-		const directPayMembers = participants.map((member: TripMember) => ({
-			amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
-			member_uuid: member.member_uuid,
-			checked: false,
-			member_nickname: member.member_nickname,
-			image: member.image,
-		}));
+		if (participants) {
+			const directPayMembers = participants.map((member: TripMember) => ({
+				amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
+				member_uuid: member.member_uuid,
+				checked: false,
+				member_nickname: member.member_nickname,
+				image: member.image,
+			}));
+			setPartyMembers(directPayMembers);
+			setDirectPayReq((prevState: DirectPayReq) => ({
+				...prevState,
+				title: travel_title || '',
+				travel_id: travel_id || 0,
+			}));
+		}
 
-		setPartyMembers(directPayMembers);
-		setDirectPayReq((prevState: DirectPayReq) => ({
-			...prevState,
-			title: travel_title || '',
-			travel_id: travel_id || 0,
-		}));
 		// route.params에 의존하는 추가적인 코드 작성
 	}, [route.params]);
 
@@ -166,6 +167,13 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 				payment_participants: partyData || [],
 				visible: !selfCheck,
 			}));
+			if (selfCheck) {
+				setDirectPayReq((prevState: DirectPayReq) => ({
+					...prevState,
+					payment_participants: partyData || [],
+					visible: !selfCheck,
+				}));
+			}
 
 			const res = await api.post(`/payment/manual`, directPayReq);
 
@@ -287,48 +295,47 @@ function PaymentAddScreen({ navigation, route }: TripDetailScreenProps) {
 				</View>
 			</View>
 
-			<View
-				style={[
-					styles.party_box,
-					selfCheck ? { backgroundColor: 'gray', pointerEvents: 'none' } : null,
-				]}
-			>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-					<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
-					<View style={{ flexDirection: 'row' }}>
-						<Text style={TextStyles({ mLeft: 10 }).medium}>결제</Text>
-						<Text style={TextStyles({ mLeft: 10 }).medium}>함께</Text>
+			<View style={[styles.party_box]}>
+				{!selfCheck ? (
+					<View>
+						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+							<View style={{ flexDirection: 'row' }}>
+								<Text style={TextStyles({ mLeft: 10 }).medium}>결제</Text>
+								<Text style={TextStyles({ mLeft: 10 }).medium}>함께</Text>
+							</View>
+						</View>
+						<ScrollView>
+							{partyMembers.map((item) => (
+								<PartyListItem
+									key={item.member_uuid}
+									name={item.member_nickname}
+									img={{ uri: item.image }}
+									self={selfCheck}
+									involveCheck={item.checked}
+									onAmountChange={(input) =>
+										handleAmountChange(
+											item.member_uuid,
+											input,
+											item.checked,
+											item.member_nickname,
+											item.image,
+										)
+									}
+									onInvolveChange={(input) =>
+										handleInVolveChange(
+											item.member_uuid,
+											item.amount,
+											input,
+											item.member_nickname,
+											item.image,
+										)
+									}
+								/>
+							))}
+						</ScrollView>
 					</View>
-				</View>
-				<ScrollView>
-					{partyMembers.map((item) => (
-						<PartyListItem
-							key={item.member_uuid}
-							name={item.member_nickname}
-							img={{ uri: item.image }}
-							self={selfCheck}
-							involveCheck={item.checked}
-							onAmountChange={(input) =>
-								handleAmountChange(
-									item.member_uuid,
-									input,
-									item.checked,
-									item.member_nickname,
-									item.image,
-								)
-							}
-							onInvolveChange={(input) =>
-								handleInVolveChange(
-									item.member_uuid,
-									item.amount,
-									input,
-									item.member_nickname,
-									item.image,
-								)
-							}
-						/>
-					))}
-				</ScrollView>
+				) : null}
 			</View>
 
 			<View style={styles.self_check_box}>
