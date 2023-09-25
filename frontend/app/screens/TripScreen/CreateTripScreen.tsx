@@ -3,14 +3,14 @@ import { Text, View, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
-import TripDateInput from '../../components/TripDateInput/TripDateInput';
-import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
+import TripDateInput from '../../components/TripScreen/TripDateInput';
+import TripLocationSelect from '../../components/TripScreen/TripLocationSelect';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripCreateRes } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
-import { TokenState, TripInfoState } from '../../recoil/recoil';
+import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CreateTripScreen({ navigation }: TripStackProps) {
