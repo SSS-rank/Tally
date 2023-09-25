@@ -9,17 +9,10 @@ import {
 } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
-import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
-
-// type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'AdjustTrip'>;
-
-type TripDetailScreenProps = {
-	navigation?: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'>;
-	route?: RouteProp<TripStackProps, 'SendAdjust'>;
-};
 
 type ItemData = {
 	calculate_group_uuid: string;
@@ -46,7 +39,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 		}}
 		onPress={() => {
 			console.log(navigation);
-			navigation?.navigate('SendAdjust');
+			navigation?.navigate('SendAdjust', { adjustId: item.calculate_group_uuid });
 		}}
 	>
 		<Text style={TextStyles().regular}>{item.created_time}</Text>
