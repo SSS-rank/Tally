@@ -10,8 +10,7 @@ import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.domain.travelgroup.entity.TravelGroup;
 
 public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> {
-	boolean existsByTravelIdAndMemberId(Travel travelId, Member memberId);
-
+	boolean existsByTravelIdAndMemberIdAndVisibleIsTrue(Travel travelId, Member memberId);
 	@Query("SELECT tg.memberId.memberId FROM TravelGroup tg WHERE tg.travelId.travelId = :travelId")
 	List<Long> findMemberIdsByTravelId(Long travelId);
 	@Query("SELECT tg.memberId FROM TravelGroup tg WHERE tg.travelId.travelId = :travelId")

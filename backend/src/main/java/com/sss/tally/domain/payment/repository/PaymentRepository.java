@@ -30,7 +30,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 		"AND MP.status = false ")
 	CalculateDto.Detail findDetail(@Param("payment") Payment payment, @Param("memberId") Member memberId);
 
-	List<Payment> findPaymentsByTravelIdAndMemberIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(Travel travelId, Member memberId);
+	@Query("SELECT p FROM Payment p " +
+		"JOIN MemberPayment mp ON p.paymentId = mp.paymentId.paymentId " +
+		"WHERE p.travelId = :travelId " +
+		"AND mp.memberId = :memberId " +
+		"AND mp.status = false " +
+		"ORDER BY p.paymentKoreaDate Desc")
+	List<Payment> findPaymentsByTravelIdAndMemberId(Travel travelId, Member memberId);
 
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalse(Travel travel, Member member);
 
