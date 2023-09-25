@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public MemberDto.MemberRespDto getMemberInfo(Authentication authentication) {
 		Member member = (Member)authentication.getPrincipal();
-		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
+		return MemberDto.MemberRespDto.of(member.getMemberUuid(), member.getNickname(), member.getProfileImage());
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService{
 			imageSrc = member.getProfileImage();
 
 		member.patchMemberInfo(nickname, imageSrc);
-		return MemberDto.MemberRespDto.of(member.getNickname(), member.getProfileImage());
+		return MemberDto.MemberRespDto.of(member.getMemberUuid(), member.getNickname(), member.getProfileImage());
 	}
 
 	@Override
