@@ -22,7 +22,7 @@ function BankItem({ bankName, setBankName, setBankCode, setModalVisible }: BankI
 		<TouchableOpacity style={styles.viewContainer} onPress={selectBank}>
 			<Avatar.Image
 				style={styles.image}
-				size={50}
+				size={40}
 				source={{
 					uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${BankCode[bankName]}.png`,
 				}}
