@@ -16,12 +16,14 @@ public class CountryDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class CountryRespDto{
+		private Long countryId;
 		private String countryName;
 		private String countryCode;
 		private String visa;
 
 		public static CountryRespDto from(Country country){
 			return CountryRespDto.builder()
+				.countryId(country.getCountryId())
 				.countryName(country.getCountryName())
 				.countryCode(country.getCountryCode())
 				.visa(country.getVisa())
