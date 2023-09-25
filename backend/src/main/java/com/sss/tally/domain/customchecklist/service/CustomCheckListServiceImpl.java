@@ -66,7 +66,7 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 		}
 		Travel travel = travelOptional.get();
 
-		boolean isMemberInTravel = travelGroupRepository.existsByTravelIdAndMemberId(travel, member);
+		boolean isMemberInTravel = travelGroupRepository.existsByTravelIdAndMemberIdAndVisibleIsTrue(travel, member);
 		if (!isMemberInTravel) {
 			throw new TravelException(ErrorCode.NOT_EXIST_MEMBER_TRAVEL);
 		}
@@ -92,7 +92,7 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 		if (!customChecklist.getMemberId().equals(member)) {
 			throw new CustomCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
-		customChecklist.UpdateContent(updateCustomCheckListReqDto.getContent());
+		customChecklist.updateContent(updateCustomCheckListReqDto.getContent());
 		return "ok";
 	}
 
@@ -128,7 +128,7 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 		}
 		Travel travel = travelOptional.get();
-		boolean isMemberInTravel = travelGroupRepository.existsByTravelIdAndMemberId(travel, member);
+		boolean isMemberInTravel = travelGroupRepository.existsByTravelIdAndMemberIdAndVisibleIsTrue(travel, member);
 		if (!isMemberInTravel) {
 			throw new TravelException(ErrorCode.NOT_EXIST_MEMBER_TRAVEL);
 		}
