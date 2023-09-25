@@ -36,5 +36,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(Travel travel, Member member);
 
-	List<Payment> findAllByTravelIdAndStatusIsFalseAndVisibleIsFalse(Travel travel);
+	List<Payment> findAllByTravelIdAndStatusIsFalseAndVisibleIsTrue(Travel travel);
+
+	List<Payment> findAllByTravelIdAndStatusIsFalse(Travel travel);
 }
