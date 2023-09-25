@@ -69,4 +69,8 @@ public class CustomChecklist {
 			.build();
 	}
 
+	public void UpdateContent(String content) {
+		this.content = content;
+	}
+
 }
