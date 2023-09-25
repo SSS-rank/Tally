@@ -4,9 +4,10 @@ import { Button } from 'react-native-paper';
 
 import DashLine from '../../components/DashLine';
 import Line from '../../components/Line';
+import { GetAdjustScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
-const GetAdjustScreen = ({ navigation }: any) => {
+const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ paddingHorizontal: 15 }}>

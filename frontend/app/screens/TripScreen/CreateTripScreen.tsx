@@ -9,11 +9,11 @@ import TripDateInput from '../../components/TripScreen/TripDateInput';
 import TripLocationSelect from '../../components/TripScreen/TripLocationSelect';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripCreateRes } from '../../model/trip';
-import { TripStackProps } from '../../navigation/TripStack';
+import { TripDetailScreenProps } from '../../model/tripNavigator';
 import { TripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function CreateTripScreen({ navigation }: TripStackProps) {
+function CreateTripScreen({ navigation }: TripDetailScreenProps) {
 	const [title, setTitle] = useState('');
 
 	const changeName = (value: string) => {
