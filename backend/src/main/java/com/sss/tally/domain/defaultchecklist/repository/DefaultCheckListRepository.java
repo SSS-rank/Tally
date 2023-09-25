@@ -10,4 +10,6 @@ import com.sss.tally.domain.member.entity.Member;
 
 public interface DefaultCheckListRepository extends JpaRepository<DefaultCheckList, Integer> {
 	List<DefaultCheckList> findDefaultCheckListByMemberId(Member member);
+
+	Optional<DefaultCheckList> findDefaultCheckListByDefaultChecklistId(Long defaultCheckList);
 }
