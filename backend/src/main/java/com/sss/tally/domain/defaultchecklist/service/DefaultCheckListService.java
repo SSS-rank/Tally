@@ -1,5 +1,7 @@
 package com.sss.tally.domain.defaultchecklist.service;
 
+import java.util.List;
+
 import com.sss.tally.api.defaultchecklist.dto.DefaultCheckListDto;
 import com.sss.tally.domain.member.entity.Member;
 
@@ -13,4 +15,6 @@ public interface DefaultCheckListService {
 		DefaultCheckListDto.UpdateDefaultCheckListReqDto updateDefaultCheckListReqDto);
 
 	String deleteContent(String memberUuid, Long checkListId);
+
+	List<DefaultCheckListDto.GetDefaultCheckListRespDto> getContent(String memberUuid);
 }
