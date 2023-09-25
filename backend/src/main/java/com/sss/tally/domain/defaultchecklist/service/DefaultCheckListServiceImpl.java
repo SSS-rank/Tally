@@ -13,6 +13,7 @@ import com.sss.tally.domain.defaultchecklist.repository.DefaultCheckListReposito
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.DefaultCheckListException;
 import com.sss.tally.global.error.exception.MemberException;
 
 import lombok.AllArgsConstructor;
@@ -54,6 +55,28 @@ public class DefaultCheckListServiceImpl implements DefaultCheckListService {
 		}
 		Member member = memberOptional.get();
 		defaultCheckListRepository.save(DefaultCheckList.of(member, addDefaultCheckListReqDto.getContent()));
+		return "ok";
+	}
+
+	@Override
+	public String updateContent(String memberUuid,
+		DefaultCheckListDto.UpdateDefaultCheckListReqDto updateDefaultCheckListReqDto) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+
+		Optional<DefaultCheckList> defaultCheckListOptional = defaultCheckListRepository.findDefaultCheckListByDefaultChecklistId(
+			updateDefaultCheckListReqDto.getDefaultCheckListId());
+		if (defaultCheckListOptional.isEmpty()) {
+			throw new DefaultCheckListException(ErrorCode.NOT_EXIST_DEFAULT_CHECKLIST);
+		}
+		DefaultCheckList defaultCheckList = defaultCheckListOptional.get();
+		Member member = memberOptional.get();
+		if (defaultCheckList.getMemberId() != member) {
+			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
+		}
+		defaultCheckList.UpdateContent(updateDefaultCheckListReqDto.getContent());
 		return "ok";
 	}
 }
