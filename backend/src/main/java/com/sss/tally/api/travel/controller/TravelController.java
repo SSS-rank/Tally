@@ -62,4 +62,10 @@ public class TravelController {
 		List<TravelDto> invisibles = travelService.getInvisibleTravelList(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(invisibles);
 	}
+
+	@GetMapping("/visit/count")
+	public ResponseEntity<TravelDto.TravelVisitRespDto> getVisitLocationList(Authentication authentication){
+		TravelDto.TravelVisitRespDto travelVisitCount = travelService.getTravelVisitCount(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(travelVisitCount);
+	}
 }
