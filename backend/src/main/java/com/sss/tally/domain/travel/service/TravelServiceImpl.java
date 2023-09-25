@@ -165,11 +165,8 @@ public class TravelServiceImpl implements TravelService {
 			String travelLocation = "";
 			String travelType = "";
 
-			// 여행지 정보를 받아옴
-			// travelType은 국가 코드
-			// travelLocation은 여행지 명
-			if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-				travelType = "KOR";
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
 				if (cityByCityId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_CITY);
@@ -329,9 +326,8 @@ public class TravelServiceImpl implements TravelService {
 					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 						payment, member);
 					memberPayments.remove(member.getNickname());
-					totalAmount[0] += memberPaymentOptional.get().getAmount();
-					return PaymentDto.PaymentListDto.of(payment, memberPayments,
-						memberPaymentOptional.get().getAmount());
+					totalAmount[0]+=memberPaymentOptional.get().getAmount();
+					return PaymentDto.PaymentListDto.of(payment, memberPayments, memberPaymentOptional.get().getAmount());
 				})
 			.collect(Collectors.toList());
 
