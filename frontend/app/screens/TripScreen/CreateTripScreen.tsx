@@ -27,7 +27,6 @@ function CreateTripScreen({ navigation }: TripStackProps) {
 	};
 
 	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
-	const accessToken = useRecoilValue(TokenState).accessToken;
 	const api = useAxiosWithAuth();
 	const regist = async () => {
 		console.log('여행지 등록하기');
@@ -40,7 +39,6 @@ function CreateTripScreen({ navigation }: TripStackProps) {
 			end_date: tripInfo.endDay,
 		};
 
-		if (accessToken) api.defaults.headers.Authorization = `Bearer ${accessToken}`;
 		const res = await api.post(`/travel`, tripAddReq);
 		if (res.data === 'OK') {
 			console.log(res.data);
