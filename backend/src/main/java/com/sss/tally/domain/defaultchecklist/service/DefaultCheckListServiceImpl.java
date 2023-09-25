@@ -73,10 +73,31 @@ public class DefaultCheckListServiceImpl implements DefaultCheckListService {
 		}
 		DefaultCheckList defaultCheckList = defaultCheckListOptional.get();
 		Member member = memberOptional.get();
-		if (defaultCheckList.getMemberId() != member) {
+		if (!defaultCheckList.getMemberId().equals(member)) {
 			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
 		defaultCheckList.UpdateContent(updateDefaultCheckListReqDto.getContent());
+		return "ok";
+	}
+
+	@Override
+	public String deleteContent(String memberUuid, Long checkListId) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+
+		Optional<DefaultCheckList> defaultCheckListOptional = defaultCheckListRepository.findDefaultCheckListByDefaultChecklistId(
+			checkListId);
+		if (defaultCheckListOptional.isEmpty()) {
+			throw new DefaultCheckListException(ErrorCode.NOT_EXIST_DEFAULT_CHECKLIST);
+		}
+		DefaultCheckList defaultCheckList = defaultCheckListOptional.get();
+		Member member = memberOptional.get();
+		if (!defaultCheckList.getMemberId().equals(member)) {
+			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
+		}
+		defaultCheckListRepository.delete(defaultCheckList);
 		return "ok";
 	}
 }
