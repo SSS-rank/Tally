@@ -3,13 +3,17 @@ import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { HomeStackProps } from './../../navigation/HomeStack';
 import bankApi from '../../api/bankApi';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { AccountResgistReq } from '../../model/account';
-import { tallyAccountListState } from '../../recoil/recoil';
+import {
+	accountResgistReqState,
+	tallyAccountListState,
+	transferPasswordState,
+} from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
@@ -84,28 +88,42 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 
 	const api = useAxiosWithAuth();
 	const accountListState = useRecoilValue(tallyAccountListState);
+	const setAccountRegistInfo = useSetRecoilState(accountResgistReqState);
+	const transferPassword = useRecoilValue(transferPasswordState);
+
 	const registerAccount = async (password: string) => {
 		console.log('accountListState.length ', accountListState.length);
-		const accountResgisterReq: AccountResgistReq = {
-			account_number: accountNumber,
-			bank_code: bankCode,
-			order_number: accountListState.length + 1,
-			account_password: password,
-			transfer_password: '123456',
-		};
 
-		console.log(accountResgisterReq);
+		console.log(accountListState.length);
 
-		try {
-			const res = await api.post(`/account`, accountResgisterReq);
-			console.log(res.data);
-			console.log(res.status);
+		if (accountListState.length === 0) {
+			setAccountRegistInfo({
+				account_number: accountNumber,
+				bank_code: bankCode,
+				order_number: 1,
+				account_password: password,
+			});
+			navigation.navigate('TransferPassword');
+		} else {
+			const accountResgisterReq: AccountResgistReq = {
+				account_number: accountNumber,
+				bank_code: bankCode,
+				order_number: accountListState.length + 1,
+				account_password: password,
+				transfer_password: transferPassword,
+			};
 
-			if (res.status === 200) {
-				navigation.navigate('Account');
+			try {
+				const res = await api.post(`/account`, accountResgisterReq);
+				console.log(res.data);
+				console.log(res.status);
+
+				if (res.status === 200) {
+					navigation.navigate('Account');
+				}
+			} catch (error: any) {
+				console.log(error.response.data.errorMessage);
 			}
-		} catch (error: any) {
-			console.log(error.response.data.errorMessage);
 		}
 	};
 

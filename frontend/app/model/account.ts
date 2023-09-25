@@ -3,6 +3,7 @@ export interface Account {
 	bankCode: string;
 	bankName: string;
 	balance: number;
+	representativeAccount: boolean;
 }
 
 export interface AccountResgistReq {

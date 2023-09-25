@@ -7,6 +7,8 @@ import AddAccountScreen from '../screens/SettingScreen/AddAccountScreen';
 import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
 import ManageAccountScreen from '../screens/SettingScreen/ManageAccountScreen';
 import SettingScreen from '../screens/SettingScreen/SettingScreen';
+import TransferPasswrodConfirmScreen from '../screens/SettingScreen/TransferPasswrodConfirmScreen';
+import TransferPasswordScreen from '../screens/SettingScreen/TransferPasswrodScreen';
 
 export type HomeStackProps = {
 	Home: undefined;
@@ -14,6 +16,8 @@ export type HomeStackProps = {
 	Account: undefined;
 	AddAccount: undefined;
 	AuthAccount: undefined;
+	TransferPassword: undefined;
+	TransferPasswordConfirm: undefined;
 };
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +34,16 @@ function HomeStack() {
 			<Stack.Screen name="Account" component={ManageAccountScreen} options={{ title: '' }} />
 			<Stack.Screen name="AddAccount" component={AddAccountScreen} options={{ title: '' }} />
 			<Stack.Screen name="AuthAccount" component={AuthAccountScreen} options={{ title: '' }} />
+			<Stack.Screen
+				name="TransferPassword"
+				component={TransferPasswordScreen}
+				options={{ title: '이체 비밀번호 입력' }}
+			/>
+			<Stack.Screen
+				name="TransferPasswordConfirm"
+				component={TransferPasswrodConfirmScreen}
+				options={{ title: '이체 비밀번호 확인' }}
+			/>
 		</Stack.Navigator>
 	);
 }
