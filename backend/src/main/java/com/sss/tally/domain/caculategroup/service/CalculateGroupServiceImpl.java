@@ -439,6 +439,16 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
 		Long totalAmount = 0L;
 		String travelType = travel.getTravelType().toString();
+		if (travelType.equals("GLOBAL")) {
+			Optional<Country> countryOptional = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+			travelType = countryOptional.get().getCountryName();
+		} else if (travelType.equals("CITY")) {
+			Optional<City> cityOptional = cityRepository.findCityByCityId(travel.getTravelLocation());
+			travelType = cityOptional.get().getCityName();
+		} else {
+			Optional<State> stateOptional = stateRepository.findStateByStateId(travel.getTravelLocation());
+			travelType = stateOptional.get().getStateName();
+		}
 		List<CalculateDto.Detail> detailList = new ArrayList<>();
 
 		for (GroupPayment groupPayment : groupPaymentList) {
