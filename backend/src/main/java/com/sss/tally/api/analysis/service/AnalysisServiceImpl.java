@@ -72,4 +72,44 @@ public class AnalysisServiceImpl implements AnalysisService{
 
 		return AnalysisDto.GroupMemberRespDto.of(groupMemberAnalysis, totalAmount);
 	}
+	@Override
+	public AnalysisDto.MemberRespDto getMemberAnalysis(Authentication authentication, Long travelId, String memberUuid) {
+		Member auth = (Member)authentication.getPrincipal();
+		Travel travel = travelRepository.findTravelByTravelId(travelId)
+			.orElseThrow(()->new TravelException(ErrorCode.NOT_EXIST_TRAVEL));
+		Member searchMember = memberRepository.findByMemberUuid(memberUuid)
+			.orElseThrow(()->new MemberException(ErrorCode.NOT_EXIST_MEMBER));
+
+		List<Payment> payments;
+		if(Objects.equals(auth.getMemberUuid(), memberUuid)) // 만약 조회한 분석 그래프가 로그인 한 본인일 경우
+			payments = paymentRepository.findAllByTravelIdAndStatusIsFalse(travel); // 나만 보기한 항목도 포함
+		else // 디른 사람의 분석 그래프를 조회했을 경우
+			payments = paymentRepository.findAllByTravelIdAndStatusIsFalseAndVisibleIsTrue(travel);
+
+		List<AnalysisDto.MemberRespInfo> memberRespInfoList = new ArrayList<>();
+		HashMap<Long, Long> categoryMoney = new HashMap<>();
+		Long totalAmount = 0L;
+		for(long i = 1L; i<=7; i++) categoryMoney.put(i, 0L);
+		for (Payment payment:payments){
+			List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(payment);
+			for(MemberPayment memberPayment: memberPaymentList){
+				if(memberPayment.getMemberId().getMemberUuid().equals(searchMember.getMemberUuid())){
+					totalAmount+=memberPayment.getAmount();
+					Long categoryId = payment.getCategoryId().getCategoryId();
+					Long amount = memberPayment.getAmount();
+					categoryMoney.put(categoryId, categoryMoney.get(categoryId)+amount);
+				}
+			}
+		}
+
+		for(long i=1L; i<=7; i++){
+			double percent = ((double) categoryMoney.get(i) / totalAmount) * 100.0; // 비율 구하기
+			Category category = categoryRepository.findCategoryByCategoryId(i)
+				.orElseThrow(()->new CategoryException(ErrorCode.NOT_EXIST_CATEGORY));
+			memberRespInfoList.add(AnalysisDto.MemberRespInfo.of(
+				i, category.getCategoryType(), percent, categoryMoney.get(i)
+			));
+		}
+		return AnalysisDto.MemberRespDto.of(memberRespInfoList, totalAmount);
+	}
 }
