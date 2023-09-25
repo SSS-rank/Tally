@@ -80,6 +80,22 @@ public class TravelDto {
 		private Long travelId;
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class TravelVisitRespDto{
+		private int global;
+		private int national;
+
+		public static TravelVisitRespDto of(int national, int global){
+			return TravelVisitRespDto.builder()
+				.global(global)
+				.national(national)
+				.build();
+		}
+	}
+
 
 	@Getter
 	@Builder
