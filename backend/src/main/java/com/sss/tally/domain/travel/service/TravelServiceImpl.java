@@ -48,8 +48,10 @@ import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.BusinessException;
 import com.sss.tally.global.error.exception.CategoryException;
 import com.sss.tally.global.error.exception.CityException;
+import com.sss.tally.global.error.exception.CountryException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.PaymentException;
+import com.sss.tally.global.error.exception.StateException;
 import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.RequiredArgsConstructor;
