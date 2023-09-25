@@ -60,4 +60,13 @@ public class CustomChecklist {
 			.build();
 	}
 
+	public static CustomChecklist forSaveOf(Member member, Travel travel, String content) {
+		return CustomChecklist.builder()
+			.memberId(member)
+			.travelId(travel)
+			.content(content)
+			.status(false)
+			.build();
+	}
+
 }
