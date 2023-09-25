@@ -47,6 +47,7 @@ public class TravelGroup {
 		return TravelGroup.builder()
 			.memberId(member)
 			.travelId(travel)
+			.visible(true)
 			.build();
 	}
 
