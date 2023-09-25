@@ -55,7 +55,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class TravelServiceImpl implements TravelService {
+public class TravelServiceImpl implements TravelService{
 	private final TravelRepository travelRepository;
 	private final MemberRepository memberRepository;
 	private final TravelGroupRepository travelGroupRepository;
@@ -71,13 +71,11 @@ public class TravelServiceImpl implements TravelService {
 	private final CustomCheckListService customCheckListService;
 
 	@Override
-	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication,
-		TravelDto.TravelCreateDto travelCreateDto) {
+	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
 
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		TravelTypeEnum travelTypeEnum = null;
 		switch (travelCreateDto.getTravelType()) {
@@ -95,38 +93,35 @@ public class TravelServiceImpl implements TravelService {
 		}
 
 		String[] start = travelCreateDto.getStartDate().split("-");
-		LocalDate startLocalDate = LocalDate.of(Integer.parseInt(start[0]), Integer.parseInt(start[1]),
-			Integer.parseInt(start[2]));
+		LocalDate startLocalDate = LocalDate.of(Integer.parseInt(start[0]), Integer.parseInt(start[1]), Integer.parseInt(start[2]));
 		String[] end = travelCreateDto.getEndDate().split("-");
-		LocalDate endLocalDate = LocalDate.of(Integer.parseInt(end[0]), Integer.parseInt(end[1]),
-			Integer.parseInt(end[2]));
+		LocalDate endLocalDate = LocalDate.of(Integer.parseInt(end[0]), Integer.parseInt(end[1]), Integer.parseInt(end[2]));
 
 		Travel travel = Travel.of(travelCreateDto, travelTypeEnum, startLocalDate, endLocalDate, false);
 		Travel save = travelRepository.save(travel);
 
 		String travelLocation = "";
-		String travelType = "";
+		String travelType ="";
 
 		// 여행지 정보를 받아옴
 		// travelType은 국가 코드
 		// travelLocation은 여행지 명
-		if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-			travelType = "KOR";
+		if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+			travelType="KOR";
 			Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
-			if (cityByCityId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_CITY);
+			if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
 			travelLocation = cityByCityId.get().getCityName();
-		} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-			travelType = "KOR";
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+			travelType="KOR";
 			Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
-			if (stateByStateId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_STATE);
+			if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
 			travelLocation = stateByStateId.get().getStateName();
-		} else if (travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) {
+		}
+		else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
 			Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
-			if (countryByCountryId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
-			travelType = countryByCountryId.get().getCountryCode();
+			if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+			travelType=countryByCountryId.get().getCountryCode();
 			travelLocation = countryByCountryId.get().getCountryName();
 		}
 
@@ -140,19 +135,16 @@ public class TravelServiceImpl implements TravelService {
 		// access token으로 사용자 정보 받기
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
-		if (memberOptional.isEmpty())
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		// before, after, ongoing에 맞는 여행지 리스트를 repository에서 받아옴
 		List<Travel> travelList = new ArrayList<>();
 		switch (type) {
 			case "before":
-				travelList = travelRepository.findUpcomingTravelForMember(memberOptional.get(), LocalDate.now(),
-					pageable);
+				travelList = travelRepository.findUpcomingTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
 				break;
 			case "ongoing":
-				travelList = travelRepository.findOngoingTravelForMember(memberOptional.get(), LocalDate.now(),
-					pageable);
+				travelList = travelRepository.findOngoingTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
 				break;
 			case "after":
 				travelList = travelRepository.findPastTravelForMember(memberOptional.get(), LocalDate.now(), pageable);
@@ -161,31 +153,29 @@ public class TravelServiceImpl implements TravelService {
 
 		// for문을 통해 Travel entity를 TravelDto로 변환
 		List<TravelDto> travels = new ArrayList<>();
-		for (Travel travel : travelList) {
+		for(Travel travel: travelList){
 			String travelLocation = "";
-			String travelType = "";
+			String travelType ="";
 
 			// 여행지 정보를 받아옴
 			// travelType은 국가 코드
 			// travelLocation은 여행지 명
-			if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-				travelType = "KOR";
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
-				if (cityByCityId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_CITY);
+				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
-			} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-				travelType = "KOR";
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				travelType="KOR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
-				if (stateByStateId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_STATE);
+				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
 				travelLocation = stateByStateId.get().getStateName();
-			} else if (travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) {
-				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(
-					travel.getTravelLocation());
-				if (countryByCountryId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
-				travelType = countryByCountryId.get().getCountryCode();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
 				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
@@ -204,18 +194,16 @@ public class TravelServiceImpl implements TravelService {
 	public List<TravelDto.TravelNotStartDto> getNotStartTravel(Authentication authentication) {
 		Member auth = (Member)authentication.getPrincipal();
 		Member member = memberRepository.findByMemberUuid(auth.getMemberUuid())
-			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
+			.orElseThrow(()->new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
 
-		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member,
-			LocalDate.now());
-		if (travelList.isEmpty())
-			return null;
+		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member, LocalDate.now());
+		if(travelList.isEmpty()) return null;
 
 		// for문을 통해 Travel entity를 TravelDto로 변환
 		List<TravelDto.TravelNotStartDto> travelsInfo = new ArrayList<>();
-		for (Travel travel : travelList) {
+		for(Travel travel: travelList){
 			String travelLocation = "";
-			String travelType = "";
+			String travelType ="";
 
 			LocalDateTime travelStart = travel.getStartDate().atStartOfDay();
 			LocalDateTime now = LocalDate.now().atStartOfDay();
@@ -223,24 +211,22 @@ public class TravelServiceImpl implements TravelService {
 			// 여행지 정보를 받아옴
 			// travelType은 국가 코드
 			// travelLocation은 여행지 명
-			if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-				travelType = "KOR";
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
-				if (cityByCityId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_CITY);
+				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
-			} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-				travelType = "KOR";
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				travelType="KOR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
-				if (stateByStateId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_STATE);
+				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
 				travelLocation = stateByStateId.get().getStateName();
-			} else if (travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) {
-				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(
-					travel.getTravelLocation());
-				if (countryByCountryId.isEmpty())
-					throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
-				travelType = countryByCountryId.get().getCountryCode();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
 				travelLocation = countryByCountryId.get().getCountryName();
 			}
 
@@ -250,66 +236,57 @@ public class TravelServiceImpl implements TravelService {
 			Long totalAmount = this.totalTravelMoney(member, members, travel);
 
 			// 사용자의 정보를 MembeTravelDto로 변환 및 travelsInfo에 추가
-			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation,
-				members.stream()
-					.map(MemberDto.MemberTravelDto::from)
-					.collect(Collectors.toList())));
+			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation, members.stream()
+				.map(MemberDto.MemberTravelDto::from)
+				.collect(Collectors.toList())));
 		}
 		return travelsInfo;
 	}
 
 	@Override
 	public TravelDto.TravelDetailDto getTravelDetail(Authentication authentication, Long travelId) {
-		Member member = (Member)authentication.getPrincipal();
+		Member member = (Member) authentication.getPrincipal();
 
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
-		if (travelOptional.isEmpty())
-			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
 		List<Account> memberAccounts = accountRepository.findAllByMemberIdAndStatusIsFalseOrderByOrderNumberAsc(
 			member);
 
-		for (Account account : memberAccounts) {
+		for(Account account: memberAccounts){
 			String contentType = "application/x-www-form-urlencoded;charset=utf-8";
 			PaymentDto.PaymentListReqDto from = PaymentDto.PaymentListReqDto.from(account.getAccountNumber(),
 				account.getAccountPassword(), travelOptional.get().getStartDate().toString(),
 				travelOptional.get().getEndDate().toString());
-			PaymentDto.PaymentResDto paymentListRespDtos = paymentClient.requestTransferList(contentType, from);
-			for (PaymentDto.PaymentListRespDto paymentListRespDto : paymentListRespDtos.getTranferList()) {
+			PaymentDto.PaymentResDto paymentListRespDtos = paymentClient.requestTransferList(contentType,from);
+			for(PaymentDto.PaymentListRespDto paymentListRespDto: paymentListRespDtos.getTranferList()){
 
-				if (paymentListRespDto.getFlag().equals("입금"))
-					continue;
+				if(paymentListRespDto.getFlag().equals("입금")) continue;
 
 				Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuid(
 					paymentListRespDto.getTransferUuid());
 
-				Optional<Category> category = categoryRepository.findCategoryByCategoryId(
-					Long.parseLong(paymentListRespDto.getShopType() + ""));
-				if (category.isEmpty())
-					throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
+				Optional<Category> category = categoryRepository.findCategoryByCategoryId(Long.parseLong(paymentListRespDto.getShopType()+""));
+				if(category.isEmpty()) throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
 
 				Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(8L);
-				if (paymentUnitOptional.isEmpty())
-					throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
+				if(paymentUnitOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
 
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 				LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
-				if (payment.isEmpty()) {
+				if(payment.isEmpty()){
 					Payment save = paymentRepository.save(
 						Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
 							paymentUnitOptional.get(), dateTime));
 
-					List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(
-						travelOptional.get().getTravelId());
-					for (Long memberId : memberIds) {
+					List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(travelOptional.get().getTravelId());
+					for(Long memberId : memberIds){
 						Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
-						if (optionalMember.isEmpty())
-							throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+						if(optionalMember.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-						if (optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
-							memberPaymentRepository.save(
-								MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
+						if(optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
+							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
 						else
 							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
@@ -326,59 +303,54 @@ public class TravelServiceImpl implements TravelService {
 				payment -> {
 					List<String> memberPayments = memberPaymentRepository.findNicknamesByPaymentId(
 						payment.getPaymentId());
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
+						payment, member);
 					memberPayments.remove(member.getNickname());
-					totalAmount[0] += payment.getAmount();
+					totalAmount[0]+=payment.getAmount();
 					return PaymentDto.PaymentListDto.of(payment, memberPayments);
 				})
 			.collect(Collectors.toList());
 
 		String travelLocation = "";
 
-		if (travelOptional.get().getTravelType().equals(TravelTypeEnum.CITY)) {
+		if(travelOptional.get().getTravelType().equals(TravelTypeEnum.CITY)){
 			Optional<City> cityByCityId = cityRepository.findCityByCityId(travelOptional.get().getTravelLocation());
-			if (cityByCityId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_CITY);
+			if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
 			travelLocation = cityByCityId.get().getCityName();
-		} else if (travelOptional.get().getTravelType().equals(TravelTypeEnum.STATE)) {
-			Optional<State> stateByStateId = stateRepository.findStateByStateId(
-				travelOptional.get().getTravelLocation());
-			if (stateByStateId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_STATE);
+		}
+		else if(travelOptional.get().getTravelType().equals(TravelTypeEnum.STATE)){
+			Optional<State> stateByStateId = stateRepository.findStateByStateId(travelOptional.get().getTravelLocation());
+			if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
 			travelLocation = stateByStateId.get().getStateName();
-		} else if (travelOptional.get().getTravelType().equals(TravelTypeEnum.GLOBAL)) {
-			Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(
-				travelOptional.get().getTravelLocation());
-			if (countryByCountryId.isEmpty())
-				throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+		}
+		else if(travelOptional.get().getTravelType().equals(TravelTypeEnum.GLOBAL)){
+			Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travelOptional.get().getTravelLocation());
+			if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
 			travelLocation = countryByCountryId.get().getCountryName();
 		}
 
-		List<Member> membersByTravelId = travelGroupRepository.findMembersByTravelId(
-			travelOptional.get().getTravelId());
+		List<Member> membersByTravelId = travelGroupRepository.findMembersByTravelId(travelOptional.get().getTravelId());
 
 		return TravelDto.TravelDetailDto.of(travelOptional.get(), paymentListDtos, totalAmount[0], travelLocation,
 			membersByTravelId.stream()
-				.map(MemberDto.MemberTravelDto::from)
-				.collect(Collectors.toList()));
+			.map(MemberDto.MemberTravelDto::from)
+			.collect(Collectors.toList()));
 	}
 
 	@Override
-	public Long totalTravelMoney(Member user, List<Member> members, Travel travel) {
+	public Long totalTravelMoney(Member user, List<Member> members, Travel travel){
 		Long totalAmount = 0L;
-		for (Member member : members) {
+		for(Member member : members){
 			List<Payment> payments;
-			if (member.equals(user))
+			if(member.equals(user))
 				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalse(travel, member);
 			else
-				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(travel,
-					member);
+				payments = paymentRepository.findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(travel, member);
 
-			for (Payment payment : payments) {
-				Optional<MemberPayment> memberPayment = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
-					payment, user);
-				if (memberPayment.isEmpty())
-					continue;
-				totalAmount += memberPayment.get().getAmount();
+			for(Payment payment : payments){
+				Optional<MemberPayment> memberPayment = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(payment, user);
+				if(memberPayment.isEmpty()) continue;
+				totalAmount+=memberPayment.get().getAmount();
 			}
 		}
 		return totalAmount;
