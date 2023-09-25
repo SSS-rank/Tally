@@ -94,6 +94,7 @@ public class TravelServiceImpl implements TravelService{
 		LocalDate startLocalDate = LocalDate.of(Integer.parseInt(start[0]), Integer.parseInt(start[1]), Integer.parseInt(start[2]));
 		String[] end = travelCreateDto.getEndDate().split("-");
 		LocalDate endLocalDate = LocalDate.of(Integer.parseInt(end[0]), Integer.parseInt(end[1]), Integer.parseInt(end[2]));
+		if(startLocalDate.isAfter(endLocalDate)) throw new TravelException(ErrorCode.VALID_DATE_TIME);
 
 		Travel travel = Travel.of(travelCreateDto, travelTypeEnum, startLocalDate, endLocalDate, false);
 		Travel save = travelRepository.save(travel);
