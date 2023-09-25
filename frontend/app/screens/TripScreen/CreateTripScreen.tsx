@@ -5,8 +5,8 @@ import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
 
-import TripDateInput from '../../components/TripDateInput/TripDateInput';
-import TripLocationSelect from '../../components/TripLocationSelect/TripLocationSelect';
+import TripDateInput from '../../components/TripScreen/TripDateInput';
+import TripLocationSelect from '../../components/TripScreen/TripLocationSelect';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TripCreateRes } from '../../model/trip';
 import { TripStackProps } from '../../navigation/TripStack';
