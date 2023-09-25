@@ -56,4 +56,10 @@ public class TravelController {
 		travelGroupService.modifyTravelVisible(authentication, travelVisibleReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body("OK");
 	}
+
+	@GetMapping("/invisible")
+	public ResponseEntity<List<TravelDto>> getTravelInvisibleList(Authentication authentication){
+		List<TravelDto> invisibles = travelService.getInvisibleTravelList(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(invisibles);
+	}
 }
