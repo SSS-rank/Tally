@@ -1,6 +1,7 @@
 package com.sss.tally.api.analysis.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.tally.api.analysis.dto.AnalysisDto;
+import com.sss.tally.domain.category.entity.Category;
+import com.sss.tally.domain.category.repository.CategoryRepository;
 import com.sss.tally.domain.member.entity.Member;
+import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
 import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
 import com.sss.tally.domain.payment.entity.Payment;
@@ -19,6 +23,8 @@ import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.domain.travel.repository.TravelRepository;
 import com.sss.tally.domain.travelgroup.repository.TravelGroupRepository;
 import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.CategoryException;
+import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,9 @@ public class AnalysisServiceImpl implements AnalysisService{
 	private final PaymentRepository paymentRepository;
 	private final TravelRepository travelRepository;
 	private final MemberPaymentRepository memberPaymentRepository;
+	private final MemberRepository memberRepository;
+	private final CategoryRepository categoryRepository;
+
 	@Override
 	public AnalysisDto.GroupMemberRespDto getGroupAnalysis(Authentication authentication, Long travelId) {
 		Member auth = (Member)authentication.getPrincipal();
@@ -40,7 +49,7 @@ public class AnalysisServiceImpl implements AnalysisService{
 		// 해당 여행에 참여하는 멤버 리스트
 		List<Member> travelGroupMembersId = travelGroupRepository.findMembersByTravelId(travelId);
 		// 해당 여행에서 사용한 총 지출 리스트 (삭제 안된 것 + 나만보기 설정 안된 것)
-		List<Payment> payments = paymentRepository.findAllByTravelIdAndStatusIsFalseAndVisibleIsFalse(travel);
+		List<Payment> payments = paymentRepository.findAllByTravelIdAndStatusIsFalseAndVisibleIsTrue(travel);
 
 		Long totalAmount = 0L; // 해당 여행에서 쓴 총 금액
 		for(Payment payment:payments)
@@ -55,7 +64,7 @@ public class AnalysisServiceImpl implements AnalysisService{
 				amount+=tag.get().getAmount();
 			}
 			double percent = ((double) amount / totalAmount) * 100.0; // 비율 구하기
-			if(auth.equals(member))
+			if(Objects.equals(auth.getMemberUuid(), member.getMemberUuid()))
 				groupMemberAnalysis.add(AnalysisDto.GroupMemberRespInfo.of(member.getNickname(), amount, percent, true, member.getMemberUuid()));
 			else
 				groupMemberAnalysis.add(AnalysisDto.GroupMemberRespInfo.of(member.getNickname(), amount, percent, false, member.getMemberUuid()));
