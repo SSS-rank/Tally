@@ -20,6 +20,7 @@ function TripLocationSelect() {
 		{ label: '국내', value: 'state' },
 		{ label: '해외', value: 'global' },
 	]);
+	const api = useAxiosWithAuth();
 
 	// 해외 선택 시 국가
 	const [openCountry, setOpenCountry] = useState(false);
@@ -31,6 +32,23 @@ function TripLocationSelect() {
 	const [state, setState] = useState(0);
 	const [tripStateItems, setTripStateItems] = useState<tripLocationSelectItem[]>([]);
 
+	const getCountry = async () => {
+		try {
+			const res = await api.get(`/country`);
+
+			if (res.status === 200) {
+				const countries: tripLocationSelectItem[] = res.data.map((item: any) => ({
+					label: item.countryName,
+					value: item.countryCode,
+				}));
+
+				setTripCountryItems(countries);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	// recoil
 	const [tripInfo, setTripInfo] = useRecoilState(TripInfoState);
 
@@ -39,16 +57,12 @@ function TripLocationSelect() {
 			getState();
 			setCountry(0);
 		} else if (tripType === 'global') {
-			setTripCountryItems([
-				{ label: '일본', value: 'japan' },
-				{ label: '태국', value: 'taiwan' },
-			]);
+			getCountry();
 			setState(0);
 			setCity(0);
 		}
 	}, [tripType]);
 
-	const api = useAxiosWithAuth();
 	const getState = async () => {
 		try {
 			const res = await api.get(`/destination/state`);
@@ -76,7 +90,7 @@ function TripLocationSelect() {
 			setTripCityItems([]);
 			setCity(0);
 			getCity();
-		}
+		} else setTripCityItems([]);
 	}, [state]);
 
 	const getCity = async () => {
