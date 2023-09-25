@@ -30,10 +30,11 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 
 	@Override
 	public void addTravelGroup(Authentication authentication, Long travelId) {
-		Member member = (Member) authentication.getPrincipal();
+		Member member = (Member)authentication.getPrincipal();
 
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
-		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		if (travelOptional.isEmpty())
+			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
 		travelGroupRepository.save(TravelGroup.of(member, travelOptional.get()));
 		customCheckListService.createInitCustomCheckList(member, travelOptional.get());
