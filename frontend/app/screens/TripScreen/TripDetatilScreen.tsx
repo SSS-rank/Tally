@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Button, Chip, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
