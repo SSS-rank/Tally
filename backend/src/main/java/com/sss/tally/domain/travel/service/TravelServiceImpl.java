@@ -351,4 +351,45 @@ public class TravelServiceImpl implements TravelService{
 		return totalAmount;
 	}
 
+	@Override
+	public List<TravelDto> getInvisibleTravelList(Authentication authentication) {
+		Member member = (Member)authentication.getPrincipal();
+
+		List<Travel> travelList = travelRepository.findInvisibleTravelForMember(member);
+
+		// for문을 통해 Travel entity를 TravelDto로 변환
+		List<TravelDto> travels = new ArrayList<>();
+		for(Travel travel: travelList){
+			String travelLocation = "";
+			String travelType ="";
+
+			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
+				travelType="KOR";
+				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
+				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
+				travelLocation = cityByCityId.get().getCityName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
+				travelType="KOR";
+				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
+				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
+				travelLocation = stateByStateId.get().getStateName();
+			}
+			else if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)){
+				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(travel.getTravelLocation());
+				if(countryByCountryId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
+				travelType=countryByCountryId.get().getCountryCode();
+				travelLocation = countryByCountryId.get().getCountryName();
+			}
+
+			// travelId를 통해 여행 참여자들의 정보를 받아옴.
+			List<Member> members = memberRepository.findMembersInTravel(travel);
+
+			// 사용자의 정보를 MembeTravelDto로 변환 및 travels에 추가
+			travels.add(TravelDto.of(travel, travelType, travelLocation, members.stream()
+				.map(MemberDto.MemberTravelDto::from)
+				.collect(Collectors.toList())));
+		}
+		return travels;
+	}
 }
