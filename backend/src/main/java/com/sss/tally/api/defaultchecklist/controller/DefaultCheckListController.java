@@ -3,6 +3,7 @@ package com.sss.tally.api.defaultchecklist.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,15 @@ public class DefaultCheckListController {
 		@AuthenticationPrincipal Member member) {
 		String memberUuid = member.getMemberUuid();
 		String result = defaultCheckListService.addContent(memberUuid, addDefaultCheckListReqDto);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
+
+	@PatchMapping
+	public ResponseEntity<String> updateContent(
+		@RequestBody DefaultCheckListDto.UpdateDefaultCheckListReqDto updateDefaultCheckListReqDto,
+		@AuthenticationPrincipal Member member) {
+		String memberUuid = member.getMemberUuid();
+		String result = defaultCheckListService.updateContent(memberUuid, updateDefaultCheckListReqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }
