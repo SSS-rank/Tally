@@ -112,4 +112,40 @@ public class AnalysisServiceImpl implements AnalysisService{
 		}
 		return AnalysisDto.MemberRespDto.of(memberRespInfoList, totalAmount);
 	}
+
+	@Override
+	public List<AnalysisDto.CategoryRespDto> getCategoryDetail(Authentication authentication, Long travelId,
+		String memberUuid, Long categoryId) {
+		Member auth = (Member)authentication.getPrincipal();
+		Member searchMember = memberRepository.findByMemberUuid(memberUuid)
+			.orElseThrow(()->new MemberException(ErrorCode.NOT_EXIST_MEMBER));
+		Travel travel = travelRepository.findTravelByTravelId(travelId)
+			.orElseThrow(()->new TravelException(ErrorCode.NOT_EXIST_TRAVEL));
+		Category category = categoryRepository.findCategoryByCategoryId(categoryId)
+			.orElseThrow(()->new CategoryException(ErrorCode.NOT_EXIST_CATEGORY));
+
+		List<Payment> payments;
+		// 본인 정보를 조회할 셩우
+		if(auth.getMemberUuid().equals(searchMember.getMemberUuid()))
+			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalse(travel, category);
+		else
+			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrue(travel, category);
+
+		List<AnalysisDto.CategoryRespDto> categoryRespDtoList = new ArrayList<>();
+		for(Payment payment : payments){
+			Optional<MemberPayment> memberPayment = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(payment, searchMember);
+			if(memberPayment.isPresent()){
+				List<MemberPayment> members = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(payment);
+				List<String> tagMembers = new ArrayList<>();
+				for(MemberPayment member:members)
+					tagMembers.add(member.getMemberId().getNickname());
+
+				categoryRespDtoList.add(AnalysisDto.CategoryRespDto.of(
+					payment.getPaymentKoreaDate(), payment.getPaymentUuid(), payment.getPaymentName(), tagMembers,payment.getAmount(), memberPayment.get()
+						.getAmount()
+				));
+			}
+		}
+		return categoryRespDtoList;
+	}
 }
