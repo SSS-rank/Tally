@@ -1,5 +1,6 @@
 package com.sss.tally.domain.travelgroup.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -39,10 +40,14 @@ public class TravelGroup {
 	@JoinColumn(name = "travel_id")
 	private Travel travelId;
 
+	@Column(nullable = false)
+	private boolean visible;
+
 	public static TravelGroup of(Member member, Travel travel){
 		return TravelGroup.builder()
 			.memberId(member)
 			.travelId(travel)
+			.visible(true)
 			.build();
 	}
 
