@@ -61,6 +61,7 @@ public enum ErrorCode {
 	NOT_EXIST_CITY(HttpStatus.BAD_REQUEST, "013", "존재하지 않는 지역입니다."),
 	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
 	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "015", "존재하지 않는 국가입니다."),
+	NOT_EXIST_MEMBER_TRAVEL(HttpStatus.BAD_REQUEST, "016", "여행에 해당 사용자가 참여중이지 않습니다."),
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
@@ -68,6 +69,11 @@ public enum ErrorCode {
 	// 이미지
 	IMAGE_DELETE_FAIL(HttpStatus.EXPECTATION_FAILED, "001", "이미지 삭제에 실패했습니다."),
 	CONVERT_FILE_FAIL(HttpStatus.EXPECTATION_FAILED, "002", "파일 전환에 실패했습니다."),
+
+	//체크리스트
+	NOT_EXIST_DEFAULT_CHECKLIST(HttpStatus.BAD_REQUEST, "015", "기본 체크리스트가 없습니다."),
+	NOT_EQUAL_CHECKLIST_MEMBER(HttpStatus.BAD_REQUEST, "015", "체크리스트 소유자와 로그인한 사용자가 일치하지 않습니다."),
+	NOT_EXIST_CUSTOM_CHECKLIST(HttpStatus.BAD_REQUEST, "015", "커스텀 체크리스트가 없습니다."),
 	;
 
 	ErrorCode(HttpStatus httpStatus, String errorCode, String message) {
