@@ -1,5 +1,6 @@
 package com.sss.tally.domain.customchecklist.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import com.sss.tally.domain.travel.repository.TravelRepository;
 import com.sss.tally.domain.travelgroup.repository.TravelGroupRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.CalculateException;
-import com.sss.tally.global.error.exception.DefaultCheckListException;
+import com.sss.tally.global.error.exception.CustomCheckListException;
 import com.sss.tally.global.error.exception.MemberException;
 import com.sss.tally.global.error.exception.TravelException;
 
@@ -84,12 +85,12 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 		Optional<CustomChecklist> customChecklistOptional = customCheckListRepository.findCustomChecklistByCustomChecklistId(
 			updateCustomCheckListReqDto.getCustomCheckListId());
 		if (customChecklistOptional.isEmpty()) {
-			throw new DefaultCheckListException(ErrorCode.NOT_EXIST_CUSTOM_CHECKLIST);
+			throw new CustomCheckListException(ErrorCode.NOT_EXIST_CUSTOM_CHECKLIST);
 		}
 		CustomChecklist customChecklist = customChecklistOptional.get();
 		Member member = memberOptional.get();
 		if (!customChecklist.getMemberId().equals(member)) {
-			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
+			throw new CustomCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
 		customChecklist.UpdateContent(updateCustomCheckListReqDto.getContent());
 		return "ok";
@@ -101,18 +102,50 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 		}
-
 		Optional<CustomChecklist> customChecklistOptional = customCheckListRepository.findCustomChecklistByCustomChecklistId(
 			checkListId);
 		if (customChecklistOptional.isEmpty()) {
-			throw new DefaultCheckListException(ErrorCode.NOT_EXIST_CUSTOM_CHECKLIST);
+			throw new CustomCheckListException(ErrorCode.NOT_EXIST_CUSTOM_CHECKLIST);
 		}
 		CustomChecklist customChecklist = customChecklistOptional.get();
 		Member member = memberOptional.get();
 		if (!customChecklist.getMemberId().equals(member)) {
-			throw new DefaultCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
+			throw new CustomCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
 		customCheckListRepository.delete(customChecklist);
 		return "ok";
+	}
+
+	@Override
+	public List<CustomCheckListDto.GetCustomCheckListRespDto> getContent(String memberUuid, Long travelId) {
+		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
+		if (memberOptional.isEmpty()) {
+			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
+		}
+		Member member = memberOptional.get();
+		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
+		if (travelOptional.isEmpty()) {
+			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		}
+		Travel travel = travelOptional.get();
+		boolean isMemberInTravel = travelGroupRepository.existsByTravelIdAndMemberId(travel, member);
+		if (!isMemberInTravel) {
+			throw new TravelException(ErrorCode.NOT_EXIST_MEMBER_TRAVEL);
+		}
+		List<CustomChecklist> customChecklists = customCheckListRepository.findCustomChecklistsByMemberIdAndTravelId(
+			member, travel);
+		List<CustomCheckListDto.GetCustomCheckListRespDto> customCheckListRespDto = new ArrayList<>();
+		for (CustomChecklist customChecklist : customChecklists) {
+			customCheckListRespDto.add(CustomCheckListDto.GetCustomCheckListRespDto.from(customChecklist));
+		}
+		if (customCheckListRespDto.isEmpty()) {
+			return null;
+		}
+		return customCheckListRespDto;
+	}
+
+	@Override
+	public String updateStatus(String memberUuid, Long checkListId) {
+		return null;
 	}
 }
