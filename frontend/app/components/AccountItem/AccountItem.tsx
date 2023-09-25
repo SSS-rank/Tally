@@ -6,13 +6,18 @@ import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Account } from '../../model/account';
 import { TextStyles } from '../../styles/CommonStyles';
 
+interface AccountItemProp extends Account {
+	setRepresentativeAccountChange: (value: boolean) => void;
+}
+
 function AccountItem({
 	accountNumber,
 	balance,
 	bankCode,
 	bankName,
 	representativeAccount,
-}: Account) {
+	setRepresentativeAccountChange,
+}: AccountItemProp) {
 	const api = useAxiosWithAuth();
 	const [modalVisible, setModalVisible] = useState(false);
 	const changeMainAccount = async () => {
@@ -21,6 +26,7 @@ function AccountItem({
 			if (res.status === 200) {
 				console.log(res.data);
 				if (res.status === 200) {
+					setRepresentativeAccountChange(true);
 					hideModal();
 				}
 			}
