@@ -27,6 +27,7 @@ import com.sss.tally.domain.city.entity.City;
 import com.sss.tally.domain.city.repository.CityRepository;
 import com.sss.tally.domain.country.entity.Country;
 import com.sss.tally.domain.country.repository.CountryRepository;
+import com.sss.tally.domain.customchecklist.service.CustomCheckListService;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.memberpayment.entity.MemberPayment;
@@ -71,13 +72,16 @@ public class TravelServiceImpl implements TravelService{
 	private final CategoryRepository categoryRepository;
 	private final MemberPaymentRepository memberPaymentRepository;
 	private final PaymentUnitRepository paymentUnitRepository;
+	private final CustomCheckListService customCheckListService;
 
 	@Override
-	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication, TravelDto.TravelCreateDto travelCreateDto) {
+	public TravelDto.TravelCreateRespDto createTravel(Authentication authentication,
+		TravelDto.TravelCreateDto travelCreateDto) {
 		Member member = (Member)authentication.getPrincipal();
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(member.getMemberUuid());
 
-		if(memberOptional.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+		if (memberOptional.isEmpty())
+			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		TravelTypeEnum travelTypeEnum = null;
 		switch (travelCreateDto.getTravelType()) {
@@ -95,7 +99,8 @@ public class TravelServiceImpl implements TravelService{
 		}
 
 		String[] start = travelCreateDto.getStartDate().split("-");
-		LocalDate startLocalDate = LocalDate.of(Integer.parseInt(start[0]), Integer.parseInt(start[1]), Integer.parseInt(start[2]));
+		LocalDate startLocalDate = LocalDate.of(Integer.parseInt(start[0]), Integer.parseInt(start[1]),
+			Integer.parseInt(start[2]));
 		String[] end = travelCreateDto.getEndDate().split("-");
 		LocalDate endLocalDate = LocalDate.of(Integer.parseInt(end[0]), Integer.parseInt(end[1]), Integer.parseInt(end[2]));
 		if(startLocalDate.isAfter(endLocalDate)) throw new TravelException(ErrorCode.VALID_DATE_TIME);
@@ -129,6 +134,7 @@ public class TravelServiceImpl implements TravelService{
 		}
 
 		travelGroupRepository.save(TravelGroup.of(memberOptional.get(), save));
+		customCheckListService.createInitCustomCheckList(memberOptional.get(), save);
 		return TravelDto.TravelCreateRespDto.of(save, travelType, travelLocation, memberOptional.get());
 	}
 

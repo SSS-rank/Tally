@@ -19,10 +19,12 @@ public class MemberDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class MemberRespDto{
+		private String memberUuid;
 		private String nickname;
 		private String profileImage;
-		public static MemberRespDto of(String nickname, String profileImage){
+		public static MemberRespDto of(String memberUuid, String nickname, String profileImage){
 			return MemberRespDto.builder()
+				.memberUuid(memberUuid)
 				.nickname(nickname)
 				.profileImage(profileImage)
 				.build();

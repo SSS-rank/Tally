@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.tally.api.member.dto.MemberDto;
 import com.sss.tally.api.travel.dto.TravelDto;
+import com.sss.tally.domain.customchecklist.service.CustomCheckListService;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.travel.entity.Travel;
 import com.sss.tally.domain.travel.repository.TravelRepository;
@@ -28,14 +29,19 @@ import lombok.RequiredArgsConstructor;
 public class TravelGroupServiceImpl implements TravelGroupService {
 	private final TravelRepository travelRepository;
 	private final TravelGroupRepository travelGroupRepository;
+	private final CustomCheckListService customCheckListService;
+
 	@Override
 	public void addTravelGroup(Authentication authentication, Long travelId) {
 		Member member = (Member) authentication.getPrincipal();
 
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(travelId);
-		if(travelOptional.isEmpty()) throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
+		if (travelOptional.isEmpty())
+			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
 		travelGroupRepository.save(TravelGroup.of(member, travelOptional.get()));
+		customCheckListService.createInitCustomCheckList(member, travelOptional.get());
+
 	}
 
 	@Override

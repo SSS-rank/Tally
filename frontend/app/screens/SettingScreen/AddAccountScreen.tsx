@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import bankApi from '../../api/bankApi';
-import BankItem from '../../components/BankItem/BankItem';
+import BankItem from '../../components/common/BankItem';
 import { bankList } from '../../model/bank';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -51,7 +51,17 @@ function AddAccountScreen({ navigation }: any) {
 			</Text>
 			<View style={styles.sectionView}>
 				<TouchableOpacity onPress={() => setModalVisible(true)} style={styles.bankSelectView}>
-					<MaterialCommunityIcons name="bank-outline" color={'#91C0EB'} size={24} />
+					{bankCode === '' ? (
+						<MaterialCommunityIcons name="bank-outline" color={'#91C0EB'} size={24} />
+					) : (
+						<Avatar.Image
+							size={30}
+							style={styles.image}
+							source={{
+								uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${bankCode}.png`,
+							}}
+						/>
+					)}
 					<View style={styles.inputBox}>
 						<TextInput
 							style={styles.backSelectText}
@@ -179,6 +189,9 @@ const styles = StyleSheet.create({
 	},
 	bankList: {
 		marginTop: 40,
+	},
+	image: {
+		backgroundColor: 'transparent',
 	},
 	button: {
 		borderRadius: 20,

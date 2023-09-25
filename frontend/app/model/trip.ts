@@ -36,3 +36,10 @@ export interface TripCreateRes {
 	start_date: string;
 	end_date: string;
 }
+
+export interface CurTripInfo {
+	title: string;
+	location: number;
+	startDay: string;
+	endDay: string;
+}
