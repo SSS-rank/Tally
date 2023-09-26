@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
@@ -9,6 +9,7 @@ import { listItem } from './../../model/analysis';
 import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -22,20 +23,52 @@ interface charData {
 
 function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
+	const member = useRecoilValue(MemberState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
 	const [list, setList] = useState<listItem[]>([]);
 
 	const [selectionMode, setSelectionMode] = useState(1);
 
-	useFocusEffect(
-		useCallback(() => {
-			getData();
-		}, []),
-	);
+	// useFocusEffect(
+	// 	useCallback(() => {
+	// 		getData();
+	// 	}, []),
+	// );
+
+	useEffect(() => {
+		console.log(selectionMode);
+		if (selectionMode === 1) getGroupData();
+		else getPersonalData();
+	}, [selectionMode]);
 
 	const api = useAxiosWithAuth();
-	const getData = async () => {
+	const getGroupData = async () => {
 		const res = await api.get(`/analysis/${curTripInfo.id}`);
+		console.log(res.data);
+
+		const data: charData[] = res.data.list.map((item: any, index: number) => ({
+			name: item.member_name,
+			money: item.money,
+			color: `rgba(131, 167, 234, 1)`,
+			legendFontColor: '#7F7F7F',
+			legendFontSize: 15,
+		}));
+
+		const listData: listItem[] = res.data.list.map((item: listItem) => ({
+			member_name: item.member_name,
+			money: item.money,
+			percent: item.percent,
+			login: item.login,
+			member_uuid: item.member_uuid,
+		}));
+
+		console.log('data ', data);
+		setPaymentData(data);
+		setList(listData);
+	};
+
+	const getPersonalData = async () => {
+		const res = await api.get(`/analysis/${curTripInfo.id}/${member.member_uuid}`);
 		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
