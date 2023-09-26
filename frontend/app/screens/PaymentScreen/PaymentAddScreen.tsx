@@ -64,7 +64,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 			setPartyMembers(directPayMembers);
 			setDirectPayReq((prevState: DirectPayReq) => ({
 				...prevState,
-				title: travel_title || '',
+				title: store || '',
 				travel_id: travel_id || 0,
 			}));
 		}
@@ -163,6 +163,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				amount: parseFloat(totAmount),
 				category: selectedcategory,
 				memo: text,
+				title: store || '',
 				payment_participants: partyData || [],
 				visible: !selfCheck,
 			}));
