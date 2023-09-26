@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginVertical: 10,
+		marginVertical: 14,
+		marginHorizontal: 30,
 	},
 	textView: {
 		flexDirection: 'row',
