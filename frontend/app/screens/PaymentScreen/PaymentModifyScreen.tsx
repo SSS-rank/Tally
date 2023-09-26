@@ -346,7 +346,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			)}
 
 			<View style={[styles.party_box]}>
-				{!visible ? (
+				{visible ? (
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
@@ -397,7 +397,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						</Text>
 					</View>
 					<IIcon
-						name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 						size={32}
 						color="#91C0EB"
 						style={{ marginLeft: 5 }}
