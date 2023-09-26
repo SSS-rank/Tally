@@ -24,7 +24,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
-	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [paymentUnit, setPaymentUnit] = useState('');
@@ -172,9 +171,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 	async function handleSubmit() {
-		const member = partyMembers.map((item) => {
+		let member = partyMembers.map((item) => {
 			return { amount: item.amount, member_uuid: item.member_uuid };
 		});
+		if (!visible) {
+			member = [{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid }];
+		}
 		if (isPayer) {
 			if (isCash) {
 				//수동입력된 케이스
@@ -360,7 +362,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									key={item.member_uuid}
 									name={item.member_nickname}
 									img={{ uri: item.image }}
-									self={selfCheck}
 									involveCheck={item.checked}
 									onAmountChange={(input) =>
 										handleAmountChange(
@@ -396,7 +397,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						</Text>
 					</View>
 					<IIcon
-						name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 						size={32}
 						color="#91C0EB"
 						style={{ marginLeft: 5 }}
