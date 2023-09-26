@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 
 import { listItem } from './../../model/analysis';
 import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
+import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -23,7 +24,8 @@ function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
 	const [list, setList] = useState<listItem[]>([]);
-	console.log(curTripInfo);
+
+	const [selectionMode, setSelectionMode] = useState(1);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -111,6 +113,16 @@ function AnalysisScreen() {
 				)}
 				keyExtractor={(item) => item.member_uuid}
 			/>
+			<View style={styles.switchView}>
+				<CustomSwitch
+					selectionMode={1}
+					roundCorner={true}
+					option1={'그룹'}
+					option2={'개인'}
+					onSelectSwitch={setSelectionMode}
+					selectionColor={'#91C0EB'}
+				/>
+			</View>
 		</View>
 	);
 }
@@ -138,6 +150,13 @@ const styles = StyleSheet.create({
 		// backgroundColor: 'blue',
 		position: 'relative',
 		left: 80,
+	},
+	switchView: {
+		alignItems: 'center',
+		margin: 20,
+		position: 'absolute',
+		bottom: 0,
+		alignSelf: 'center',
 	},
 });
 
