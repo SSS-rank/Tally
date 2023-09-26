@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import AdjustStatus from '../../components/Adjust/AdjustStatus';
 import RequestDetailItem from '../../components/Adjust/RequestDetailItem';
