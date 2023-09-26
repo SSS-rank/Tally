@@ -162,40 +162,43 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		const member = partyMembers.map((item) => {
 			return { amount: item.amount, member_uuid: item.member_uuid };
 		});
-
-		if (isCash) {
-			//수동입력된 케이스
-			const req = {
-				amount: totAmount,
-				category: selectedcategory,
-				memo: text,
-				payment_date_time: formatDate(date),
-				payment_participants: member,
-				payment_uuid: paymentUuid,
-				travel_id: curTripInfo.id,
-				title: curTripInfo.title,
-				visible: visible,
-				ratio: 1,
-				payment_unit_id: 8,
-			};
-			const res = await api.patch('payment/manual', req);
-			if (res.status == 200) {
-				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+		if (isPayer) {
+			if (isCash) {
+				//수동입력된 케이스
+				const req = {
+					amount: totAmount,
+					category: selectedcategory,
+					memo: text,
+					payment_date_time: formatDate(date),
+					payment_participants: member,
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					title: curTripInfo.title,
+					visible: visible,
+					ratio: 1,
+					payment_unit_id: 8,
+				};
+				const res = await api.patch('payment/manual', req);
+				if (res.status == 200) {
+					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+				}
+			} else {
+				//자동 입력된 케이스
+				const req = {
+					category: selectedcategory,
+					memo: text,
+					payment_participants: member,
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					visible: visible,
+				};
+				const res = await api.patch('payment/auto', req);
+				if (res.status == 200) {
+					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+				}
 			}
 		} else {
-			//자동 입력된 케이스
-			const req = {
-				category: selectedcategory,
-				memo: text,
-				payment_participants: member,
-				payment_uuid: paymentUuid,
-				travel_id: curTripInfo.id,
-				visible: visible,
-			};
-			const res = await api.patch('payment/auto', req);
-			if (res.status == 200) {
-				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
-			}
+			console.log('태그');
 		}
 	}
 	return (
