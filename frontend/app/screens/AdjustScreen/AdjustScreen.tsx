@@ -69,10 +69,7 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지
-						</Text>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
-							보낸 정산 목록입니다.
+							김싸피님의 지금까지{'\n'}보낸 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />
@@ -88,10 +85,7 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지
-						</Text>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
-							받은 정산 목록입니다.
+							김싸피님의 지금까지{'\n'}받은 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />
