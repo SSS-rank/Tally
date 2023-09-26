@@ -172,9 +172,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 	async function handleSubmit() {
-		const member = partyMembers.map((item) => {
+		let member = partyMembers.map((item) => {
 			return { amount: item.amount, member_uuid: item.member_uuid };
 		});
+		if (!visible) {
+			member = [{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid }];
+		}
 		if (isPayer) {
 			if (isCash) {
 				//수동입력된 케이스
@@ -344,7 +347,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			)}
 
 			<View style={[styles.party_box]}>
-				{visible ? (
+				{!visible ? (
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
@@ -360,7 +363,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									key={item.member_uuid}
 									name={item.member_nickname}
 									img={{ uri: item.image }}
-									self={selfCheck}
 									involveCheck={item.checked}
 									onAmountChange={(input) =>
 										handleAmountChange(
