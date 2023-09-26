@@ -157,6 +157,9 @@ public class AnalysisServiceImpl implements AnalysisService{
 		Category category = categoryRepository.findCategoryByCategoryId(changeCategoryReqDto.getCategoryId())
 			.orElseThrow(()->new CategoryException(ErrorCode.NOT_EXIST_CATEGORY));
 
+		if(payment.getCategoryId().getCategoryId().equals(category.getCategoryId()))
+			throw new CategoryException(ErrorCode.ALREADY_SAME_CATEGORY);
+
 		payment.changeCategory(category);
 	}
 }
