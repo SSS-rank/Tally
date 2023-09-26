@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
-import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
 import { groupListItem } from './../../model/analysis';
-import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
+import GroupChartLegendItem from '../../components/AnalysisScreen/GroupChartLegendItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { MemberState } from '../../recoil/memberRecoil';
@@ -28,12 +27,6 @@ function AnalysisScreen() {
 	const [list, setList] = useState<groupListItem[]>([]);
 
 	const [selectionMode, setSelectionMode] = useState(1);
-
-	// useFocusEffect(
-	// 	useCallback(() => {
-	// 		getData();
-	// 	}, []),
-	// );
 
 	useEffect(() => {
 		console.log(selectionMode);
@@ -135,7 +128,7 @@ function AnalysisScreen() {
 			<FlatList
 				data={list}
 				renderItem={({ item }) => (
-					<ChartLegendItem
+					<GroupChartLegendItem
 						key={item.member_uuid}
 						member_name={item.member_name}
 						member_uuid={item.member_uuid}
