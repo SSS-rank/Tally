@@ -25,10 +25,9 @@ function DetailListItem(props: detailItemProps) {
 					{props.calculateStatus != 'NONE' ? (
 						<DetailItemStatus status={props.calculateStatus} />
 					) : null}
-					{!props.visible ? <Icon style={styles.chip} name="lock" /> : null}
-
-					{/* <Chip style={styles.chip}>{props.calculateStatus}</Chip>; */}
+					{!props.visible ? <Icon style={styles.lock} name="lock" /> : null}
 				</View>
+
 				<Text style={TextStyles().regular}>{props.balance}원</Text>
 			</View>
 			<View style={styles.detail_item_sub}>
@@ -61,6 +60,11 @@ const styles = StyleSheet.create({
 		marginLeft: 10,
 		marginTop: 0,
 		marginBottom: 10,
+		justifyContent: 'center',
+	},
+	lock: {
+		marginLeft: 5,
+		fontSize: 20,
 		justifyContent: 'center',
 	},
 });
