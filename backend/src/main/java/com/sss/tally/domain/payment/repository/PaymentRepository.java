@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sss.tally.api.calculate.dto.CalculateDto;
+import com.sss.tally.domain.category.entity.Category;
 import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.travel.entity.Travel;
@@ -41,4 +42,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalse(Travel travel, Member member);
 
 	List<Payment> findAllByTravelIdAndMemberIdAndStatusIsFalseAndVisibleIsTrue(Travel travel, Member member);
+
+	List<Payment> findAllByTravelIdAndStatusIsFalseAndVisibleIsTrue(Travel travel);
+
+	List<Payment> findAllByTravelIdAndStatusIsFalse(Travel travel);
+
+	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalse(Travel travel, Category category);
+
+	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrue(Travel travel, Category category);
 }

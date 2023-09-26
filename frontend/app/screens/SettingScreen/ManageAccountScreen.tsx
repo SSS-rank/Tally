@@ -12,15 +12,24 @@ import { TextStyles } from '../../styles/CommonStyles';
 const ManageAccountScreen = ({ navigation }: any) => {
 	const api = useAxiosWithAuth();
 	const [accountListState, setAccountListState] = useRecoilState(tallyAccountListState);
+	const [representativeAccountChange, setRepresentativeAccountChange] = useState(false);
 	useFocusEffect(
 		useCallback(() => {
 			getAccountList();
-		}, [accountListState]),
+		}, []),
 	);
+
+	useEffect(() => {
+		if (representativeAccountChange) {
+			getAccountList();
+			setRepresentativeAccountChange(false);
+		}
+	}, [representativeAccountChange]);
 
 	const getAccountList = async () => {
 		try {
 			const res = await api.get(`/account`);
+			console.log(res.data);
 
 			if (res.status === 200) {
 				setAccountListState(res.data);
@@ -51,6 +60,7 @@ const ManageAccountScreen = ({ navigation }: any) => {
 						bankCode={item.bankCode}
 						bankName={item.bankName}
 						representativeAccount={item.representativeAccount}
+						setRepresentativeAccountChange={setRepresentativeAccountChange}
 					/>
 				)}
 				keyExtractor={(item) => item.accountNumber}

@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
 import RequestListItem from '../../components/Adjust/RequestListItem';
 import ResponseListItem from '../../components/Adjust/ResponseListItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import DashLine from '../../components/DashLine';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { adjustListItem } from '../../model/adjust';
-import { TripStackProps } from '../../navigation/TripStack';
+import { AdjustTripScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
-type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'AdjustTrip'>;
-
-function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
+function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 	const { tripId } = route.params;
 	const [isSend, setIsSend] = useState(true);
 
@@ -73,10 +69,7 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지
-						</Text>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
-							보낸 정산 목록입니다.
+							김싸피님의 지금까지{'\n'}보낸 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />
@@ -92,10 +85,7 @@ function AdjustScreen({ navigation, route }: TripDetailScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지
-						</Text>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
-							받은 정산 목록입니다.
+							김싸피님의 지금까지{'\n'}받은 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />

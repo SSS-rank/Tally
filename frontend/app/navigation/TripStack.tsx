@@ -3,12 +3,14 @@ import { IconButton } from 'react-native-paper';
 
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { TripMember } from '../model/trip';
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
 import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
 import PaymentScreen from '../screens/AdjustScreen/PaymentScreen';
 import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
 import PaymentAddScreen from '../screens/PaymentScreen/PaymentAddScreen';
+import PaymentModifyScreen from '../screens/PaymentScreen/PaymentModifyScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
 import TripListScreen from '../screens/TripScreen/TripListScreen';
@@ -16,13 +18,22 @@ import TripListScreen from '../screens/TripScreen/TripListScreen';
 export type TripStackProps = {
 	TripList: undefined;
 	CreateTrip: undefined;
-	TripDetail: undefined;
+	TripDetail: { travel_id: number };
 	AnalysisTrip: undefined;
 	AdjustTrip: { tripId: number };
-	SendAdjust: undefined | { adjustId?: number };
-	GetAdjust: undefined | { adjustId?: number };
+	SendAdjust: { adjustId: string };
+	GetAdjust: { adjustId: string; requesterName?: string };
 	PayAdjust: undefined;
-	AddPayment: undefined;
+	AddPayment: {
+		travel_id: number;
+		travel_title: string;
+		participants: TripMember[];
+	};
+	ModifyPayment: {
+		payment_uuid: string; // 결제 uuid(String)
+		payer: string; // 결제자의 uuid(String)
+		method: string;
+	};
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
@@ -88,6 +99,7 @@ function TripStack({ navigation }: TripDetailScreenProps) {
 			<Stack.Screen name="GetAdjust" component={GetAdjustScreen} options={{ title: '' }} />
 			<Stack.Screen name="PayAdjust" component={PaymentScreen} options={{ title: '' }} />
 			<Stack.Screen name="AddPayment" component={PaymentAddScreen} options={{ title: '' }} />
+			<Stack.Screen name="ModifyPayment" component={PaymentModifyScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }

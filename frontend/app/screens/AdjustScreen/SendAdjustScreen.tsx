@@ -1,73 +1,66 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Avatar } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native';
 
+import AdjustStatus from '../../components/Adjust/AdjustStatus';
+import RequestDetailItem from '../../components/Adjust/RequestDetailItem';
 import DashLine from '../../components/DashLine';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { requestList } from '../../model/adjust';
+import { SendAdjustScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
-const SendAdjuestScreen = () => {
-	const [ischecked, setIsChecked] = useState(true);
+const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
+	const [requestAdjust, setRequestAdjust] = useState<requestList>();
+	const { adjustId } = route.params;
+	const api = useAxiosWithAuth();
+
+	useFocusEffect(
+		React.useCallback(() => {
+			const fetchData = async () => {
+				try {
+					console.log(adjustId);
+					const res = await api.get(`calculate/request-detail/${adjustId}`);
+					if (res.status === 200) {
+						console.log(res.data);
+						setRequestAdjust(res.data);
+						console.log(requestAdjust);
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			};
+
+			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
+		}, []),
+	);
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ marginBottom: 20 }}>
 				<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-					<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>부산 호캉스</Text>
+					<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
+						{requestAdjust?.travel_name}
+					</Text>
 					<Text style={TextStyles({ align: 'left', color: '#666666' }).small}> 국내</Text>
 				</View>
-				<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>2023.09.03</Text>
+				<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
+					{requestAdjust?.request_date}
+				</Text>
 			</View>
 			<DashLine />
 			<View
 				style={{
-					alignItems: 'center',
 					marginVertical: 20,
 				}}
 			>
-				<TouchableOpacity
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						height: 70,
-						paddingHorizontal: 10,
-					}}
-					onPress={() => {}}
-				>
-					<Text style={{ ...TextStyles().regular }}>박싸피</Text>
-					<Text
-						style={{
-							...TextStyles({ align: 'right' }).title,
-							flex: 1,
-							lineHeight: 70,
-							verticalAlign: 'middle',
-						}}
-					>
-						154,032원
-					</Text>
-					<Icon name="chevron-forward" size={20} color="#666666" style={{ marginLeft: 5 }} />
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						height: 70,
-						paddingHorizontal: 10,
-					}}
-					onPress={() => {}}
-				>
-					<Text style={{ ...TextStyles().regular }}>이싸피</Text>
-					<Text
-						style={{
-							...TextStyles({ align: 'right' }).title,
-							flex: 1,
-							lineHeight: 70,
-						}}
-					>
-						150,525원
-					</Text>
-					<Icon name="chevron-forward" size={20} color="#666666" style={{ marginLeft: 5 }} />
-				</TouchableOpacity>
+				<FlatList
+					data={requestAdjust?.request_details}
+					renderItem={({ item }) => (
+						<RequestDetailItem member_name={item.member_name} amount={item.amount} />
+					)}
+				/>
 			</View>
 			<DashLine />
 			<View
@@ -86,7 +79,7 @@ const SendAdjuestScreen = () => {
 						lineHeight: 70,
 					}}
 				>
-					150,525원
+					{requestAdjust?.total_amount}원
 				</Text>
 			</View>
 			<View
@@ -99,35 +92,12 @@ const SendAdjuestScreen = () => {
 				<Text style={TextStyles({ align: 'left', mTop: 20, mBottom: 15 }).regular}>
 					인원 별 정산 현황
 				</Text>
-				<View
-					style={{
-						marginBottom: 15,
-						flexDirection: 'row',
-						alignItems: 'center',
-					}}
-				>
-					<Avatar.Image
-						// style={ViewStyles({ left: 0 }).avatarMate}
-						size={45}
-						source={require('../../assets/images/kakao.png')}
-					/>
-					<Text
-						style={{
-							...TextStyles({ align: 'left' }).medium,
-							flex: 1,
-							paddingHorizontal: 10,
-						}}
-					>
-						이싸피
-					</Text>
-					{!ischecked ? (
-						<Text style={{ ...TextStyles({ align: 'right', color: '#91C0EB' }).medium }}>
-							요청 중
-						</Text>
-					) : (
-						<Text style={{ ...TextStyles({ align: 'right' }).medium }}>확인 완료</Text>
+				<FlatList
+					data={requestAdjust?.request_details}
+					renderItem={({ item }) => (
+						<AdjustStatus member_name={item.member_name} status={item.status} />
 					)}
-				</View>
+				/>
 			</View>
 		</View>
 	);
@@ -136,8 +106,6 @@ const SendAdjuestScreen = () => {
 const styles = StyleSheet.create({
 	viewContainer: {
 		flexGrow: 1,
-		// justifyContent: 'center',
-		// alignItems: 'center',
 		paddingHorizontal: 15,
 		backgroundColor: 'white',
 	},

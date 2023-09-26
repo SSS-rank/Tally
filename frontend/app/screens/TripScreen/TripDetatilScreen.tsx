@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Button, Chip, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useRecoilState } from 'recoil';
 
 import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import { Payment } from '../../model/payment';
-import { TripStackProps } from '../../navigation/TripStack';
+import { TripMember } from '../../model/trip';
+import { TripDetailScreenProps } from '../../model/tripNavigator';
+import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
-
-type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [payData, setPayData] = useState<Payment[]>([]);
@@ -22,19 +22,36 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
-	const { id, title, location, type, startDay, endDay, travelParticipants } = route.params || {};
+	const [title, setTitle] = useState('');
+	const { travel_id } = route.params ?? {};
 	const [orderType, setOrderType] = useState('최신순');
-
+	const [location, setLocation] = useState(0);
+	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
+	const [period, setPeriod] = useState('');
+	const [totalAmount, setTotalAmount] = useState(0);
+	const [participants, setParticipants] = useState<TripMember[]>([]);
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
 			const fetchData = async () => {
 				try {
-					const res = await api.get(`/payment/${id}`);
+					const res = await api.get(`/travel/${travel_id}`);
 					if (res.status === 200) {
-						const payList = res.data;
-						console.log(payList);
-						setPayData((prevPayData) => [...prevPayData, ...payList]);
+						const trip_data = res.data;
+						setTitle(trip_data.travel_title);
+						setLocation(trip_data.travel_location);
+						setPeriod(trip_data.travel_period);
+						setTotalAmount(trip_data.total_amount);
+						const updatedTripInfo = {
+							id: travel_id,
+							title: trip_data.travel_title,
+							location: trip_data.travel_location,
+							startDay: trip_data.travel_period.split('~')[0],
+							endDay: trip_data.travel_period.split('~')[1],
+						};
+						setParticipants(trip_data.participants);
+						setCurTripInfo(updatedTripInfo);
+						setPayData(trip_data.payment_list);
 					}
 				} catch (err) {
 					console.log(err);
@@ -54,7 +71,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						style={styles.button}
 						mode="text"
 						labelStyle={TextStyles().regular}
-						onPress={() => navigation.navigate('AdjustTrip', { tripId: id })}
+						// onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
 					>
 						정산 현황
 					</Button>
@@ -78,7 +95,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					}}
 				>
 					<Text style={TextStyles().title}>{title}</Text>
-					<Text style={[TextStyles().small, styles.type]}>{type}</Text>
+					<Text style={[TextStyles().small, styles.type]}>{location}</Text>
 				</View>
 				<View
 					style={{
@@ -87,9 +104,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						flexWrap: 'wrap',
 					}}
 				>
-					<Text style={TextStyles().regular}>
-						{startDay}~{endDay}
-					</Text>
+					<Text style={TextStyles().regular}>{period}</Text>
 				</View>
 			</View>
 			<View style={styles.party_box}>
@@ -109,7 +124,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				<Text style={[TextStyles().medium, styles.end_date]}>
 					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={[TextStyles().header, styles.balance]}>0원</Text>
+				<Text style={[TextStyles().header, styles.balance]}>{totalAmount}원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
@@ -119,13 +134,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					mode="text"
 					onPress={() =>
 						navigation.navigate('AddPayment', {
-							id,
-							title,
-							location,
-							type,
-							startDay,
-							endDay,
-							travelParticipants,
+							travel_id: travel_id ?? 0,
+							travel_title: title,
+							participants: participants,
 						})
 					}
 				>
@@ -200,7 +211,16 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 			{payData.map((item) => (
 				<View key={item.payment_uuid}>
-					<TouchableOpacity style={styles.detail_item_box}>
+					<TouchableOpacity
+						style={styles.detail_item_box}
+						onPress={() =>
+							navigation.navigate('ModifyPayment', {
+								payment_uuid: item.payment_uuid,
+								payer: item.payer,
+								method: item.payment_method,
+							})
+						}
+					>
 						<Text>{item.payment_date.split('일 ')[0]}일</Text>
 						<DetailListItem
 							title={item.payment_memo}
