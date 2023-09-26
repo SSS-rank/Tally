@@ -98,7 +98,11 @@ const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 				<FlatList
 					data={requestAdjust?.request_details}
 					renderItem={({ item }) => (
-						<AdjustStatus member_name={item.member_name} status={item.status} />
+						<AdjustStatus
+							member_name={item.member_name}
+							status={item.status}
+							member_profile={item.member_profile}
+						/>
 					)}
 				/>
 			</View>

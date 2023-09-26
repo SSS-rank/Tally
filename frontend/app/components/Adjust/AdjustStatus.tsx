@@ -5,7 +5,7 @@ import { Avatar } from 'react-native-paper';
 import { requestDetail } from '../../model/adjust';
 import { TextStyles } from '../../styles/CommonStyles';
 
-const AdjustStatus = ({ member_name, status }: requestDetail) => {
+const AdjustStatus = ({ member_name, status, member_profile }: requestDetail) => {
 	return (
 		<View
 			style={{
@@ -14,7 +14,7 @@ const AdjustStatus = ({ member_name, status }: requestDetail) => {
 				alignItems: 'center',
 			}}
 		>
-			<Avatar.Image size={45} source={require('../../assets/images/kakao.png')} />
+			<Avatar.Image size={45} source={{ uri: member_profile }} />
 			<Text
 				style={{
 					...TextStyles({ align: 'left' }).medium,
