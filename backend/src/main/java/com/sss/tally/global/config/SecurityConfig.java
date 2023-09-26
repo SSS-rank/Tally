@@ -32,7 +32,7 @@ public class SecurityConfig {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.logout().logoutUrl("/member/logout").and()
 			.authorizeRequests()
-			.antMatchers( "/v3/api-docs","/swagger*/**", "/login", "/destination/**", "/conversation/**").permitAll()
+			.antMatchers( "/v3/api-docs","/swagger*/**", "/health", "/login", "/destination/**", "/conversation/**").permitAll()
 			.anyRequest().authenticated().and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
