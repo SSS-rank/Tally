@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/papago")
+@RequestMapping("/conversation")
 public class PapagoController {
 	private final PapagoService papagoService;
 	@PostMapping
