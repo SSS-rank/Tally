@@ -10,14 +10,7 @@ import { useRecoilState } from 'recoil';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import {
-	DirectPayReq,
-	Payment,
-	SelectPayMember,
-	ModMember,
-	PaymentDetailRes,
-} from '../../model/payment';
-import { TripMember } from '../../model/trip';
+import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
