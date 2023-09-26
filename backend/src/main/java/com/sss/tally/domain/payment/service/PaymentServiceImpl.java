@@ -356,7 +356,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		List<MemberPaymentDto.MemberPaymentRespDto> participantList = participants.stream()
 				.map(participant -> {
-						if(participant.getMemberId().getMemberId().equals(member.getMemberId()))
+						if(paymentOptional.get().getMemberId().getMemberId().equals(participant.getMemberId().getMemberId()))
 							return MemberPaymentDto.MemberPaymentRespDto.of(participant, true);
 						else return MemberPaymentDto.MemberPaymentRespDto.of(participant, false);
 				}).collect(Collectors.toList());
@@ -380,7 +380,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 		List<MemberPaymentDto.MemberPaymentRespDto> participantList = participants.stream()
 				.map(participant -> {
-					if(participant.getMemberId().getMemberId().equals(member.getMemberId()))
+					if(paymentOptional.get().getMemberId().getMemberId().equals(participant.getMemberId().getMemberId()))
 						return MemberPaymentDto.MemberPaymentRespDto.of(participant, true);
 					else return MemberPaymentDto.MemberPaymentRespDto.of(participant, false);
 				}).collect(Collectors.toList());

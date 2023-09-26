@@ -52,7 +52,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 			</Text>
 			<Text
 				style={{
-					...TextStyles({ align: 'right', color: '666666' }).small,
+					...TextStyles({ align: 'right', color: '#666666' }).small,
 				}}
 			>
 				요청자 {item.receiver_name}
