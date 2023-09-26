@@ -38,6 +38,7 @@ function PartyListItem(props: partyItemprops) {
 					}}
 					returnKeyType="next"
 					placeholder={amount + ''}
+					style={styles.textInput}
 				/>
 				<Text>원</Text>
 				<Icon
