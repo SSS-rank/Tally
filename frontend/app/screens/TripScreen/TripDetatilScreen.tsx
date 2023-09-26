@@ -40,6 +40,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					const res = await api.get(`/travel/${travel_id}`);
 					if (res.status === 200) {
 						const trip_data = res.data;
+						console.log(trip_data);
 						setTitle(trip_data.travel_title);
 						setLocation(trip_data.travel_location);
 						setPeriod(trip_data.travel_period);
@@ -225,7 +226,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					>
 						<Text>{item.payment_date.split('일 ')[0]}일</Text>
 						<DetailListItem
-							title={item.payment_memo}
+							title={item.payment_name}
 							time={item.payment_date.split(' ')[3]}
 							balance={item.amount}
 							party={item.participants ? item.participants.join(',') : ''}
