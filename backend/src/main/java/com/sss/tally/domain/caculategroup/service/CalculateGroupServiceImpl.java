@@ -260,8 +260,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 	@Override
 	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid, Long travelId) {
-		//탈퇴한 회원인지 검증
-		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
@@ -312,7 +310,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public String rejectCalculate(CalculateDto.CalculateRejectReqDto calculateRejectReqDto, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
-		//탈퇴한 멤버인지 검증
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 		}
@@ -419,9 +416,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
 		String calculateGroupUuid, String memberUuid) {
-		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
-		//탈퇴한 멤버인지 검증
 
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
@@ -479,7 +474,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public String acceptCalculate(CalculateDto.CalculateAcceptReqDto calculateAcceptReqDto, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
-		//탈퇴한 멤버인지 검증
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 		}
@@ -659,7 +653,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	public CalculateDto.GetRequestCalculateDetailRespDto getRequestCalculateDetail(
 		String calculateGroupUuid, String memberUuid) {
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
-		//탈퇴한 멤버인지 검증
 
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
@@ -735,7 +728,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		String calculateGroupUuid, String memberUuid, String loginMemberUuid) {
 		Optional<Member> loginMemberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(
 			loginMemberUuid);
-		//탈퇴한 멤버인지 검증
 		if (loginMemberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
 		}
@@ -789,12 +781,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public CalculateDto.GetCalculateFinalReceiptRespDto getCalculateFinalReceipt(String calculateGroupUuid,
 		String memberUuid) {
-		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(
-			memberUuid);
-		if (memberOptional.isEmpty()) {
-			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
-		}
-		Member member = memberOptional.get();
 
 		Optional<CalculateGroup> calculateGroupOptional = calculateGroupRepository.findCalculateGroupByCalculateGroupUuid(
 			calculateGroupUuid);
