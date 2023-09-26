@@ -1,9 +1,20 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Chip } from 'react-native-paper';
-
-function DetailItemStatus() {
-	return <Chip style={styles.chip}>정산중</Chip>;
+// 정산 상태(NONE, BEFORE, ONGOING, AFTER)
+interface status {
+	status: string;
+}
+function DetailItemStatus(props: status) {
+	let text = '';
+	if (props.status == 'BEFORE') {
+		text = '정산 전';
+	} else if (props.status == 'ONGOING') {
+		text = '정산 중';
+	} else if (props.status == 'AFTER') {
+		text = '정산 완료';
+	}
+	return <Chip style={styles.chip}>{text}</Chip>;
 }
 const styles = StyleSheet.create({
 	chip: {
