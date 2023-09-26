@@ -2,13 +2,14 @@ import React from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
+import messaging from '@react-native-firebase/messaging';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useSetRecoilState } from 'recoil';
 
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { RootStackProps } from '../../navigation/RootStack';
-import { TokenState } from '../../recoil/recoil';
+import { FcmTokenState, TokenState } from '../../recoil/recoil';
 
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 
@@ -16,6 +17,7 @@ function LoginScreen({ route }: RootStackProp) {
 	const { setUserToken } = route.params;
 	const setTokenState = useSetRecoilState(TokenState);
 	const api = useAxiosWithAuth();
+	const setFcmToken = useSetRecoilState(FcmTokenState);
 
 	const login = async () => {
 		KakaoLogin.login()
@@ -23,12 +25,14 @@ function LoginScreen({ route }: RootStackProp) {
 				// console.log('login success', JSON.stringify(result));
 				const accessToken = result.accessToken;
 				getProfile();
-
+				const fcmToken = await messaging().getToken();
+				setFcmToken(fcmToken);
+				console.log('fcmToken ', fcmToken);
 				try {
 					console.log(accessToken);
 					const data = {
 						kakao_access_token: accessToken,
-						device_token: `ci0kdlHsTxirohKvceSNrn:APA91bGSSysqDgEsg1CFmYB9xw0B4h7jINzWhMxem5S1__93oC9co1bitM1Kz9z7zM7FNafBVXr_rc7i-vBavYLeyM29hTJpec3B1dHcWyUo44JIxnfLDFINHXd7-ap6i4Uk1Jnyausc`,
+						device_token: fcmToken,
 					};
 
 					const res = await api.post(`/login`, data);
