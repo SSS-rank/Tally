@@ -12,6 +12,7 @@ import DetailListItem from '../../components/DetailList/DetailListItem';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -27,6 +28,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [orderType, setOrderType] = useState('최신순');
 	const [location, setLocation] = useState(0);
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
+
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
