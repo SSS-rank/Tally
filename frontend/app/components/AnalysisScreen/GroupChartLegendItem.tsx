@@ -3,14 +3,25 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { listItem } from '../../model/analysis';
+import { groupListItem, personalListItem } from '../../model/analysis';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function ChartLegendItem({ member_name, member_uuid, money, percent, login }: listItem) {
+interface legendItem extends groupListItem {
+	color: string;
+}
+
+function GroupChartLegendItem({
+	member_name,
+	member_uuid,
+	money,
+	percent,
+	login,
+	color,
+}: legendItem) {
 	return (
 		<TouchableOpacity style={styles.legendItemView}>
 			<View style={styles.textView}>
-				<View style={styles.colorCircle}></View>
+				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
 				<Text style={styles.name}>{member_name}</Text>
 				<Text style={styles.text}>{percent}%</Text>
 			</View>
@@ -27,13 +38,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		marginVertical: 14,
+		marginHorizontal: 30,
 	},
 	textView: {
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
 	colorCircle: {
-		backgroundColor: 'rgba(131, 167, 234, 1)',
 		width: 24,
 		height: 24,
 		borderRadius: 50,
@@ -46,4 +58,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ChartLegendItem;
+export default GroupChartLegendItem;
