@@ -37,6 +37,7 @@ export interface TripCreateRes {
 }
 
 export interface CurTripInfo {
+	id: number;
 	title: string;
 	location: number;
 	startDay: string;

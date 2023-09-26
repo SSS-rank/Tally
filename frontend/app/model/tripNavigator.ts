@@ -7,3 +7,4 @@ export type GetAdjustScreenProps = NativeStackScreenProps<TripStackProps, 'GetAd
 export type AdjustTripScreenProps = NativeStackScreenProps<TripStackProps, 'AdjustTrip'>;
 export type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 export type AddPaymentScreenProps = NativeStackScreenProps<TripStackProps, 'AddPayment'>;
+export type ModifyPaymentScreenProps = NativeStackScreenProps<TripStackProps, 'ModifyPayment'>;

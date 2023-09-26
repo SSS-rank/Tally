@@ -5,6 +5,7 @@ import { Avatar, TextInput } from 'react-native-paper';
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/Avatar/AvatarImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 interface partyItemprops {
+	amount: number;
 	name: string;
 	img: AvatarImageSource;
 	self: boolean;
@@ -14,8 +15,8 @@ interface partyItemprops {
 }
 function PartyListItem(props: partyItemprops) {
 	const [payCheck, setPayCheck] = useState(false);
-	const [involveCheck, setInvolveCheck] = useState(false);
-	const [amount, setAmount] = useState('');
+	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
+	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
 		setAmount(input); // 입력값 업데이트
 		props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
@@ -38,6 +39,7 @@ function PartyListItem(props: partyItemprops) {
 					}}
 					returnKeyType="next"
 					style={[styles.textInput, props.self ? { color: 'gray' } : null]}
+					placeholder={amount + ''}
 				/>
 				<Text>원</Text>
 				<Icon
