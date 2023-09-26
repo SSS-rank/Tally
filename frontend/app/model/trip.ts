@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TripStackProps } from '../navigation/TripStack';
 export interface TripListItemProps {
@@ -8,8 +8,7 @@ export interface TripListItemProps {
 	type: string; // 여행지 이름
 	startDay: string;
 	endDay: string;
-	navigation: NativeStackScreenProps<TripStackProps, 'TripDetail'>;
-	travelParticipants: Array<TripMember>;
+	navigation?: NativeStackNavigationProp<TripStackProps, 'TripList'>;
 }
 export interface TripMember {
 	image: string;
@@ -35,4 +34,12 @@ export interface TripCreateRes {
 	member_uuid: string;
 	start_date: string;
 	end_date: string;
+}
+
+export interface CurTripInfo {
+	id: number;
+	title: string;
+	location: number;
+	startDay: string;
+	endDay: string;
 }

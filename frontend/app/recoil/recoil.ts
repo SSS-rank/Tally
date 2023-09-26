@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-import { TripListItemProps, TripInfo } from './../model/trip';
+import { TripListItemProps, TripInfo, CurTripInfo } from './../model/trip';
 import { Account, AccountResgistReq } from '../model/account';
 import { Token } from '../model/token';
 
@@ -52,4 +52,22 @@ export const accountResgistReqState = atom<AccountResgistReq>({
 		order_number: 0,
 		account_password: '',
 	},
+});
+
+// 현재 확인 중인 여행지 정보
+export const CurTripInfoState = atom<CurTripInfo>({
+	key: 'CurTripInfoState',
+	default: {
+		id: 0,
+		title: '',
+		location: 0,
+		startDay: '',
+		endDay: '',
+	},
+});
+
+// fcmToken 정보
+export const FcmTokenState = atom<string>({
+	key: 'FcmTokenState',
+	default: '',
 });

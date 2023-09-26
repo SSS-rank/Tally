@@ -51,4 +51,7 @@ public class TravelGroup {
 			.build();
 	}
 
+	public void updateVisible(boolean visible){
+		this.visible = visible;
+	}
 }
