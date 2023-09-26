@@ -82,7 +82,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						style={styles.button}
 						labelStyle={TextStyles().regular}
 						mode="text"
-						onPress={() => console.log('Pressed')}
+						onPress={() => navigation.navigate('AnalysisTrip')}
 					>
 						분석
 					</Button>

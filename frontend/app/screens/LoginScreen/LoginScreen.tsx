@@ -10,7 +10,7 @@ import { useSetRecoilState } from 'recoil';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { RootStackProps } from '../../navigation/RootStack';
 import { MemberState } from '../../recoil/memberRecoil';
-import { FcmTokenState, TokenState } from '../../recoil/recoil';
+import { FcmTokenState, TokenState, tallyAccountListState } from '../../recoil/recoil';
 
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 
@@ -20,6 +20,7 @@ function LoginScreen({ route }: RootStackProp) {
 	const api = useAxiosWithAuth();
 	const setFcmToken = useSetRecoilState(FcmTokenState);
 	const setMember = useSetRecoilState(MemberState);
+	const setAccountListState = useSetRecoilState(tallyAccountListState);
 
 	const login = async () => {
 		KakaoLogin.login()
@@ -59,7 +60,7 @@ function LoginScreen({ route }: RootStackProp) {
 							};
 							setMember(memberData);
 						}
-
+						getAccountList();
 						setTokenState(tokenState);
 						setUserToken(res.data.accessToken);
 					}
@@ -84,6 +85,19 @@ function LoginScreen({ route }: RootStackProp) {
 			.catch((err) => {
 				console.log(`getProfile fail ${err.code} ${err.message}`);
 			});
+	};
+
+	const getAccountList = async () => {
+		try {
+			const res = await api.get(`/account`);
+			console.log(res.data);
+
+			if (res.status === 200) {
+				setAccountListState(res.data);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
