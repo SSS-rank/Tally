@@ -160,4 +160,8 @@ public class Payment {
 			.calculateStatus(CalculateStatusEnum.NONE)
 			.build();
 	}
+
+	public void changeCategory(Category category){
+		this.categoryId = category;
+	}
 }

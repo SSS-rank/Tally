@@ -34,7 +34,12 @@ const Item = ({ item, navigation }: ItemProps) => (
 			marginTop: 20,
 			paddingHorizontal: 10,
 		}}
-		onPress={() => navigation?.navigate('GetAdjust')}
+		onPress={() =>
+			navigation?.navigate('GetAdjust', {
+				adjustId: item.calculate_group_uuid,
+				requesterName: item.receiver_name,
+			})
+		}
 	>
 		<Text style={{ ...TextStyles({ align: 'left' }).regular }}>{item.created_time}</Text>
 		<View style={{ flex: 1 }}>

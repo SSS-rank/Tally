@@ -65,3 +65,9 @@ export const CurTripInfoState = atom<CurTripInfo>({
 		endDay: '',
 	},
 });
+
+// fcmToken 정보
+export const FcmTokenState = atom<string>({
+	key: 'FcmTokenState',
+	default: '',
+});

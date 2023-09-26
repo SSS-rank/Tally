@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 import DashLine from '../../components/DashLine';
 import Line from '../../components/Line';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { responseList } from '../../model/adjust';
 import { GetAdjustScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
 const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
+	const [responseAdjust, setResponseAdjust] = useState<responseList>();
+	const { adjustId, requesterName } = route.params;
+
+	const api = useAxiosWithAuth();
+
+	useFocusEffect(
+		React.useCallback(() => {
+			const fetchData = async () => {
+				try {
+					console.log(adjustId);
+					const res = await api.get(`calculate/receive-detail/${adjustId}`);
+					if (res.status === 200) {
+						console.log(res.data);
+						setResponseAdjust(res.data);
+						console.log(responseAdjust);
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			};
+
+			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
+		}, []),
+	);
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ paddingHorizontal: 15 }}>
@@ -17,7 +45,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 							...TextStyles({ align: 'left', weight: 'bold', color: '#91C0EB' }).header,
 						}}
 					>
-						최싸피
+						{requesterName}
 					</Text>
 					<Text
 						style={{
