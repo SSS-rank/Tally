@@ -9,6 +9,7 @@ import { useSetRecoilState } from 'recoil';
 
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { RootStackProps } from '../../navigation/RootStack';
+import { MemberState } from '../../recoil/memberRecoil';
 import { FcmTokenState, TokenState } from '../../recoil/recoil';
 
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
@@ -18,6 +19,7 @@ function LoginScreen({ route }: RootStackProp) {
 	const setTokenState = useSetRecoilState(TokenState);
 	const api = useAxiosWithAuth();
 	const setFcmToken = useSetRecoilState(FcmTokenState);
+	const setMember = useSetRecoilState(MemberState);
 
 	const login = async () => {
 		KakaoLogin.login()
@@ -47,8 +49,16 @@ function LoginScreen({ route }: RootStackProp) {
 							refreshTokenExpireTime: res.data.refreshTokenExpireTime,
 						};
 
-						if (res.data.accessToken)
+						if (res.data.accessToken) {
 							api.defaults.headers.Authorization = `Bearer ${tokenState.accessToken}`;
+							const memberRes = await api.get(`member`);
+							const memberData = {
+								member_uuid: memberRes.data.memberUuid,
+								nickname: memberRes.data.nickname,
+								profile_image: memberRes.data.profileImage,
+							};
+							setMember(memberData);
+						}
 
 						setTokenState(tokenState);
 						setUserToken(res.data.accessToken);
