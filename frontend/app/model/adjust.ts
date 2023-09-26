@@ -37,3 +37,18 @@ export type requestList = {
 	total_amount: number;
 	request_details: requestDetail[];
 };
+
+export type responseList = {
+	travel_type: string;
+	travel_name: string;
+	request_date: string;
+	total_amount: number;
+	detail_list: responseDetail[];
+};
+
+export type responseDetail = {
+	payment_name?: string | undefined;
+	my_amount?: number | undefined;
+	all_amount?: number | undefined;
+	payment_date?: string | undefined;
+};
