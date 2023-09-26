@@ -6,7 +6,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 const PaymentItem = ({ my_amount, all_amount, payment_date, payment_name }: responseDetail) => {
 	return (
-		<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
+		<View style={{ flexDirection: 'row', marginBottom: 10, marginHorizontal: 5 }}>
 			<View>
 				<Text style={TextStyles({ align: 'left' }).regular}>{payment_name}</Text>
 				<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>{payment_date}</Text>
