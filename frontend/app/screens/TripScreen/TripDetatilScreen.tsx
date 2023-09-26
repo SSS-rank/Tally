@@ -12,6 +12,7 @@ import DetailListItem from '../../components/DetailList/DetailListItem';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -27,6 +28,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [orderType, setOrderType] = useState('최신순');
 	const [location, setLocation] = useState(0);
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
+
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
@@ -38,6 +40,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					const res = await api.get(`/travel/${travel_id}`);
 					if (res.status === 200) {
 						const trip_data = res.data;
+						console.log(trip_data);
 						setTitle(trip_data.travel_title);
 						setLocation(trip_data.travel_location);
 						setPeriod(trip_data.travel_period);
@@ -223,7 +226,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					>
 						<Text>{item.payment_date.split('일 ')[0]}일</Text>
 						<DetailListItem
-							title={item.payment_memo}
+							title={item.payment_name}
 							time={item.payment_date.split(' ')[3]}
 							balance={item.amount}
 							party={item.participants ? item.participants.join(',') : ''}

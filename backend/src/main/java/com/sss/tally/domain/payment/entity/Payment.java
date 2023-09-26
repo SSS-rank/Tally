@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sss.tally.api.payment.dto.PaymentDto;
@@ -64,7 +63,6 @@ public class Payment {
 	@Column(nullable = false)
 	private LocalDateTime paymentLocalDate;
 
-	@CreatedDate
 	@Column(nullable = false)
 	private LocalDateTime paymentKoreaDate;
 

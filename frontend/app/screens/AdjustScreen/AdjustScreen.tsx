@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
+import { useRecoilValue } from 'recoil';
+
 import RequestListItem from '../../components/Adjust/RequestListItem';
 import ResponseListItem from '../../components/Adjust/ResponseListItem';
 import CustomSwitch from '../../components/CustomSwitch';
@@ -8,6 +10,7 @@ import DashLine from '../../components/DashLine';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { adjustListItem } from '../../model/adjust';
 import { AdjustTripScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
@@ -21,6 +24,8 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 		if (index == 2) setIsSend(false);
 		else setIsSend(true);
 	};
+
+	const myName = useRecoilValue(MemberState).nickname;
 
 	const api = useAxiosWithAuth();
 	useEffect(() => {
@@ -69,7 +74,7 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지{'\n'}보낸 정산 목록입니다.
+							{myName}님의 지금까지{'\n'}보낸 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />
@@ -85,7 +90,7 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 								...TextStyles({ align: 'left', weight: 'bold' }).header,
 							}}
 						>
-							김싸피님의 지금까지{'\n'}받은 정산 목록입니다.
+							{myName}님의 지금까지{'\n'}받은 정산 목록입니다.
 						</Text>
 					</View>
 					<DashLine />
