@@ -25,6 +25,7 @@ import com.sss.tally.domain.travelgroup.repository.TravelGroupRepository;
 import com.sss.tally.global.error.ErrorCode;
 import com.sss.tally.global.error.exception.CategoryException;
 import com.sss.tally.global.error.exception.MemberException;
+import com.sss.tally.global.error.exception.PaymentException;
 import com.sss.tally.global.error.exception.TravelException;
 
 import lombok.RequiredArgsConstructor;
@@ -147,5 +148,18 @@ public class AnalysisServiceImpl implements AnalysisService{
 			}
 		}
 		return categoryRespDtoList;
+	}
+
+	@Override
+	public void changeCategory(AnalysisDto.ChangeCategoryReqDto changeCategoryReqDto) {
+		Payment payment = paymentRepository.findPaymentByPaymentUuid(changeCategoryReqDto.getPaymentUuid())
+			.orElseThrow(()->new PaymentException(ErrorCode.NOT_EXIST_PAYMENT));
+		Category category = categoryRepository.findCategoryByCategoryId(changeCategoryReqDto.getCategoryId())
+			.orElseThrow(()->new CategoryException(ErrorCode.NOT_EXIST_CATEGORY));
+
+		if(payment.getCategoryId().getCategoryId().equals(category.getCategoryId()))
+			throw new CategoryException(ErrorCode.ALREADY_SAME_CATEGORY);
+
+		payment.changeCategory(category);
 	}
 }

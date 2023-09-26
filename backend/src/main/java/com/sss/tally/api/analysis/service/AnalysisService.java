@@ -12,4 +12,6 @@ public interface AnalysisService {
 	AnalysisDto.MemberRespDto getMemberAnalysis(Authentication authentication, Long travelId, String memberUuid);
 
 	List<AnalysisDto.CategoryRespDto> getCategoryDetail(Authentication authentication, Long travelId, String memberUuid, Long categoryId);
+
+	void changeCategory(AnalysisDto.ChangeCategoryReqDto changeCategoryReqDto);
 }

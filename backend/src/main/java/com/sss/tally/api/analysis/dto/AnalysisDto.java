@@ -115,4 +115,15 @@ public class AnalysisDto {
 				.build();
 		}
 	}
+
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class ChangeCategoryReqDto{
+		private String paymentUuid;
+		private Long categoryId;
+	}
 }
