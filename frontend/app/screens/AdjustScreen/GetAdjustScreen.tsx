@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import PaymentItem from '../../components/Adjust/PaymentItem';
 import DashLine from '../../components/DashLine';
 import Line from '../../components/Line';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -63,34 +64,31 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 			<ScrollView style={{ paddingHorizontal: 15, flex: 1 }}>
 				<View style={{ marginVertical: 10 }}>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).title}>부산 호캉스</Text>
-						<Text style={TextStyles({ align: 'left', color: '#666666' }).small}> 국내</Text>
+						<Text style={TextStyles({ align: 'left', weight: 'bold' }).title}>
+							{responseAdjust?.travel_name}
+						</Text>
+						<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
+							{responseAdjust?.travel_type}
+						</Text>
 					</View>
-					<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>2023.09.03</Text>
+					<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
+						{responseAdjust?.request_date}
+					</Text>
 				</View>
 				<View style={{ marginVertical: 10 }}>
-					<Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<Line marginVertical={10} />
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>개미집</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>21:17</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-12,500</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-78,500</Text>
-						</View>
-					</View>
-					<View style={{ flexDirection: 'row', marginBottom: 5, marginHorizontal: 5 }}>
-						<View>
-							<Text style={TextStyles({ align: 'left' }).regular}>낙곱새 남포점</Text>
-							<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>23:46</Text>
-						</View>
-						<View style={{ flex: 1 }}>
-							<Text style={TextStyles({ align: 'right', weight: 'bold' }).regular}>-20,000</Text>
-							<Text style={TextStyles({ align: 'right', color: '#A0A0A0' }).regular}>-60,000</Text>
-						</View>
-					</View>
+					{/* <Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
+					<Line marginVertical={10} /> */}
+					<FlatList
+						data={responseAdjust?.detail_list}
+						renderItem={({ item }) => (
+							<PaymentItem
+								my_amount={item.my_amount}
+								all_amount={item.all_amount}
+								payment_date={item.payment_date}
+								payment_name={item.payment_name}
+							/>
+						)}
+					/>
 				</View>
 			</ScrollView>
 			<View
@@ -109,17 +107,18 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 					<Text style={{ ...TextStyles().regular }}>합계</Text>
 					<Text
 						style={{
-							...TextStyles({ color: '#91C0EB', align: 'right', weight: 'bold' }).regular,
+							...TextStyles({ color: '#91C0EB', align: 'right', weight: 'bold' }).title,
 							flex: 1,
 						}}
 					>
-						150,525원
+						-{responseAdjust?.total_amount}원
 					</Text>
 				</View>
 			</View>
 			<View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 15 }}>
 				<Button
-					mode="elevated"
+					mode="contained"
+					buttonColor="#E6E6E6"
 					textColor="#A0A0A0"
 					style={{ flex: 1, marginHorizontal: 5 }}
 					onPress={() => console.log('Pressed')}
@@ -127,7 +126,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 					반려
 				</Button>
 				<Button
-					mode="elevated"
+					mode="contained"
 					buttonColor="#91C0EB"
 					textColor="white"
 					style={{ flex: 1, marginHorizontal: 5 }}
