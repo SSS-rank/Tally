@@ -7,21 +7,24 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRecoilState } from 'recoil';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayReq, SelectPayMember } from '../../model/payment';
+import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { AddPaymentScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
-	const [selfCheck, setSelfCheck] = useState(false);
+	const [visible, setVisible] = useState(true);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 
@@ -37,7 +40,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		ratio: 0,
 		title: '',
 		travel_id: 0,
-		visible: false,
+		visible: true,
 	});
 	useEffect(() => {
 		// route.params에 접근하는 부분
@@ -45,7 +48,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		setText('');
 		setStore('');
 		setSelectedCategory(0);
-		setSelfCheck(false);
+		setVisible(true);
 		setDate(new Date());
 		setOpen(false);
 		const { travel_id, travel_title, participants } = route.params || {
@@ -165,13 +168,17 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				memo: text,
 				title: store || '',
 				payment_participants: partyData || [],
-				visible: !selfCheck,
+				visible: visible,
 			}));
-			if (selfCheck) {
+			if (!visible) {
+				const selfData: DirectPayMember[] = [
+					{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid },
+				];
+
 				setDirectPayReq((prevState: DirectPayReq) => ({
 					...prevState,
-					payment_participants: partyData || [],
-					visible: !selfCheck,
+					payment_participants: selfData || [],
+					visible: visible,
 				}));
 			}
 
@@ -296,7 +303,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 			</View>
 
 			<View style={[styles.party_box]}>
-				{!selfCheck ? (
+				{visible ? (
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
@@ -312,7 +319,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 									key={item.member_uuid}
 									name={item.member_nickname}
 									img={{ uri: item.image }}
-									self={selfCheck}
 									involveCheck={item.checked}
 									onAmountChange={(input) =>
 										handleAmountChange(
@@ -347,12 +353,12 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					</Text>
 				</View>
 				<IIcon
-					name={selfCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
+					name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 					size={32}
 					color="#91C0EB"
 					style={{ marginLeft: 5 }}
 					onPress={() => {
-						setSelfCheck(!selfCheck);
+						setVisible(!visible);
 					}}
 				/>
 			</View>
