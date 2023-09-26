@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
+import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { CurTripInfoState } from '../../recoil/recoil';
+import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface charData {
@@ -82,9 +83,10 @@ function AnalysisScreen() {
 					chartConfig={charConfig}
 					accessor={'money'}
 					paddingLeft={'20'}
-					hasLegend={true}
+					hasLegend={false}
 				/>
 			</View>
+			<ChartLegendItem />
 		</View>
 	);
 }
