@@ -8,7 +8,6 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
-	console.log(curTripInfo);
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.topView}>
