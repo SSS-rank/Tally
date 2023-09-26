@@ -12,12 +12,15 @@ import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
+	const [store, setStore] = useState('');
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
@@ -25,54 +28,71 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [paymentUnit, setPaymentUnit] = useState('');
-	const [isPayer, setIspayer] = useState(true);
+	const [isPayer, setIspayer] = useState(false);
 	const [isCash, setIsCash] = useState(false);
-	const [visible, setVisible] = useState(false);
-
+	const [visible, setVisible] = useState(true);
+	const [paymentUuid, setPaymentUuid] = useState('');
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
-	const [payData, setPayData] = useState<PaymentDetailRes>({
-		payment_uuid: '', // 결제 uuid (string)
-		category: 0, // 카테고리 id(Long)
-		amount: 0, // 결제 총 금액(int)
-		payment_date: '', // 결제 시간(String)
-		memo: '', // 결제 상세 메모(String)
-		payment_unit: '', // 결제 단위(String)
-		visible: true, // 공개여부(boolean)
-		payment_participants: [],
-	});
+
 	useEffect(() => {
-		console.log(curTripInfo);
 		const { payment_uuid, payer, method } = route.params;
-		const my_uuid = '';
+		setPaymentUuid(payment_uuid);
+		if (memberinfo.member_uuid == payer) {
+			setIspayer(true);
+		}
 		if (method === 'CASH') {
 			setIsCash(true);
 		}
 
 		async function fetchData() {
-			// if (payer == my_uuid) {
-			//본인이 결제자인 경우
-			const res = await api.get(`payment/payer/${payment_uuid}`);
-			if (res.status === 200) {
+			if (isPayer) {
+				console.log('결제자');
+				const res = await api.get(`payment/payer/${payment_uuid}`);
+				if (res && res.status === 200) {
+					const responseData = res.data;
+					console.log(res.data);
+					// 비동기 처리를 위해 responseData 사용
+					setTotAmount(responseData.amount + '');
+					setStore(responseData.payment_name);
+					setText(responseData.memo);
+					setSelectedCategory(responseData.category);
+					setPaymentUnit(responseData.payment_unit);
+					setVisible(responseData.visible);
+					// setDate(responseData.payment_date);
+					const memberdata = responseData.payment_participants.map((item: ModMember) => {
+						return {
+							amount: item.amount,
+							member_uuid: item.member_uuid,
+							checked: item.with,
+							member_nickname: item.nickname,
+							image: item.profile_image,
+						};
+					});
+					setPartyMembers(memberdata);
+				}
+			} else {
+				// 태그된 사람
+				const res = await api.get(`payment/tag/${payment_uuid}`);
 				const responseData = res.data;
 				// 비동기 처리를 위해 responseData 사용
-				setTotAmount(responseData.amount + '');
-				setText(responseData.memo);
-				setSelectedCategory(responseData.category);
-				setPaymentUnit(responseData.payment_unit);
-				// setDate(responseData.payment_date);
-				const memberdata = responseData.payment_participants.map((item: ModMember) => {
-					return {
-						amount: item.amount,
-						member_uuid: item.member_uuid,
-						checked: item.with,
-						member_nickname: item.nickname,
-						image: item.profile_image,
-					};
-				});
-				setPartyMembers(memberdata);
+				if (res && res.status == 200) {
+					setTotAmount(responseData.amount + '');
+					setStore(responseData.payment_name);
+					setText(responseData.memo);
+					setSelectedCategory(responseData.category);
+					setPaymentUnit(responseData.payment_unit);
+					const memberdata = responseData.payment_participants.map((item: ModMember) => {
+						return {
+							amount: item.amount,
+							member_uuid: item.member_uuid,
+							checked: item.with,
+							member_nickname: item.nickname,
+							image: item.profile_image,
+						};
+					});
+					setPartyMembers(memberdata);
+				}
 			}
-
-			// } else {
 		}
 		fetchData();
 	}, []);
@@ -151,27 +171,53 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
-	function handleSubmit() {
-		// const req = {
-		// 	amount: totAmount,
-		// 	category: selectedcategory,
-		// 	memo : text,
-		// 	payment_date_time: formatDate(date),
-		// 	payment_participants: [],
-		// 	travel_id: curTripInfo.id,
-		// 	title: curTripInfo.title,
-		// 	visible: visible,
-		// 	ratio: 1,
-		// 	payment_unit_id:
-		// };
-		// if (isCash) {
-		// 	const res = api.patch('payment/manual', req);
-		// 	console.log(res);
-		// }
+	async function handleSubmit() {
+		const member = partyMembers.map((item) => {
+			return { amount: item.amount, member_uuid: item.member_uuid };
+		});
+		if (isPayer) {
+			if (isCash) {
+				//수동입력된 케이스
+				const req = {
+					amount: totAmount,
+					category: selectedcategory,
+					memo: text,
+					payment_date_time: formatDate(date),
+					payment_participants: member,
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					title: store,
+					visible: visible,
+					ratio: 1,
+					payment_unit_id: 8,
+				};
+				const res = await api.patch('payment/manual', req);
+				if (res.status == 200) {
+					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+				}
+			} else {
+				//자동 입력된 케이스
+				const req = {
+					category: selectedcategory,
+					memo: text,
+					payment_participants: member,
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					visible: visible,
+				};
+				const res = await api.patch('payment/auto', req);
+				if (res.status == 200) {
+					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+				}
+			}
+		} else {
+			console.log('태그자 수정 요청 ');
+		}
 	}
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.amount_container}>
+				<Text>{store}</Text>
 				<Text style={TextStyles({ align: 'left' }).small}>{paymentUnit}</Text>
 				{isCash ? (
 					<TextInput
@@ -183,40 +229,55 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						keyboardType="numeric"
 						style={styles.amountInput}
 						selectionColor="#F6F6F6"
-						placeholder={payData.amount + ''}
+						placeholder={totAmount}
 					/>
 				) : (
-					<Text style={TextStyles().medium}>{totAmount}</Text>
+					<Text style={TextStyles({ align: 'left' }).medium}>{totAmount}</Text>
 				)}
 			</View>
 
 			{isPayer ? (
-				<View style={styles.date_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-					<Chip onPress={() => setOpen(true)}>
-						{date.getFullYear() +
-							'년 ' +
-							(date.getMonth() + 1) +
-							'월 ' +
-							date.getDate() +
-							'일 ' +
-							date.getHours() +
-							'시 ' +
-							date.getMinutes() +
-							'분 '}
-					</Chip>
-					<DatePicker
-						modal
-						open={open}
-						date={date}
-						onConfirm={(p_date) => {
-							setOpen(false);
-							setDate(p_date);
-						}}
-						onCancel={() => {
-							setOpen(false);
-						}}
-					/>
+				<View>
+					<View style={styles.date_box}>
+						<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
+						<Chip onPress={() => setOpen(true)}>
+							{date.getFullYear() +
+								'년 ' +
+								(date.getMonth() + 1) +
+								'월 ' +
+								date.getDate() +
+								'일 ' +
+								date.getHours() +
+								'시 ' +
+								date.getMinutes() +
+								'분 '}
+						</Chip>
+						<DatePicker
+							modal
+							open={open}
+							date={date}
+							onConfirm={(p_date) => {
+								setOpen(false);
+								setDate(p_date);
+							}}
+							onCancel={() => {
+								setOpen(false);
+							}}
+						/>
+					</View>
+					{isCash ? (
+						<View style={styles.memo_box}>
+							<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
+							<TextInput
+								value={store}
+								onChangeText={(memo) => {
+									setStore(memo);
+								}}
+								returnKeyType="next"
+								style={styles.textInput}
+							/>
+						</View>
+					) : null}
 				</View>
 			) : null}
 
@@ -283,7 +344,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			)}
 
 			<View style={[styles.party_box]}>
-				{payData.visible ? (
+				{visible ? (
 					<View>
 						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
@@ -335,12 +396,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						</Text>
 					</View>
 					<IIcon
-						name={selfCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
+						name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 						size={32}
 						color="#91C0EB"
 						style={{ marginLeft: 5 }}
 						onPress={() => {
-							setSelfCheck(!selfCheck);
+							setVisible(!visible);
 						}}
 					/>
 				</View>

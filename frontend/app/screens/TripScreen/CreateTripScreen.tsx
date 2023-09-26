@@ -44,7 +44,7 @@ function CreateTripScreen({ navigation }: TripDetailScreenProps) {
 		if (res.status === 201) {
 			const data: TripCreateRes = res.data;
 			navigation.navigate('TripDetail', {
-				id: data.travel_id,
+				travel_id: data.travel_id,
 			});
 		}
 	};
