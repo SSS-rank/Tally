@@ -24,7 +24,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
-	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [paymentUnit, setPaymentUnit] = useState('');
