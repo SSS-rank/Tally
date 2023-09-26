@@ -13,6 +13,8 @@ import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
+const charColor = ['#91C0EB', '#62D4F5', '#41E3EC', '#51EFD4', '#83F7B2', '#BCFA8D', '#F9F871'];
+
 interface charData {
 	name: string;
 	money: number;
@@ -43,17 +45,18 @@ function AnalysisScreen() {
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.member_name,
 			money: item.money,
-			color: `rgba(131, 167, 234, 1)`,
+			color: `${charColor[index]}`,
 			legendFontColor: '#7F7F7F',
 			legendFontSize: 15,
 		}));
 
-		const listData: groupListItem[] = res.data.list.map((item: groupListItem) => ({
+		const listData: groupListItem[] = res.data.list.map((item: groupListItem, index: number) => ({
 			member_name: item.member_name,
 			money: item.money,
 			percent: item.percent,
 			login: item.login,
 			member_uuid: item.member_uuid,
+			color: `${charColor[index]}`,
 		}));
 
 		console.log('data ', data);
@@ -68,17 +71,20 @@ function AnalysisScreen() {
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.category_id,
 			money: item.money,
-			color: `rgba(131, 167, 234, 1)`,
+			color: `${charColor[index]}`,
 			legendFontColor: '#7F7F7F',
 			legendFontSize: 15,
 		}));
 
-		const listData: personalListItem[] = res.data.list.map((item: personalListItem) => ({
-			category_id: item.category_id,
-			category_type: item.category_type,
-			money: item.money,
-			percent: item.percent,
-		}));
+		const listData: personalListItem[] = res.data.list.map(
+			(item: personalListItem, index: number) => ({
+				category_id: item.category_id,
+				category_type: item.category_type,
+				money: item.money,
+				percent: item.percent,
+				color: `${charColor[index]}`,
+			}),
+		);
 
 		console.log('data ', data);
 		setPaymentData(data);
@@ -136,6 +142,7 @@ function AnalysisScreen() {
 							money={item.money}
 							percent={item.percent}
 							login={item.login}
+							color={item.color}
 						/>
 					)}
 					keyExtractor={(item) => item.member_uuid}
@@ -150,6 +157,7 @@ function AnalysisScreen() {
 							category_type={item.category_type}
 							money={item.money}
 							percent={item.percent}
+							color={item.color}
 						/>
 					)}
 					keyExtractor={(item) => item.member_uuid}

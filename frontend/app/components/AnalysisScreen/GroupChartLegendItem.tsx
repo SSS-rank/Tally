@@ -6,11 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { groupListItem, personalListItem } from '../../model/analysis';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function GroupChartLegendItem({ member_name, member_uuid, money, percent, login }: groupListItem) {
+interface legendItem extends groupListItem {
+	color: string;
+}
+
+function GroupChartLegendItem({
+	member_name,
+	member_uuid,
+	money,
+	percent,
+	login,
+	color,
+}: legendItem) {
 	return (
 		<TouchableOpacity style={styles.legendItemView}>
 			<View style={styles.textView}>
-				<View style={styles.colorCircle}></View>
+				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
 				<Text style={styles.name}>{member_name}</Text>
 				<Text style={styles.text}>{percent}%</Text>
 			</View>
@@ -33,7 +44,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	colorCircle: {
-		backgroundColor: 'rgba(131, 167, 234, 1)',
 		width: 24,
 		height: 24,
 		borderRadius: 50,
