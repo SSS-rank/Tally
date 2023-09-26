@@ -32,6 +32,7 @@ export type TripStackProps = {
 	ModifyPayment: {
 		payment_uuid: string; // 결제 uuid(String)
 		payer: string; // 결제자의 uuid(String)
+		method: string;
 	};
 };
 

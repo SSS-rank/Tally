@@ -6,6 +6,7 @@ import { Text, TextInput, Button, Chip } from 'react-native-paper';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRecoilState } from 'recoil';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -18,19 +19,22 @@ import {
 } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
+import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
 	const [selfCheck, setSelfCheck] = useState(false);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
-	const [paymentMethod, setPaymentMethod] = useState('');
 	const [paymentUnit, setPaymentUnit] = useState('');
-	const [isPayer, setIspayer] = useState(false);
+	const [isPayer, setIspayer] = useState(true);
+	const [isCash, setIsCash] = useState(false);
+	const [visible, setVisible] = useState(false);
 
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 	const [payData, setPayData] = useState<PaymentDetailRes>({
@@ -44,37 +48,25 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		payment_participants: [],
 	});
 	useEffect(() => {
-		const { payment_uuid, payer } = route.params;
+		console.log(curTripInfo);
+		const { payment_uuid, payer, method } = route.params;
 		const my_uuid = '';
+		if (method === 'CASH') {
+			setIsCash(true);
+		}
+
 		async function fetchData() {
 			// if (payer == my_uuid) {
 			//본인이 결제자인 경우
 			const res = await api.get(`payment/payer/${payment_uuid}`);
 			if (res.status === 200) {
 				const responseData = res.data;
-				// console.log(responseData);
-				const extractedData = {
-					payment_uuid: responseData.payment_uuid,
-					category: responseData.category,
-					amount: responseData.amount,
-					payment_date: responseData.payment_date,
-					memo: responseData.memo,
-					payment_unit: responseData.payment_unit,
-					visible: responseData.visible,
-					payment_participants: responseData.payment_participants.map((participant: ModMember) => ({
-						member_uuid: participant.member_uuid,
-						amount: participant.amount,
-						nickname: participant.nickname,
-						profile_image: participant.profile_image,
-						payer: participant.payer,
-						with: participant.with,
-					})),
-				};
-				setPayData(extractedData);
 				// 비동기 처리를 위해 responseData 사용
 				setTotAmount(responseData.amount + '');
 				setText(responseData.memo);
 				setSelectedCategory(responseData.category);
+				setPaymentUnit(responseData.payment_unit);
+				// setDate(responseData.payment_date);
 				const memberdata = responseData.payment_participants.map((item: ModMember) => {
 					return {
 						amount: item.amount,
@@ -157,23 +149,54 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 
-	function handleSubmit() {}
+	function formatDate(in_date: Date) {
+		const year = in_date.getFullYear();
+		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
+		const day = String(in_date.getDate()).padStart(2, '0'); // 일자를 2자리로 포맷팅
+		const hours = String(in_date.getHours()).padStart(2, '0'); // 시간을 2자리로 포맷팅
+		const minutes = String(in_date.getMinutes()).padStart(2, '0'); // 분을 2자리로 포맷팅
+
+		return `${year}-${month}-${day} ${hours}:${minutes}`;
+	}
+	function handleSubmit() {
+		// const req = {
+		// 	amount: totAmount,
+		// 	category: selectedcategory,
+		// 	memo : text,
+		// 	payment_date_time: formatDate(date),
+		// 	payment_participants: [],
+		// 	travel_id: curTripInfo.id,
+		// 	title: curTripInfo.title,
+		// 	visible: visible,
+		// 	ratio: 1,
+		// 	payment_unit_id:
+		// };
+		// if (isCash) {
+		// 	const res = api.patch('payment/manual', req);
+		// 	console.log(res);
+		// }
+	}
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.amount_container}>
-				<Text style={TextStyles({ align: 'left' }).small}>{payData.payment_unit}</Text>
-				<TextInput
-					value={totAmount}
-					onChangeText={(memo) => {
-						setTotAmount(memo);
-					}}
-					returnKeyType="next"
-					keyboardType="numeric"
-					style={styles.amountInput}
-					selectionColor="#F6F6F6"
-					placeholder={payData.amount + ''}
-				/>
+				<Text style={TextStyles({ align: 'left' }).small}>{paymentUnit}</Text>
+				{isCash ? (
+					<TextInput
+						value={totAmount}
+						onChangeText={(memo) => {
+							setTotAmount(memo);
+						}}
+						returnKeyType="next"
+						keyboardType="numeric"
+						style={styles.amountInput}
+						selectionColor="#F6F6F6"
+						placeholder={payData.amount + ''}
+					/>
+				) : (
+					<Text style={TextStyles().medium}>{totAmount}</Text>
+				)}
 			</View>
+
 			{isPayer ? (
 				<View style={styles.date_box}>
 					<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
@@ -331,16 +354,27 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			) : (
 				<View style={{ padding: 30 }}></View>
 			)}
-			<Button
-				mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-				dark={true} // 어두운 테마 사용 여부
-				compact={true} // 작은 크기의 버튼 여부
-				uppercase={false} // 레이블 텍스트 대문자 변환 여부
-				onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-				style={{ marginTop: 10, marginBottom: 70 }}
-			>
-				수정
-			</Button>
+			{isPayer ? (
+				<Button
+					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+					dark={true} // 어두운 테마 사용 여부
+					compact={true} // 작은 크기의 버튼 여부
+					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+					style={{ marginTop: 10, marginBottom: 70 }}
+				>
+					수정
+				</Button>
+			) : (
+				<Button
+					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+					dark={true} // 어두운 테마 사용 여부
+					compact={true} // 작은 크기의 버튼 여부
+					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+					style={{ marginTop: 10, marginBottom: 70 }}
+				>
+					수정 요청
+				</Button>
+			)}
 		</ScrollView>
 	);
 }
