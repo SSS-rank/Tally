@@ -1,5 +1,6 @@
 package com.sss.tally.api.payment.dto;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -249,13 +250,13 @@ public class PaymentDto {
 
 		private String paymentUnit;
 
-		private String paymentDate;
+		private LocalDateTime paymentDate;
+
+		private String paymentName;
 
 		private List<MemberPaymentDto.MemberPaymentRespDto> paymentParticipants;
 
 		public static PaymentDetailPayer of(Payment payment, List<MemberPaymentDto.MemberPaymentRespDto> participantList) {
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
-			String dateTime = payment.getPaymentLocalDate().format(dateTimeFormatter);
 
 			return PaymentDetailPayer.builder()
 					.paymentUuid(payment.getPaymentUuid())
@@ -264,8 +265,9 @@ public class PaymentDto {
 					.visible(payment.getVisible())
 					.amount(payment.getAmount())
 					.paymentUnit(payment.getPaymentUnitId().getUnit())
-					.paymentDate(dateTime)
+					.paymentDate(payment.getPaymentKoreaDate())
 					.paymentParticipants(participantList)
+					.paymentName(payment.getPaymentName())
 					.build();
 		}
 	}
@@ -284,6 +286,8 @@ public class PaymentDto {
 
 		private String paymentUnit;
 
+		private String paymentName;
+
 		private List<MemberPaymentDto.MemberPaymentRespDto> paymentParticipants;
 
 		public static PaymentDetailTag of(Payment payment, List<MemberPaymentDto.MemberPaymentRespDto> participantList) {
@@ -293,6 +297,7 @@ public class PaymentDto {
 					.memo(payment.getPaymentMemo())
 					.amount(payment.getAmount())
 					.paymentUnit(payment.getPaymentUnitId().getUnit())
+					.paymentName(payment.getPaymentName())
 					.paymentParticipants(participantList)
 					.build();
 		}

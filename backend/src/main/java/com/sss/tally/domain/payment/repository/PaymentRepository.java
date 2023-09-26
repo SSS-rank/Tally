@@ -20,8 +20,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
 	@Query("SELECT NEW com.sss.tally.api.calculate.dto.CalculateDto$Detail(" +
 		"P.paymentName, " +
-		"MP.amount, " +
-		"P.amount, " +
+		"CAST(ROUND(MP.amount * P.ratio) AS java.lang.Long) , " +
+		"CAST(ROUND(P.amount * P.ratio) AS java.lang.Long) , " +
 		"P.paymentLocalDate) " +
 		"FROM Payment P " +
 		"INNER JOIN MemberPayment MP ON MP.paymentId = P " +

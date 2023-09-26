@@ -58,6 +58,7 @@ export const accountResgistReqState = atom<AccountResgistReq>({
 export const CurTripInfoState = atom<CurTripInfo>({
 	key: 'CurTripInfoState',
 	default: {
+		id: 0,
 		title: '',
 		location: 0,
 		startDay: '',

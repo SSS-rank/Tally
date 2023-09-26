@@ -307,6 +307,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<ScrollView>
 							{partyMembers.map((item) => (
 								<PartyListItem
+									amount={item.amount}
 									key={item.member_uuid}
 									name={item.member_nickname}
 									img={{ uri: item.image }}

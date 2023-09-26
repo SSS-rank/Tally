@@ -23,7 +23,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
 	const day = currentDate.getDate();
 	const [title, setTitle] = useState('');
-	const { travel_id } = route.params || { travel_id: undefined };
+	const { travel_id } = route.params ?? {};
 	const [orderType, setOrderType] = useState('최신순');
 	const [location, setLocation] = useState(0);
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
@@ -43,15 +43,15 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						setPeriod(trip_data.travel_period);
 						setTotalAmount(trip_data.total_amount);
 						const updatedTripInfo = {
-							title: title,
-							location: location,
-							startDay: period.split('~')[0],
-							endDay: period.split('~')[1],
+							id: travel_id,
+							title: trip_data.travel_title,
+							location: trip_data.travel_location,
+							startDay: trip_data.travel_period.split('~')[0],
+							endDay: trip_data.travel_period.split('~')[1],
 						};
 						setParticipants(trip_data.participants);
 						setCurTripInfo(updatedTripInfo);
 						setPayData(trip_data.payment_list);
-						console.log(payData);
 					}
 				} catch (err) {
 					console.log(err);
@@ -71,7 +71,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						style={styles.button}
 						mode="text"
 						labelStyle={TextStyles().regular}
-						onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
+						// onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
 					>
 						정산 현황
 					</Button>
@@ -134,7 +134,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					mode="text"
 					onPress={() =>
 						navigation.navigate('AddPayment', {
-							travel_id: travel_id,
+							travel_id: travel_id ?? 0,
 							travel_title: title,
 							participants: participants,
 						})
@@ -213,9 +213,12 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				<View key={item.payment_uuid}>
 					<TouchableOpacity
 						style={styles.detail_item_box}
-						onPress={
-							() => {}
-							// navigation.navigate('ModifyPayment', { payment_uuid: item.payment_uuid })
+						onPress={() =>
+							navigation.navigate('ModifyPayment', {
+								payment_uuid: item.payment_uuid,
+								payer: item.payer,
+								method: item.payment_method,
+							})
 						}
 					>
 						<Text>{item.payment_date.split('일 ')[0]}일</Text>

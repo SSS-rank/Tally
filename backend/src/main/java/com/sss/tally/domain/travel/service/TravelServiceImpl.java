@@ -116,13 +116,13 @@ public class TravelServiceImpl implements TravelService {
 		// travelType은 국가 코드
 		// travelLocation은 여행지 명
 		if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-			travelType = "KOR";
+			travelType = "KR";
 			Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
 			if (cityByCityId.isEmpty())
 				throw new CityException(ErrorCode.NOT_EXIST_CITY);
 			travelLocation = cityByCityId.get().getCityName();
 		} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-			travelType = "KOR";
+			travelType = "KR";
 			Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
 			if (stateByStateId.isEmpty())
 				throw new CityException(ErrorCode.NOT_EXIST_STATE);
@@ -171,13 +171,13 @@ public class TravelServiceImpl implements TravelService {
 			String travelType = "";
 
 			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
-				travelType="KOR";
+				travelType="KR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
 				if (cityByCityId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
 			} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-				travelType = "KOR";
+				travelType = "KR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
 				if (stateByStateId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_STATE);
@@ -226,13 +226,13 @@ public class TravelServiceImpl implements TravelService {
 			// travelType은 국가 코드
 			// travelLocation은 여행지 명
 			if (travel.getTravelType().equals(TravelTypeEnum.CITY)) {
-				travelType = "KOR";
+				travelType = "KR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
 				if (cityByCityId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
 			} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
-				travelType = "KOR";
+				travelType = "KR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
 				if (stateByStateId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_STATE);
@@ -401,13 +401,13 @@ public class TravelServiceImpl implements TravelService {
 			String travelType ="";
 
 			if(travel.getTravelType().equals(TravelTypeEnum.CITY)){
-				travelType="KOR";
+				travelType="KR";
 				Optional<City> cityByCityId = cityRepository.findCityByCityId(travel.getTravelLocation());
 				if(cityByCityId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
 			}
 			else if(travel.getTravelType().equals(TravelTypeEnum.STATE)){
-				travelType="KOR";
+				travelType="KR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
 				if(stateByStateId.isEmpty()) throw new CityException(ErrorCode.NOT_EXIST_STATE);
 				travelLocation = stateByStateId.get().getStateName();

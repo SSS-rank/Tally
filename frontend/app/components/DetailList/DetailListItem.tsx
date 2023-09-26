@@ -15,7 +15,7 @@ type detailItemProps = {
 };
 function DetailListItem(props: detailItemProps) {
 	return (
-		<TouchableOpacity style={styles.detail_item_container}>
+		<View style={styles.detail_item_container}>
 			<View style={styles.detail_item_main}>
 				<View style={styles.title_status}>
 					<Text style={TextStyles().regular}>{props.title}</Text>
@@ -31,7 +31,7 @@ function DetailListItem(props: detailItemProps) {
 				<Text style={TextStyles().small}>{props.time}</Text>
 				<Text style={TextStyles().small}>{props.party}</Text>
 			</View>
-		</TouchableOpacity>
+		</View>
 	);
 }
 const styles = StyleSheet.create({
