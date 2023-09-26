@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { Text, View, StyleSheet, Modal, TextInput, Alert, Pressable, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import PaymentItem from '../../components/Adjust/PaymentItem';
 import DashLine from '../../components/DashLine';
@@ -13,10 +14,15 @@ import { GetAdjustScreenProps } from '../../model/tripNavigator';
 import { TextStyles } from '../../styles/CommonStyles';
 
 const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
+	const [modalVisible, setModalVisible] = useState(false);
 	const [responseAdjust, setResponseAdjust] = useState<responseList>();
 	const { adjustId, requesterName } = route.params;
-
+	const [rejectMessage, setRejectMessage] = useState('');
 	const api = useAxiosWithAuth();
+
+	const reset = () => {
+		setRejectMessage('');
+	};
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -37,6 +43,28 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
 		}, []),
 	);
+
+	const rejectAdjust = async () => {
+		try {
+			console.log(rejectMessage);
+			const requestBody = {
+				calculate_group_uuid: adjustId,
+				content: rejectMessage === '' ? '금액 조정이 필요합니다.' : rejectMessage,
+			};
+			console.log(requestBody.calculate_group_uuid);
+			console.log(requestBody.content);
+			const res = await api.patch(`/calculate/rejection`, requestBody);
+			if (res.status === 200) {
+				console.log(res.data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+		setModalVisible(false);
+		setRejectMessage('');
+		// navigation.navigate('PayAdjust');
+	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={{ paddingHorizontal: 15 }}>
@@ -117,10 +145,11 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 						buttonColor="#E6E6E6"
 						textColor="#A0A0A0"
 						style={{ flex: 1, marginHorizontal: 5 }}
-						onPress={() => console.log('Pressed')}
+						onPress={() => setModalVisible(true)}
 					>
 						반려
 					</Button>
+
 					<Button
 						mode="contained"
 						buttonColor="#91C0EB"
@@ -132,6 +161,66 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 					</Button>
 				</View>
 			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					Alert.alert('Modal has been closed.');
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(!modalVisible)}
+				/>
+				<View style={styles.modalView}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<View style={{ flex: 1 }}>
+							<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+								반려 사유
+							</Text>
+							<Text style={{ ...TextStyles({ align: 'left' }).small, flex: 1 }}>
+								정산을 취소하는 이유를 작성해주세요.
+							</Text>
+						</View>
+						<Icon
+							name="close"
+							size={32}
+							color={'#666666'}
+							onPress={() => setModalVisible(!modalVisible)}
+						/>
+					</View>
+					<View style={styles.inputBox}>
+						<TextInput
+							style={{
+								...TextStyles({ align: 'left' }).regular,
+								flex: 1,
+							}}
+							value={rejectMessage}
+							onChangeText={setRejectMessage}
+							placeholder="금액 조정이 필요합니다."
+						/>
+						<Icon
+							name="close-circle"
+							style={{
+								color: '#666666',
+								fontSize: 24,
+							}}
+							onPress={reset}
+						/>
+					</View>
+					<Button
+						mode="contained"
+						buttonColor="#91C0EB"
+						textColor="white"
+						style={{ marginVertical: 15 }}
+						onPress={() => rejectAdjust()}
+					>
+						보내기
+					</Button>
+				</View>
+			</Modal>
 		</View>
 	);
 };
@@ -143,6 +232,34 @@ const styles = StyleSheet.create({
 		// alignItems: 'center',
 
 		backgroundColor: 'white',
+	},
+	modalView: {
+		bottom: 0,
+		// height: '50%',
+		width: '100%',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		justifyContent: 'center',
+	},
+
+	inputBox: {
+		alignItems: 'center',
+		borderBottomColor: '#A0A0A0',
+		borderBottomWidth: 0.5,
+		flexDirection: 'row',
+		marginVertical: 5,
+		marginTop: 50,
 	},
 });
 export default GetAdjustScreen;
