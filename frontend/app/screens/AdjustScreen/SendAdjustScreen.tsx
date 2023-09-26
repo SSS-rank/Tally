@@ -43,7 +43,10 @@ const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 					<Text style={TextStyles({ align: 'left', weight: 'bold' }).header}>
 						{requestAdjust?.travel_name}
 					</Text>
-					<Text style={TextStyles({ align: 'left', color: '#666666' }).small}> 국내</Text>
+					<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
+						{' '}
+						{requestAdjust?.travel_type}
+					</Text>
 				</View>
 				<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
 					{requestAdjust?.request_date}

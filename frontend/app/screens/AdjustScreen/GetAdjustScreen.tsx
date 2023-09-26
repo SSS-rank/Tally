@@ -68,6 +68,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 							{responseAdjust?.travel_name}
 						</Text>
 						<Text style={TextStyles({ align: 'left', color: '#666666' }).small}>
+							{' '}
 							{responseAdjust?.travel_type}
 						</Text>
 					</View>
