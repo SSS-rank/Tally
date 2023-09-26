@@ -5,7 +5,7 @@ import { PieChart } from 'react-native-chart-kit';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
-import { listItem } from './../../model/analysis';
+import { groupListItem } from './../../model/analysis';
 import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -25,7 +25,7 @@ function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const member = useRecoilValue(MemberState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
-	const [list, setList] = useState<listItem[]>([]);
+	const [list, setList] = useState<groupListItem[]>([]);
 
 	const [selectionMode, setSelectionMode] = useState(1);
 
@@ -54,7 +54,7 @@ function AnalysisScreen() {
 			legendFontSize: 15,
 		}));
 
-		const listData: listItem[] = res.data.list.map((item: listItem) => ({
+		const listData: groupListItem[] = res.data.list.map((item: groupListItem) => ({
 			member_name: item.member_name,
 			money: item.money,
 			percent: item.percent,
@@ -79,7 +79,7 @@ function AnalysisScreen() {
 			legendFontSize: 15,
 		}));
 
-		const listData: listItem[] = res.data.list.map((item: listItem) => ({
+		const listData: groupListItem[] = res.data.list.map((item: groupListItem) => ({
 			member_name: item.member_name,
 			money: item.money,
 			percent: item.percent,

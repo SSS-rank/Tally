@@ -1,4 +1,4 @@
-export interface listItem {
+export interface groupListItem {
 	member_name: string;
 	money: number;
 	percent: number;

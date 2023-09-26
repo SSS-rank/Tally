@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { listItem } from '../../model/analysis';
+import { groupListItem } from '../../model/analysis';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function ChartLegendItem({ member_name, member_uuid, money, percent, login }: listItem) {
+function ChartLegendItem({ member_name, member_uuid, money, percent, login }: groupListItem) {
 	return (
 		<TouchableOpacity style={styles.legendItemView}>
 			<View style={styles.textView}>
