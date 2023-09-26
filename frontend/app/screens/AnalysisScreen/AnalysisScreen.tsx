@@ -4,8 +4,9 @@ import { PieChart } from 'react-native-chart-kit';
 
 import { useRecoilValue } from 'recoil';
 
-import { groupListItem } from './../../model/analysis';
+import { groupListItem, personalListItem } from './../../model/analysis';
 import GroupChartLegendItem from '../../components/AnalysisScreen/GroupChartLegendItem';
+import PersonalChartLegendItem from '../../components/AnalysisScreen/PersonalChartLegendItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { MemberState } from '../../recoil/memberRecoil';
@@ -24,7 +25,7 @@ function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const member = useRecoilValue(MemberState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
-	const [list, setList] = useState<groupListItem[]>([]);
+	const [list, setList] = useState<any[]>([]);
 
 	const [selectionMode, setSelectionMode] = useState(1);
 
@@ -65,19 +66,18 @@ function AnalysisScreen() {
 		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
-			name: item.member_name,
+			name: item.category_id,
 			money: item.money,
 			color: `rgba(131, 167, 234, 1)`,
 			legendFontColor: '#7F7F7F',
 			legendFontSize: 15,
 		}));
 
-		const listData: groupListItem[] = res.data.list.map((item: groupListItem) => ({
-			member_name: item.member_name,
+		const listData: personalListItem[] = res.data.list.map((item: personalListItem) => ({
+			category_id: item.category_id,
+			category_type: item.category_type,
 			money: item.money,
 			percent: item.percent,
-			login: item.login,
-			member_uuid: item.member_uuid,
 		}));
 
 		console.log('data ', data);
@@ -125,20 +125,36 @@ function AnalysisScreen() {
 					hasLegend={false}
 				/>
 			</View>
-			<FlatList
-				data={list}
-				renderItem={({ item }) => (
-					<GroupChartLegendItem
-						key={item.member_uuid}
-						member_name={item.member_name}
-						member_uuid={item.member_uuid}
-						money={item.money}
-						percent={item.percent}
-						login={item.login}
-					/>
-				)}
-				keyExtractor={(item) => item.member_uuid}
-			/>
+			{selectionMode === 1 ? (
+				<FlatList
+					data={list}
+					renderItem={({ item }) => (
+						<GroupChartLegendItem
+							key={item.member_uuid}
+							member_name={item.member_name}
+							member_uuid={item.member_uuid}
+							money={item.money}
+							percent={item.percent}
+							login={item.login}
+						/>
+					)}
+					keyExtractor={(item) => item.member_uuid}
+				/>
+			) : (
+				<FlatList
+					data={list}
+					renderItem={({ item }) => (
+						<PersonalChartLegendItem
+							key={item.category_id}
+							category_id={item.category_id}
+							category_type={item.category_type}
+							money={item.money}
+							percent={item.percent}
+						/>
+					)}
+					keyExtractor={(item) => item.member_uuid}
+				/>
+			)}
 			<View style={styles.switchView}>
 				<CustomSwitch
 					selectionMode={1}
