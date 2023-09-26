@@ -43,15 +43,15 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						setPeriod(trip_data.travel_period);
 						setTotalAmount(trip_data.total_amount);
 						const updatedTripInfo = {
-							title: title,
-							location: location,
-							startDay: period.split('~')[0],
-							endDay: period.split('~')[1],
+							id: travel_id,
+							title: trip_data.travel_title,
+							location: trip_data.travel_location,
+							startDay: trip_data.travel_period.split('~')[0],
+							endDay: trip_data.travel_period.split('~')[1],
 						};
 						setParticipants(trip_data.participants);
 						setCurTripInfo(updatedTripInfo);
 						setPayData(trip_data.payment_list);
-						console.log(payData);
 					}
 				} catch (err) {
 					console.log(err);
@@ -217,6 +217,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							navigation.navigate('ModifyPayment', {
 								payment_uuid: item.payment_uuid,
 								payer: item.payer,
+								method: item.payment_method,
 							})
 						}
 					>
