@@ -51,3 +51,8 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+naver:
+  client:
+    id: ${NAVER_CLIENT_ID}
+    secret: ${NAVER_CLIENT_SECRET}
