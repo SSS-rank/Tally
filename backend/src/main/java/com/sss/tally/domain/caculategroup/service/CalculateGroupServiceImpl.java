@@ -231,20 +231,24 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			return getRequestCalculateListRespDtoList;
 		}
 		for (CalculateGroup calculateGroup : calculateGroupList) {
-			Long amount = 0L;
+
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
 				calculateGroup, travel);
+
 			if (groupPaymentList.isEmpty()) {
 				return null;
 			}
+
+			Long amount = 0L;
 			for (GroupPayment groupPayment : groupPaymentList) {
+				double ratio = groupPayment.getPaymentId().getRatio();
 				List<MemberPayment> memberPaymentList = memberPaymentRepository.findMemberPaymentsByPaymentIdAndStatusIsFalse(
 					groupPayment.getPaymentId());
 				if (memberPaymentList.isEmpty()) {
 					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 				}
 				for (MemberPayment memberPayment : memberPaymentList) {
-					amount += memberPayment.getAmount();
+					amount += Math.round(memberPayment.getAmount() * ratio);
 				}
 			}
 			CalculateDto.GetRequestCalculateListRespDto getRequestCalculateListRespDto =
@@ -257,6 +261,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public List<CalculateDto.GetResponseCalculateListRespDto> getResponseCalculate(String memberUuid, Long travelId) {
 		//탈퇴한 회원인지 검증
+		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		if (memberOptional.isEmpty()) {
 			throw new MemberException(ErrorCode.ALREADY_WITHDRAWAL_MEMBER);
@@ -280,22 +285,25 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			Long amount = 0L;
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupIdAndTravel(
 				groupMember.getCalculateGroupId(), travel);
+
 			if (groupPaymentList.isEmpty()) {
 				return null;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
+				double ratio = groupPayment.getPaymentId().getRatio();
 				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), member);
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
 				}
 				MemberPayment memberPayment = memberPaymentOptional.get();
-				amount += memberPayment.getAmount();
+				amount += Math.round(memberPayment.getAmount() * ratio);
 
 			}
 			//그룹 별 사용자가 줘야할 돈 및 정보 저장
 			CalculateDto.GetResponseCalculateListRespDto getResponseCalculateListRespDto
-				= CalculateDto.GetResponseCalculateListRespDto.of(amount, groupMember.getCalculateGroupId());
+				= CalculateDto.GetResponseCalculateListRespDto.of(amount,
+				groupMember.getCalculateGroupId());
 			getResponseCalculateListRespDtoList.add(getResponseCalculateListRespDto);
 		}
 		return getResponseCalculateListRespDtoList;
@@ -411,6 +419,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
 		String calculateGroupUuid, String memberUuid) {
+		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 		//탈퇴한 멤버인지 검증
 
@@ -433,11 +442,11 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		if (groupPaymentList.isEmpty()) {
 			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 		}
-
-		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		Payment payment = groupPaymentList.get(0).getPaymentId();
+		Travel travel = payment.getTravelId();
 		String travelName = travel.getTravelTitle();
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
-		Long totalAmount = 0L;
+		Long totalAmount = 0l;
 		String travelType = travel.getTravelType().toString();
 		if (travelType.equals("GLOBAL")) {
 			Optional<Country> countryOptional = countryRepository.findCountryByCountryId(travel.getTravelLocation());
@@ -452,15 +461,17 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		List<CalculateDto.Detail> detailList = new ArrayList<>();
 
 		for (GroupPayment groupPayment : groupPaymentList) {
+			double ratio = groupPayment.getPaymentId().getRatio();
 			CalculateDto.Detail detail = paymentRepository.findDetail(groupPayment.getPaymentId(), member);
 			if (detail == null) {
 				continue;
 			}
-			totalAmount += detail.getMyAmount();
+			totalAmount += Math.round(detail.getMyAmount() * ratio);
 			detailList.add(detail);
 		}
 		CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetailRespDto
-			= CalculateDto.GetResponseCalculateDetailRespDto.of(travelType, travelName, requestTime, totalAmount,
+			= CalculateDto.GetResponseCalculateDetailRespDto.of(travelType, travelName, requestTime,
+			totalAmount,
 			detailList);
 		return getResponseCalculateDetailRespDto;
 	}
@@ -528,7 +539,9 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				groupPayment.getPaymentId().updateCalculateStatusEnum(CalculateStatusEnum.AFTER);
 			}
 			//결제자 에게 돈 보내야 함 결제자 가져오기
-			Member payer = groupPaymentList.get(0).getPaymentId().getMemberId();
+			Payment payment = groupPaymentList.get(0).getPaymentId();
+			Member payer = payment.getMemberId();
+
 			//결제자 계쫘
 			Optional<Account> payerAccountOptional = accountRepository.findAccountByMemberIdAndStatusIsFalseAndRepresentativeAccountIsTrue(
 				payer);
@@ -544,7 +557,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			for (GroupMember memberOfGroup : groupMemberList) {
 				Long amount = 0l;
 				for (GroupPayment groupPayment : groupPaymentList) {
-
+					double ratio = groupPayment.getPaymentId().getRatio();
 					//멤버 별 지불할 총 금액 구하기
 					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 						groupPayment.getPaymentId(), memberOfGroup.getMemberId());
@@ -552,12 +565,10 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 						continue;
 					}
 					MemberPayment memberPayment = memberPaymentOptional.get();
-					amount += memberPayment.getAmount();
+					amount += Math.round(memberPayment.getAmount() * ratio);
 
 				}
 				//이제 여기서 페인클라이언트로 보내고 나중에 알람 보내면 됨
-				System.out.println("re" + payerAccount.getAccountNumber());
-				System.out.println("se" + memberOfGroup.getAccountNumber());
 				Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 					memberOfGroup.getAccountNumber());
 				Account account = accountOptional.get();
@@ -673,7 +684,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 		}
 		List<CalculateDto.RequestDetail> requestDetails = new ArrayList<>();
-		Travel travel = groupPaymentList.get(0).getPaymentId().getTravelId();
+		Payment payment = groupPaymentList.get(0).getPaymentId();
+		Travel travel = payment.getTravelId();
 		String travelName = travel.getTravelTitle();
 		LocalDateTime requestTime = calculateGroup.getCreateDate();
 		Long totalAmount = 0l;
@@ -691,13 +703,14 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		for (GroupMember groupMember : groupMemberList) {
 			Long amount = 0l;
 			for (GroupPayment groupPayment : groupPaymentList) {
+				double ratio = groupPayment.getPaymentId().getRatio();
 				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), groupMember.getMemberId());
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
 				}
 				MemberPayment memberPayment = memberPaymentOptional.get();
-				amount += memberPayment.getAmount();
+				amount += Math.round(memberPayment.getAmount() * ratio);
 
 			}
 			String status = "";
@@ -747,6 +760,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		List<CalculateDto.RequestDetailByMember> requestDetailByMembers = new ArrayList<>();
 		Long totalAmount = 0l;
 		for (GroupPayment groupPayment : groupPaymentList) {
+			double ratio = groupPayment.getPaymentId().getRatio();
 			Payment payment = groupPayment.getPaymentId();
 			Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
 				payment, member);
@@ -754,9 +768,9 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				continue;
 			}
 			MemberPayment memberPayment = memberPaymentOptional.get();
-			Long myAmount = memberPayment.getAmount();
+			Long myAmount = Math.round(memberPayment.getAmount() * ratio);
 			String paymentName = payment.getPaymentName();
-			Long allAmount = payment.getAmount();
+			Long allAmount = Math.round(payment.getAmount() * ratio);
 			LocalDateTime paymentDate = payment.getPaymentKoreaDate();
 			totalAmount += myAmount;
 			CalculateDto.RequestDetailByMember requestDetailByMember = CalculateDto.RequestDetailByMember.of(
@@ -828,7 +842,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				memberName.add(memberPayment.getMemberId().getNickname());
 			}
 			CalculateDto.FinalReceiptDetail finalReceiptDetail = CalculateDto.FinalReceiptDetail.of(
-				payment.getPaymentName(), payment.getPaymentKoreaDate(), payment.getAmount(), memberName
+				payment.getPaymentName(), payment.getPaymentKoreaDate(),
+				Math.round(payment.getAmount() * payment.getRatio()), memberName
 			);
 			finalReceiptDetails.add(finalReceiptDetail);
 		}
