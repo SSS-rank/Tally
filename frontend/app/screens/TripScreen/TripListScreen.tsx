@@ -195,7 +195,6 @@ function TripListScreen({ navigation }: TripStackProp) {
 								startDay={item.startDay}
 								endDay={item.endDay}
 								navigation={navigation}
-								travelParticipants={item.travelParticipants}
 							/>
 						)}
 						keyExtractor={(item) => item.id + ''}

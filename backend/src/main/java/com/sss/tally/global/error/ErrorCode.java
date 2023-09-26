@@ -62,6 +62,8 @@ public enum ErrorCode {
 	NOT_EXIST_STATE(HttpStatus.BAD_REQUEST, "014", "존재하지 않는 시도입니다."),
 	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "015", "존재하지 않는 국가입니다."),
 	NOT_EXIST_MEMBER_TRAVEL(HttpStatus.BAD_REQUEST, "016", "여행에 해당 사용자가 참여중이지 않습니다."),
+	NOT_EDIT_VISIBLE(HttpStatus.BAD_REQUEST, "016", "완료된 여행만 숨김처리할 수 있습니다."),
+	VALID_DATE_TIME(HttpStatus.BAD_REQUEST, "017", "여행 시작 날짜는 여행 종료 날짜 이전이어야 합니다."),
 
 	// 카테고리
 	NOT_EXIST_CATEGORY(HttpStatus.BAD_REQUEST, "015", "잘못된 카테고리 타입입니다."),
