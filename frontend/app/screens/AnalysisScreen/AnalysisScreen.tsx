@@ -5,6 +5,7 @@ import { PieChart } from 'react-native-chart-kit';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
+import { listItem } from './../../model/analysis';
 import ChartLegendItem from '../../components/AnalysisScreen/ChartLegendItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
@@ -21,6 +22,7 @@ interface charData {
 function AnalysisScreen() {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
+	const [list, setList] = useState<listItem[]>([]);
 	console.log(curTripInfo);
 
 	useFocusEffect(
@@ -42,8 +44,17 @@ function AnalysisScreen() {
 			legendFontSize: 15,
 		}));
 
+		const listData: listItem[] = res.data.list.map((item: listItem) => ({
+			member_name: item.member_name,
+			money: item.money,
+			percent: item.percent,
+			login: item.login,
+			member_uuid: item.member_uuid,
+		}));
+
 		console.log('data ', data);
 		setPaymentData(data);
+		setList(listData);
 	};
 
 	const charConfig = {
@@ -86,7 +97,20 @@ function AnalysisScreen() {
 					hasLegend={false}
 				/>
 			</View>
-			<ChartLegendItem />
+			<FlatList
+				data={list}
+				renderItem={({ item }) => (
+					<ChartLegendItem
+						key={item.member_uuid}
+						member_name={item.member_name}
+						member_uuid={item.member_uuid}
+						money={item.money}
+						percent={item.percent}
+						login={item.login}
+					/>
+				)}
+				keyExtractor={(item) => item.member_uuid}
+			/>
 		</View>
 	);
 }
