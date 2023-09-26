@@ -53,7 +53,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					console.log(res.data);
 					// 비동기 처리를 위해 responseData 사용
 					setTotAmount(responseData.amount + '');
-					// setStore(responseData.)
+					setStore(responseData.payment_name);
 					setText(responseData.memo);
 					setSelectedCategory(responseData.category);
 					setPaymentUnit(responseData.payment_unit);
@@ -77,7 +77,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				// 비동기 처리를 위해 responseData 사용
 				if (res && res.status == 200) {
 					setTotAmount(responseData.amount + '');
-					// setStore(responseData.)
+					setStore(responseData.payment_name);
 					setText(responseData.memo);
 					setSelectedCategory(responseData.category);
 					setPaymentUnit(responseData.payment_unit);
@@ -217,6 +217,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.amount_container}>
+				<Text>{store}</Text>
 				<Text style={TextStyles({ align: 'left' }).small}>{paymentUnit}</Text>
 				{isCash ? (
 					<TextInput
@@ -274,7 +275,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 								}}
 								returnKeyType="next"
 								style={styles.textInput}
-								placeholder={store}
 							/>
 						</View>
 					) : null}
@@ -396,12 +396,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						</Text>
 					</View>
 					<IIcon
-						name={selfCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
+						name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 						size={32}
 						color="#91C0EB"
 						style={{ marginLeft: 5 }}
 						onPress={() => {
-							setSelfCheck(!selfCheck);
+							setVisible(!visible);
 						}}
 					/>
 				</View>
