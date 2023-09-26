@@ -289,7 +289,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
 				double ratio = groupPayment.getPaymentId().getRatio();
-				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), member);
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
@@ -697,7 +697,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			Long amount = 0l;
 			for (GroupPayment groupPayment : groupPaymentList) {
 				double ratio = groupPayment.getPaymentId().getRatio();
-				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(
+				Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
 					groupPayment.getPaymentId(), groupMember.getMemberId());
 				if (memberPaymentOptional.isEmpty()) {
 					continue;
