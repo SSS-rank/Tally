@@ -61,7 +61,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 				</Text>
 				<DashLine />
 			</View>
-			<ScrollView style={{ paddingHorizontal: 15, flex: 1 }}>
+			<View style={{ paddingHorizontal: 15, flex: 1 }}>
 				<View style={{ marginVertical: 10 }}>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
 						<Text style={TextStyles({ align: 'left', weight: 'bold' }).title}>
@@ -75,65 +75,61 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 						{responseAdjust?.request_date}
 					</Text>
 				</View>
-				<View style={{ marginVertical: 10 }}>
-					{/* <Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
-					<Line marginVertical={10} /> */}
-					<FlatList
-						data={responseAdjust?.detail_list}
-						renderItem={({ item }) => (
-							<PaymentItem
-								my_amount={item.my_amount}
-								all_amount={item.all_amount}
-								payment_date={item.payment_date}
-								payment_name={item.payment_name}
-							/>
-						)}
-					/>
-				</View>
-			</ScrollView>
-			<View
-				style={{
-					marginHorizontal: 15,
-				}}
-			>
-				<DashLine />
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						marginVertical: 10,
-					}}
-				>
-					<Text style={{ ...TextStyles().regular }}>합계</Text>
-					<Text
+				{/* <Text style={{ ...TextStyles({ align: 'left' }).small }}>9월 1일</Text>
+				<Line marginVertical={10} /> */}
+				<FlatList
+					data={responseAdjust?.detail_list}
+					renderItem={({ item }) => (
+						<PaymentItem
+							my_amount={item.my_amount}
+							all_amount={item.all_amount}
+							payment_date={item.payment_date}
+							payment_name={item.payment_name}
+						/>
+					)}
+				/>
+			</View>
+			<View>
+				<View style={{ marginHorizontal: 15 }}>
+					<DashLine />
+					<View
 						style={{
-							...TextStyles({ color: '#91C0EB', align: 'right', weight: 'bold' }).title,
-							flex: 1,
+							flexDirection: 'row',
+							alignItems: 'center',
+							marginVertical: 10,
 						}}
 					>
-						-{responseAdjust?.total_amount}원
-					</Text>
+						<Text style={{ ...TextStyles().regular }}>합계</Text>
+						<Text
+							style={{
+								...TextStyles({ color: '#91C0EB', align: 'right', weight: 'bold' }).title,
+								flex: 1,
+							}}
+						>
+							-{responseAdjust?.total_amount}원
+						</Text>
+					</View>
 				</View>
-			</View>
-			<View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 15 }}>
-				<Button
-					mode="contained"
-					buttonColor="#E6E6E6"
-					textColor="#A0A0A0"
-					style={{ flex: 1, marginHorizontal: 5 }}
-					onPress={() => console.log('Pressed')}
-				>
-					반려
-				</Button>
-				<Button
-					mode="contained"
-					buttonColor="#91C0EB"
-					textColor="white"
-					style={{ flex: 1, marginHorizontal: 5 }}
-					onPress={() => navigation.navigate('PayAdjust')}
-				>
-					정산
-				</Button>
+				<View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 15 }}>
+					<Button
+						mode="contained"
+						buttonColor="#E6E6E6"
+						textColor="#A0A0A0"
+						style={{ flex: 1, marginHorizontal: 5 }}
+						onPress={() => console.log('Pressed')}
+					>
+						반려
+					</Button>
+					<Button
+						mode="contained"
+						buttonColor="#91C0EB"
+						textColor="white"
+						style={{ flex: 1, marginHorizontal: 5 }}
+						onPress={() => navigation.navigate('PayAdjust')}
+					>
+						정산
+					</Button>
+				</View>
 			</View>
 		</View>
 	);
