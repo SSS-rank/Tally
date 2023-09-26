@@ -8,7 +8,6 @@ interface partyItemprops {
 	amount: number;
 	name: string;
 	img: AvatarImageSource;
-	self: boolean;
 	involveCheck: boolean;
 	onAmountChange: (amount: string) => void;
 	onInvolveChange: (involveCheck: boolean) => void;
@@ -38,8 +37,8 @@ function PartyListItem(props: partyItemprops) {
 						handleAmountChange(input);
 					}}
 					returnKeyType="next"
-					style={[styles.textInput, props.self ? { color: 'gray' } : null]}
 					placeholder={amount + ''}
+					style={styles.textInput}
 				/>
 				<Text>원</Text>
 				<Icon

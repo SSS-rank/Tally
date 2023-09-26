@@ -232,6 +232,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							party={item.participants ? item.participants.join(',') : ''}
 							abroad={false}
 							calculateStatus={item.calculate_status}
+							visible={item.visible}
 						/>
 					</TouchableOpacity>
 				</View>
