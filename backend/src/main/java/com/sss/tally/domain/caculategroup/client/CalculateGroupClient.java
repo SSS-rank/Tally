@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.sss.tally.api.calculate.dto.CalculateDto;
 
-@FeignClient(url = "http://j9a108.p.ssafy.io:8011", name = "calculateGroupClient")
+@FeignClient(url = "https://j9a108.p.ssafy.io/wasApi", name = "calculateGroupClient")
 public interface CalculateGroupClient {
 	@PostMapping(value = "/transfer/deposit/tally", consumes = "application/json")
 	CalculateDto.TransferDepositRespDto deposit(@RequestHeader("Content-type") String contentType,
