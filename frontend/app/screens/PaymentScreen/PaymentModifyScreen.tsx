@@ -12,11 +12,13 @@ import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [curTripInfo, setCurTripInfo] = useRecoilState(CurTripInfoState);
 	const [totAmount, setTotAmount] = useState('');
 	const [text, setText] = useState('');
@@ -25,9 +27,10 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
 	const [paymentUnit, setPaymentUnit] = useState('');
-	const [isPayer, setIspayer] = useState(true);
+	const [isPayer, setIspayer] = useState(false);
 	const [isCash, setIsCash] = useState(false);
 	const [visible, setVisible] = useState(false);
+	const [paymentUuid, setPaymentUuid] = useState('');
 
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 	const [payData, setPayData] = useState<PaymentDetailRes>({
@@ -41,9 +44,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		payment_participants: [],
 	});
 	useEffect(() => {
-		console.log(curTripInfo);
 		const { payment_uuid, payer, method } = route.params;
-		const my_uuid = '';
+		setPaymentUuid(payment_uuid);
+		console.log(memberinfo.member_uuid, payer);
+		if (memberinfo.member_uuid == payer) {
+			setIspayer(true);
+		}
 		if (method === 'CASH') {
 			setIsCash(true);
 		}
@@ -59,6 +65,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				setText(responseData.memo);
 				setSelectedCategory(responseData.category);
 				setPaymentUnit(responseData.payment_unit);
+				setVisible(responseData.visible);
 				// setDate(responseData.payment_date);
 				const memberdata = responseData.payment_participants.map((item: ModMember) => {
 					return {
@@ -151,23 +158,45 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
-	function handleSubmit() {
-		// const req = {
-		// 	amount: totAmount,
-		// 	category: selectedcategory,
-		// 	memo : text,
-		// 	payment_date_time: formatDate(date),
-		// 	payment_participants: [],
-		// 	travel_id: curTripInfo.id,
-		// 	title: curTripInfo.title,
-		// 	visible: visible,
-		// 	ratio: 1,
-		// 	payment_unit_id:
-		// };
-		// if (isCash) {
-		// 	const res = api.patch('payment/manual', req);
-		// 	console.log(res);
-		// }
+	async function handleSubmit() {
+		const member = partyMembers.map((item) => {
+			return { amount: item.amount, member_uuid: item.member_uuid };
+		});
+
+		if (isCash) {
+			//수동입력된 케이스
+			const req = {
+				amount: totAmount,
+				category: selectedcategory,
+				memo: text,
+				payment_date_time: formatDate(date),
+				payment_participants: member,
+				payment_uuid: paymentUuid,
+				travel_id: curTripInfo.id,
+				title: curTripInfo.title,
+				visible: visible,
+				ratio: 1,
+				payment_unit_id: 8,
+			};
+			const res = await api.patch('payment/manual', req);
+			if (res.status == 200) {
+				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			}
+		} else {
+			//자동 입력된 케이스
+			const req = {
+				category: selectedcategory,
+				memo: text,
+				payment_participants: member,
+				payment_uuid: paymentUuid,
+				travel_id: curTripInfo.id,
+				visible: visible,
+			};
+			const res = await api.patch('payment/auto', req);
+			if (res.status == 200) {
+				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			}
+		}
 	}
 	return (
 		<ScrollView style={styles.container}>
@@ -183,10 +212,10 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						keyboardType="numeric"
 						style={styles.amountInput}
 						selectionColor="#F6F6F6"
-						placeholder={payData.amount + ''}
+						placeholder={totAmount}
 					/>
 				) : (
-					<Text style={TextStyles().medium}>{totAmount}</Text>
+					<Text style={TextStyles({ align: 'left' }).medium}>{totAmount}</Text>
 				)}
 			</View>
 
