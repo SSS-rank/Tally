@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.sss.tally.api.payment.dto.PaymentDto;
 
-@FeignClient(url = "http://j9a108.p.ssafy.io:8011", name = "paymentClient")
+@FeignClient(url = "https://j9a108.p.ssafy.io/wasApi", name = "paymentClient")
 public interface PaymentClient {
 	@PostMapping(value="/transfer/history/tally", consumes = "application/json")
 	PaymentDto.PaymentResDto requestTransferList(@RequestHeader("Content-type") String contentType,
