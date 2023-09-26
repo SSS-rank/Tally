@@ -11,11 +11,9 @@ import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
-import { TripStackProps } from '../../navigation/TripStack';
+import { TripDetailScreenProps } from '../../model/tripNavigator';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
-
-type TripDetailScreenProps = NativeStackScreenProps<TripStackProps, 'TripDetail'>;
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [payData, setPayData] = useState<Payment[]>([]);
@@ -213,7 +211,13 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 			{payData.map((item) => (
 				<View key={item.payment_uuid}>
-					<TouchableOpacity style={styles.detail_item_box}>
+					<TouchableOpacity
+						style={styles.detail_item_box}
+						onPress={
+							() => {}
+							// navigation.navigate('ModifyPayment', { payment_uuid: item.payment_uuid })
+						}
+					>
 						<Text>{item.payment_date.split('일 ')[0]}일</Text>
 						<DetailListItem
 							title={item.payment_memo}

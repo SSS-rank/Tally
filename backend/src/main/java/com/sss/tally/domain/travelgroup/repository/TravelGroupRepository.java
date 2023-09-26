@@ -1,6 +1,7 @@
 package com.sss.tally.domain.travelgroup.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> 
 	List<Long> findMemberIdsByTravelId(Long travelId);
 	@Query("SELECT tg.memberId FROM TravelGroup tg WHERE tg.travelId.travelId = :travelId")
 	List<Member> findMembersByTravelId(Long travelId);
+
+	Optional<TravelGroup> findTravelGroupByMemberIdAndTravelId(Member memberId, Travel travelId);
 }

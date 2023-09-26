@@ -1,5 +1,7 @@
 package com.sss.tally.api.analysis.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,5 +35,13 @@ public class AnalysisController {
 	){
 		AnalysisDto.MemberRespDto memberRespDtoList = analysisService.getMemberAnalysis(authentication, travelId, memberUuid);
 		return ResponseEntity.status(HttpStatus.OK).body(memberRespDtoList);
+	}
+
+	@GetMapping("/{travelId}/{memberUuid}/{categoryId}")
+	public ResponseEntity<List<AnalysisDto.CategoryRespDto>> getCategoryDetail(
+		Authentication authentication, @PathVariable Long travelId, @PathVariable String memberUuid, @PathVariable Long categoryId
+	){
+		List<AnalysisDto.CategoryRespDto> categoryRespDtoList = analysisService.getCategoryDetail(authentication, travelId, memberUuid, categoryId);
+		return ResponseEntity.status(HttpStatus.OK).body(categoryRespDtoList);
 	}
 }

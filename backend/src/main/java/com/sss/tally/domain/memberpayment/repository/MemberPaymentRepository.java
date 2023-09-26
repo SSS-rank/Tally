@@ -20,8 +20,6 @@ public interface MemberPaymentRepository extends JpaRepository<MemberPayment, Lo
 
 	boolean existsByPaymentIdAndMemberIdAndStatusIsFalse(Payment paymentId, Member memberId);
 
-	Optional<MemberPayment> findMemberPaymentsByPaymentIdAndMemberIdAndStatusIsFalse(Payment payment, Member member);
-
 	@Query("SELECT mp.memberId.nickname FROM MemberPayment mp WHERE mp.paymentId.paymentId = :paymentId AND mp.status = false")
 	List<String> findNicknamesByPaymentId(@Param("paymentId") Long paymentId);
 

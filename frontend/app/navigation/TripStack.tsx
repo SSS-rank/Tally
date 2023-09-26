@@ -3,6 +3,7 @@ import { IconButton } from 'react-native-paper';
 
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { TripMember } from '../model/trip';
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
 import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
 import PaymentScreen from '../screens/AdjustScreen/PaymentScreen';
@@ -16,13 +17,17 @@ import TripListScreen from '../screens/TripScreen/TripListScreen';
 export type TripStackProps = {
 	TripList: undefined;
 	CreateTrip: undefined;
-	TripDetail: undefined | { id: number };
+	TripDetail: undefined | { travel_id: number };
 	AnalysisTrip: undefined;
 	AdjustTrip: { tripId: number };
 	SendAdjust: undefined | { adjustId?: string };
 	GetAdjust: undefined | { adjustId?: string };
 	PayAdjust: undefined;
-	AddPayment: undefined;
+	AddPayment: {
+		travel_id: number;
+		travel_title: string;
+		participants: TripMember[];
+	};
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();

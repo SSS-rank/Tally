@@ -14,12 +14,11 @@ function TripListItem({
 	startDay,
 	endDay,
 	navigation,
-	travelParticipants,
 }: TripListItemProps) {
 	return (
 		<TouchableOpacity
 			onPress={() => {
-				navigation.navigate('TripDetail', {
+				navigation?.navigate('TripDetail', {
 					travel_id: id,
 				});
 			}}
@@ -29,7 +28,7 @@ function TripListItem({
 					<Avatar.Image
 						size={50}
 						style={{ marginRight: 20 }}
-						source={require('../../assets/images/country/KOR.png')}
+						source={{ uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${location}.png` }}
 					/>
 					<View>
 						<View style={styles.listItemTop}>
