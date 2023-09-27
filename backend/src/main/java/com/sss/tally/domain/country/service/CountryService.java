@@ -5,5 +5,6 @@ import java.util.List;
 import com.sss.tally.api.country.dto.CountryDto;
 
 public interface CountryService {
-	List<CountryDto.CountryRespDto> saveAndGetCountryVisa();
+	List<CountryDto.CountryRespDto> saveAndGetCountry();
+	CountryDto.CountryVisaAndTimeDto getCountryVisaAndTime(Long countryId);
 }

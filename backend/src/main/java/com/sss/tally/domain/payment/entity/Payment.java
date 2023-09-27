@@ -91,21 +91,21 @@ public class Payment {
 	private CalculateStatusEnum calculateStatus;
 
 
-	public static Payment of(PaymentDto.PaymentManualDto payPaymentManualDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, String uuid, PaymentMethodEnum paymentMethod, LocalDateTime dateTime){
+	public static Payment of(PaymentDto.PaymentManualDto paymentManualDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, String uuid, PaymentMethodEnum paymentMethod, LocalDateTime dateTime, String memo){
 		return Payment.builder()
 			.memberId(member)
 			.travelId(travel)
 			.paymentUnitId(paymentUnit)
 			.categoryId(category)
 			.paymentUuid(uuid)
-			.amount(payPaymentManualDto.getAmount())
+			.amount(paymentManualDto.getAmount())
 			.paymentLocalDate(dateTime)
 			.paymentKoreaDate(dateTime)
-			.paymentMemo(payPaymentManualDto.getMemo())
+			.paymentMemo(memo)
 			.paymentMethod(paymentMethod)
-			.ratio(payPaymentManualDto.getRatio())
-			.visible(payPaymentManualDto.isVisible())
-			.paymentName(payPaymentManualDto.getTitle())
+			.ratio(paymentManualDto.getRatio())
+			.visible(paymentManualDto.isVisible())
+			.paymentName(paymentManualDto.getTitle())
 			.calculateStatus(CalculateStatusEnum.NONE)
 			.status(false)
 			.build();

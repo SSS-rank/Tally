@@ -2,6 +2,8 @@ package com.sss.tally.api.country.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.sss.tally.domain.country.entity.Country;
 
 import lombok.AllArgsConstructor;
@@ -19,17 +21,35 @@ public class CountryDto {
 		private Long countryId;
 		private String countryName;
 		private String countryCode;
-		private String visa;
 
 		public static CountryRespDto from(Country country){
 			return CountryRespDto.builder()
 				.countryId(country.getCountryId())
 				.countryName(country.getCountryName())
 				.countryCode(country.getCountryCode())
-				.visa(country.getVisa())
 				.build();
 		}
 	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class CountryVisaAndTimeDto{
+		private Long countryId;
+		private String visa;
+		private float timeDifference;
+
+		public static CountryVisaAndTimeDto from(Country country){
+			return CountryVisaAndTimeDto.builder()
+				.countryId(country.getCountryId())
+				.visa(country.getVisa())
+				.timeDifference(country.getTimeDifference())
+				.build();
+		}
+	}
+
 
 	@Getter
 	@Builder
