@@ -28,12 +28,9 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 		React.useCallback(() => {
 			const fetchData = async () => {
 				try {
-					console.log(adjustId);
 					const res = await api.get(`calculate/receive-detail/${adjustId}`);
 					if (res.status === 200) {
-						console.log(res.data);
 						setResponseAdjust(res.data);
-						console.log(responseAdjust);
 					}
 				} catch (err) {
 					console.log(err);
@@ -46,13 +43,10 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 
 	const rejectAdjust = async () => {
 		try {
-			console.log(rejectMessage);
 			const requestBody = {
 				calculate_group_uuid: adjustId,
 				content: rejectMessage === '' ? '금액 조정이 필요합니다.' : rejectMessage,
 			};
-			console.log(requestBody.calculate_group_uuid);
-			console.log(requestBody.content);
 			const res = await api.patch(`/calculate/rejection`, requestBody);
 			if (res.status === 200) {
 				console.log(res.data);
@@ -62,7 +56,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 		}
 		setModalVisible(false);
 		setRejectMessage('');
-		// navigation.navigate('PayAdjust');
+		navigation.goBack();
 	};
 
 	return (
