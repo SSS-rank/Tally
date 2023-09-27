@@ -32,6 +32,11 @@ const modalStyle = {
 
 const banks = ['신한은행', '우리은행', '카카오뱅크', '토스뱅크', '국민은행', '농협은행'];
 
+// 숫자를 1000단위로 콤마를 추가하여 포맷팅하는 함수
+const formatNumber = (number: string) => {
+	return number.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 const Transfer = () => {
 	const defaultTheme = createTheme();
 	const navigate = useNavigate();
@@ -83,6 +88,15 @@ const Transfer = () => {
 	const selectBank = (e: React.MouseEvent<HTMLButtonElement>) => {
 		setbankName(String(e.currentTarget.dataset.bankName));
 		handleClose();
+	};
+
+	const [amount, setAmount] = useState('');
+
+	// 사용자가 입력한 값이 바뀔 때마다 호출되는 함수
+	const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const inputValue = e.target.value;
+		const formattedValue = formatNumber(inputValue); // 숫자 포맷팅 함수 호출
+		setAmount(formattedValue);
 	};
 
 	return (
@@ -153,7 +167,15 @@ const Transfer = () => {
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<TextField required fullWidth id="amount" label="보낼 금액" name="amount" />
+								<TextField
+									required
+									fullWidth
+									id="amount"
+									label="보낼 금액"
+									name="amount"
+									value={amount}
+									onChange={handleAmountChange}
+								/>
 							</Grid>
 							<Grid item xs={12} sx={{ mt: 6 }}>
 								<TextField
