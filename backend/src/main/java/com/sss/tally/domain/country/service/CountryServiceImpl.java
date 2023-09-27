@@ -12,6 +12,8 @@ import com.sss.tally.api.country.dto.CountryVisaDto;
 import com.sss.tally.domain.country.client.CountryClient;
 import com.sss.tally.domain.country.entity.Country;
 import com.sss.tally.domain.country.repository.CountryRepository;
+import com.sss.tally.global.error.ErrorCode;
+import com.sss.tally.global.error.exception.CountryException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +27,7 @@ public class CountryServiceImpl implements CountryService{
 	@Value("${country.service.key}")
 	private String serviceKey;
 	@Override
-	public List<CountryDto.CountryRespDto> saveAndGetCountryVisa() {
+	public List<CountryDto.CountryRespDto> saveAndGetCountry() {
 		if(countryRepository.count()==0){
 			CountryDto.CountryVisaReqDto countryVisaReqDto = CountryDto.CountryVisaReqDto.of(serviceKey, "JSON", 197, 1);
 			CountryDto.CountryVisaRespDto countryVisaRespDto = countryClient.getCountryVisa(countryVisaReqDto);
@@ -41,5 +43,13 @@ public class CountryServiceImpl implements CountryService{
 		return countryList.stream()
 			.map(CountryDto.CountryRespDto::from)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public CountryDto.CountryVisaAndTimeDto getCountryVisaAndTime(Long countryId) {
+		Country country = countryRepository.findCountryByCountryId(countryId)
+			.orElseThrow(()->new CountryException(ErrorCode.NOT_EXIST_COUNTRY));
+
+		return CountryDto.CountryVisaAndTimeDto.from(country);
 	}
 }
