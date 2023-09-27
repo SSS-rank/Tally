@@ -10,7 +10,9 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 interface legendItem extends personalListItem {
 	color: string;
-	navigation: NativeStackNavigationProp<TripStackProps, 'AnalysisCategory'> | undefined;
+	navigation:
+		| NativeStackNavigationProp<TripStackProps, 'AnalysisCategory', 'AnalysisPersonal'>
+		| undefined;
 	member_uuid: string;
 }
 
