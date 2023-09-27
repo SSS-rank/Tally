@@ -80,6 +80,28 @@ function AccountAdd() {
 		handleClose();
 	};
 
+	const [pwd, setPwd] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
+	const [passwordMatch, setPasswordMatch] = useState<boolean | null>(null);
+
+	const checkPasswordMatch = (password: string, confirmedPassword: string) => {
+		if (password === confirmedPassword) {
+			setPasswordMatch(true);
+		} else {
+			setPasswordMatch(false);
+		}
+	};
+
+	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPwd(e.target.value);
+		checkPasswordMatch(e.target.value, confirmPassword);
+	};
+
+	const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setConfirmPassword(e.target.value);
+		checkPasswordMatch(pwd, e.target.value);
+	};
+
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<Container component="main" maxWidth="xs">
@@ -135,7 +157,36 @@ function AccountAdd() {
 								<TextField name="name" required fullWidth id="name" label="예금주" autoFocus />
 							</Grid>
 							<Grid item xs={12}>
-								<TextField required fullWidth id="password" label="비밀번호" name="password" />
+								<TextField
+									required
+									fullWidth
+									id="password"
+									label="비밀번호"
+									name="password"
+									variant="standard"
+									type="password"
+									value={pwd}
+									onChange={handlePasswordChange}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									id="password"
+									label="비밀번호 확인"
+									name="password"
+									variant="standard"
+									type="password"
+									value={confirmPassword}
+									onChange={handleConfirmPasswordChange}
+								/>
+								{confirmPassword && passwordMatch === true && (
+									<Typography style={{ color: 'blue' }}>비밀번호가 일치합니다.</Typography>
+								)}
+								{confirmPassword && passwordMatch === false && (
+									<Typography style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</Typography>
+								)}
 							</Grid>
 						</Grid>
 						<Button
