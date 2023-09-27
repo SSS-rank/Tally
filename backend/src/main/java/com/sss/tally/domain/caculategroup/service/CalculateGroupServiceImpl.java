@@ -416,6 +416,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
 		String calculateGroupUuid, String memberUuid) {
+		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 
 		if (memberOptional.isEmpty()) {
@@ -464,10 +465,17 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			totalAmount += Math.round(detail.getMyAmount() * ratio);
 			detailList.add(detail);
 		}
+		//정산 완료 상태 추가
+		Optional<GroupMember> groupMemberOptional = groupMemberRepository.findGroupMemberByCalculateGroupIdAndMemberId(
+			calculateGroup, member);
+		if (groupMemberOptional.isEmpty()) {
+			throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_MEMBER);
+		}
+		GroupMember groupMember = groupMemberOptional.get();
 		CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetailRespDto
 			= CalculateDto.GetResponseCalculateDetailRespDto.of(travelType, travelName, requestTime,
 			totalAmount,
-			detailList);
+			detailList, groupMember.getStatus());
 		return getResponseCalculateDetailRespDto;
 	}
 
