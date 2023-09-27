@@ -44,7 +44,6 @@ function AccountDetail() {
 				alert('클립보드 복사에 실패하였습니다.');
 			}
 		}
-		console.log('ㅗㅑ');
 	};
 
 	useEffect(() => {
