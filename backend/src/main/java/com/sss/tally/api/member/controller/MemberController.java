@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -52,7 +53,7 @@ public class MemberController {
 		return ResponseEntity.status(HttpStatus.OK).body("Update Password Success");
 	}
 
-	@GetMapping("/transfer-password")
+	@PostMapping("/transfer-password")
 	public ResponseEntity<Boolean> checkPassword(Authentication authentication, @RequestBody
 	MemberDto.MemberPasswordDto memberPasswordDto) throws NoSuchAlgorithmException {
 		Boolean check = memberService.checkPassword(authentication, memberPasswordDto);
