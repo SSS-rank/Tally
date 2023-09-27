@@ -1,9 +1,12 @@
 package com.sss.bank.domain.account.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -12,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sss.bank.api.account.dto.AccountDto;
 import com.sss.bank.api.password.service.PasswordRepository;
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.entity.Account;
 import com.sss.bank.domain.account.repository.AccountRepository;
 import com.sss.bank.domain.bank.entity.Bank;
 import com.sss.bank.domain.bank.repository.BankRepository;
 import com.sss.bank.domain.member.entity.Member;
 import com.sss.bank.domain.member.repository.MemberRepository;
+import com.sss.bank.domain.transfer.entity.Transfer;
+import com.sss.bank.domain.transfer.repository.TransferRepository;
 import com.sss.bank.global.error.ErrorCode;
 import com.sss.bank.global.error.exception.AccountException;
 import com.sss.bank.global.error.exception.BankException;
@@ -34,8 +40,8 @@ public class AccountServiceImpl implements AccountService {
 	private final MemberRepository memberRepository;
 	private final AccountRepository accountRepository;
 	private final BankRepository bankRepository;
-	private final SHA256Util sha256Util;
 	private final PasswordRepository passwordRepository;
+	private final TransferRepository transferRepository;
 
 	@Override
 	public AccountDto.AccountCreateRespDto createAccount(long memberId,
@@ -237,6 +243,28 @@ public class AccountServiceImpl implements AccountService {
 			throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
 		return AccountDto.AccountGetOwnerDto.from(member.get());
+
+	}
+
+	@Override
+	public List<TransferDto.TransferLatestRespDto> getLatestAccountList(MemberInfoDto memberInfoDto, String accountUuid) {
+		Optional<Member> member = memberRepository.findMemberByMemberId(memberInfoDto.getMemberId());
+		if(member.isEmpty()) throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+
+		Optional<Account> account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(accountUuid);
+		if(account.isEmpty()) throw new AccountException(ErrorCode.NOT_EXIST_ACCOUNT);
+
+		List<Transfer> latestAccounts = transferRepository.findTop5BySenderOrderByTransferDateDesc(account.get());
+		Set<String> accountNumbers = new HashSet<>();
+		List<TransferDto.TransferLatestRespDto> accounts = new ArrayList<>();
+
+
+		for(Transfer transfer: latestAccounts){
+			if(accountNumbers.contains(transfer.getReceiver().getAccountNumber())) continue;
+			accountNumbers.add(transfer.getReceiver().getAccountNumber());
+			accounts.add(TransferDto.TransferLatestRespDto.from(transfer));
+		}
+		return accounts;
 
 	}
 }

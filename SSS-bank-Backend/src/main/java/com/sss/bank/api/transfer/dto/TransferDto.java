@@ -1,6 +1,7 @@
 package com.sss.bank.api.transfer.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.sss.bank.domain.transfer.entity.Transfer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,32 @@ import lombok.NoArgsConstructor;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TransferDto {
+
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	@Builder
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+	public static class TransferLatestRespDto{
+		private String transferDate;
+		private Long amount;
+		private String bankCode;
+		private String transferName;
+		private String accountNumber;
+
+		public static TransferLatestRespDto from(Transfer transfer){
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+			String dateTime = dateTimeFormatter.format(transfer.getTransferDate());
+			return TransferLatestRespDto.builder()
+				.amount(transfer.getAmount())
+				.transferName(transfer.getReceiver().getMemberId().getName())
+				.bankCode(transfer.getReceiver().getBankId().getBankCode())
+				.accountNumber(transfer.getReceiver().getAccountNumber())
+				.transferDate(dateTime)
+				.build();
+		}
+	}
+
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	@NoArgsConstructor
 	@AllArgsConstructor
