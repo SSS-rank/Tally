@@ -46,4 +46,6 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 		, nativeQuery = true)
 	List<Map<String, Object>> findTransferPaymentList(@Param("accountId") long accountId,
 		@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+	List<Transfer> findTop5BySenderOrderByTransferDateDesc(Account receiver);
 }

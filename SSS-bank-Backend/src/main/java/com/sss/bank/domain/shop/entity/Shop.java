@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 
 import com.sss.bank.api.shop.dto.ShopDto;
 import com.sss.bank.domain.country.entity.Country;
+import com.sss.bank.domain.member.entity.Member;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,11 +39,16 @@ public class Shop {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Country countryId;
 
-	public static Shop of(ShopDto.ShopReqDto shopReqDto, Country country) {
+	@JoinColumn(name = "master")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Member master;
+
+	public static Shop of(ShopDto.ShopReqDto shopReqDto, Country country, Member member) {
 		return Shop.builder()
 			.shopName(shopReqDto.getShopName())
 			.shopType(shopReqDto.getShopType())
 			.countryId(country)
+			.master(member)
 			.build();
 	}
 
