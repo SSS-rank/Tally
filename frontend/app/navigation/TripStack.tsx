@@ -9,6 +9,7 @@ import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
 import PaymentPasswordScreen from '../screens/AdjustScreen/PaymentPasswordScreen';
 import PaymentScreen from '../screens/AdjustScreen/PaymentScreen';
 import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
+import AnalysisCategoryScreen from '../screens/AnalysisScreen/AnalysisCategoryScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
 import PaymentAddScreen from '../screens/PaymentScreen/PaymentAddScreen';
 import PaymentModifyScreen from '../screens/PaymentScreen/PaymentModifyScreen';
@@ -21,6 +22,7 @@ export type TripStackProps = {
 	CreateTrip: undefined;
 	TripDetail: { travel_id: number };
 	AnalysisTrip: undefined;
+	AnalysisCategory: { category_id: number; title: string };
 	AdjustTrip: { tripId: number };
 	SendAdjust: { adjustId: string };
 	GetAdjust: { adjustId: string; requesterName?: string };
@@ -96,6 +98,11 @@ function TripStack({ navigation }: TripDetailScreenProps) {
 				}}
 			/>
 			<Stack.Screen name="AnalysisTrip" component={AnalysisScreen} options={{ title: '분석' }} />
+			<Stack.Screen
+				name="AnalysisCategory"
+				component={AnalysisCategoryScreen}
+				options={{ title: '카테고리 상세' }}
+			/>
 			<Stack.Screen name="AdjustTrip" component={AdjustScreen} options={{ title: '' }} />
 			<Stack.Screen name="SendAdjust" component={SendAdjustScreen} options={{ title: '' }} />
 			<Stack.Screen name="GetAdjust" component={GetAdjustScreen} options={{ title: '' }} />

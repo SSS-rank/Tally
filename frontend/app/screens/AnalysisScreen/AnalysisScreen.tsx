@@ -9,6 +9,7 @@ import GroupChartLegendItem from '../../components/AnalysisScreen/GroupChartLege
 import PersonalChartLegendItem from '../../components/AnalysisScreen/PersonalChartLegendItem';
 import CustomSwitch from '../../components/CustomSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { AnalysisCategoryScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState, FcmTokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -23,7 +24,7 @@ interface charData {
 	legendFontSize: number;
 }
 
-function AnalysisScreen() {
+function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const member = useRecoilValue(MemberState);
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
@@ -158,6 +159,7 @@ function AnalysisScreen() {
 							money={item.money}
 							percent={item.percent}
 							color={item.color}
+							navigation={navigation}
 						/>
 					)}
 					keyExtractor={(item) => item.member_uuid}

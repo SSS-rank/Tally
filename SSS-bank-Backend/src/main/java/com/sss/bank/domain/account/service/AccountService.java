@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import com.sss.bank.api.account.dto.AccountDto;
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.global.resolver.MemberInfoDto;
 
 public interface AccountService {
@@ -25,4 +26,6 @@ public interface AccountService {
 	List<AccountDto> getAccountList(MemberInfoDto memberInfoDto);
 
 	AccountDto.AccountGetOwnerDto getAccountOwner(String bankNumber);
+
+	List<TransferDto.TransferLatestRespDto> getLatestAccountList(MemberInfoDto memberInfoDto, String accountUuid);
 }

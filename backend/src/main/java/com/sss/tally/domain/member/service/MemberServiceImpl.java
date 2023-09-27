@@ -84,4 +84,12 @@ public class MemberServiceImpl implements MemberService{
 		String password = SHA256Util.getEncrypt(memberPasswordDto.getTransferPassword(), member.getTransferSalt());
 		member.patchPassword(password);
 	}
+
+	@Override
+	public Boolean checkPassword(Authentication authentication, MemberDto.MemberPasswordDto memberPasswordDto) throws
+		NoSuchAlgorithmException {
+		Member auth = (Member)authentication.getPrincipal();
+		return auth.getTransferPassword()
+			.equals(SHA256Util.getEncrypt(memberPasswordDto.getTransferPassword(), auth.getTransferSalt()));
+	}
 }
