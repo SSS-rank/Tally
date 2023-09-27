@@ -6,31 +6,38 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import PaymentAccountItem from '../../components/Adjust/PaymentAccountItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { Account } from '../../model/account';
 import { TextStyles } from '../../styles/CommonStyles';
 
 const PaymentScreen = () => {
 	const api = useAxiosWithAuth();
-	const [accountListState, setAccountListState] = useState();
-	const [representativeAccountChange, setRepresentativeAccountChange] = useState('');
+	const [accountList, setAccountList] = useState<Account[]>([]);
+	const [selectedAccountChange, setSelectedAccountChange] = useState('');
 
 	useFocusEffect(
 		useCallback(() => {
+			console.log('엥');
 			getAccountList();
 		}, []),
 	);
 
 	useEffect(() => {
-		console.log(representativeAccountChange);
-		// if (representativeAccountChange) {
-		// 	setRepresentativeAccountChange(true);
-		// }
-	}, [representativeAccountChange]);
+		const filteredAccounts = accountList.filter((item: Account) => {
+			if (item.accountNumber === selectedAccountChange) {
+				item.representativeAccount = true;
+			} else {
+				item.representativeAccount = false;
+			}
+			return item;
+		});
+		setAccountList(filteredAccounts);
+	}, [selectedAccountChange]);
 
 	const getAccountList = async () => {
 		try {
 			const res = await api.get(`/account`);
 			if (res.status === 200) {
-				setAccountListState(res.data);
+				setAccountList(res.data);
 			}
 		} catch (err) {
 			console.error(err);
@@ -43,7 +50,7 @@ const PaymentScreen = () => {
 				결제 계좌 선택
 			</Text>
 			<FlatList
-				data={accountListState}
+				data={accountList}
 				renderItem={({ item }) => (
 					<PaymentAccountItem
 						key={item.accountNumber}
@@ -52,7 +59,7 @@ const PaymentScreen = () => {
 						bankCode={item.bankCode}
 						bankName={item.bankName}
 						representativeAccount={item.representativeAccount}
-						setSelectedAccountChange={setRepresentativeAccountChange}
+						setSelectedAccountChange={setSelectedAccountChange}
 					/>
 				)}
 				keyExtractor={(item) => item.accountNumber}
