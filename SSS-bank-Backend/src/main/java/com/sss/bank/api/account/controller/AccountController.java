@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.bank.api.account.dto.AccountDto;
+import com.sss.bank.api.transfer.dto.TransferDto;
 import com.sss.bank.domain.account.service.AccountService;
 import com.sss.bank.global.resolver.MemberInfo;
 import com.sss.bank.global.resolver.MemberInfoDto;
@@ -94,5 +95,13 @@ public class AccountController {
 	public ResponseEntity<AccountDto.AccountGetOwnerDto> getAccountOwner(@PathVariable String accountNumber) {
 		AccountDto.AccountGetOwnerDto owner = accountService.getAccountOwner(accountNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(owner);
+	}
+
+	@ApiOperation(value = "최신 이체 계좌 조회", notes = "최신 이체 5개의 계좌 정보를 제공한다.")
+	@GetMapping("/latest/{accountNumber}")
+	public ResponseEntity<List<TransferDto.TransferLatestRespDto>> getLatestAccounts(@MemberInfo MemberInfoDto memberInfoDto, @PathVariable String accountNumber) {
+		List<TransferDto.TransferLatestRespDto> latestAccountList = accountService.getLatestAccountList(memberInfoDto,
+			accountNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(latestAccountList);
 	}
 }

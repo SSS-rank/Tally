@@ -12,3 +12,5 @@ export type AnalysisCategoryScreenProps = NativeStackScreenProps<
 	TripStackProps,
 	'AnalysisCategory'
 >;
+export type PayAdjustScreenProps = NativeStackScreenProps<TripStackProps, 'PayAdjust'>;
+export type PasswordScreenProps = NativeStackScreenProps<TripStackProps, 'Password'>;

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sss.bank.api.shop.dto.ShopDto;
 import com.sss.bank.domain.shop.service.ShopService;
+import com.sss.bank.global.resolver.MemberInfo;
+import com.sss.bank.global.resolver.MemberInfoDto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,15 +31,15 @@ public class ShopController {
 
 	@ApiOperation(value = "상점 생성", notes = "상점을 생성한다")
 	@PostMapping
-	public ResponseEntity<ShopDto.ShopRespDto> createShop(@RequestBody @Valid ShopDto.ShopReqDto shopReqDto) {
-		ShopDto.ShopRespDto shopRespDto = shopService.createShop(shopReqDto);
+	public ResponseEntity<ShopDto.ShopRespDto> createShop(@MemberInfo MemberInfoDto memberInfoDto, @RequestBody @Valid ShopDto.ShopReqDto shopReqDto) {
+		ShopDto.ShopRespDto shopRespDto = shopService.createShop(shopReqDto, memberInfoDto);
 		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
 	}
 
 	@ApiOperation(value = "상점 수정", notes = "상점을 수정한다")
 	@PatchMapping
-	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@RequestBody @Valid ShopDto shopDto) {
-		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopDto);
+	public ResponseEntity<ShopDto.ShopRespDto> modifyShop(@MemberInfo MemberInfoDto memberInfoDto, @RequestBody @Valid ShopDto shopDto) {
+		ShopDto.ShopRespDto shopRespDto = shopService.updateShop(shopDto, memberInfoDto);
 		return ResponseEntity.status(HttpStatus.OK).body(shopRespDto);
 	}
 

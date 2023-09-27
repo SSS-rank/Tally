@@ -1,7 +1,6 @@
 package com.sss.tally.api.payment.dto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -28,7 +27,7 @@ public class PaymentDto {
 		private Long categoryId;
 		private Long amount;
 		private String payer;
-		private String paymentDate;
+		private LocalDateTime paymentDate;
 		private String paymentMemo;
 		private String paymentMethod;
 		private String paymentUnit;
@@ -38,14 +37,11 @@ public class PaymentDto {
 		private List<String> participants;
 
 		public static PaymentListDto of(Payment payment, List<String> participants, Long amount){
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm");
-			String dateTime = payment.getPaymentKoreaDate().format(dateTimeFormatter);
-
 			return PaymentListDto.builder()
 				.paymentUuid(payment.getPaymentUuid())
 				.categoryId(payment.getCategoryId().getCategoryId())
 				.amount(amount)
-				.paymentDate(dateTime)
+				.paymentDate(payment.getPaymentKoreaDate())
 				.payer(payment.getMemberId().getMemberUuid())
 				.participants(participants)
 				.paymentMemo(payment.getPaymentMemo())

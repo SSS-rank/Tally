@@ -38,9 +38,10 @@ public enum ErrorCode {
 
 	// 가게
 	NOT_EXIST_SHOP(HttpStatus.BAD_REQUEST, "023", "해당 가게는 존재하지 않습니다."),
+	NOT_EXIST_EDIT_PERMISSION(HttpStatus.BAD_REQUEST, "024", "가게 수정은 생성자만 가능합니다."),
 
 	// 나라
-	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "024", "해당 나라는 존재하지 않습니다."),
+	NOT_EXIST_COUNTRY(HttpStatus.BAD_REQUEST, "025", "해당 나라는 존재하지 않습니다."),
 
 	;
 
