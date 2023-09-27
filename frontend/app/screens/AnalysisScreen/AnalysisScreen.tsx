@@ -144,6 +144,7 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 							percent={item.percent}
 							login={item.login}
 							color={item.color}
+							navigation={navigation}
 						/>
 					)}
 					keyExtractor={(item) => item.member_uuid}
