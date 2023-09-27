@@ -42,20 +42,21 @@ const Transfer = () => {
 	// 이체하기
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		const amountString = data.get('amount'); // '1,000' 형태의 문자열
 
-		if (confirm(`이체 하시겠습니까?`)) {
-			const data = new FormData(event.currentTarget);
+		if (confirm(`이체 하시겠습니까?`) && amountString != null && typeof amountString === 'string') {
+			const amountNumber = parseFloat(amountString.replace(/,/g, ''));
 			const req = {
 				sender_account_num: state.senderAccountNum,
 				receiver_account_num: data.get('accountNum'),
-				deposit_amount: data.get('amount'),
+				deposit_amount: amountNumber,
 				withdraw_account_content: data.get('withdrawAccountContent'),
 				deposit_account_content: data.get('depositAccountContent'),
 				account_password: data.get('accountPassword'),
 				bank_code: BankCode[bankName],
 			};
 
-			// console.log(req);
 			try {
 				const res = await api.post(`/transfer/deposit`, req);
 				if (res.status === 200) {
