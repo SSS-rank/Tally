@@ -9,6 +9,7 @@ import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
+import exRateApi from '../../api/exRateApi';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
@@ -140,6 +141,14 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		});
 	};
 
+	async function checkExRate() {
+		const search_date = 20230926;
+		const res = await exRateApi.get(``);
+		if (res) {
+			console.log(res.data);
+		}
+	}
+
 	function formatDate(in_date: Date) {
 		const year = in_date.getFullYear();
 		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
@@ -198,6 +207,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				<AntIcon name="close" size={30} color="#900" />
 				<MIcon name="dots-horizontal" size={30} color="#900" />
 			</View> */}
+			<Button onPress={checkExRate}>환율 테스트</Button>
 			<View style={styles.amount_container}>
 				<Text style={TextStyles({ align: 'left' }).small}>krw(원)</Text>
 				<TextInput
