@@ -119,7 +119,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 							component="h2"
 							id="accountNum"
 							ref={accountNumRef}
-							sx={{ ml: 1, mb: 0 }}
+							sx={{ ml: 1, mb: 0, fontFamily: 'OTWelcomeRA' }}
 						>
 							{bankName[bankcode]}
 						</Typography>
@@ -129,7 +129,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 							component="h2"
 							id="accountNum"
 							ref={accountNumRef}
-							sx={{ ml: 1, mb: 0, fontWeight: 'bold' }}
+							sx={{ ml: 1, mb: 0, fontWeight: 'bold', fontFamily: 'OTWelcomeRA' }}
 						>
 							{accountNum}
 						</Typography>
@@ -137,7 +137,13 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 					<Typography>{formattedBalance}원</Typography>
 				</CardContent>
 				<CardActions
-					sx={{ alignSelf: 'flex-end', marginTop: 'auto', position: 'absolute', top: '50%' }}
+					sx={{
+						alignSelf: 'flex-end',
+						marginTop: 'auto',
+						position: 'absolute',
+						top: '50%',
+						fontFamily: 'OTWelcomeRA',
+					}}
 				>
 					<Button size="small" onClick={clickTransfer}>
 						이체
