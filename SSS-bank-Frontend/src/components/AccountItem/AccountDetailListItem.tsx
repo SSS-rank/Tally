@@ -48,7 +48,9 @@ function AccountDetailListItem({
 					ml: 2,
 				}}
 			>
-				<Typography sx={{ color: '#777', mb: 1, fontSize: '13px' }}>{transfer_date}</Typography>
+				<Typography sx={{ color: '#777', mb: 1, fontSize: '13px', fontWeight: 'bold' }}>
+					{transfer_date}
+				</Typography>
 				<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>{content}</Typography>
 			</Box>
 			<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>
