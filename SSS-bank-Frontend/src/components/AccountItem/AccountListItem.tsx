@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import api from '../../api/api';
+import bankName from '../../Data/BankName';
 import BankIcon from '../BankIcon/BankIcon';
 
 interface accountListItemProps {
@@ -118,7 +119,17 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 							component="h2"
 							id="accountNum"
 							ref={accountNumRef}
-							sx={{ ml: 2, mb: 0, fontWeight: 'bold' }}
+							sx={{ ml: 1, mb: 0 }}
+						>
+							{bankName[bankcode]}
+						</Typography>
+						<Typography
+							gutterBottom
+							variant="h6"
+							component="h2"
+							id="accountNum"
+							ref={accountNumRef}
+							sx={{ ml: 1, mb: 0, fontWeight: 'bold' }}
 						>
 							{accountNum}
 						</Typography>
