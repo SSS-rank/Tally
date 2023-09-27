@@ -158,6 +158,7 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 							category_type={item.category_type}
 							money={item.money}
 							percent={item.percent}
+							member_uuid={member.member_uuid}
 							color={item.color}
 							navigation={navigation}
 						/>

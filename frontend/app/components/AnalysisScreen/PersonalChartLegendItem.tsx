@@ -11,6 +11,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 interface legendItem extends personalListItem {
 	color: string;
 	navigation: NativeStackNavigationProp<TripStackProps, 'AnalysisCategory'> | undefined;
+	member_uuid: string;
 }
 
 function PersonalChartLegendItem({
@@ -19,13 +20,18 @@ function PersonalChartLegendItem({
 	money,
 	percent,
 	color,
+	member_uuid,
 	navigation,
 }: legendItem) {
 	return (
 		<TouchableOpacity
 			style={styles.legendItemView}
 			onPress={() =>
-				navigation?.navigate('AnalysisCategory', { category_id: category_id, title: category_type })
+				navigation?.navigate('AnalysisCategory', {
+					category_id: category_id,
+					member_uuid: member_uuid,
+					title: category_type,
+				})
 			}
 		>
 			<View style={styles.textView}>
