@@ -31,6 +31,7 @@ function PersonalChartLegendItem({
 					category_id: category_id,
 					member_uuid: member_uuid,
 					title: category_type,
+					money: money,
 				})
 			}
 		>
