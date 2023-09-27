@@ -8,7 +8,7 @@ import { Account } from '../../model/account';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface AccountItemProp extends Account {
-	setSelectedAccountChange: (value: string) => void;
+	setSelectedAccountChange: (accountNumber: string) => void;
 }
 
 const PaymentAccountItem = ({
