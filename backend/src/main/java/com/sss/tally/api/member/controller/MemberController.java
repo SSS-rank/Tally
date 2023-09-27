@@ -51,4 +51,11 @@ public class MemberController {
 		memberService.patchPassword(authentication, memberPasswordDto);
 		return ResponseEntity.status(HttpStatus.OK).body("Update Password Success");
 	}
+
+	@GetMapping("/transfer-password")
+	public ResponseEntity<Boolean> checkPassword(Authentication authentication, @RequestBody
+	MemberDto.MemberPasswordDto memberPasswordDto) throws NoSuchAlgorithmException {
+		Boolean check = memberService.checkPassword(authentication, memberPasswordDto);
+		return ResponseEntity.status(HttpStatus.OK).body(check);
+	}
 }
