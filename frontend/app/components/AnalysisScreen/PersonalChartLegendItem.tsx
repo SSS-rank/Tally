@@ -24,7 +24,9 @@ function PersonalChartLegendItem({
 	return (
 		<TouchableOpacity
 			style={styles.legendItemView}
-			onPress={() => navigation?.navigate('AnalysisCategory', { category_id: category_id })}
+			onPress={() =>
+				navigation?.navigate('AnalysisCategory', { category_id: category_id, title: category_type })
+			}
 		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
