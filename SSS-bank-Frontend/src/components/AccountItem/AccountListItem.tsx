@@ -93,6 +93,8 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 		});
 	};
 
+	const formattedBalance = balance.toLocaleString();
+
 	return (
 		<Grid item xs={12}>
 			<Card
@@ -121,7 +123,7 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 							{accountNum}
 						</Typography>
 					</Box>
-					<Typography>{balance}원</Typography>
+					<Typography>{formattedBalance}원</Typography>
 				</CardContent>
 				<CardActions
 					sx={{ alignSelf: 'flex-end', marginTop: 'auto', position: 'absolute', top: '50%' }}

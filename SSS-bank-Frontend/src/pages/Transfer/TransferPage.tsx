@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import api from '../../api/api';
 import BankIcon from '../../components/BankIcon/BankIcon';
 import BankCode from '../../Data/BankCode';
+import useNumberFormat from '../../hooks/useNumberFormat';
 
 const modalStyle = {
 	position: 'absolute',
@@ -84,6 +85,8 @@ const Transfer = () => {
 		setbankName(String(e.currentTarget.dataset.bankName));
 		handleClose();
 	};
+
+	const { formattedValue, handleValueChange } = useNumberFormat('');
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -153,7 +156,15 @@ const Transfer = () => {
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<TextField required fullWidth id="amount" label="보낼 금액" name="amount" />
+								<TextField
+									required
+									fullWidth
+									id="amount"
+									label="보낼 금액"
+									name="amount"
+									value={formattedValue}
+									onChange={handleValueChange}
+								/>
 							</Grid>
 							<Grid item xs={12} sx={{ mt: 6 }}>
 								<TextField

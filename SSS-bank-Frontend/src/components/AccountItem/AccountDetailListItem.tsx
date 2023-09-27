@@ -20,6 +20,8 @@ function AccountDetailListItem({
 	amount,
 	flag,
 }: accountDetailListItemProps) {
+	const formattedBalance = amount.toLocaleString();
+
 	return (
 		<ListItem
 			sx={{
@@ -50,7 +52,7 @@ function AccountDetailListItem({
 				<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>{content}</Typography>
 			</Box>
 			<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>
-				{flag === '출금' ? `-${amount}원` : `${amount}원`}{' '}
+				{flag === '출금' ? `-${formattedBalance}원` : `${formattedBalance}원`}{' '}
 			</Typography>
 		</ListItem>
 	);
