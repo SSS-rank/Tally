@@ -46,8 +46,8 @@ function AccountDetailListItem({
 					ml: 2,
 				}}
 			>
+				<Typography sx={{ color: '#777', mb: 1, fontSize: '13px' }}>{transfer_date}</Typography>
 				<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>{content}</Typography>
-				<Typography sx={{ color: '#777' }}>{transfer_date}</Typography>
 			</Box>
 			<Typography sx={{ fontWeight: 'bold', fontSize: '18px' }}>
 				{flag === '출금' ? `-${amount}원` : `${amount}원`}{' '}
