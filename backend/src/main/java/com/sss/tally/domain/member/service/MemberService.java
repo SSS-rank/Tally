@@ -16,4 +16,7 @@ public interface MemberService {
 
 	void patchPassword(Authentication authentication, MemberDto.MemberPasswordDto memberPasswordDto) throws
 		NoSuchAlgorithmException;
+
+	Boolean checkPassword(Authentication authentication, MemberDto.MemberPasswordDto memberPasswordDto) throws
+		NoSuchAlgorithmException;
 }
