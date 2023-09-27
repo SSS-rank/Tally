@@ -116,10 +116,13 @@ public class CalculateDto {
 
 		private Long totalAmount;
 
+		private boolean status;
+
 		private List<Detail> detailList;
 
 		public static GetResponseCalculateDetailRespDto of
-			(String travelType, String travelName, LocalDateTime date, Long totalAmount, List<Detail> detailList) {
+			(String travelType, String travelName, LocalDateTime date, Long totalAmount, List<Detail> detailList,
+				boolean status) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 			String formattedTime = date.format(formatter);
 			return GetResponseCalculateDetailRespDto.builder()
@@ -128,6 +131,7 @@ public class CalculateDto {
 				.travelName(travelName)
 				.travelType(travelType)
 				.requestDate(formattedTime)
+				.status(status)
 				.build();
 		}
 
