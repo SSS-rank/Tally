@@ -37,9 +37,7 @@ public class Country {
 
 	private String language;
 
-	private String monetaryUnit;
-
-	private int timeDifference;
+	private float timeDifference;
 
 	public static Country of(String countryCode, String countryName, String visa){
 		return Country.builder()

@@ -73,7 +73,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						style={styles.button}
 						mode="text"
 						labelStyle={TextStyles().regular}
-						// onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
+						onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
 					>
 						정산 현황
 					</Button>
@@ -223,10 +223,10 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							})
 						}
 					>
-						<Text>{item.payment_date.split('일 ')[0]}일</Text>
+						<Text>{item.payment_date.split('T')[0]}</Text>
 						<DetailListItem
 							title={item.payment_name}
-							time={item.payment_date.split(' ')[3]}
+							time={item.payment_date}
 							balance={item.amount}
 							party={item.participants ? item.participants.join(',') : ''}
 							abroad={false}
