@@ -12,3 +12,12 @@ export interface personalListItem {
 	percent: number;
 	money: number;
 }
+
+export interface categoryListItem {
+	payment_korea_date: string;
+	payment_uuid: string;
+	payment_title: string;
+	tag_member: string[];
+	total_money: number;
+	my_money: number;
+}
