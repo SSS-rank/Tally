@@ -13,7 +13,7 @@ import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function AnalysisCategoryScreen({ navigation, route }: AnalysisCategoryScreenProps) {
-	const { category_id, title, member_uuid } = route.params;
+	const { category_id, title, member_uuid, money } = route.params;
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [paymentList, setPaymentList] = useState<categoryListItem[]>([]);
 
@@ -31,7 +31,7 @@ function AnalysisCategoryScreen({ navigation, route }: AnalysisCategoryScreenPro
 	};
 	return (
 		<View style={styles.viewContainer}>
-			<Text style={styles.title}>25900원</Text>
+			<Text style={styles.title}>{money}원</Text>
 			<DashLine />
 			<FlatList
 				data={paymentList}
