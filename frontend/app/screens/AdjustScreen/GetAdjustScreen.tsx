@@ -155,7 +155,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 						buttonColor="#91C0EB"
 						textColor="white"
 						style={{ flex: 1, marginHorizontal: 5 }}
-						onPress={() => navigation.navigate('PayAdjust')}
+						onPress={() => navigation.navigate('PayAdjust', { adjustId: adjustId })}
 					>
 						정산
 					</Button>
