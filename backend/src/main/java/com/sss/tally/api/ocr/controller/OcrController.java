@@ -23,7 +23,6 @@ public class OcrController {
 
 	@PostMapping("/upload")
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-		System.out.println("file" + file);
 		File tempFile = File.createTempFile("temp", null);
 		file.transferTo(tempFile);
 		String aa = ocrService.Ocr(tempFile);
