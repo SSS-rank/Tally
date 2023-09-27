@@ -1,13 +1,16 @@
 import React from 'react';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { personalListItem } from '../../model/analysis';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface legendItem extends personalListItem {
 	color: string;
+	navigation: NativeStackNavigationProp<TripStackProps, 'AnalysisCategory'> | undefined;
 }
 
 function PersonalChartLegendItem({
@@ -16,9 +19,13 @@ function PersonalChartLegendItem({
 	money,
 	percent,
 	color,
+	navigation,
 }: legendItem) {
 	return (
-		<TouchableOpacity style={styles.legendItemView}>
+		<TouchableOpacity
+			style={styles.legendItemView}
+			onPress={() => navigation?.navigate('AnalysisCategory', { category_id: category_id })}
+		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
 				<Text style={styles.name}>{category_type}</Text>
