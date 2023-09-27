@@ -78,7 +78,7 @@ function AccountDetail() {
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
-			<Container sx={{ width: '800px' }}>
+			<Container sx={{ width: '100%' }}>
 				<Box
 					sx={{
 						mt: 10,
@@ -86,6 +86,10 @@ function AccountDetail() {
 						display: 'flex',
 						justifyContent: 'space-between',
 						alignItems: 'center',
+						flexDirection: 'row', // 기본 값
+						'@media (max-width: 427px)': {
+							flexDirection: 'column', // 화면 너비가 425px 이하일 때 column으로 변경
+						},
 					}}
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center', mb: 6 }}>
