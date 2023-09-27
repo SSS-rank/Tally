@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,6 +13,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import api from '../../api/api';
+import useNumberFormat from '../../hooks/useNumberFormat';
 
 function Payment() {
 	const navigate = useNavigate();
@@ -51,6 +52,8 @@ function Payment() {
 			}
 		}
 	};
+
+	const { formattedValue, handleValueChange } = useNumberFormat('');
 
 	return (
 		<Container component="main">
@@ -92,7 +95,15 @@ function Payment() {
 							/>
 						</Grid>
 						<Grid item xs={12}>
-							<TextField required fullWidth id="amount" label="보낼 금액" name="amount" />
+							<TextField
+								required
+								fullWidth
+								id="amount"
+								label="보낼 금액"
+								name="amount"
+								value={formattedValue}
+								onChange={handleValueChange}
+							/>
 						</Grid>
 						<Grid item xs={12} sx={{ mt: 6 }}>
 							<TextField

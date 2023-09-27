@@ -58,6 +58,8 @@ function AccountDetail() {
 
 		fetchTransactionData();
 	}, [accountNumber]);
+
+	const formattedBalance = balance.toLocaleString();
 	return (
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
@@ -68,7 +70,7 @@ function AccountDetail() {
 						<Typography sx={{ color: '#666', ml: 1 }}>{accountNumber}</Typography>
 					</Box>
 					<Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
-						{balance}원
+						{formattedBalance}원
 					</Typography>
 				</Box>
 				<List sx={{ width: '100%' }}>
