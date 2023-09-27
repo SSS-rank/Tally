@@ -23,13 +23,14 @@ public class ShopDto {
 	private int shopType;
 	private String shopName;
 	private String shopNationCode;
-
+	private Long master;
 	public static ShopDto from(Shop shop) {
 		return ShopDto.builder()
 			.shopId(shop.getShopId())
 			.shopType(shop.getShopType())
 			.shopName(shop.getShopName())
 			.shopNationCode(shop.getCountryId().getCountryCode())
+			.master(shop.getMaster().getMemberId())
 			.build();
 	}
 
