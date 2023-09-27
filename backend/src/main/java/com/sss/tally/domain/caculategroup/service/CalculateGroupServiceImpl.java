@@ -416,7 +416,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	@Override
 	public CalculateDto.GetResponseCalculateDetailRespDto getResponseCalculateDetail(
 		String calculateGroupUuid, String memberUuid) {
-		memberUuid = "123456";
 		Optional<Member> memberOptional = memberRepository.findMemberByMemberUuidAndWithdrawalDateIsNull(memberUuid);
 
 		if (memberOptional.isEmpty()) {
