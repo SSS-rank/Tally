@@ -9,8 +9,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import api from '../api/api';
+import clipboard from '../asset/image/icon/clipboard.png';
 import AccountDetailListItem from '../components/AccountItem/AccountDetailListItem';
 import BankIcon from '../components/BankIcon/BankIcon';
+import BankName from '../Data/BankName';
 
 interface Transaction {
 	transfer_date: string; //이체날짜
@@ -30,6 +32,19 @@ function AccountDetail() {
 	const balance = myLocation.state.balance;
 	const bankcode = myLocation.state.bankcode;
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+	const handleCopyClipBoard = () => {
+		const accountNumElement = accountNumber;
+		if (accountNumElement) {
+			const accountNumValue = accountNumElement.innerText;
+			try {
+				navigator.clipboard.writeText(accountNumValue);
+				alert('클립보드에 복사되었습니다.');
+			} catch (error) {
+				alert('클립보드 복사에 실패하였습니다.');
+			}
+		}
+	};
 
 	useEffect(() => {
 		const fetchTransactionData = async () => {
@@ -64,17 +79,33 @@ function AccountDetail() {
 		<ThemeProvider theme={defaultTheme}>
 			<CssBaseline />
 			<Container sx={{ width: '800px' }}>
-				<Box sx={{ mt: 10, mb: 6 }}>
-					<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+				<Box
+					sx={{
+						mt: 10,
+						mb: 3,
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					<Box sx={{ display: 'flex', alignItems: 'center', mb: 6 }}>
 						<BankIcon code={bankcode} />
-						<Typography sx={{ color: '#666', ml: 1 }}>{accountNumber}</Typography>
+						<Typography sx={{ color: '#666', ml: 1, fontWeight: 'bold' }}>
+							{BankName[bankcode]}
+						</Typography>
+						<Typography sx={{ color: '#666', ml: 1, mr: 1 }}>{accountNumber}</Typography>
+						<img
+							src={clipboard}
+							alt="Clipboard"
+							onClick={handleCopyClipBoard}
+							style={{ width: '17px', height: '17px' }}
+						/>
 					</Box>
 					<Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
 						{formattedBalance}원
 					</Typography>
 				</Box>
 				<List sx={{ width: '100%' }}>
-					{/* <Grid item spacing={4} xs={12} marginTop={1} mb={10} width="100%"> */}
 					{transactions.length > 0 &&
 						transactions.map((trans) => (
 							<AccountDetailListItem
@@ -98,7 +129,6 @@ function AccountDetail() {
 							<Typography sx={{ color: '#666' }}>거래 내역이 없습니다</Typography>
 						</Box>
 					)}
-					{/* </Grid> */}
 				</List>
 			</Container>
 		</ThemeProvider>
