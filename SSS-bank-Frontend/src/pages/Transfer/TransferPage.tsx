@@ -17,7 +17,6 @@ import Typography from '@mui/material/Typography';
 import api from '../../api/api';
 import BankIcon from '../../components/BankIcon/BankIcon';
 import BankCode from '../../Data/BankCode';
-import userNumberFormat from '../../hooks/useNumberFormat';
 import useNumberFormat from '../../hooks/useNumberFormat';
 
 const modalStyle = {
