@@ -65,7 +65,7 @@ const PaymentScreen = () => {
 				keyExtractor={(item) => item.accountNumber}
 			/>
 			<View style={{ justifyContent: 'flex-end', flex: 1, marginVertical: 30 }}>
-				<Button mode="elevated" buttonColor="#91C0EB" textColor="white">
+				<Button mode="contained" buttonColor="#91C0EB" textColor="white">
 					완료
 				</Button>
 			</View>
