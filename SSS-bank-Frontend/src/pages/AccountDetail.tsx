@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import api from '../api/api';
 import AccountDetailListItem from '../components/AccountItem/AccountDetailListItem';
 import BankIcon from '../components/BankIcon/BankIcon';
+import BankName from '../Data/BankName';
 
 interface Transaction {
 	transfer_date: string; //이체날짜
@@ -65,6 +66,9 @@ function AccountDetail() {
 				<Box sx={{ mt: 10, mb: 6 }}>
 					<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 						<BankIcon code={bankcode} />
+						<Typography sx={{ color: '#666', ml: 1, fontWeight: 'bold' }}>
+							{BankName[bankcode]}
+						</Typography>
 						<Typography sx={{ color: '#666', ml: 1 }}>{accountNumber}</Typography>
 					</Box>
 					<Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
