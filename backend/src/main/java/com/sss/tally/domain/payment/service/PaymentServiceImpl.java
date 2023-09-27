@@ -89,9 +89,13 @@ public class PaymentServiceImpl implements PaymentService{
 		else if(paymentManualDto.getPaymentType().equals("cash"))
 			paymentMethodEnum = PaymentMethodEnum.CASH;
 
+		String memo = "";
+		if(paymentManualDto.getMemo() != null)
+			memo = paymentManualDto.getMemo();
+
 		Payment save = paymentRepository.save(
 			Payment.of(paymentManualDto, member, travelOptional.get(), category.get(), paymentUnit.get(), uuid,
-				paymentMethodEnum, dateTime));
+				paymentMethodEnum, dateTime, memo));
 
 		List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(travelOptional.get().getTravelId());
 		for(Long memberId : memberIds){
