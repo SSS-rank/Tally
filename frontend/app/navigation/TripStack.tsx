@@ -6,6 +6,7 @@ import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navig
 import { TripMember } from '../model/trip';
 import AdjustScreen from '../screens/AdjustScreen/AdjustScreen';
 import GetAdjustScreen from '../screens/AdjustScreen/GetAdjustScreen';
+import PaymentPasswordScreen from '../screens/AdjustScreen/PaymentPasswordScreen';
 import PaymentScreen from '../screens/AdjustScreen/PaymentScreen';
 import SendAdjustScreen from '../screens/AdjustScreen/SendAdjustScreen';
 import AnalysisScreen from '../screens/AnalysisScreen/AnalysisScreen';
@@ -23,7 +24,7 @@ export type TripStackProps = {
 	AdjustTrip: { tripId: number };
 	SendAdjust: { adjustId: string };
 	GetAdjust: { adjustId: string; requesterName?: string };
-	PayAdjust: undefined;
+	PayAdjust: { adjustId: string };
 	AddPayment: {
 		travel_id: number;
 		travel_title: string;
@@ -34,6 +35,7 @@ export type TripStackProps = {
 		payer: string; // 결제자의 uuid(String)
 		method: string;
 	};
+	Password: { adjustId: string; accountNumber: string };
 };
 
 const Stack = createNativeStackNavigator<TripStackProps>();
@@ -100,6 +102,7 @@ function TripStack({ navigation }: TripDetailScreenProps) {
 			<Stack.Screen name="PayAdjust" component={PaymentScreen} options={{ title: '' }} />
 			<Stack.Screen name="AddPayment" component={PaymentAddScreen} options={{ title: '' }} />
 			<Stack.Screen name="ModifyPayment" component={PaymentModifyScreen} options={{ title: '' }} />
+			<Stack.Screen name="Password" component={PaymentPasswordScreen} options={{ title: '' }} />
 		</Stack.Navigator>
 	);
 }
