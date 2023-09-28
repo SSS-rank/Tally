@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
 import { groupListItem, personalListItem } from './../../model/analysis';
@@ -32,16 +33,17 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 
 	const [selectionMode, setSelectionMode] = useState(1);
 
-	useEffect(() => {
-		console.log(selectionMode);
-		if (selectionMode === 1) getGroupData();
-		else getPersonalData();
-	}, [selectionMode]);
+	useFocusEffect(
+		useCallback(() => {
+			console.log(selectionMode);
+			if (selectionMode === 1) getGroupData();
+			else getPersonalData();
+		}, [selectionMode]),
+	);
 
 	const api = useAxiosWithAuth();
 	const getGroupData = async () => {
 		const res = await api.get(`/analysis/${curTripInfo.id}`);
-		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.member_name,
@@ -60,14 +62,12 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 			color: `${charColor[index]}`,
 		}));
 
-		console.log('data ', data);
 		setPaymentData(data);
 		setList(listData);
 	};
 
 	const getPersonalData = async () => {
 		const res = await api.get(`/analysis/${curTripInfo.id}/${member.member_uuid}`);
-		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.category_id,
@@ -87,7 +87,6 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 			}),
 		);
 
-		console.log('data ', data);
 		setPaymentData(data);
 		setList(listData);
 	};
