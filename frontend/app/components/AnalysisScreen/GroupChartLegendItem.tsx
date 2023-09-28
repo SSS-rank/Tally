@@ -27,16 +27,21 @@ function GroupChartLegendItem({
 	return (
 		<TouchableOpacity
 			style={styles.legendItemView}
-			onPress={() => navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid })}
+			onPress={() =>
+				!login &&
+				navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid, title: member_name })
+			}
 		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
-				<Text style={styles.name}>{member_name}</Text>
-				<Text style={styles.text}>{percent}%</Text>
+				<Text style={styles.name}>
+					{member_name} {login && <Text>(나)</Text>}
+				</Text>
+				<Text style={styles.percent}>{percent}%</Text>
 			</View>
 			<View style={styles.textView}>
 				<Text style={styles.text}>{money}원</Text>
-				<Icon name="chevron-forward" size={24} color="#666666" />
+				{!login && <Icon name="chevron-forward" size={24} color="#666666" />}
 			</View>
 		</TouchableOpacity>
 	);
@@ -55,15 +60,18 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	colorCircle: {
-		width: 24,
-		height: 24,
+		width: 16,
+		height: 16,
 		borderRadius: 50,
 	},
 	name: {
 		...TextStyles({ align: 'left', mLeft: 10, weight: 'bold' }).regular,
 	},
+	percent: {
+		...TextStyles({ align: 'left', mLeft: 10, color: '#666666' }).regular,
+	},
 	text: {
-		...TextStyles({ align: 'left', mLeft: 10 }).regular,
+		...TextStyles({ align: 'left', mLeft: 10, weight: 'bold' }).medium,
 	},
 });
 
