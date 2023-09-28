@@ -27,7 +27,9 @@ function GroupChartLegendItem({
 	return (
 		<TouchableOpacity
 			style={styles.legendItemView}
-			onPress={() => navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid })}
+			onPress={() =>
+				navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid, title: member_name })
+			}
 		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>

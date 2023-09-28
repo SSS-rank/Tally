@@ -23,7 +23,7 @@ export type TripStackProps = {
 	CreateTrip: undefined;
 	TripDetail: { travel_id: number };
 	AnalysisTrip: undefined;
-	AnalysisPersonal: { member_uuid: string };
+	AnalysisPersonal: { member_uuid: string; title: string };
 	AnalysisCategory: { category_id: number; title: string; member_uuid: string; money: number };
 	AdjustTrip: { tripId: number };
 	SendAdjust: { adjustId: string };
