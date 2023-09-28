@@ -1,7 +1,17 @@
-import React from 'react';
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
-import { Avatar } from 'react-native-paper';
+import React, { useState } from 'react';
+import {
+	TouchableOpacity,
+	View,
+	StyleSheet,
+	Text,
+	Modal,
+	Pressable,
+	TextInput,
+} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { Avatar, Button } from 'react-native-paper';
 
+import CategoryInfo from './CatgoryInfo';
 import { categoryListItem } from '../../model/analysis';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -18,8 +28,21 @@ function CategoryListItem({
 	total_money,
 	my_money,
 }: listItem) {
+	const [modalVisible, setModalVisible] = useState(false);
+	const [openCategory, setOpenCategory] = useState(false);
+	const [category, setCategory] = useState(category_id);
+	const [categoryItem, setCategoryItem] = useState<any[]>([
+		{ label: '숙소', value: 1 },
+		{ label: '항공', value: 2 },
+		{ label: '교통', value: 3 },
+		{ label: '관광', value: 4 },
+		{ label: '식사', value: 5 },
+		{ label: '쇼핑', value: 6 },
+		{ label: '기타', value: 7 },
+	]);
+
 	return (
-		<TouchableOpacity style={styles.categoryContainer}>
+		<TouchableOpacity style={styles.categoryContainer} onPress={() => setModalVisible(true)}>
 			<View style={styles.categoryItemView}>
 				<View style={styles.textView}>
 					<Avatar.Image
@@ -40,6 +63,48 @@ function CategoryListItem({
 					<Text style={styles.totalMoney}>{total_money}원</Text>
 				</View>
 			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(!modalVisible)}
+				/>
+				<View style={styles.modalView}>
+					<CategoryInfo label="사용 내역" value={payment_title} />
+					<CategoryInfo label="결제 금액" value={my_money} />
+					<CategoryInfo label="카테고리" value="">
+						<DropDownPicker
+							max={50}
+							style={styles.dropdown}
+							containerStyle={{ width: '60%' }}
+							textStyle={{ ...TextStyles({ align: 'left' }).regular }}
+							open={openCategory}
+							value={category}
+							items={categoryItem}
+							setOpen={setOpenCategory}
+							setValue={setCategory}
+							setItems={setCategoryItem}
+							zIndex={3000}
+							zIndexInverse={1000}
+						/>
+					</CategoryInfo>
+
+					<Button
+						mode="contained"
+						buttonColor="#91C0EB"
+						textColor="white"
+						style={{ marginVertical: 15 }}
+					>
+						변경
+					</Button>
+				</View>
+			</Modal>
 		</TouchableOpacity>
 	);
 }
@@ -72,6 +137,38 @@ const styles = StyleSheet.create({
 	},
 	totalMoney: {
 		...TextStyles({ align: 'right', mLeft: 10, color: '#666666' }).small,
+	},
+	modalView: {
+		bottom: 0,
+		// height: '50%',
+		width: '100%',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		justifyContent: 'center',
+	},
+	inputBox: {
+		alignItems: 'center',
+		borderBottomColor: '#A0A0A0',
+		borderBottomWidth: 0.5,
+		flexDirection: 'row',
+		marginVertical: 5,
+		marginTop: 50,
+	},
+	dropdown: {
+		borderWidth: 0,
+		borderBottomWidth: 1,
+		paddingHorizontal: 15,
 	},
 });
 
