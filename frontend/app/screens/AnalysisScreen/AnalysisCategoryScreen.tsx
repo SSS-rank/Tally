@@ -44,6 +44,7 @@ function AnalysisCategoryScreen({ navigation, route }: AnalysisCategoryScreenPro
 						tag_member={item.tag_member}
 						total_money={item.total_money}
 						my_money={item.my_money}
+						navigation={navigation}
 					/>
 				)}
 			/>
