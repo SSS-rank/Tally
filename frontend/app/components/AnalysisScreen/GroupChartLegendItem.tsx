@@ -28,17 +28,20 @@ function GroupChartLegendItem({
 		<TouchableOpacity
 			style={styles.legendItemView}
 			onPress={() =>
+				!login &&
 				navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid, title: member_name })
 			}
 		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
-				<Text style={styles.name}>{member_name}</Text>
+				<Text style={styles.name}>
+					{member_name} {login && <Text>(나)</Text>}
+				</Text>
 				<Text style={styles.text}>{percent}%</Text>
 			</View>
 			<View style={styles.textView}>
 				<Text style={styles.text}>{money}원</Text>
-				<Icon name="chevron-forward" size={24} color="#666666" />
+				{!login && <Icon name="chevron-forward" size={24} color="#666666" />}
 			</View>
 		</TouchableOpacity>
 	);
