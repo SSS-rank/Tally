@@ -11,12 +11,17 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Avatar, Button } from 'react-native-paper';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import CategoryInfo from './CatgoryInfo';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { categoryListItem } from '../../model/analysis';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface listItem extends categoryListItem {
 	category_id: number;
+	navigation: NativeStackNavigationProp<TripStackProps, 'AnalysisCategory', 'AnalysisPersonal'>;
 }
 
 function CategoryListItem({
@@ -27,6 +32,7 @@ function CategoryListItem({
 	tag_member,
 	total_money,
 	my_money,
+	navigation,
 }: listItem) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [openCategory, setOpenCategory] = useState(false);
@@ -40,6 +46,20 @@ function CategoryListItem({
 		{ label: '쇼핑', value: 6 },
 		{ label: '기타', value: 7 },
 	]);
+
+	const api = useAxiosWithAuth();
+	const modifyCategory = async () => {
+		const data = {
+			payment_uuid: payment_uuid,
+			category_id: category,
+		};
+		const res = await api.patch(`/analysis`, data);
+		console.log(res.data, ' ', res.status);
+		if (res.status === 200) {
+			setModalVisible(false);
+			navigation.goBack();
+		}
+	};
 
 	return (
 		<TouchableOpacity style={styles.categoryContainer} onPress={() => setModalVisible(true)}>
@@ -100,6 +120,7 @@ function CategoryListItem({
 						buttonColor="#91C0EB"
 						textColor="white"
 						style={{ marginVertical: 15 }}
+						onPress={modifyCategory}
 					>
 						변경
 					</Button>
