@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions, FlatList, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -24,7 +24,7 @@ interface charData {
 
 function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenProps) {
 	const curTripInfo = useRecoilValue(CurTripInfoState);
-	const { member_uuid } = route.params;
+	const { member_uuid, title } = route.params;
 	const [paymentData, setPaymentData] = useState<charData[]>([]);
 	const [list, setList] = useState<any[]>([]);
 	console.log('AnalysisPersonalScreen');
@@ -32,6 +32,7 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 	const api = useAxiosWithAuth();
 	useFocusEffect(
 		useCallback(() => {
+			navigation.setOptions({ title: title + '님의 카테고리 별 지출' });
 			getPersonalData();
 		}, [member_uuid]),
 	);
@@ -117,22 +118,6 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 					/>
 				))}
 			</View>
-			{/* <FlatList
-				data={list}
-				renderItem={({ item }) => (
-					<PersonalChartLegendItem
-						key={item.category_id}
-						category_id={item.category_id}
-						category_type={item.category_type}
-						money={item.money}
-						percent={item.percent}
-						color={item.color}
-						member_uuid={member_uuid}
-						navigation={navigation}
-					/>
-				)}
-				keyExtractor={(item) => item.member_uuid}
-			/> */}
 		</ScrollView>
 	);
 }
