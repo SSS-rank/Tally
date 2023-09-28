@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, FlatList, ScrollView } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -81,7 +81,7 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 	};
 
 	return (
-		<View style={styles.viewContainer}>
+		<ScrollView style={styles.viewContainer}>
 			<View style={styles.topView}>
 				<View style={styles.top}>
 					<Text style={styles.title}>{curTripInfo.title}</Text>
@@ -103,7 +103,21 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 					hasLegend={false}
 				/>
 			</View>
-			<FlatList
+			<View style={{ height: 400 }}>
+				{list.map((item) => (
+					<PersonalChartLegendItem
+						key={item.category_id}
+						category_id={item.category_id}
+						category_type={item.category_type}
+						money={item.money}
+						percent={item.percent}
+						color={item.color}
+						member_uuid={member_uuid}
+						navigation={navigation}
+					/>
+				))}
+			</View>
+			{/* <FlatList
 				data={list}
 				renderItem={({ item }) => (
 					<PersonalChartLegendItem
@@ -118,8 +132,8 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 					/>
 				)}
 				keyExtractor={(item) => item.member_uuid}
-			/>
-		</View>
+			/> */}
+		</ScrollView>
 	);
 }
 
