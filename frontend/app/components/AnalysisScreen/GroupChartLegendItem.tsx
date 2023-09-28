@@ -1,13 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { groupListItem, personalListItem } from '../../model/analysis';
+import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
 
 interface legendItem extends groupListItem {
 	color: string;
+	navigation:
+		| NativeStackNavigationProp<TripStackProps, 'AnalysisCategory', 'AnalysisPersonal'>
+		| undefined;
 }
 
 function GroupChartLegendItem({
@@ -17,9 +22,13 @@ function GroupChartLegendItem({
 	percent,
 	login,
 	color,
+	navigation,
 }: legendItem) {
 	return (
-		<TouchableOpacity style={styles.legendItemView}>
+		<TouchableOpacity
+			style={styles.legendItemView}
+			onPress={() => navigation?.navigate('AnalysisPersonal', { member_uuid: member_uuid })}
+		>
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
 				<Text style={styles.name}>{member_name}</Text>
