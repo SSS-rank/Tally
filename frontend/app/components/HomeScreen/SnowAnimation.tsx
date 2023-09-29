@@ -34,7 +34,7 @@ function SnowAnimation() {
 				outputRange: [-300, 240],
 			});
 
-			const leftPosition = Math.random() * 400;
+			const leftPosition = Math.random() * 350 - 20;
 			const opacity = Math.random();
 
 			return (
