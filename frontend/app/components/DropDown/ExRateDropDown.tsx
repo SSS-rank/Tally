@@ -29,17 +29,13 @@ const ExRateDropDown: FC<ExRateDropDownProps> = (props) => {
 		return `${year}${month}${day}`;
 	};
 	async function checkExRate() {
-		const input_date = getCurrentDate();
-		console.log(input_date);
-		const params = { search_date: getCurrentDate() };
+		// const params = { searchdate: getCurrentDate() };
+		// 공휴일은 제공을 안하는 것으로 확인되어 임시로 20230927로 하드코딩
+		const params = { searchdate: 20230927 };
+
 		const res = await exRateApi.get('', { params });
 		if (res) {
-			console.log();
 			const exData = formatExchangeData(res.data);
-			const tmp = exData.map((item) => {
-				return item.value.split(':')[1];
-			});
-			console.log(tmp);
 			setItems(exData);
 		}
 	}
@@ -56,7 +52,7 @@ const ExRateDropDown: FC<ExRateDropDownProps> = (props) => {
 			setValue={setValue}
 			setItems={setItems}
 			textStyle={TextStyles().medium}
-			placeholder="국가를 선택하세요"
+			placeholder="화폐 단위 선택"
 			zIndex={10000}
 			zIndexInverse={1000}
 		/>
