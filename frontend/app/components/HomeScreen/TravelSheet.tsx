@@ -5,6 +5,7 @@ import { Avatar, Button, Text } from 'react-native-paper';
 
 import RainAnimation from './RainAnimation';
 import SnowAnimation from './SnowAnimation';
+import SunnyAnimation from './SunnyAnimation';
 import { TravelSheetItem } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
@@ -28,6 +29,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 			<LinearGradient colors={item.color} style={styles.linerContainer} />
 			{item.weather?.includes('Snow') && <SnowAnimation />}
 			{item.weather?.includes('Rain') && <RainAnimation />}
+			{item.weather?.includes('Sunny') && <SunnyAnimation />}
 
 			<View
 				style={{
