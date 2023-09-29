@@ -14,6 +14,8 @@ import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
 
 const width = Dimensions.get('window').width - 70;
 
+const fakeWeatherData = ['Rain', 'Sunny', 'Snow'];
+
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
 	const [afterTripList, setAfterTripList] = useState([]);
@@ -28,15 +30,16 @@ function HomeScreen({ navigation }: any) {
 	const getTripData = async () => {
 		const res = await api.get(`/travel/info`);
 
-		const newInfo = res.data.map((item: any) => ({
+		const newInfo = res.data.map((item: any, index: number) => ({
 			...item,
 			travelParticipants: item.travelParticipants.map((member: any) => ({
 				member_uuid: member.member_uuid,
 				nickname: member.member_nickname,
 				profile_image: member.image,
 			})),
-			color: '#ffffff',
+			color: '#d9d9d9',
 			width: width,
+			weather: fakeWeatherData[index],
 		}));
 		setAfterTripList(newInfo);
 	};
