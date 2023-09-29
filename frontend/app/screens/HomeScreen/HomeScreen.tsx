@@ -37,7 +37,7 @@ function HomeScreen({ navigation }: any) {
 				nickname: member.member_nickname,
 				profile_image: member.image,
 			})),
-			color: '#d9d9d9',
+			color: fakeWeatherData[index] === 'Sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
 			width: width,
 			weather: fakeWeatherData[index],
 		}));
