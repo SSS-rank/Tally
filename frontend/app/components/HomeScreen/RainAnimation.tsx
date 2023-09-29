@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 
 function RainAnimation() {
 	const rainDrops = useRef<Animated.Value[]>([]);
+	const [isAnimationCreated, setIsAnimationCreated] = useState(false);
 
 	useEffect(() => {
 		createSnowAnimation();
-	}, []);
+	}, [isAnimationCreated]);
 
 	const createSnowAnimation = () => {
 		const animations: Animated.Value[] = [];
@@ -25,9 +26,12 @@ function RainAnimation() {
 		}
 
 		rainDrops.current = animations;
+		setIsAnimationCreated(true);
 	};
 
 	const drop = (): any => {
+		if (!isAnimationCreated) return;
+
 		return rainDrops.current.map((animation, index) => {
 			const topPosition = animation.interpolate({
 				inputRange: [0, 1],
