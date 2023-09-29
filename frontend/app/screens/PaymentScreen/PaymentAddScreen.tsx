@@ -176,7 +176,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				...prevState,
 				payment_date_time: formatDate(date),
 				payment_type: 'cash',
-				payment_unit_id: 8,
+				payment_unit_id: 14,
 				ratio: 1,
 				amount: parseFloat(totAmount),
 				category: selectedcategory,
