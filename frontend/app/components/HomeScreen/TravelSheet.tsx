@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Avatar, Button, Text } from 'react-native-paper';
 
+import SnowAnimation from './SnowAnimation';
 import { TravelSheetItem } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
@@ -9,6 +10,7 @@ import { ViewStyles } from '../../styles/HomeStyles';
 interface TravelSheetProps extends TravelSheetItem {
 	width: number;
 	color: string;
+	weather: string;
 }
 
 function TravelSheet({ item }: { item: TravelSheetProps }) {
@@ -21,6 +23,8 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 				elevation: 2,
 			}}
 		>
+			{item.weather?.includes('Snow') && <SnowAnimation />}
+
 			<View
 				style={{
 					flexDirection: 'row',
