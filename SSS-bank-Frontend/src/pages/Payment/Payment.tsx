@@ -28,11 +28,13 @@ function Payment() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const data = new FormData(e.currentTarget);
-		if (state.shopId !== '') {
+		const amountString = data.get('amount'); // '1,000' 형태의 문자열
+		if (state.shopId !== '' && amountString != null && typeof amountString === 'string') {
+			const amountNumber = parseFloat(amountString.replace(/,/g, ''));
 			const paymentReq = {
 				sender_account_num: data.get('accountNum'),
 				shop_id: state.shopId,
-				payment_amount: data.get('amount'),
+				payment_amount: amountNumber,
 				password: data.get('accountPassword'),
 			};
 
