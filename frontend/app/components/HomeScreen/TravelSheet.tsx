@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Avatar, Button, Text } from 'react-native-paper';
 
+import RainAnimation from './RainAnimation';
 import SnowAnimation from './SnowAnimation';
 import { TravelSheetItem } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -24,6 +25,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 			}}
 		>
 			{item.weather?.includes('Snow') && <SnowAnimation />}
+			{item.weather?.includes('Rain') && <RainAnimation />}
 
 			<View
 				style={{
