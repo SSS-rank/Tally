@@ -1,3 +1,16 @@
+import { Member } from './member';
+
+export interface TravelSheetItem {
+	travelTitle: string;
+	travelLocation: string;
+	travelType: string;
+	startDate: string;
+	endDate: string;
+	remainDate: number;
+	travelParticipants: Member[];
+	money: number;
+}
+
 export type ItemData = {
 	id: number;
 	color: string;
