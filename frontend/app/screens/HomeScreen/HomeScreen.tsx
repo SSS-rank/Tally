@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Button } from 'react-native-paper';
 
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Carousel from '../../components/Carousel';
+import TravelSheet from '../../components/HomeScreen/TravelSheet';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
 
@@ -92,6 +95,30 @@ const TravelSheetPage = ({
 
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
+	const [afterTripList, setAfterTripList] = useState([]);
+
+	useFocusEffect(
+		useCallback(() => {
+			getTripData();
+		}, []),
+	);
+
+	const api = useAxiosWithAuth();
+	const getTripData = async () => {
+		const res = await api.get(`/travel/info`);
+
+		const newInfo = res.data.map((item: any) => ({
+			...item,
+			travelParticipants: item.travelParticipants.map((member: any) => ({
+				member_uuid: member.member_uuid,
+				nickname: member.member_nickname,
+				profile_image: member.image,
+			})),
+			color: '#ffffff',
+			width: width,
+		}));
+		setAfterTripList(newInfo);
+	};
 
 	return (
 		<View style={HomeStyles.container}>
@@ -127,9 +154,9 @@ function HomeScreen({ navigation }: any) {
 						page={page}
 						setPage={setPage}
 						gap={10}
-						data={RainbowSheet}
+						data={afterTripList}
 						pageWidth={width}
-						RenderItem={TravelSheetPage}
+						RenderItem={TravelSheet}
 					/>
 				</View>
 				<View style={ViewStyles({ justifyContent: 'flex-start' }).box}>
