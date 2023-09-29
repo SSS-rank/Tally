@@ -23,7 +23,8 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [value, setValue] = useState(null);
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('');
-	const [totAmount, setTotAmount] = useState('');
+	const [totAmount, setTotAmount] = useState(''); // 원화 환산 결제 총액
+	const [money, setMoney] = useState(''); // 결제 금액 (현지 결제 단위)
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
@@ -142,6 +143,15 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 			return updatedAmounts;
 		});
 	};
+	const removeCommaAndParseInt = (inputString: string): number => {
+		const numberWithoutComma = parseFloat(inputString.replace(/,/g, ''));
+
+		if (!isNaN(numberWithoutComma)) {
+			return numberWithoutComma;
+		} else {
+			return 0;
+		}
+	};
 
 	function formatDate(in_date: Date) {
 		const year = in_date.getFullYear();
@@ -152,6 +162,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
+
 	async function handleSubmit() {
 		try {
 			const partyData = partyMembers
@@ -198,11 +209,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	}
 	return (
 		<View style={styles.container}>
-			{/* <View style={styles.header_button}>
-				<AntIcon name="close" size={30} color="#900" />
-				<MIcon name="dots-horizontal" size={30} color="#900" />
-			</View> */}
-
 			<View style={styles.amount_container}>
 				<ExRateDropDown
 					setValue={setExData}
@@ -210,20 +216,49 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					open={dropDownOpen}
 					value={exData}
 				/>
-				<View style={{ flexDirection: 'row', marginTop: 30 }}>
-					<Text style={TextStyles({ align: 'left' }).medium}>{exData.split(':')[0]} </Text>
-					<Text style={TextStyles({ align: 'left' }).medium}>{exData.split(':')[1]}</Text>
-				</View>
-				<TextInput
-					value={totAmount}
-					onChangeText={(memo) => {
-						setTotAmount(memo);
+				<View
+					style={{
+						flexDirection: 'row',
+						marginTop: 30,
+						alignContent: 'center',
+						justifyContent: 'center',
 					}}
-					returnKeyType="next"
-					keyboardType="numeric"
-					style={styles.amountInput}
-					selectionColor="#F6F6F6"
-				/>
+				>
+					<Text style={TextStyles({ align: 'left' }).medium}>
+						1 {exData.split(':')[1]} : {exData.split(':')[0]} 원
+					</Text>
+				</View>
+				<View
+					style={{
+						alignContent: 'center',
+						justifyContent: 'space-between',
+					}}
+				>
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							marginBottom: 10,
+							justifyContent: 'center',
+						}}
+					>
+						<TextInput
+							value={money}
+							onChangeText={(memo) => {
+								setMoney(memo);
+								setTotAmount(
+									(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
+								);
+							}}
+							returnKeyType="next"
+							keyboardType="numeric"
+							style={styles.amountInput}
+							selectionColor="#F6F6F6"
+						/>
+						<Text style={TextStyles({ align: 'left' }).medium}>{exData.split(':')[1]}</Text>
+					</View>
+					<Text style={TextStyles({ align: 'right' }).title}> 총 금액 {totAmount} 원</Text>
+				</View>
 			</View>
 			<ScrollView>
 				<View style={styles.date_box}>
