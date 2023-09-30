@@ -17,6 +17,25 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 	const api = useAxiosWithAuth();
 	const tokenState = useRecoilValue(TokenState);
 
+	const joinTravel = async (travelId: number) => {
+		const data = {
+			travel_id: travelId,
+		};
+		try {
+			console.log(tokenState.accessToken);
+			if (tokenState.accessToken) {
+				const res = await api.post(`/group`, data);
+				if (res.status === 200) {
+					console.log(res.data);
+				}
+			} else {
+				console.log('로그인 필요');
+			}
+		} catch (err: any) {
+			console.error(err.response);
+		}
+	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.ticketContainer}>
@@ -54,7 +73,7 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 				<Button mode="contained" style={styles.buttonCancel}>
 					취소
 				</Button>
-				<Button mode="contained" style={styles.button}>
+				<Button mode="contained" style={styles.button} onPress={() => joinTravel(travelId)}>
 					수락
 				</Button>
 			</View>
