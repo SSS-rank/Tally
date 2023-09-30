@@ -9,6 +9,7 @@ export interface TravelSheetItem {
 	remainDate: number;
 	travelParticipants: Member[];
 	money: number;
+	navigation: any;
 }
 
 export type ItemData = {
