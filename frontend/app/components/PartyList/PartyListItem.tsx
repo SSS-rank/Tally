@@ -4,16 +4,18 @@ import { Avatar, TextInput } from 'react-native-paper';
 
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/Avatar/AvatarImage';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import { TextStyles } from '../../styles/CommonStyles';
 interface partyItemprops {
 	amount: number;
 	name: string;
 	img: AvatarImageSource;
 	involveCheck: boolean;
+	isPayer: boolean;
 	onAmountChange: (amount: string) => void;
 	onInvolveChange: (involveCheck: boolean) => void;
 }
 function PartyListItem(props: partyItemprops) {
-	const [payCheck, setPayCheck] = useState(false);
 	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
 	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
@@ -27,7 +29,8 @@ function PartyListItem(props: partyItemprops) {
 		<View style={styles.partyItem}>
 			<View style={styles.profile_group}>
 				<Avatar.Image size={32} source={props.img} style={styles.profile_img} />
-				<Text>{props.name}</Text>
+				<Text style={(TextStyles().small, { marginRight: 5 })}>{props.name}</Text>
+				{props.isPayer ? <Text style={TextStyles().small}>결제자</Text> : null}
 			</View>
 
 			<View style={styles.input_group}>
@@ -41,15 +44,7 @@ function PartyListItem(props: partyItemprops) {
 					style={styles.textInput}
 				/>
 				<Text>원</Text>
-				<Icon
-					name={payCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
-					size={32}
-					color={payCheck ? '#91C0EB' : '#D0D0D0'}
-					style={{ marginLeft: 5 }}
-					onPress={() => {
-						setPayCheck(!payCheck);
-					}}
-				/>
+
 				<Icon
 					name={involveCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
 					size={32}
