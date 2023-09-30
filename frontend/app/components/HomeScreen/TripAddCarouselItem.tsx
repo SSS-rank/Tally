@@ -7,11 +7,12 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 interface TripAddCarouselItemProp {
 	containerStyle: StyleProp<ViewStyle>;
+	navigation: any;
 }
 
-function TripAddCarouselItem({ containerStyle }: TripAddCarouselItemProp) {
+function TripAddCarouselItem({ containerStyle, navigation }: TripAddCarouselItemProp) {
 	return (
-		<TouchableOpacity style={containerStyle}>
+		<TouchableOpacity style={containerStyle} onPress={() => navigation.navigate('CreateTrip')}>
 			<View style={styles.view}>
 				<MaterialIcon name="plus-circle" size={48} style={{ color: '#91C0EB', marginRight: 10 }} />
 				<View>
