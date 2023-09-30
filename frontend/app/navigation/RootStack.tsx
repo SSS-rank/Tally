@@ -5,10 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabs from './MainTabs';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import SplashScreen from '../screens/SplashScreen/SplashScreen';
+import JoinScreen from '../screens/JoinScreen/JoinScreen';
 
 export type RootStackProps = {
 	MainTabs: undefined;
 	SignIn: { setUserToken: any };
+	Join: { travelId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackProps>();
@@ -45,6 +47,7 @@ function RootStack() {
 				// User is signed in
 				<Stack.Screen name="MainTabs" component={MainTabs} />
 			)}
+			<Stack.Screen name="Join" component={JoinScreen} />
 		</Stack.Navigator>
 	);
 }
