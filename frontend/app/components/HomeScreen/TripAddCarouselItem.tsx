@@ -12,7 +12,10 @@ interface TripAddCarouselItemProp {
 
 function TripAddCarouselItem({ containerStyle, navigation }: TripAddCarouselItemProp) {
 	return (
-		<TouchableOpacity style={containerStyle} onPress={() => navigation.navigate('CreateTrip')}>
+		<TouchableOpacity
+			style={containerStyle}
+			onPress={() => navigation.navigate('TripStack', { screen: 'CreateTrip' })}
+		>
 			<View style={styles.view}>
 				<MaterialIcon name="plus-circle" size={48} style={{ color: '#91C0EB', marginRight: 10 }} />
 				<View>
