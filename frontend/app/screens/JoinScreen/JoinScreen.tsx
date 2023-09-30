@@ -70,7 +70,11 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 				초대를 수락하면, 정산을 편리하게 할 수 있어요!
 			</Text>
 			<View style={styles.buttonContainer}>
-				<Button mode="contained" style={styles.buttonCancel}>
+				<Button
+					mode="contained"
+					style={styles.buttonCancel}
+					onPress={() => navigation.navigate('SignIn')}
+				>
 					취소
 				</Button>
 				<Button mode="contained" style={styles.button} onPress={() => joinTravel(travelId)}>
