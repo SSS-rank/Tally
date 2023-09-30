@@ -9,13 +9,15 @@ import { RootStackProps } from '../../navigation/RootStack';
 import { TextStyles } from '../../styles/CommonStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { TokenState } from '../../recoil/recoil';
+import { JoinState } from '../../recoil/joinRecoil';
 
 function JoinScreen({ navigation, route }: JoinScreenProps) {
 	const { travelId, host, travelName } = route.params;
 	const api = useAxiosWithAuth();
 	const tokenState = useRecoilValue(TokenState);
+	const [joinInfo, setJoinInfo] = useRecoilState(JoinState);
 
 	const joinTravel = async (travelId: number) => {
 		const data = {
@@ -29,7 +31,9 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 					console.log(res.data);
 				}
 			} else {
-				console.log('로그인 필요');
+				//로그인이 안되어있는 경우
+				setJoinInfo({ isAgreed: true, travel_id: travelId });
+				navigation.navigate('SignIn');
 			}
 		} catch (err: any) {
 			console.error(err.response);
