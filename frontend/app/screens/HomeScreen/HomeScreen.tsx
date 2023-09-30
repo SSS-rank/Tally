@@ -40,12 +40,14 @@ function HomeScreen({ navigation }: any) {
 			color: fakeWeatherData[index] === 'Sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
 			width: width,
 			weather: fakeWeatherData[index],
+			navigation: navigation,
 		}));
 
 		newInfo.push({
 			travel_id: -1,
 			color: ['#ffffff', '#ffffff'],
 			width: width,
+			navigation: navigation,
 		});
 		setAfterTripList(newInfo);
 	};

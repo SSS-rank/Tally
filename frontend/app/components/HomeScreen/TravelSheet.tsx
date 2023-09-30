@@ -101,6 +101,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 						marginHorizontal: 0,
 						elevation: 2,
 					}}
+					navigation={item.navigation}
 				/>
 			)}
 		</>
