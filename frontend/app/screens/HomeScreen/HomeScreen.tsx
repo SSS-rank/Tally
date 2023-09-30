@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Carousel from '../../components/Carousel';
+import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TextStyles } from '../../styles/CommonStyles';
@@ -63,24 +64,8 @@ function HomeScreen({ navigation }: any) {
 						onPress={() => navigation.navigate('Setting')}
 					/>
 				</View>
-				<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).box}>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Avatar.Image
-							style={{ backgroundColor: 'transparent' }}
-							size={54}
-							source={require('../../assets/images/kakao.png')}
-						/>
-						<Text style={TextStyles().regular}>김싸피</Text>
-					</View>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Text style={TextStyles().title}>2</Text>
-						<Text style={TextStyles().regular}>국내</Text>
-					</View>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Text style={TextStyles().title}>2</Text>
-						<Text style={TextStyles().regular}>해외</Text>
-					</View>
-				</View>
+				<ProfileBox />
+
 				<View>
 					<Carousel
 						page={page}
