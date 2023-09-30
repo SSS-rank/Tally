@@ -437,7 +437,7 @@ public class TravelServiceImpl implements TravelService {
 	public TravelDto.TravelVisitRespDto getTravelVisitCount(Authentication authentication) {
 		Member member = (Member) authentication.getPrincipal();
 
-		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member, LocalDate.now());
 		int domestic = 0; int overseas = 0;
 		for(Travel travel: travelList){
 			if(travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) overseas++;
@@ -450,7 +450,7 @@ public class TravelServiceImpl implements TravelService {
 	public TravelDto.TravelVisitListRespDto getTravelVisitList(Authentication authentication) {
 		Member member = (Member) authentication.getPrincipal();
 
-		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member);
+		List<Travel> travelList = travelRepository.findTravelWithUniqueLocationAndType(member, LocalDate.now());
 		Set<String> domestic = new HashSet<>();
 		Set<String> overseas = new HashSet<>();
 
