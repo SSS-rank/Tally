@@ -605,7 +605,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 			//결제자 알림 저장 및 알림 보내기 저장
 			Notification notification = Notification.of("complete_calculate", "555",
-				"Tally", payer.getMemberUuid(), payer.getNickname(), travelName);
+				"Tally_", payer.getMemberUuid(), payer.getNickname(), travelName);
 			//알림함에 저장
 			notificationRepository.save(notification);
 
