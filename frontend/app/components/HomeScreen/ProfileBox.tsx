@@ -38,14 +38,14 @@ function ProfileBox() {
 					size={54}
 					source={{ uri: memberinfo.profile_image }}
 				/>
-				<Text style={TextStyles().regular}>{memberinfo.nickname}</Text>
+				<Text style={TextStyles({ mTop: 10 }).regular}>{memberinfo.nickname}</Text>
 			</View>
 			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-				<Text style={TextStyles().title}>{nationalCount}</Text>
+				<Text style={TextStyles().header}>{nationalCount}</Text>
 				<Text style={TextStyles().regular}>국내</Text>
 			</View>
 			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-				<Text style={TextStyles().title}>{overseasCount}</Text>
+				<Text style={TextStyles().header}>{overseasCount}</Text>
 				<Text style={TextStyles().regular}>해외</Text>
 			</View>
 		</View>
