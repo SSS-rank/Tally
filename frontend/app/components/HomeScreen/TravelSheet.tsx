@@ -31,9 +31,9 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					}}
 				>
 					<LinearGradient colors={item.color} style={styles.linerContainer} />
-					{item.weather?.includes('Snow') && <SnowAnimation />}
-					{item.weather?.includes('Rain') && <RainAnimation />}
-					{item.weather?.includes('Sunny') && <SunnyAnimation />}
+					{item.weather?.includes('snow') && <SnowAnimation />}
+					{item.weather?.includes('rain') && <RainAnimation />}
+					{item.weather?.includes('sunny') && <SunnyAnimation />}
 
 					<View
 						style={{
