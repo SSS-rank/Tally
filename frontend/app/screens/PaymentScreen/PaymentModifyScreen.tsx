@@ -31,11 +31,13 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [isCash, setIsCash] = useState(false);
 	const [visible, setVisible] = useState(true);
 	const [paymentUuid, setPaymentUuid] = useState('');
+	const [payerUuid, setPayerUuid] = useState('');
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 
 	useEffect(() => {
 		const { payment_uuid, payer, method } = route.params;
 		setPaymentUuid(payment_uuid);
+		setPayerUuid(payer);
 		if (memberinfo.member_uuid == payer) {
 			setIspayer(true);
 		}
@@ -348,11 +350,17 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			<View style={[styles.party_box]}>
 				{visible ? (
 					<View>
-						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+						<View
+							style={{
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+							}}
+						>
 							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
 							<View style={{ flexDirection: 'row' }}>
-								<Text style={TextStyles({ mLeft: 10 }).medium}>결제</Text>
-								<Text style={TextStyles({ mLeft: 10 }).medium}>함께</Text>
+								<Text style={TextStyles({ mRight: 20 }).medium}>금액</Text>
+								<Text style={TextStyles({ mLeft: 20 }).medium}>참여</Text>
 							</View>
 						</View>
 						<ScrollView>
@@ -363,6 +371,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
+									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
 											item.member_uuid,
