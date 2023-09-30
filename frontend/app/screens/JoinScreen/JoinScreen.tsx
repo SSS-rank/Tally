@@ -73,7 +73,9 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 				<Button
 					mode="contained"
 					style={styles.buttonCancel}
-					onPress={() => navigation.navigate('SignIn')}
+					onPress={() =>
+						tokenState.accessToken ? navigation.navigate('MainTabs') : navigation.navigate('SignIn')
+					}
 				>
 					취소
 				</Button>
