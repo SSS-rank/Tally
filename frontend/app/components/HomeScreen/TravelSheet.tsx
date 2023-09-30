@@ -50,11 +50,11 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							D - {item.remainDate}
 						</Text>
 					</View>
-					<Text style={TextStyles().title}>{item.travelTitle}</Text>
+					<Text style={TextStyles({ weight: 'bold' }).title}>{item.travelTitle}</Text>
 					<Text style={TextStyles({ mBottom: 5 }).small}>
 						{item.startDate} ~ {item.endDate}
 					</Text>
-					<Text style={TextStyles().header}>{item.money}원</Text>
+					<Text style={TextStyles({ weight: 'bold' }).header}>{item.money}원</Text>
 				</View>
 			</View>
 			<View style={{ alignItems: 'flex-start', backgroundColor: 'red' }}></View>
