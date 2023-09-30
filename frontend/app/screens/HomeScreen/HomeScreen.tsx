@@ -30,18 +30,36 @@ function HomeScreen({ navigation }: any) {
 	const api = useAxiosWithAuth();
 	const getTripData = async () => {
 		const res = await api.get(`/travel/info`);
+		let newInfo = [];
+		if (res.status === 200 && res.data.length > 0) {
+			newInfo = res.data.map((item: any, index: number) => ({
+				...item,
+				travelParticipants: item.travelParticipants.map((member: any) => ({
+					member_uuid: member.member_uuid,
+					nickname: member.member_nickname,
+					profile_image: member.image,
+				})),
+				color: fakeWeatherData[index] === 'Sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
+				width: width,
+				weather: fakeWeatherData[index],
+				navigation: navigation,
+			}));
+		}
 
-		const newInfo = res.data.map((item: any, index: number) => ({
-			...item,
-			travelParticipants: item.travelParticipants.map((member: any) => ({
-				member_uuid: member.member_uuid,
-				nickname: member.member_nickname,
-				profile_image: member.image,
-			})),
-			color: fakeWeatherData[index] === 'Sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
+		newInfo.push({
+			travel_id: -1,
+			travelTitle: '',
+			travelLocation: '',
+			travelType: '',
+			startDate: '',
+			endDate: '',
+			remainDate: 0,
+			travelParticipants: [],
+			money: 0,
+			color: ['#ffffff', '#ffffff'],
 			width: width,
-			weather: fakeWeatherData[index],
-		}));
+			navigation: navigation,
+		});
 		setAfterTripList(newInfo);
 	};
 
