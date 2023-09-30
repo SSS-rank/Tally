@@ -143,7 +143,10 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 			}
 			for (MemberPayment memberPayment : memberPaymentList) {
-				map.put(memberPayment.getMemberId(), 1);
+				if(!memberPayment.getMemberId().equals(payer)){
+					map.put(memberPayment.getMemberId(), 1);
+				}
+
 			}
 			//각 payment의 상태 ongoing으로 변경
 			payment.updateCalculateStatusEnum(CalculateStatusEnum.ONGOING);
