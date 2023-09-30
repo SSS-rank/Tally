@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, Dimensions, ScrollView } from 'react-native';
 import Config from 'react-native-config';
 
@@ -13,18 +13,43 @@ import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
+import { useRecoilState } from 'recoil';
+import { JoinState } from '../../recoil/joinRecoil';
 
 const width = Dimensions.get('window').width - 70;
 
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
 	const [afterTripList, setAfterTripList] = useState<any[]>([]);
+	const [joinState, setJoinState] = useRecoilState(JoinState);
 
 	useFocusEffect(
 		useCallback(() => {
 			getTripData();
 		}, []),
 	);
+
+	useEffect(() => {
+		console.log(joinState);
+		if (joinState.isAgreed) {
+			joinTravel(joinState.travel_id);
+		}
+	}, []);
+
+	const joinTravel = async (travelId: number) => {
+		const data = {
+			travel_id: travelId,
+		};
+		try {
+			const res = await api.post(`/group`, data);
+			if (res.status === 200) {
+				console.log(res.data);
+			}
+		} catch (err: any) {
+			console.error(err.response);
+		}
+		setJoinState({ isAgreed: false, travel_id: 0 });
+	};
 
 	const api = useAxiosWithAuth();
 
