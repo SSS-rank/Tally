@@ -125,7 +125,9 @@ public class TransferServiceImpl implements TransferService {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
-
+		if(accountOptional.isEmpty()){
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
+		}
 		int page = transferListReqDto.getPage();
 		int limit = transferListReqDto.getLimit();
 		Account account = accountOptional.get();
@@ -300,15 +302,14 @@ public class TransferServiceImpl implements TransferService {
 
 		Optional<Account> accountOptional = accountRepository.findAccountByAccountNumberAndStatusIsFalse(
 			transferListReqDto.getAccountNum());
-
+		if(accountOptional.isEmpty()){
+			throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
+		}
 		Account account = accountOptional.get();
 		long accountId = account.getAccountId();
 
 		List<Map<String, Object>> Results = transferRepository.findTransferPaymentList(accountId,
 			transferListReqDto.getStartDate(), transferListReqDto.getEndDate());
-		if (Results.isEmpty()) {
-			throw new AccountException(ErrorCode.INVALID_ACCOUNT_NUMBER);
-		}
 		List<TransferDto.TransferListRespDto> transferListRespDtos = new ArrayList<>();
 
 		for (Map<String, Object> rawResult : Results) {
