@@ -1,15 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import Config from 'react-native-config';
 import { Avatar, Button } from 'react-native-paper';
 
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Carousel from '../../components/Carousel';
 import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { Location } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
 
@@ -19,7 +22,7 @@ const fakeWeatherData = ['Rain', 'Sunny', 'Snow'];
 
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
-	const [afterTripList, setAfterTripList] = useState([]);
+	const [afterTripList, setAfterTripList] = useState<any[]>([]);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -28,22 +31,41 @@ function HomeScreen({ navigation }: any) {
 	);
 
 	const api = useAxiosWithAuth();
+
+	const getWeather = async (type: string) => {
+		const locationRes = await axios.get(
+			`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${Config.WEATHER_API_KEY}&q=${Location[type]}`,
+		);
+
+		// 현재 상태 얻기
+		const curState = await axios.get(
+			`http://dataservice.accuweather.com/currentconditions/v1/${locationRes.data[0].Key}?apikey=${Config.WEATHER_API_KEY}`,
+		);
+		return curState.data[0].WeatherText;
+	};
 	const getTripData = async () => {
 		const res = await api.get(`/travel/info`);
 		let newInfo = [];
 		if (res.status === 200 && res.data.length > 0) {
-			newInfo = res.data.map((item: any, index: number) => ({
-				...item,
-				travelParticipants: item.travelParticipants.map((member: any) => ({
-					member_uuid: member.member_uuid,
-					nickname: member.member_nickname,
-					profile_image: member.image,
-				})),
-				color: fakeWeatherData[index] === 'Sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
-				width: width,
-				weather: fakeWeatherData[index],
-				navigation: navigation,
-			}));
+			newInfo = await Promise.all(
+				res.data.map(async (item: any, index: number) => {
+					const WeatherText = await getWeather(item.travelType);
+					console.log('WeatherText ', WeatherText);
+					return {
+						...item,
+						travelParticipants: item.travelParticipants.map((member: any) => ({
+							member_uuid: member.member_uuid,
+							nickname: member.member_nickname,
+							profile_image: member.image,
+						})),
+						color:
+							fakeWeatherData[index] === 'sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
+						width: width,
+						weather: WeatherText,
+						navigation: navigation,
+					};
+				}),
+			);
 		}
 
 		newInfo.push({
@@ -60,6 +82,8 @@ function HomeScreen({ navigation }: any) {
 			width: width,
 			navigation: navigation,
 		});
+
+		console.log('newInfo ', newInfo);
 		setAfterTripList(newInfo);
 	};
 
