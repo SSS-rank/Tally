@@ -268,57 +268,60 @@ public class TravelServiceImpl implements TravelService {
 		if (travelOptional.isEmpty())
 			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
-		List<Account> memberAccounts = accountRepository.findAllByMemberIdAndStatusIsFalseOrderByOrderNumberAsc(
-			member);
+		// 여행을 하기 전에는 결제 내역을 가져오지 않도록 변경
+		if(!travelOptional.get().getStartDate().isAfter(LocalDate.now())){
+			List<Account> memberAccounts = accountRepository.findAllByMemberIdAndStatusIsFalseOrderByOrderNumberAsc(
+				member);
 
-		for (Account account : memberAccounts) {
-			String contentType = "application/x-www-form-urlencoded;charset=utf-8";
-			PaymentDto.PaymentListReqDto from = PaymentDto.PaymentListReqDto.from(account.getAccountNumber(),
-				account.getAccountPassword(), travelOptional.get().getStartDate().toString(),
-				travelOptional.get().getEndDate().toString());
-			PaymentDto.PaymentResDto paymentListRespDtos = paymentClient.requestTransferList(contentType, from);
-			for (PaymentDto.PaymentListRespDto paymentListRespDto : paymentListRespDtos.getTranferList()) {
+			for (Account account : memberAccounts) {
+				String contentType = "application/x-www-form-urlencoded;charset=utf-8";
+				PaymentDto.PaymentListReqDto from = PaymentDto.PaymentListReqDto.from(account.getAccountNumber(),
+					account.getAccountPassword(), travelOptional.get().getStartDate().toString(),
+					travelOptional.get().getEndDate().toString());
+				PaymentDto.PaymentResDto paymentListRespDtos = paymentClient.requestTransferList(contentType, from);
+				for (PaymentDto.PaymentListRespDto paymentListRespDto : paymentListRespDtos.getTranferList()) {
 
-				if (paymentListRespDto.getFlag().equals("입금"))
-					continue;
+					if (paymentListRespDto.getFlag().equals("입금"))
+						continue;
 
-				Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuid(
-					paymentListRespDto.getTransferUuid());
+					Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuid(
+						paymentListRespDto.getTransferUuid());
 
-				Optional<Category> category = categoryRepository.findCategoryByCategoryId(
-					Long.parseLong(paymentListRespDto.getShopType() + ""));
-				if (category.isEmpty())
-					throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
+					Optional<Category> category = categoryRepository.findCategoryByCategoryId(
+						Long.parseLong(paymentListRespDto.getShopType() + ""));
+					if (category.isEmpty())
+						throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
 
-				Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(8L);
-				if (paymentUnitOptional.isEmpty())
-					throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
+					Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(8L);
+					if (paymentUnitOptional.isEmpty())
+						throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
 
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-				LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+					LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
-				if (payment.isEmpty()) {
-					Payment save = paymentRepository.save(
-						Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
-							paymentUnitOptional.get(), dateTime));
+					if (payment.isEmpty()) {
+						Payment save = paymentRepository.save(
+							Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
+								paymentUnitOptional.get(), dateTime));
 
-					List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(
-						travelOptional.get().getTravelId());
-					for (Long memberId : memberIds) {
-						Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
-						if (optionalMember.isEmpty())
-							throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
+						List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(
+							travelOptional.get().getTravelId());
+						for (Long memberId : memberIds) {
+							Optional<Member> optionalMember = memberRepository.findMemberByMemberId(memberId);
+							if (optionalMember.isEmpty())
+								throw new MemberException(ErrorCode.NOT_EXIST_MEMBER);
 
-						if (optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
-							memberPaymentRepository.save(
-								MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
-						else
-							memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
+							if (optionalMember.get().getMemberUuid().equals(member.getMemberUuid()))
+								memberPaymentRepository.save(
+									MemberPayment.from(optionalMember.get(), save, false, save.getAmount()));
+							else
+								memberPaymentRepository.save(MemberPayment.from(optionalMember.get(), save, true, 0L));
 
+						}
 					}
 				}
-			}
 
+			}
 		}
 
 		List<Payment> payments = paymentRepository.findPaymentsByTravelIdAndMemberId(travelOptional.get(), member);
