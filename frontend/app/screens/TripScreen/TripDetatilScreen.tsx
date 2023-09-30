@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { Button, Chip, Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState } from 'recoil';
 
-import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
-import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
+	const api = useAxiosWithAuth();
 	const [payData, setPayData] = useState<Payment[]>([]);
 	const currentDate = new Date();
 	const [modalVisible, setModalVisible] = useState(false);
