@@ -31,6 +31,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
+
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
@@ -63,6 +64,16 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
 		}, []),
 	);
+	async function handleAdjust() {
+		const adjust_data = payData.map((item) => {
+			return { payment_uuid: item.payment_uuid };
+		});
+		console.log(adjust_data);
+		const res = await api.post('calculate', adjust_data);
+		if (res.status == 200) {
+			console.log(res.data);
+		}
+	}
 
 	return (
 		<ScrollView style={styles.container}>
@@ -148,7 +159,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					style={styles.button}
 					labelStyle={TextStyles().regular}
 					mode="text"
-					onPress={() => console.log('Pressed')}
+					onPress={() => handleAdjust()}
 				>
 					정산
 				</Button>
