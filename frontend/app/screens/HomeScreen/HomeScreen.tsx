@@ -41,6 +41,12 @@ function HomeScreen({ navigation }: any) {
 			width: width,
 			weather: fakeWeatherData[index],
 		}));
+
+		newInfo.push({
+			travel_id: -1,
+			color: ['#ffffff', '#ffffff'],
+			width: width,
+		});
 		setAfterTripList(newInfo);
 	};
 
