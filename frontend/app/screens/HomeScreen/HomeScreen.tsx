@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, Dimensions, ScrollView } from 'react-native';
 import Config from 'react-native-config';
-import { Avatar, Button } from 'react-native-paper';
 
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,8 +15,6 @@ import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
 
 const width = Dimensions.get('window').width - 70;
-
-const fakeWeatherData = ['Rain', 'Sunny', 'Snow'];
 
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
@@ -135,77 +131,8 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles({ color: 'red' }).box} />
 				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
-
-			{/* <View style={styles.Box1} />
-      <View style={styles.viewRowContainer}>
-        <View style={styles.Box2} />
-        <View style={styles.Box3} />
-      </View> */}
 		</View>
 	);
 }
-
-const RainbowSheet = [
-	{
-		id: 0,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 1,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 2,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 3,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 4,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-];
 
 export default HomeScreen;
