@@ -43,6 +43,14 @@ function HomeScreen({ navigation }: any) {
 		);
 		return curState.data[0].WeatherText;
 	};
+
+	const getWeatherBackgroundColor = (weather: string) => {
+		if (weather.includes('sunny')) return ['#ffffff', '#ffffff'];
+		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
+		else if (weather.includes('snow')) return ['#cfd9df', '#e2ebf0'];
+		else return ['#ffffff', '#ffffff'];
+	};
+
 	const getTripData = async () => {
 		const res = await api.get(`/travel/info`);
 		let newInfo = [];
@@ -58,8 +66,7 @@ function HomeScreen({ navigation }: any) {
 							nickname: member.member_nickname,
 							profile_image: member.image,
 						})),
-						color:
-							fakeWeatherData[index] === 'sunny' ? ['#ffffff', '#ffffff'] : ['#cfd9df', '#e2ebf0'],
+						color: getWeatherBackgroundColor(WeatherText),
 						width: width,
 						weather: WeatherText,
 						navigation: navigation,
