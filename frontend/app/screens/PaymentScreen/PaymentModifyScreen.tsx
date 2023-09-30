@@ -9,11 +9,14 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
 import PartyListItem from '../../components/PartyList/PartyListItem';
+import AmountBox from '../../components/Payment/AmountBox';
+import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
+import formatDate from '../../services/FormDate';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
@@ -46,7 +49,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		}
 
 		async function fetchData() {
-			if (isPayer) {
+			if (memberinfo.member_uuid == payer) {
 				console.log('결제자');
 				const res = await api.get(`payment/payer/${payment_uuid}`);
 				if (res && res.status === 200) {
@@ -77,6 +80,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				const responseData = res.data;
 				// 비동기 처리를 위해 responseData 사용
 				if (res && res.status == 200) {
+					console.log(res.data);
 					setTotAmount(responseData.amount + '');
 					setStore(responseData.payment_name);
 					setText(responseData.memo);
@@ -163,15 +167,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 
-	function formatDate(in_date: Date) {
-		const year = in_date.getFullYear();
-		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
-		const day = String(in_date.getDate()).padStart(2, '0'); // 일자를 2자리로 포맷팅
-		const hours = String(in_date.getHours()).padStart(2, '0'); // 시간을 2자리로 포맷팅
-		const minutes = String(in_date.getMinutes()).padStart(2, '0'); // 분을 2자리로 포맷팅
-
-		return `${year}-${month}-${day} ${hours}:${minutes}`;
-	}
 	async function handleSubmit() {
 		let member = partyMembers.map((item) => {
 			return { amount: item.amount, member_uuid: item.member_uuid };
@@ -220,25 +215,13 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	}
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.amount_container}>
-				<Text>{store}</Text>
-				<Text style={TextStyles({ align: 'left' }).small}>{paymentUnit}</Text>
-				{isCash ? (
-					<TextInput
-						value={totAmount}
-						onChangeText={(memo) => {
-							setTotAmount(memo);
-						}}
-						returnKeyType="next"
-						keyboardType="numeric"
-						style={styles.amountInput}
-						selectionColor="#F6F6F6"
-						placeholder={totAmount}
-					/>
-				) : (
-					<Text style={TextStyles({ align: 'left' }).medium}>{totAmount}</Text>
-				)}
-			</View>
+			<AmountBox
+				isCash={isCash}
+				isPayer={isPayer}
+				totAmount={totAmount}
+				paymentUnit={paymentUnit}
+				setTotAmount={setTotAmount}
+			/>
 
 			{isPayer ? (
 				<View>
@@ -298,51 +281,55 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			</View>
 
 			{isPayer ? (
-				<View style={styles.category_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
-					<View style={styles.category_line}>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
-							<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>숙소</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
-							<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>항공</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
-							<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>교통</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
-							<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>관광</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
-							<MIcon
-								name="silverware-fork-knife"
-								size={40}
-								color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>식사</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
-							<MIcon
-								name="shopping"
-								size={40}
-								color={selectedcategory === 6 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>쇼핑</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
-							<MIcon
-								name="dots-horizontal-circle"
-								size={40}
-								color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>기타</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
+				// <View style={styles.category_box}>
+				// 	<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
+				// 	<View style={styles.category_line}>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
+				// 			<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
+				// 			<Text style={TextStyles().small}>숙소</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
+				// 			<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
+				// 			<Text style={TextStyles().small}>항공</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
+				// 			<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
+				// 			<Text style={TextStyles().small}>교통</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
+				// 			<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
+				// 			<Text style={TextStyles().small}>관광</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
+				// 			<MIcon
+				// 				name="silverware-fork-knife"
+				// 				size={40}
+				// 				color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
+				// 			/>
+				// 			<Text style={TextStyles().small}>식사</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
+				// 			<MIcon
+				// 				name="shopping"
+				// 				size={40}
+				// 				color={selectedcategory === 6 ? '#91C0EB' : 'gray'}
+				// 			/>
+				// 			<Text style={TextStyles().small}>쇼핑</Text>
+				// 		</TouchableOpacity>
+				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
+				// 			<MIcon
+				// 				name="dots-horizontal-circle"
+				// 				size={40}
+				// 				color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
+				// 			/>
+				// 			<Text style={TextStyles().small}>기타</Text>
+				// 		</TouchableOpacity>
+				// 	</View>
+				// </View>
+				<CategoryBox
+					selectedcategory={selectedcategory}
+					setSelectedCategory={setSelectedCategory}
+				/>
 			) : (
 				<View style={{ padding: 30 }}></View>
 			)}
@@ -460,10 +447,7 @@ const styles = StyleSheet.create({
 	textInput: {
 		backgroundColor: 'white',
 	},
-	amountInput: {
-		width: 100,
-		backgroundColor: 'F6F6F6',
-	},
+
 	selectInput: {
 		borderWidth: 0,
 		borderBottomWidth: 1,
@@ -481,12 +465,6 @@ const styles = StyleSheet.create({
 		paddingTop: 15,
 		backgroundColor: 'white',
 		flex: 1,
-	},
-	amount_container: {
-		flex: 2,
-		padding: 30,
-		// marginTop: 20,
-		backgroundColor: '#F6F6F6',
 	},
 
 	date_box: {
