@@ -50,7 +50,10 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							D - {item.remainDate}
 						</Text>
 					</View>
-					<Text style={TextStyles({ weight: 'bold' }).title}>{item.travelTitle}</Text>
+					<View style={styles.titleView}>
+						<Text style={TextStyles({ weight: 'bold' }).title}>{item.travelTitle}</Text>
+						<Text style={TextStyles({ mLeft: 5 }).small}>{item.travelType}</Text>
+					</View>
 					<Text style={TextStyles({ mBottom: 5 }).small}>
 						{item.startDate} ~ {item.endDate}
 					</Text>
@@ -96,6 +99,11 @@ const styles = StyleSheet.create({
 		top: 0,
 		bottom: 0,
 		borderRadius: 10,
+	},
+	titleView: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 5,
 	},
 });
 
