@@ -1,26 +1,36 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { Avatar, Button, Text } from 'react-native-paper';
 
+import RainAnimation from './RainAnimation';
+import SnowAnimation from './SnowAnimation';
+import SunnyAnimation from './SunnyAnimation';
 import { TravelSheetItem } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
 
 interface TravelSheetProps extends TravelSheetItem {
 	width: number;
-	color: string;
+	color: string[];
+	weather: string;
 }
 
 function TravelSheet({ item }: { item: TravelSheetProps }) {
 	return (
 		<TouchableOpacity
 			style={{
-				...ViewStyles({ height: 300, color: item.color }).box,
+				...ViewStyles({ height: 300 }).box,
 				width: item.width,
 				marginHorizontal: 0,
 				elevation: 2,
 			}}
 		>
+			<LinearGradient colors={item.color} style={styles.linerContainer} />
+			{item.weather?.includes('Snow') && <SnowAnimation />}
+			{item.weather?.includes('Rain') && <RainAnimation />}
+			{item.weather?.includes('Sunny') && <SunnyAnimation />}
+
 			<View
 				style={{
 					flexDirection: 'row',
@@ -77,5 +87,16 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 		</TouchableOpacity>
 	);
 }
+
+const styles = StyleSheet.create({
+	linerContainer: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		borderRadius: 10,
+	},
+});
 
 export default TravelSheet;
