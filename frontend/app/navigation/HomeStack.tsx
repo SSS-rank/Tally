@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import TripStack from './TripStack';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import AddAccountScreen from '../screens/SettingScreen/AddAccountScreen';
 import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
@@ -44,13 +43,6 @@ function HomeStack() {
 				name="TransferPasswordConfirm"
 				component={TransferPasswrodConfirmScreen}
 				options={{ title: '이체 비밀번호 확인' }}
-			/>
-			<Stack.Screen
-				name="TripStack"
-				component={TripStack}
-				options={{
-					headerShown: false,
-				}}
 			/>
 		</Stack.Navigator>
 	);
