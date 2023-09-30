@@ -41,10 +41,11 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 	List<Travel> findUpcomingTravelForMemberOrderByTravelDate(@Param("memberId") Member memberId, @Param("now") LocalDate now);
 
 	@Query("SELECT t " +
-		"FROM Travel t " +
-		"WHERE t.travelId IN (SELECT MIN(tg.travelId.travelId) " +
-		"FROM TravelGroup tg " +
-		"WHERE tg.memberId = :memberId " +
-		"GROUP BY tg.travelId.travelLocation, tg.travelId.travelType)")
-	List<Travel> findTravelWithUniqueLocationAndType(Member memberId);
+			"FROM Travel t " +
+			"WHERE t.travelId IN (SELECT MIN(tg.travelId.travelId) " +
+			"FROM TravelGroup tg " +
+			"WHERE tg.memberId = :memberId " +
+			"AND tg.travelId.startDate <= :now " +
+			"GROUP BY tg.travelId.travelLocation, tg.travelId.travelType)")
+	List<Travel> findTravelWithUniqueLocationAndType(Member memberId, LocalDate now);
 }
