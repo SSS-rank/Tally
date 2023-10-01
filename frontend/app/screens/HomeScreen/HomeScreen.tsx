@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import Config from 'react-native-config';
+import LinearGradient from 'react-native-linear-gradient';
 import { Avatar, Button } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -70,8 +71,8 @@ function HomeScreen({ navigation }: any) {
 	};
 
 	const getWeatherBackgroundColor = (weather: string) => {
-		if (weather.includes('sunny')) return ['#ffffff', '#ffffff'];
-		else if (weather.includes('clear')) return ['#ffffff', '#ffffff'];
+		if (weather.includes('sunny')) return ['#ffffff', '#fceabb'];
+		else if (weather.includes('clear')) return ['#ffffff', '#fceabb'];
 		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
 		else if (weather.includes('snow')) return ['#e6e9f0', '#eef1f5'];
 		else if (weather.includes('clouds')) return ['#accbee', '#e7f0fd'];
@@ -87,7 +88,7 @@ function HomeScreen({ navigation }: any) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
 					// const WeatherText = await getWeather(item.travel_type);
-					const WeatherText = 'cloudy';
+					const WeatherText = 'sunny';
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
@@ -120,13 +121,14 @@ function HomeScreen({ navigation }: any) {
 	};
 
 	return (
-		<View style={HomeStyles.container}>
+		// <View style={HomeStyles.container}>
+		<LinearGradient colors={['#C9D6FF', '#CFDEF3', '#E2E2E2']} style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
 				<View style={ViewStyles({ flexDirection: 'row' }).header}>
 					<Text
 						style={{
-							// ...TextStyles({ align: 'left', weight: 'bold', color: 'white' }).title,
-							...TextStyles({ align: 'left', weight: 'bold' }).title,
+							...TextStyles({ align: 'left', weight: 'bold', color: 'white' }).title,
+							// ...TextStyles({ align: 'left', weight: 'bold' }).title,
 							flex: 1,
 						}}
 					>
@@ -135,14 +137,14 @@ function HomeScreen({ navigation }: any) {
 					<Icon
 						name="settings-sharp"
 						size={24}
-						color="#91C0EB"
-						// color="white"
+						// color="#91C0EB"
+						color="white"
 						onPress={() => navigation.navigate('Setting')}
 					/>
 				</View>
 				<View style={ViewStyles().banner}>
 					<Text style={TextStyles({ align: 'left' }).small}>
-						<Text style={TextStyles({ align: 'left', weight: 'bold', color: '#91C0EB' }).small}>
+						<Text style={TextStyles({ align: 'left', weight: 'bold' }).regular}>
 							{memberinfo.nickname}
 						</Text>
 						님, 어디로 떠나시나요?
@@ -205,7 +207,8 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles({ color: 'red' }).box} />
 				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
-		</View>
+			{/* </View> */}
+		</LinearGradient>
 	);
 }
 
