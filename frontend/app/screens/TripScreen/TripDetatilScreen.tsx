@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DetailListItem from '../../components/DetailList/DetailListItem';
+import SortItem from '../../components/TripScreen/SortItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
@@ -195,9 +196,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					onPress={() => setModalVisible(!modalVisible)}
 				/>
 				<View style={styles.modalView}>
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 40 }}>
 						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
-							정렬
+							정렬 선택
 						</Text>
 						<Icon
 							name="close"
@@ -207,31 +208,18 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						/>
 					</View>
 					<View style={styles.order_type_container}>
-						<Button
-							style={styles.order_type}
-							mode="elevated"
-							buttonColor="#91C0EB"
-							textColor="white"
-							onPress={() => {
-								setOrderType('최신순');
-								setModalVisible(!modalVisible);
-							}}
-						>
-							최신순
-						</Button>
-
-						<Button
-							style={styles.order_type}
-							mode="elevated"
-							buttonColor="#91C0EB"
-							textColor="white"
-							onPress={() => {
-								setOrderType('오래된 순');
-								setModalVisible(!modalVisible);
-							}}
-						>
-							오래된 순
-						</Button>
+						<SortItem
+							text="최신순"
+							orderType={orderType}
+							setOrderType={setOrderType}
+							setModalVisible={setModalVisible}
+						/>
+						<SortItem
+							text="오래된 순"
+							orderType={orderType}
+							setOrderType={setOrderType}
+							setModalVisible={setModalVisible}
+						/>
 					</View>
 				</View>
 			</Modal>
