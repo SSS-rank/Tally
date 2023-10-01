@@ -208,7 +208,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<View style={styles.amount_container}>
 				<ExRateDropDown
 					setValue={setExData}
@@ -260,195 +260,196 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					<Text style={TextStyles({ align: 'right' }).title}> 총 금액 {totAmount} 원</Text>
 				</View>
 			</View>
-			<ScrollView>
-				<View style={styles.date_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-					<Chip onPress={() => setOpen(true)}>
-						{date.getFullYear() +
-							'년 ' +
-							(date.getMonth() + 1) +
-							'월 ' +
-							date.getDate() +
-							'일 ' +
-							date.getHours() +
-							'시 ' +
-							date.getMinutes() +
-							'분 '}
-					</Chip>
-					<DatePicker
-						style={styles.date_picker}
-						modal
-						open={open}
-						date={date}
-						onConfirm={(p_date) => {
-							setOpen(false);
-							setDate(p_date);
-						}}
-						onCancel={() => {
-							setOpen(false);
-						}}
-					/>
+			<View style={[styles.date_box, styles.content_box]}>
+				<Text style={styles.content_title}>날짜 선택</Text>
+				<Chip style={styles.chip} onPress={() => setOpen(true)}>
+					{date.getFullYear() +
+						'년 ' +
+						(date.getMonth() + 1) +
+						'월 ' +
+						date.getDate() +
+						'일 ' +
+						date.getHours() +
+						'시 ' +
+						date.getMinutes() +
+						'분 '}
+				</Chip>
+				<DatePicker
+					style={styles.date_picker}
+					modal
+					open={open}
+					date={date}
+					onConfirm={(p_date) => {
+						setOpen(false);
+						setDate(p_date);
+					}}
+					onCancel={() => {
+						setOpen(false);
+					}}
+				/>
+			</View>
+			<View style={styles.memo_box}>
+				<Text style={styles.content_title}>결제처</Text>
+				<TextInput
+					value={store}
+					onChangeText={(memo) => {
+						setStore(memo);
+					}}
+					returnKeyType="next"
+					style={styles.textInput}
+				/>
+			</View>
+			<View style={[styles.memo_box, styles.content_box]}>
+				<Text style={styles.content_title}>메모</Text>
+				<TextInput
+					value={text}
+					onChangeText={(memo) => {
+						setText(memo);
+					}}
+					returnKeyType="next"
+					style={styles.textInput}
+				/>
+			</View>
+			<View style={[styles.category_box, styles.content_box]}>
+				<Text style={styles.content_title}>카테고리</Text>
+				<View style={styles.category_line}>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
+						<MIcon name="home" size={36} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
+						<Text style={TextStyles().small}>숙소</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
+						<FIcon name="plane" size={36} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
+						<Text style={TextStyles().small}>항공</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
+						<FIcon name="car" size={36} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
+						<Text style={TextStyles().small}>교통</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
+						<MIcon name="ticket" size={36} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
+						<Text style={TextStyles().small}>관광</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
+						<MIcon
+							name="silverware-fork-knife"
+							size={36}
+							color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
+						/>
+						<Text style={TextStyles().small}>식사</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
+						<MIcon name="shopping" size={36} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
+						<Text style={TextStyles().small}>쇼핑</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
+						<MIcon
+							name="dots-horizontal-circle"
+							size={36}
+							color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
+						/>
+						<Text style={TextStyles().small}>기타</Text>
+					</TouchableOpacity>
 				</View>
-				<View style={styles.memo_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
-					<TextInput
-						value={store}
-						onChangeText={(memo) => {
-							setStore(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<View style={styles.memo_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>메모</Text>
-					<TextInput
-						value={text}
-						onChangeText={(memo) => {
-							setText(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<View style={styles.category_box}>
-					<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
-					<View style={styles.category_line}>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
-							<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>숙소</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
-							<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>항공</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
-							<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>교통</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
-							<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>관광</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
-							<MIcon
-								name="silverware-fork-knife"
-								size={40}
-								color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>식사</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
-							<MIcon
-								name="shopping"
-								size={40}
-								color={selectedcategory === 6 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>쇼핑</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
-							<MIcon
-								name="dots-horizontal-circle"
-								size={40}
-								color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>기타</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
+			</View>
 
-				<View style={[styles.party_box]}>
-					{visible ? (
-						<View>
-							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-								<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row' }}>
-									<Text style={TextStyles({ mLeft: 10 }).medium}>결제</Text>
-									<Text style={TextStyles({ mLeft: 10 }).medium}>함께</Text>
-								</View>
-							</View>
-							<ScrollView>
-								{partyMembers.map((item) => (
-									<PartyListItem
-										amount={item.amount}
-										key={item.member_uuid}
-										name={item.member_nickname}
-										img={{ uri: item.image }}
-										involveCheck={item.checked}
-										block={false}
-										isPayer={item.member_uuid == memberinfo.member_uuid}
-										onAmountChange={(input) =>
-											handleAmountChange(
-												item.member_uuid,
-												input,
-												item.checked,
-												item.member_nickname,
-												item.image,
-											)
-										}
-										onInvolveChange={(input) =>
-											handleInVolveChange(
-												item.member_uuid,
-												item.amount,
-												input,
-												item.member_nickname,
-												item.image,
-											)
-										}
-									/>
-								))}
-							</ScrollView>
-						</View>
-					) : null}
-				</View>
-
-				<View style={styles.self_check_box}>
+			<View style={[styles.party_box, styles.content_box]}>
+				{visible ? (
 					<View>
-						<Text style={TextStyles({ align: 'left' }).medium}>이 비용 나만보기</Text>
-						<Text style={TextStyles({ align: 'left' }).small}>
-							일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
-						</Text>
+						<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+							<Text style={styles.content_title}>함께 한 사람</Text>
+							<View style={{ flexDirection: 'row' }}>
+								<Text style={styles.party_type}>결제</Text>
+								<Text style={styles.party_type}>함께</Text>
+							</View>
+						</View>
+						<ScrollView>
+							{partyMembers.map((item) => (
+								<PartyListItem
+									amount={item.amount}
+									key={item.member_uuid}
+									name={item.member_nickname}
+									img={{ uri: item.image }}
+									involveCheck={item.checked}
+									block={false}
+									isPayer={item.member_uuid == memberinfo.member_uuid}
+									onAmountChange={(input) =>
+										handleAmountChange(
+											item.member_uuid,
+											input,
+											item.checked,
+											item.member_nickname,
+											item.image,
+										)
+									}
+									onInvolveChange={(input) =>
+										handleInVolveChange(
+											item.member_uuid,
+											item.amount,
+											input,
+											item.member_nickname,
+											item.image,
+										)
+									}
+								/>
+							))}
+						</ScrollView>
 					</View>
-					<IIcon
-						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
-						size={32}
-						color="#91C0EB"
-						style={{ marginLeft: 5 }}
-						onPress={() => {
-							setVisible(!visible);
-						}}
-					/>
+				) : null}
+			</View>
+
+			<View style={[styles.self_check_box, styles.content_box]}>
+				<View>
+					<Text style={styles.content_title}>이 비용 나만보기</Text>
+					<Text style={TextStyles({ align: 'left' }).small}>
+						일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+					</Text>
 				</View>
-				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-					dark={true} // 어두운 테마 사용 여부
-					compact={true} // 작은 크기의 버튼 여부
-					uppercase={false} // 레이블 텍스트 대문자 변환 여부
-					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-					style={{ marginTop: 10 }}
-				>
-					등록
-				</Button>
-			</ScrollView>
-		</View>
+				<IIcon
+					name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+					size={32}
+					color={visible ? '#D0D0D0' : '#91C0EB'}
+					style={{ marginLeft: 5 }}
+					onPress={() => {
+						setVisible(!visible);
+					}}
+				/>
+			</View>
+			<Button
+				mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+				dark={true} // 어두운 테마 사용 여부
+				compact={true} // 작은 크기의 버튼 여부
+				uppercase={false} // 레이블 텍스트 대문자 변환 여부
+				onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+				style={{ marginBottom: 50 }}
+			>
+				등록
+			</Button>
+		</ScrollView>
 	);
 }
 const styles = StyleSheet.create({
 	category_line: {
 		flexDirection: 'row',
-		justifyContent: 'space-evenly',
-		padding: 10,
+		justifyContent: 'space-between',
+		paddingVertical: 10,
 	},
 	icon_group: {
 		flexDirection: 'column',
 	},
+	content_box: {
+		marginVertical: 30,
+	},
+	content_title: {
+		...TextStyles({ align: 'left', weight: 'bold', mBottom: 10 }).regular,
+	},
 	memo_box: {
 		justifyContent: 'flex-start',
-		marginTop: 20,
 	},
 
 	textInput: {
-		backgroundColor: 'white',
+		backgroundColor: '#ffffff',
+		height: 48,
+		marginBottom: 20,
 	},
 	amountInput: {
 		width: 100,
@@ -474,22 +475,22 @@ const styles = StyleSheet.create({
 	},
 	amount_container: {
 		padding: 30,
-		// marginTop: 20,
 		backgroundColor: '#F6F6F6',
 	},
 
 	date_box: {
 		justifyContent: 'flex-start',
-		marginTop: 20,
 		zIndex: 9000,
 		zIndexInverse: 2000,
 	},
 	category_box: {
-		marginTop: 20,
 		flexDirection: 'column',
 	},
 	party_box: {
 		flex: 6,
+	},
+	party_type: {
+		...TextStyles({ mLeft: 40 }).small,
 	},
 	check_box_container: {
 		flexDirection: 'column',
@@ -504,5 +505,12 @@ const styles = StyleSheet.create({
 	},
 	submit: {},
 	date_picker: { zIndex: 9000, zIndexInverse: 2000 },
+	chip: {
+		backgroundColor: 'transparent',
+		borderBottomWidth: 1,
+		borderBottomColor: '#232323',
+		marginVertical: 20,
+		paddingLeft: 5,
+	},
 });
 export default PaymentAddScreen;
