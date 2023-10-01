@@ -30,6 +30,12 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 						marginHorizontal: 0,
 						elevation: 2,
 					}}
+					onPress={() =>
+						item.navigation.navigate('TripStack', {
+							screen: 'TripDetail',
+							params: { travel_id: item.travel_id },
+						})
+					}
 				>
 					<LinearGradient colors={item.color} style={styles.linerContainer} />
 					{item.weather?.includes('snow') && <SnowAnimation />}
