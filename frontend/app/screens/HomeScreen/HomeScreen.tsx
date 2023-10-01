@@ -1,22 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, Dimensions, ScrollView } from 'react-native';
 import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
-import { Avatar, Button } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import Carousel from '../../components/Carousel';
+import MainBanner from '../../components/HomeScreen/MainBanner';
+import MainHeader from '../../components/HomeScreen/MainHeader';
+import PassportButton from '../../components/HomeScreen/PassportButton';
 import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
 import { JoinState } from '../../recoil/joinRecoil';
-import { MemberState } from '../../recoil/memberRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
 
@@ -26,7 +26,6 @@ function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
 	const [afterTripList, setAfterTripList] = useState<any[]>([]);
 	const [joinState, setJoinState] = useRecoilState(JoinState);
-	const memberinfo = useRecoilValue(MemberState);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -100,7 +99,6 @@ function HomeScreen({ navigation }: any) {
 				}),
 			);
 		}
-
 		newInfo.push({
 			travel_id: -1,
 			travel_title: '',
@@ -115,69 +113,16 @@ function HomeScreen({ navigation }: any) {
 			width: width,
 			navigation: navigation,
 		});
-
 		console.log('newInfo ', newInfo);
 		setAfterTripList(newInfo);
 	};
 
 	return (
-		// <View style={HomeStyles.container}>
 		<LinearGradient colors={['#A7BFE8', '#CFDEF3', '#F2F2F2']} style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
-				<View style={ViewStyles({ flexDirection: 'row' }).header}>
-					<Text
-						style={{
-							...TextStyles({ align: 'left', weight: 'bold', color: 'white' }).title,
-							// ...TextStyles({ align: 'left', weight: 'bold' }).title,
-							flex: 1,
-						}}
-					>
-						TALLY
-					</Text>
-					<Icon
-						name="settings-sharp"
-						size={24}
-						// color="#91C0EB"
-						color="white"
-						onPress={() => navigation.navigate('Setting')}
-					/>
-				</View>
-				<View style={ViewStyles().banner}>
-					<Text style={TextStyles({ align: 'left' }).small}>
-						<Text style={TextStyles({ align: 'left', weight: 'bold' }).regular}>
-							{memberinfo.nickname}
-						</Text>
-						님, 어디로 떠나시나요?
-					</Text>
-					<Text
-						style={{ ...TextStyles({ align: 'left', weight: 'bold' }).header, marginVertical: 15 }}
-					>
-						톡! 찍으면{'\n'}이체까지 딱!
-					</Text>
-					<Text style={TextStyles({ align: 'left' }).small}>
-						언제 어디서든{'\n'}바로 확인하고 정산하는{'\n'}간편한 여행
-					</Text>
-				</View>
-				<TouchableOpacity style={ViewStyles().bannerButton}>
-					<Text
-						style={{
-							...TextStyles({ align: 'left', color: 'white', weight: 'bold' }).regular,
-							textAlignVertical: 'center',
-						}}
-					>
-						MY PASSPORT
-					</Text>
-					<MaterialIcon
-						name="arrow-right-thin"
-						size={32}
-						style={{ color: 'white', textAlignVertical: 'center' }}
-					/>
-					<MaterialIcon
-						name="passport"
-						size={40}
-						style={{ color: 'white', flex: 1, textAlign: 'right', textAlignVertical: 'center' }}
-					/>
-				</TouchableOpacity>
+				<MainHeader navigation={navigation} />
+				<MainBanner />
+				<PassportButton />
 				<View>
 					<Carousel
 						page={page}
@@ -207,7 +152,6 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles({ color: 'red' }).box} />
 				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
-			{/* </View> */}
 		</LinearGradient>
 	);
 }
