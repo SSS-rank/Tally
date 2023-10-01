@@ -5,16 +5,16 @@ import Config from 'react-native-config';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRecoilState } from 'recoil';
 
 import Carousel from '../../components/Carousel';
 import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
+import { JoinState } from '../../recoil/joinRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
-import { useRecoilState } from 'recoil';
-import { JoinState } from '../../recoil/joinRecoil';
 
 const width = Dimensions.get('window').width - 70;
 
@@ -89,7 +89,7 @@ function HomeScreen({ navigation }: any) {
 						})),
 						color: getWeatherBackgroundColor(WeatherText),
 						width: width,
-						weather: WeatherText,
+						weather: WeatherText.toLowerCase(),
 						navigation: navigation,
 					};
 				}),
