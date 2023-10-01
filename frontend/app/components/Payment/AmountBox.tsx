@@ -26,9 +26,11 @@ function AmountBox({ isCash, isPayer, totAmount, paymentUnit, setTotAmount }: Am
 					placeholder={totAmount}
 				/>
 			) : (
-				<Text style={TextStyles({ align: 'left', mRight: 10 }).title}>{totAmount}</Text>
+				<Text style={TextStyles({ align: 'left', weight: 'bold', mRight: 10 }).header}>
+					{totAmount}
+				</Text>
 			)}
-			<Text style={TextStyles({ align: 'left' }).title}>{paymentUnit}</Text>
+			<Text style={TextStyles({ align: 'left' }).regular}>{paymentUnit}</Text>
 		</View>
 	);
 }
@@ -44,5 +46,6 @@ const styles = StyleSheet.create({
 	amountInput: {
 		width: 100,
 		backgroundColor: 'F6F6F6',
+		...TextStyles({ align: 'left', weight: 'bold' }).header,
 	},
 });

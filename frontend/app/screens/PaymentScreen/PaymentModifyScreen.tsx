@@ -257,8 +257,8 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				<View>
 					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
 					{isCash ? (
-						<View style={styles.memo_box}>
-							<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
+						<View style={[styles.memo_box, styles.content_box]}>
+							<Text style={styles.content_title}>결제처</Text>
 							<TextInput
 								value={store}
 								onChangeText={(memo) => {
@@ -272,8 +272,8 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				</View>
 			) : null}
 
-			<View style={styles.memo_box}>
-				<Text style={TextStyles({ align: 'left' }).medium}>메모</Text>
+			<View style={[styles.memo_box, styles.content_box]}>
+				<Text style={styles.content_title}>메모</Text>
 				<TextInput
 					value={text}
 					onChangeText={(memo) => {
@@ -303,10 +303,10 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 								alignItems: 'center',
 							}}
 						>
-							<Text style={TextStyles({ align: 'left' }).medium}>함께 한 사람</Text>
+							<Text style={styles.content_title}>함께 한 사람</Text>
 							<View style={{ flexDirection: 'row' }}>
-								<Text style={TextStyles({ mRight: 20 }).medium}>금액</Text>
-								<Text style={TextStyles({ mLeft: 20 }).medium}>참여</Text>
+								<Text style={styles.party_type}>금액</Text>
+								<Text style={styles.party_type}>참여</Text>
 							</View>
 						</View>
 						<ScrollView>
@@ -346,9 +346,9 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 			{isPayer ? (
 				<View>
-					<View style={styles.self_check_box}>
+					<View style={[styles.self_check_box, styles.content_box]}>
 						<View>
-							<Text style={TextStyles({ align: 'left' }).medium}>이 비용 나만보기</Text>
+							<Text style={styles.content_title}>이 비용 나만보기</Text>
 							<Text style={TextStyles({ align: 'left' }).small}>
 								일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
 							</Text>
@@ -356,7 +356,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						<IIcon
 							name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 							size={32}
-							color="#91C0EB"
+							color={visible ? '#D0D0D0' : '#91C0EB'}
 							style={{ marginLeft: 5 }}
 							onPress={() => {
 								setVisible(!visible);
@@ -407,13 +407,21 @@ const styles = StyleSheet.create({
 	memo_box: {
 		flex: 3,
 		justifyContent: 'flex-start',
-		marginTop: 20,
 	},
-
+	content_box: {
+		marginVertical: 30,
+	},
 	textInput: {
-		backgroundColor: 'white',
+		backgroundColor: '#ffffff',
+		height: 48,
+		marginBottom: 20,
 	},
-
+	content_title: {
+		...TextStyles({ align: 'left', weight: 'bold', mBottom: 10 }).regular,
+	},
+	party_type: {
+		...TextStyles({ mLeft: 40 }).small,
+	},
 	selectInput: {
 		borderWidth: 0,
 		borderBottomWidth: 1,

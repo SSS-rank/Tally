@@ -17,19 +17,19 @@ function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps
 			<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
 			<View style={styles.category_line}>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(1)}>
-					<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
+					<MIcon name="home" size={36} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>숙소</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(2)}>
-					<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
+					<FIcon name="plane" size={36} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>항공</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(3)}>
-					<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
+					<FIcon name="car" size={36} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>교통</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(4)}>
-					<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
+					<MIcon name="ticket" size={36} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>관광</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(5)}>
@@ -41,7 +41,7 @@ function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps
 					<Text style={TextStyles().small}>식사</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(6)}>
-					<MIcon name="shopping" size={40} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
+					<MIcon name="shopping" size={36} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>쇼핑</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(7)}>
@@ -59,15 +59,13 @@ function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps
 const styles = StyleSheet.create({
 	category_line: {
 		flexDirection: 'row',
-		justifyContent: 'space-evenly',
-		padding: 10,
+		justifyContent: 'space-between',
+		paddingVertical: 10,
 	},
 
 	category_box: {
-		marginTop: 20,
-		flex: 2,
 		flexDirection: 'column',
-		paddingBottom: 20,
+		marginVertical: 30,
 	},
 	icon_group: {
 		flexDirection: 'column',
