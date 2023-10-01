@@ -80,15 +80,10 @@ function HomeScreen({ navigation }: any) {
 		if (res.status === 200 && res.data.length > 0) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
-					const WeatherText = await getWeather(item.travelType);
+					const WeatherText = await getWeather(item.travel_type);
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
-						travelParticipants: item.travelParticipants.map((member: any) => ({
-							member_uuid: member.member_uuid,
-							nickname: member.member_nickname,
-							profile_image: member.image,
-						})),
 						color: getWeatherBackgroundColor(WeatherText),
 						width: width,
 						weather: WeatherText.toLowerCase(),
@@ -100,13 +95,13 @@ function HomeScreen({ navigation }: any) {
 
 		newInfo.push({
 			travel_id: -1,
-			travelTitle: '',
-			travelLocation: '',
-			travelType: '',
-			startDate: '',
-			endDate: '',
-			remainDate: 0,
-			travelParticipants: [],
+			travel_title: '',
+			travel_location: '',
+			travel_type: '',
+			start_date: '',
+			end_date: '',
+			remain_date: 0,
+			travel_participants: [],
 			money: 0,
 			color: ['#ffffff', '#ffffff'],
 			width: width,

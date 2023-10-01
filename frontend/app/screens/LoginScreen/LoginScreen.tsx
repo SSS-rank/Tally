@@ -54,9 +54,9 @@ function LoginScreen({ route }: RootStackProp) {
 							api.defaults.headers.Authorization = `Bearer ${tokenState.accessToken}`;
 							const memberRes = await api.get(`member`);
 							const memberData = {
-								member_uuid: memberRes.data.memberUuid,
+								member_uuid: memberRes.data.member_uuid,
 								nickname: memberRes.data.nickname,
-								profile_image: memberRes.data.profileImage,
+								profile_image: memberRes.data.profile_image,
 							};
 							setMember(memberData);
 						}

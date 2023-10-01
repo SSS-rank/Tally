@@ -1,13 +1,14 @@
 import { Member } from './member';
 
 export interface TravelSheetItem {
-	travelTitle: string;
-	travelLocation: string;
-	travelType: string;
-	startDate: string;
-	endDate: string;
-	remainDate: number;
-	travelParticipants: Member[];
+	travel_id: number;
+	travel_title: string;
+	travel_location: string;
+	travel_type: string;
+	start_date: string;
+	end_date: string;
+	remain_date: number;
+	travel_participants: Member[];
 	money: number;
 	navigation: any;
 }
