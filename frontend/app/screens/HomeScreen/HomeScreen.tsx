@@ -70,8 +70,8 @@ function HomeScreen({ navigation }: any) {
 	};
 
 	const getWeatherBackgroundColor = (weather: string) => {
-		if (weather.includes('sunny')) return ['#ffffff', '#fceabb'];
-		else if (weather.includes('clear')) return ['#ffffff', '#fceabb'];
+		if (weather.includes('sunny')) return ['#ffffff', '#fffbe6'];
+		else if (weather.includes('clear')) return ['#ffffff', '#fffbe6'];
 		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
 		else if (weather.includes('snow')) return ['#e6e9f0', '#eef1f5'];
 		else if (weather.includes('clouds')) return ['#accbee', '#e7f0fd'];
