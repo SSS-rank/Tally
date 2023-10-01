@@ -122,7 +122,7 @@ function HomeScreen({ navigation }: any) {
 
 	return (
 		// <View style={HomeStyles.container}>
-		<LinearGradient colors={['#C9D6FF', '#CFDEF3', '#E2E2E2']} style={HomeStyles.container}>
+		<LinearGradient colors={['#A7BFE8', '#CFDEF3', '#F2F2F2']} style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
 				<View style={ViewStyles({ flexDirection: 'row' }).header}>
 					<Text
