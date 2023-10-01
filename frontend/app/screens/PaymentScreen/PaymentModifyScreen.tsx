@@ -48,9 +48,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		setPaymentUuid(payment_uuid);
 		setPayerUuid(payer);
 		if (memberinfo.member_uuid == payer) {
+			//본인이 결제자 인 경우
 			setIspayer(true);
 		}
+
 		if (method === 'CASH') {
+			// 현금 타입인 경우
 			setIsCash(true);
 		}
 
