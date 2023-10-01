@@ -299,6 +299,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
+									block={!isPayer}
 									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
