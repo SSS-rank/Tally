@@ -35,7 +35,7 @@ function ProfileBox() {
 			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
 				<Avatar.Image
 					style={{ backgroundColor: 'transparent' }}
-					size={54}
+					size={48}
 					source={{ uri: memberinfo.profile_image }}
 				/>
 				<Text style={TextStyles({ mTop: 10 }).regular}>{memberinfo.nickname}</Text>
