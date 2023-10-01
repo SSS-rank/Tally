@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { MD3LightTheme, PaperProvider } from 'react-native-paper';
 
+import { Linking, Text } from 'react-native';
+
 import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer } from '@react-navigation/native';
 import { RecoilRoot, useRecoilValue } from 'recoil';
@@ -12,6 +14,17 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 	console.log('Message handled in the background!', remoteMessage);
 });
 
+const config = {
+	screens: {
+		Join: { path: 'join//:host/:travelName/:travelId' },
+	},
+};
+
+const linking = {
+	prefixes: ['tally://'],
+	config,
+};
+
 const App = () => {
 	// 포그라운드일 때 알림 받기
 	useEffect(() => {
@@ -21,10 +34,24 @@ const App = () => {
 		return unsubscribe;
 	}, []);
 
+	// useEffect(() => {
+	// 	const handleDeepLink = async () => {
+	// 		const url = await Linking.getInitialURL();
+	// 		console.log(url);
+	// 		if (url) {
+	// 			console.log(url);
+	// 			// URL 처리 로직을 작성합니다.
+	// 			// 예: 특정 화면으로 네비게이션, 데이터 불러오기 등
+	// 		}
+	// 	};
+	// 	handleDeepLink();
+	// }, []);
+
 	return (
 		<RecoilRoot>
 			<PaperProvider theme={theme}>
-				<NavigationContainer>
+				<NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+					{/* <NavigationContainer> */}
 					<RootStack />
 				</NavigationContainer>
 			</PaperProvider>

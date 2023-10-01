@@ -143,7 +143,10 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 			}
 			for (MemberPayment memberPayment : memberPaymentList) {
-				map.put(memberPayment.getMemberId(), 1);
+				if(!memberPayment.getMemberId().equals(payer)){
+					map.put(memberPayment.getMemberId(), 1);
+				}
+
 			}
 			//각 payment의 상태 ongoing으로 변경
 			payment.updateCalculateStatusEnum(CalculateStatusEnum.ONGOING);
@@ -602,7 +605,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 			//결제자 알림 저장 및 알림 보내기 저장
 			Notification notification = Notification.of("complete_calculate", "555",
-				"Tally", payer.getMemberUuid(), payer.getNickname(), travelName);
+				"Tally_", payer.getMemberUuid(), payer.getNickname(), travelName);
 			//알림함에 저장
 			notificationRepository.save(notification);
 

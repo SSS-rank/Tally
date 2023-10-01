@@ -18,7 +18,7 @@ interface Day {
 }
 
 const defaultDay: Day = {
-	dateString: '날짜를 선택해주세요',
+	dateString: '날짜 선택',
 	day: 0,
 	month: 0,
 	year: 0,
