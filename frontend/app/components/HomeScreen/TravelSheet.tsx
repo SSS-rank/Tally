@@ -41,8 +41,10 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					{item.weather?.includes('snow') && <SnowAnimation />}
 					{item.weather?.includes('rain') && <RainAnimation />}
 					{item.weather?.includes('sunny') && <SunnyAnimation />}
+					{item.weather?.includes('clear') && <SunnyAnimation />}
 					{item.weather?.includes('clouds') && <CloudAnimation type="" />}
 					{item.weather?.includes('cloudy') && <CloudAnimation type="cloudy" />}
+					{item.weather?.includes('fog') && <CloudAnimation type="cloudy" />}
 
 					<View
 						style={{
