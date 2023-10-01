@@ -11,7 +11,13 @@ import PartyListItem from '../../components/PartyList/PartyListItem';
 import AmountBox from '../../components/Payment/AmountBox';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
+import {
+	SelectPayMember,
+	ModMember,
+	PaymentDetailRes,
+	PaymentModifyReq,
+	DirectPayMember,
+} from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
@@ -42,9 +48,12 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		setPaymentUuid(payment_uuid);
 		setPayerUuid(payer);
 		if (memberinfo.member_uuid == payer) {
+			//본인이 결제자 인 경우
 			setIspayer(true);
 		}
+
 		if (method === 'CASH') {
+			// 현금 타입인 경우
 			setIsCash(true);
 		}
 
@@ -110,6 +119,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	}, []);
 
 	const handleInVolveChange = (
+		// 결제자 참여 버튼 클릭시 처리 함수
 		memberUuid: string,
 		amount: number,
 		checked: boolean,
@@ -140,6 +150,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 	const handleAmountChange = (
+		//참가자 결제 금액 수정시 처리함수
 		memberUuid: string,
 		amount: string,
 		checked: boolean,
@@ -184,42 +195,37 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		if (isPayer) {
 			const payment_type = isCash ? 'manual' : 'auto';
 			console.log(payment_type);
-
-			// if (isCash) {
-			// 	//수동입력된 케이스
-			// 	const req = {
-			// 		amount: totAmount,
-			// 		category: selectedcategory,
-			// 		memo: text,
-			// 		payment_date_time: formatDate(date),
-			// 		payment_participants: member,
-			// 		payment_uuid: paymentUuid,
-			// 		travel_id: curTripInfo.id,
-			// 		title: store,
-			// 		visible: visible,
-			// 		ratio: 1,
-			// 		payment_unit_id: 8,
-			// 	};
-			// 	console.log(req);
-			// 	const res = await api.patch('payment/manual', req);
-			// 	if (res.status == 200) {
-			// 		navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
-			// 	}
-			// } else {
-			// 	//자동 입력된 케이스
-			// 	const req = {
-			// 		category: selectedcategory,
-			// 		memo: text,
-			// 		payment_participants: member,
-			// 		payment_uuid: paymentUuid,
-			// 		travel_id: curTripInfo.id,
-			// 		visible: visible,
-			// 	};
-			// 	const res = await api.patch('payment/auto', req);
-			// 	if (res.status == 200) {
-			// 		navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
-			// 	}
-			// }
+			let req: PaymentModifyReq;
+			if (isCash) {
+				//수동입력된 케이스
+				req = {
+					amount: totAmount,
+					category: selectedcategory,
+					memo: text,
+					payment_date_time: formatDate(date),
+					payment_participants: member as DirectPayMember[],
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					title: store,
+					visible: visible,
+					ratio: 1,
+					payment_unit_id: 8,
+				};
+			} else {
+				//자동 입력된 케이스
+				req = {
+					category: selectedcategory,
+					memo: text,
+					payment_participants: member as DirectPayMember[],
+					payment_uuid: paymentUuid,
+					travel_id: curTripInfo.id,
+					visible: visible,
+				};
+			}
+			const res = await api.patch(`payment/${payment_type}`, req);
+			if (res.status == 200) {
+				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			}
 		} else {
 			console.log('태그자 수정 요청 ');
 		}
@@ -298,6 +304,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
+									block={!isPayer} //결제자가 아닌 경우 안보이도록 변수 설정
 									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
@@ -422,9 +429,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-	},
-	submit: {
-		paddingBottom: 50,
 	},
 });
 export default PaymentModifyScreen;

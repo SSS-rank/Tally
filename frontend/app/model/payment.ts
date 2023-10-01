@@ -60,3 +60,17 @@ export interface PaymentDetailRes {
 	payment_date: string; // 결제 시간(String)
 	payment_participants: ModMember[];
 }
+
+export interface PaymentModifyReq {
+	amount?: string;
+	category: number;
+	memo: string;
+	payment_date_time?: string;
+	payment_participants: DirectPayMember[];
+	payment_uuid: string;
+	travel_id: number;
+	title?: string;
+	visible: boolean;
+	ratio?: number;
+	payment_unit_id?: number;
+}

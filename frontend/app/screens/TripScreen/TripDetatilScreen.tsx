@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
+import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -19,10 +20,9 @@ import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
+import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
-import Clipboard from '@react-native-clipboard/clipboard';
-import { MemberState } from '../../recoil/memberRecoil';
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const api = useAxiosWithAuth();

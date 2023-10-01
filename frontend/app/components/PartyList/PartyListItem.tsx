@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Avatar, TextInput } from 'react-native-paper';
 
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/Avatar/AvatarImage';
@@ -12,6 +12,7 @@ interface partyItemprops {
 	img: AvatarImageSource;
 	involveCheck: boolean;
 	isPayer: boolean;
+	block: boolean; //
 	onAmountChange: (amount: string) => void;
 	onInvolveChange: (involveCheck: boolean) => void;
 }
@@ -26,7 +27,7 @@ function PartyListItem(props: partyItemprops) {
 		props.onInvolveChange(!involveCheck);
 	};
 	return (
-		<View style={styles.partyItem}>
+		<TouchableOpacity style={styles.partyItem} disabled={props.block}>
 			<View style={styles.profile_group}>
 				<Avatar.Image size={32} source={props.img} style={styles.profile_img} />
 				<Text style={(TextStyles().small, { marginRight: 5 })}>{props.name}</Text>
@@ -42,6 +43,7 @@ function PartyListItem(props: partyItemprops) {
 					returnKeyType="next"
 					placeholder={amount + ''}
 					style={styles.textInput}
+					disabled={props.block}
 				/>
 				<Text>원</Text>
 
@@ -54,9 +56,10 @@ function PartyListItem(props: partyItemprops) {
 						setInvolveCheck(!involveCheck);
 						handleInVolveChange();
 					}}
+					disabled={props.block}
 				/>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 }
 export default PartyListItem;
@@ -81,6 +84,7 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		backgroundColor: 'white',
+		color: 'black',
 		borderBottomWidth: 1,
 	},
 });
