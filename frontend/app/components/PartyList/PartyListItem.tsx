@@ -29,24 +29,25 @@ function PartyListItem(props: partyItemprops) {
 	return (
 		<TouchableOpacity style={styles.partyItem} disabled={props.block}>
 			<View style={styles.profile_group}>
-				<Avatar.Image size={32} source={props.img} style={styles.profile_img} />
-				<Text style={(TextStyles().small, { marginRight: 5 })}>{props.name}</Text>
-				{props.isPayer ? <Text style={TextStyles().small}>결제자</Text> : null}
+				<Avatar.Image size={48} source={props.img} style={styles.profile_img} />
+				<Text style={styles.nickname}>{props.name}</Text>
+				{props.isPayer ? <Text style={styles.prayer}>결제자</Text> : null}
 			</View>
 
 			<View style={styles.input_group}>
-				<TextInput
-					value={amount}
-					onChangeText={(input) => {
-						handleAmountChange(input);
-					}}
-					returnKeyType="next"
-					placeholder={amount + ''}
-					style={styles.textInput}
-					disabled={props.block}
-				/>
-				<Text>원</Text>
-
+				<View style={styles.textInputView}>
+					<TextInput
+						value={amount}
+						onChangeText={(input) => {
+							handleAmountChange(input);
+						}}
+						returnKeyType="next"
+						placeholder={amount + ''}
+						style={styles.textInput}
+						disabled={props.block}
+					/>
+					<Text style={styles.text_won}>원</Text>
+				</View>
 				<Icon
 					name={involveCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
 					size={32}
@@ -68,23 +69,39 @@ const styles = StyleSheet.create({
 	profile_img: {
 		marginRight: 10,
 	},
+	nickname: {
+		...TextStyles({ align: 'left', mRight: 5, weight: 'bold' }).regular,
+	},
+	prayer: {
+		...TextStyles({ color: '#666666' }).small,
+	},
 	profile_group: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		padding: 5,
 	},
 	input_group: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		// backgroundColor: 'blue',
 	},
 	partyItem: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		marginBottom: 15,
+	},
+	textInputView: {
+		flexDirection: 'row',
+		alignItems: 'center',
 	},
 	textInput: {
-		backgroundColor: 'white',
-		color: 'black',
+		backgroundColor: '#ffffff',
+		borderBottomColor: 'rgba(102, 102, 102, 0.4)',
 		borderBottomWidth: 1,
+		height: 40,
+		...TextStyles({ align: 'left' }).regular,
+	},
+	text_won: {
+		...TextStyles({ align: 'left', mRight: 10 }).regular,
 	},
 });
