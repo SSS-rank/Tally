@@ -68,7 +68,9 @@ function HomeScreen({ navigation }: any) {
 	const getWeatherBackgroundColor = (weather: string) => {
 		if (weather.includes('sunny')) return ['#ffffff', '#ffffff'];
 		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
-		else if (weather.includes('snow')) return ['#cfd9df', '#e2ebf0'];
+		else if (weather.includes('snow')) return ['#e6e9f0', '#eef1f5'];
+		else if (weather.includes('clouds')) return ['#accbee', '#e7f0fd'];
+		else if (weather.includes('cloudy')) return ['#fdfbfb', '#ebedee'];
 		else return ['#ffffff', '#ffffff'];
 	};
 
