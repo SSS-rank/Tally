@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
-import DatePicker from 'react-native-date-picker';
-import { Text, TextInput, Button, Chip } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, TextInput, Button } from 'react-native-paper';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
 
+import PartyMemberAlert from '../../components/Alert/PartyMemberAlert';
+import TotAmountAlert from '../../components/Alert/TotAmountAlert';
 import DateChip from '../../components/DateChip/DateChip';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import AmountBox from '../../components/Payment/AmountBox';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import {
-	SelectPayMember,
-	ModMember,
-	PaymentDetailRes,
-	PaymentModifyReq,
-	DirectPayMember,
-} from '../../model/payment';
+import { SelectPayMember, ModMember, PaymentModifyReq, DirectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
@@ -41,7 +36,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [visible, setVisible] = useState(true);
 	const [paymentUuid, setPaymentUuid] = useState('');
 	const [payerUuid, setPayerUuid] = useState('');
-	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
+	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제할 참가자
 
 	useEffect(() => {
 		const { payment_uuid, payer, method } = route.params;
@@ -129,23 +124,14 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		setPartyMembers((prevMemebers: SelectPayMember[]) => {
 			const updatedInvolveState = [...prevMemebers];
 			const index = updatedInvolveState.findIndex((item) => item.member_uuid === memberUuid);
-			if (index !== -1) {
-				updatedInvolveState[index] = {
-					member_uuid: memberUuid,
-					amount: amount,
-					checked: checked,
-					member_nickname: memberNickname,
-					image: image,
-				};
-			} else {
-				updatedInvolveState.push({
-					member_uuid: memberUuid,
-					amount: amount,
-					checked: checked,
-					member_nickname: memberNickname,
-					image: image,
-				});
-			}
+			updatedInvolveState[index] = {
+				member_uuid: memberUuid,
+				amount: amount,
+				checked: checked,
+				member_nickname: memberNickname,
+				image: image,
+			};
+
 			return updatedInvolveState;
 		});
 	};
@@ -187,19 +173,26 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	}
 
 	async function handleSubmit() {
-		let member = partyMembers.map((item) => {
-			if (item.amount > 0) {
-				return { amount: item.amount, member_uuid: item.member_uuid };
-			}
-		});
-		console.log(member);
+		let member = partyMembers
+			.filter((item) => item.checked)
+			.filter((item) => item.amount !== 0) // amount가 0이 아닌 값만 필터링
+			.map((item) => ({ amount: item.amount, member_uuid: item.member_uuid })); // 변환 작업
+		if (member.length == 0) {
+			//결제 지정을 아무도 안할 때 예외 처리
+			PartyMemberAlert();
+			return;
+		}
+		const inputTotAmount = member.reduce((acc, curr) => acc + curr.amount, 0); //입력한 금액의 총합
+		if (inputTotAmount != Number(totAmount)) {
+			TotAmountAlert();
+			return;
+		}
 		// 나만 보기 설정한 경우
 		if (!visible) {
 			member = [{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid }];
 		}
 		if (isPayer) {
 			const payment_type = isCash ? 'manual' : 'auto';
-			console.log(payment_type);
 			let req: PaymentModifyReq;
 			if (isCash) {
 				//수동입력된 케이스
@@ -227,12 +220,17 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					visible: visible,
 				};
 			}
-			const res = await api.patch(`payment/${payment_type}`, req);
-			if (res.status == 200) {
-				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			console.log(req);
+			try {
+				const res = await api.patch(`payment/${payment_type}`, req);
+				if (res.status == 200) {
+					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+				}
+			} catch (error) {
+				console.log(error);
 			}
 		} else {
-			// 메모 수정
+			// 태그자 입장메모 수정
 			const req = {
 				travel_id: curTripInfo.id,
 				payment_uuid: paymentUuid,
