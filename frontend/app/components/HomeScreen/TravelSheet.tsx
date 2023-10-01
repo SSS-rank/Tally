@@ -3,12 +3,13 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar, Button, Text } from 'react-native-paper';
 
+import { TextStyles } from './../../styles/CommonStyles';
+import CloudAnimation from './CloudAnimation';
 import RainAnimation from './RainAnimation';
 import SnowAnimation from './SnowAnimation';
 import SunnyAnimation from './SunnyAnimation';
 import TripAddCarouselItem from './TripAddCarouselItem';
 import { TravelSheetItem } from '../../model/mainTripItem';
-import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
 
 interface TravelSheetProps extends TravelSheetItem {
@@ -34,6 +35,8 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					{item.weather?.includes('snow') && <SnowAnimation />}
 					{item.weather?.includes('rain') && <RainAnimation />}
 					{item.weather?.includes('sunny') && <SunnyAnimation />}
+					{item.weather?.includes('clouds') && <CloudAnimation type="" />}
+					{item.weather?.includes('cloudy') && <CloudAnimation type="cloudy" />}
 
 					<View
 						style={{

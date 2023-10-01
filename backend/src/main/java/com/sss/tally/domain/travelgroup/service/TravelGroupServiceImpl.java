@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import com.sss.tally.domain.memberpayment.entity.MemberPayment;
+import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
+import com.sss.tally.domain.payment.entity.Payment;
+import com.sss.tally.domain.payment.repository.PaymentRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,8 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 	private final TravelRepository travelRepository;
 	private final TravelGroupRepository travelGroupRepository;
 	private final CustomCheckListService customCheckListService;
+	private final PaymentRepository paymentRepository;
+	private final MemberPaymentRepository memberPaymentRepository;
 
 	@Override
 	public void addTravelGroup(Authentication authentication, Long travelId) {
@@ -45,6 +50,10 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 		travelGroupRepository.save(TravelGroup.of(member, travelOptional.get()));
 		customCheckListService.createInitCustomCheckList(member, travelOptional.get());
 
+		List<Payment> paymentList = paymentRepository.findAllByTravelIdAndStatusIsFalse(travelOptional.get());
+		for(Payment payment: paymentList){
+			memberPaymentRepository.save(MemberPayment.from(member, payment, true, 0L));
+		}
 	}
 
 	@Override
