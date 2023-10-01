@@ -46,18 +46,21 @@ public class TravelDto {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class TravelNotStartDto {
+		private Long travelId;
 		private String travelTitle;
 		private String travelLocation;
 		private String travelType;
 		private LocalDate startDate;
 		private LocalDate endDate;
 		private int remainDate;
-		private List<MemberDto.MemberTravelDto> travelParticipants;
 		private Long money;
+		private List<MemberDto.MemberRespDto> travelParticipants;
 
-		public static TravelNotStartDto of(Long money, int remainDate, Travel travel, String travelLocation, String travelType, List<MemberDto.MemberTravelDto> members){
+		public static TravelNotStartDto of(Long money, int remainDate, Travel travel, String travelLocation, String travelType, List<MemberDto.MemberRespDto> members){
 			return TravelNotStartDto.builder()
+				.travelId(travel.getTravelId())
 				.travelTitle(travel.getTravelTitle())
 				.travelLocation(travelLocation)
 				.travelType(travelType)
