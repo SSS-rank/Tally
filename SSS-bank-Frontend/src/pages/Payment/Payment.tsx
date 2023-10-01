@@ -24,6 +24,15 @@ interface Account {
 function Payment() {
 	const navigate = useNavigate();
 	const { state } = useLocation();
+	const { formattedValue, handleValueChange } = useNumberFormat('');
+	const [showAccounts, setShowAccounts] = useState(false);
+	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+
+	const [accountPassword, setAccountPassword] = useState(''); // 계좌 비밀번호
+
+	const handleAccountPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setAccountPassword(e.target.value);
+	};
 
 	// 결제 취소
 	const clickCancleBtn = () => {
@@ -48,7 +57,7 @@ function Payment() {
 		if (state.shopId !== '' && amountString != null && typeof amountString === 'string') {
 			const amountNumber = parseFloat(amountString.replace(/,/g, ''));
 			const paymentReq = {
-				sender_account_num: data.get('accountNum'),
+				sender_account_num: selectedAccount?.account_number,
 				shop_id: state.shopId,
 				payment_amount: amountNumber,
 				password: data.get('accountPassword'),
@@ -75,14 +84,16 @@ function Payment() {
 		fetchAccountData();
 	}, []);
 
-	const { formattedValue, handleValueChange } = useNumberFormat('');
-	const [showAccounts, setShowAccounts] = useState(false);
-	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-
 	const handleAccountSelect = (account: Account) => {
 		setSelectedAccount(account);
 		setShowAccounts(false); // 선택 후 리스트 숨기기 (선택한 항목을 옆에 표시하면서)
 	};
+
+	const isButtonEnabled =
+		parseFloat(formattedValue.replace(/,/g, '')) > 0 &&
+		accountPassword.length == 4 &&
+		selectedAccount &&
+		!showAccounts;
 
 	return (
 		<Container component="main">
@@ -157,7 +168,10 @@ function Payment() {
 								onChange={handleValueChange}
 							/>
 						</Grid>
-						<Grid item xs={12} sx={{ mt: 6 }}>
+						<Grid item xs={12} sx={{ mt: 2 }}>
+							<Typography sx={{ marginBottom: '0.5rem', marginTop: '1rem' }}>
+								비밀번호 4자리를 입력하세요.
+							</Typography>
 							<TextField
 								required
 								fullWidth
@@ -166,6 +180,8 @@ function Payment() {
 								name="accountPassword"
 								variant="standard"
 								type="password"
+								value={accountPassword}
+								onChange={handleAccountPasswordChange}
 							/>
 						</Grid>
 					</Grid>
@@ -173,6 +189,7 @@ function Payment() {
 						fullWidth
 						type="submit"
 						variant="contained"
+						disabled={!isButtonEnabled}
 						sx={{
 							mt: 3,
 							mb: 2,
