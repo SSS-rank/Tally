@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil';
 
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
 import PartyListItem from '../../components/PartyList/PartyListItem';
+import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
@@ -295,51 +296,10 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						style={styles.textInput}
 					/>
 				</View>
-				<View style={[styles.category_box, styles.content_box]}>
-					<Text style={styles.content_title}>카테고리</Text>
-					<View style={styles.category_line}>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
-							<MIcon name="home" size={36} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>숙소</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
-							<FIcon name="plane" size={36} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>항공</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
-							<FIcon name="car" size={36} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>교통</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
-							<MIcon name="ticket" size={36} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
-							<Text style={TextStyles().small}>관광</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
-							<MIcon
-								name="silverware-fork-knife"
-								size={36}
-								color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>식사</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
-							<MIcon
-								name="shopping"
-								size={36}
-								color={selectedcategory === 6 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>쇼핑</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
-							<MIcon
-								name="dots-horizontal-circle"
-								size={36}
-								color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
-							/>
-							<Text style={TextStyles().small}>기타</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
+				<CategoryBox
+					selectedcategory={selectedcategory}
+					setSelectedCategory={setSelectedCategory}
+				/>
 
 				<View style={[styles.party_box, styles.content_box]}>
 					{visible ? (
@@ -418,11 +378,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	);
 }
 const styles = StyleSheet.create({
-	category_line: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		paddingVertical: 10,
-	},
 	icon_group: {
 		flexDirection: 'column',
 	},
