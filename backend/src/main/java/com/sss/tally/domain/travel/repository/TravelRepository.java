@@ -40,6 +40,11 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 		"AND t.startDate > :now ORDER BY t.startDate ASC")
 	List<Travel> findUpcomingTravelForMemberOrderByTravelDate(@Param("memberId") Member memberId, @Param("now") LocalDate now);
 
+	@Query("SELECT t FROM Travel t WHERE t.travelId IN " +
+			"(SELECT tg.travelId FROM TravelGroup tg WHERE tg.memberId = :memberId And tg.visible = true) " +
+			"AND t.startDate <= :now AND t.endDate >= :now ORDER BY t.startDate ASC")
+	List<Travel> findOngoingTravelForMemberOrderByTravelDate(@Param("memberId") Member memberId, @Param("now") LocalDate now);
+
 	@Query("SELECT t " +
 			"FROM Travel t " +
 			"WHERE t.travelId IN (SELECT MIN(tg.travelId.travelId) " +
