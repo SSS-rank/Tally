@@ -8,7 +8,7 @@ import {
 	Pressable,
 	Alert,
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Avatar, Button, Text } from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DetailListItem from '../../components/DetailList/DetailListItem';
+import SortItem from '../../components/TripScreen/SortItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
@@ -91,74 +92,53 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.header}>
-				<Icon name="chevron-left" size={50} color="black" />
-				<View style={styles.header_button_group}>
-					<Button
-						style={styles.button}
-						mode="text"
-						labelStyle={TextStyles().regular}
-						onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
-					>
-						정산 현황
-					</Button>
-					<Button
-						style={styles.button}
-						labelStyle={TextStyles().regular}
-						mode="text"
-						onPress={() => navigation.navigate('AnalysisTrip')}
-					>
-						분석
-					</Button>
+			<View>
+				<View style={styles.topView}>
+					<Text style={styles.title}>{title}</Text>
+					<Text style={styles.info}>{location}</Text>
 				</View>
-			</View>
-
-			<View style={styles.title_box}>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignContent: 'flex-end',
-						flexWrap: 'wrap',
-					}}
-				>
-					<Text style={TextStyles().title}>{title}</Text>
-					<Text style={[TextStyles().small, styles.type]}>{location}</Text>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignContent: 'flex-end',
-						flexWrap: 'wrap',
-					}}
-				>
-					<Text style={TextStyles().regular}>{period}</Text>
-				</View>
+				<Text style={styles.info}>{period}</Text>
 			</View>
 			<View style={styles.party_box}>
-				<Icon name="face" size={30} color="green" />
-				<Icon name="face" size={30} color="green" />
+				{participants.map((member, index: number) =>
+					index === 0 ? (
+						<Avatar.Image
+							key={member.member_uuid}
+							style={{ backgroundColor: 'transparent' }}
+							size={54}
+							source={{ uri: member.image }}
+						/>
+					) : (
+						<Avatar.Image
+							key={member.member_uuid}
+							style={{ backgroundColor: 'transparent', position: 'relative', left: -24 }}
+							size={54}
+							source={{ uri: member.image }}
+						/>
+					),
+				)}
 				<Button
 					icon="plus"
-					style={styles.button}
-					mode="text"
-					labelStyle={TextStyles().regular}
+					style={[styles.outlineBtn, { marginLeft: 10 }]}
+					mode="outlined"
+					labelStyle={TextStyles({ color: '#91C0EB' }).regular}
 					onPress={() => setInviteModalVisible(true)}
 				>
 					일행 추가
 				</Button>
 			</View>
 			<View style={styles.center_box}>
-				<Text style={[TextStyles().medium, styles.end_date]}>
+				<Text style={styles.info}>
 					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={[TextStyles().header, styles.balance]}>{totalAmount}원</Text>
+				<Text style={styles.money}>{totalAmount}원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
 					icon="plus"
-					style={styles.button}
+					style={styles.lightSolidBtn}
 					labelStyle={TextStyles().regular}
-					mode="text"
+					mode="contained"
 					onPress={() =>
 						navigation.navigate('AddPayment', {
 							travel_id: travel_id ?? 0,
@@ -170,9 +150,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					내역 추가
 				</Button>
 				<Button
-					style={styles.button}
-					labelStyle={TextStyles().regular}
-					mode="text"
+					style={styles.solidBtn}
+					labelStyle={TextStyles({ color: '#ffffff' }).regular}
+					mode="contained"
 					onPress={() => handleAdjust()}
 				>
 					정산
@@ -180,7 +160,15 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			</View>
 
 			<View style={styles.order_button}>
-				<Button onPress={() => setModalVisible(!modalVisible)}>{orderType}</Button>
+				<Button
+					mode="text"
+					labelStyle={TextStyles().regular}
+					icon="chevron-down"
+					contentStyle={{ flexDirection: 'row-reverse' }}
+					onPress={() => setModalVisible(!modalVisible)}
+				>
+					{orderType}
+				</Button>
 			</View>
 			<Modal
 				animationType="slide"
@@ -195,9 +183,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					onPress={() => setModalVisible(!modalVisible)}
 				/>
 				<View style={styles.modalView}>
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 40 }}>
 						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
-							정렬
+							정렬 선택
 						</Text>
 						<Icon
 							name="close"
@@ -207,31 +195,18 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						/>
 					</View>
 					<View style={styles.order_type_container}>
-						<Button
-							style={styles.order_type}
-							mode="elevated"
-							buttonColor="#91C0EB"
-							textColor="white"
-							onPress={() => {
-								setOrderType('최신순');
-								setModalVisible(!modalVisible);
-							}}
-						>
-							최신순
-						</Button>
-
-						<Button
-							style={styles.order_type}
-							mode="elevated"
-							buttonColor="#91C0EB"
-							textColor="white"
-							onPress={() => {
-								setOrderType('오래된 순');
-								setModalVisible(!modalVisible);
-							}}
-						>
-							오래된 순
-						</Button>
+						<SortItem
+							text="최신순"
+							orderType={orderType}
+							setOrderType={setOrderType}
+							setModalVisible={setModalVisible}
+						/>
+						<SortItem
+							text="오래된 순"
+							orderType={orderType}
+							setOrderType={setOrderType}
+							setModalVisible={setModalVisible}
+						/>
 					</View>
 				</View>
 			</Modal>
@@ -290,56 +265,24 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				</View>
 			</Modal>
 			{payData.map((item) => (
-				<View key={item.payment_uuid}>
-					<TouchableOpacity
-						style={styles.detail_item_box}
-						onPress={() =>
-							navigation.navigate('ModifyPayment', {
-								payment_uuid: item.payment_uuid,
-								payer: item.payer,
-								method: item.payment_method,
-							})
-						}
-					>
-						<Text>{item.payment_date.split('T')[0]}</Text>
-						<DetailListItem
-							title={item.payment_name}
-							time={item.payment_date}
-							balance={item.amount}
-							party={item.participants ? item.participants.join(',') : ''}
-							abroad={false}
-							calculateStatus={item.calculate_status}
-							visible={item.visible}
-						/>
-					</TouchableOpacity>
-				</View>
+				<DetailListItem key={item.payment_uuid} item={item} navigation={navigation} />
 			))}
 		</ScrollView>
 	);
 }
 
 const styles = StyleSheet.create({
-	order_type: {
-		width: 350,
-		padding: 10,
-		margin: 10,
-	},
 	order_type_container: {
-		padding: 50,
-		alignItems: 'center',
+		width: '100%',
 	},
 	modalView: {
-		marginTop: '100%',
-		height: '100%',
-		// flex: 1,
 		width: '100%',
-		alignSelf: 'stretch',
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		backgroundColor: 'white',
 		padding: 35,
 		position: 'absolute',
-		// alignItems: 'center',
+		bottom: 0,
 		shadowColor: '#000',
 		shadowOffset: {
 			width: 0,
@@ -360,30 +303,27 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		backgroundColor: 'white',
 	},
-	selectInput: {
-		borderWidth: 0,
-		borderBottomWidth: 0,
-		width: 150,
-	},
 	center_box: {
 		flexDirection: 'column',
 		alignItems: 'center',
 		padding: 50,
-	},
-	end_date: {
-		alignItems: 'center',
 	},
 	party_box: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		alignItems: 'center',
 		paddingHorizontal: 10,
+		marginTop: 10,
 	},
-	title_box: {
-		padding: 10,
+	topView: {
+		flexDirection: 'row',
+		alignItems: 'center',
 	},
-	detail_item_box: {
-		padding: 10,
+	title: {
+		...TextStyles({ weight: 'bold', mRight: 10, color: '#91C0EB' }).header,
+	},
+	info: {
+		...TextStyles({ align: 'left', color: '#666666' }).small,
 	},
 	body_button_group: {
 		paddingLeft: 10,
@@ -391,16 +331,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		marginBottom: 20,
 	},
-	balance: {
-		justifyContent: 'center',
-		alignItems: 'center',
+	money: {
+		...TextStyles({ weight: 'bold' }).header,
 	},
 	period: {
 		fontSize: 13,
-	},
-	title: {
-		fontSize: 30,
 	},
 	type: {
 		alignSelf: 'flex-end',
@@ -410,13 +347,18 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		flexWrap: 'wrap',
 	},
-	header_button_group: {
-		flexDirection: 'row',
+	outlineBtn: {
+		borderColor: '#91C0EB',
+		borderRadius: 32,
+		padding: 0,
 	},
-	header: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+	lightSolidBtn: {
+		backgroundColor: '#E0E6EC',
+		borderRadius: 32,
+	},
+	solidBtn: {
+		backgroundColor: '#91C0EB',
+		borderRadius: 32,
 	},
 	centeredView: {
 		flex: 1,

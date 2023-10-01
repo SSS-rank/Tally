@@ -51,12 +51,21 @@ const ExRateDropDown: FC<ExRateDropDownProps> = (props) => {
 			setOpen={setOpen}
 			setValue={setValue}
 			setItems={setItems}
-			textStyle={TextStyles().medium}
+			textStyle={TextStyles({ align: 'left' }).small}
 			placeholder="화폐 단위 선택"
 			zIndex={10000}
 			zIndexInverse={1000}
+			style={styles.box}
+			containerStyle={{ width: '90%' }}
 		/>
 	);
 };
+
+const styles = StyleSheet.create({
+	box: {
+		borderWidth: 0,
+		backgroundColor: 'transparent',
+	},
+});
 
 export default ExRateDropDown;
