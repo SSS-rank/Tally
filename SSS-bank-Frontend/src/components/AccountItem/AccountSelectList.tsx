@@ -7,6 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+import bankName from '../../Data/BankName';
 import BankIcon from '../BankIcon/BankIcon';
 
 interface accountListItemProps {
@@ -37,6 +38,16 @@ function AccountSelectList({ balance, bankcode, accountNum }: accountListItemPro
 				<CardContent sx={{ flexGrow: 1 }}>
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
 						<BankIcon code={bankcode} />
+						<Typography
+							gutterBottom
+							variant="h6"
+							component="h2"
+							id="accountNum"
+							ref={accountNumRef}
+							sx={{ ml: 1, mb: 0, fontFamily: 'OTWelcomeRA' }}
+						>
+							{bankName[bankcode]}
+						</Typography>
 						<Typography
 							gutterBottom
 							variant="h6"
