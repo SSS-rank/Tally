@@ -8,6 +8,7 @@ import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
+import DateChip from '../../components/DateChip/DateChip';
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import CategoryBox from '../../components/Payment/CategoryBox';
@@ -246,35 +247,8 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				</View>
 			</View>
 			<ScrollView>
-				<View style={[styles.date_box, styles.content_box]}>
-					<Text style={styles.content_title}>날짜 선택</Text>
-					<Chip style={styles.chip} onPress={() => setOpen(true)}>
-						{date.getFullYear() +
-							'년 ' +
-							(date.getMonth() + 1) +
-							'월 ' +
-							date.getDate() +
-							'일 ' +
-							date.getHours() +
-							'시 ' +
-							date.getMinutes() +
-							'분 '}
-					</Chip>
-					<DatePicker
-						style={styles.date_picker}
-						modal
-						open={open}
-						date={date}
-						onConfirm={(p_date) => {
-							setOpen(false);
-							setDate(p_date);
-						}}
-						onCancel={() => {
-							setOpen(false);
-						}}
-					/>
-				</View>
-				<View style={styles.memo_box}>
+				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+				<View style={[styles.memo_box, styles.content_box]}>
 					<Text style={styles.content_title}>결제처</Text>
 					<TextInput
 						value={store}
