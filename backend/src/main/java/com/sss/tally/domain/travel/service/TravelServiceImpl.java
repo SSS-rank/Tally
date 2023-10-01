@@ -208,8 +208,9 @@ public class TravelServiceImpl implements TravelService {
 		Member member = memberRepository.findByMemberUuid(auth.getMemberUuid())
 			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
 
-		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member,
-			LocalDate.now().minusDays(1));
+		List<Travel> travelList = travelRepository.findOngoingTravelForMemberOrderByTravelDate(member, LocalDate.now());
+		travelList.addAll(travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member, LocalDate.now()));
+
 		if (travelList.isEmpty())
 			return null;
 
