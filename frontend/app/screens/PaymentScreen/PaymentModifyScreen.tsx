@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import PartyMemberAlert from '../../components/Alert/PartyMemberAlert';
 import TotAmountAlert from '../../components/Alert/TotAmountAlert';
 import DateChip from '../../components/DateChip/DateChip';
+import PaymentRejectModal from '../../components/Modal/PaymentRejectModal';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import AmountBox from '../../components/Payment/AmountBox';
 import CategoryBox from '../../components/Payment/CategoryBox';
@@ -37,6 +38,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [paymentUuid, setPaymentUuid] = useState('');
 	const [payerUuid, setPayerUuid] = useState('');
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제할 참가자
+	const [rejectModalVisible, setRejectModalVisible] = useState(false);
 
 	useEffect(() => {
 		const { payment_uuid, payer, method } = route.params;
@@ -167,9 +169,9 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 
-	async function sendAlarm() {
-		// 수정 요청 알람 보내는 함수
-		console.log('alarm');
+	async function handleModifyRequest() {
+		// 수정 요청 처리 함수
+		setRejectModalVisible(true);
 	}
 
 	async function handleSubmit() {
@@ -220,7 +222,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					visible: visible,
 				};
 			}
-			console.log(req);
 			try {
 				const res = await api.patch(`payment/${payment_type}`, req);
 				if (res.status == 200) {
@@ -374,6 +375,11 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				</View>
 			) : (
 				<View>
+					<PaymentRejectModal
+						modalVisible={rejectModalVisible}
+						setModalVisible={setRejectModalVisible}
+					/>
+
 					<Button
 						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 						dark={true} // 어두운 테마 사용 여부
@@ -387,7 +393,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 						dark={true} // 어두운 테마 사용 여부
 						compact={true} // 작은 크기의 버튼 여부
-						onPress={() => sendAlarm()} // 클릭 이벤트 핸들러
+						onPress={() => handleModifyRequest()} // 클릭 이벤트 핸들러
 						style={{ marginTop: 10, marginBottom: 70 }}
 					>
 						수정 요청
