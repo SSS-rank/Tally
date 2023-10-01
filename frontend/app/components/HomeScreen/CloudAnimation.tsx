@@ -1,7 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Animated, Easing, StyleSheet } from 'react-native';
 
-function CloudAnimation() {
+interface cloudType {
+	type: string;
+}
+
+function CloudAnimation({ type }: cloudType) {
 	const cloud = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
@@ -44,12 +48,24 @@ function CloudAnimation() {
 				},
 			]}
 		>
-			<View style={styles.cloud1}></View>
-			<View style={styles.cloud2}></View>
-			<View style={styles.cloud3}></View>
-			<View style={styles.cloud4}></View>
-			<View style={styles.cloud5}></View>
-			<View style={styles.cloud6}></View>
+			<View
+				style={[styles.cloud1, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
+			<View
+				style={[styles.cloud2, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
+			<View
+				style={[styles.cloud3, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
+			<View
+				style={[styles.cloud4, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
+			<View
+				style={[styles.cloud5, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
+			<View
+				style={[styles.cloud6, type === 'cloudy' ? { backgroundColor: '#cccccc' } : null]}
+			></View>
 		</Animated.View>
 	);
 }
