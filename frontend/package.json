@@ -11,6 +11,7 @@
     "lint:fix": "eslint --fix ./app/**/*.{ts,tsx,js,jsx}"
   },
   "dependencies": {
+    "@react-native-clipboard/clipboard": "^1.12.1",
     "@react-native-firebase/app": "^18.5.0",
     "@react-native-firebase/messaging": "^18.5.0",
     "@react-native-seoul/kakao-login": "^5.3.0",
