@@ -33,10 +33,14 @@ function CloudAnimation() {
 			style={[
 				styles.cloudContainer,
 				{
-					top: cloud.interpolate({
-						inputRange: [0, 1],
-						outputRange: [40, 25],
-					}),
+					transform: [
+						{
+							translateY: cloud.interpolate({
+								inputRange: [0, 1],
+								outputRange: [-140, -125],
+							}),
+						},
+					],
 				},
 			]}
 		>
