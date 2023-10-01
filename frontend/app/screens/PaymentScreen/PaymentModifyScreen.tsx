@@ -116,6 +116,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	}, []);
 
 	const handleInVolveChange = (
+		// 결제자 참여 버튼 클릭시 처리 함수
 		memberUuid: string,
 		amount: number,
 		checked: boolean,
@@ -146,6 +147,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 	const handleAmountChange = (
+		//참가자 결제 금액 수정시 처리함수
 		memberUuid: string,
 		amount: string,
 		checked: boolean,
@@ -299,7 +301,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
-									block={!isPayer}
+									block={!isPayer} //결제자가 아닌 경우 안보이도록 변수 설정
 									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
