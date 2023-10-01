@@ -18,6 +18,7 @@ public class MemberDto {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
+	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class MemberRespDto{
 		private String memberUuid;
 		private String nickname;
