@@ -209,7 +209,7 @@ public class TravelServiceImpl implements TravelService {
 			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
 
 		List<Travel> travelList = travelRepository.findUpcomingTravelForMemberOrderByTravelDate(member,
-			LocalDate.now());
+			LocalDate.now().minusDays(1));
 		if (travelList.isEmpty())
 			return null;
 
@@ -254,7 +254,7 @@ public class TravelServiceImpl implements TravelService {
 			// 사용자의 정보를 MembeTravelDto로 변환 및 travelsInfo에 추가
 			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation,
 				members.stream()
-					.map(MemberDto.MemberTravelDto::from)
+					.map(mem -> MemberDto.MemberRespDto.of(mem.getMemberUuid(), mem.getNickname(), mem.getProfileImage()))
 					.collect(Collectors.toList())));
 		}
 		return travelsInfo;
