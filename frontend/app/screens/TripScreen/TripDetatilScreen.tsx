@@ -93,20 +93,19 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.header}>
-				<Icon name="chevron-left" size={50} color="black" />
 				<View style={styles.header_button_group}>
 					<Button
-						style={styles.button}
-						mode="text"
-						labelStyle={TextStyles().regular}
+						style={[styles.outlineBtn, { marginRight: 10 }]}
+						mode="outlined"
+						labelStyle={TextStyles({ color: '#91C0EB' }).regular}
 						onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
 					>
 						정산 현황
 					</Button>
 					<Button
-						style={styles.button}
-						labelStyle={TextStyles().regular}
-						mode="text"
+						style={styles.outlineBtn}
+						labelStyle={TextStyles({ color: '#91C0EB' }).regular}
+						mode="outlined"
 						onPress={() => navigation.navigate('AnalysisTrip')}
 					>
 						분석
@@ -115,51 +114,37 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			</View>
 
 			<View style={styles.title_box}>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignContent: 'flex-end',
-						flexWrap: 'wrap',
-					}}
-				>
-					<Text style={TextStyles().title}>{title}</Text>
-					<Text style={[TextStyles().small, styles.type]}>{location}</Text>
+				<View style={styles.topView}>
+					<Text style={styles.title}>{title}</Text>
+					<Text style={styles.info}>{location}</Text>
 				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignContent: 'flex-end',
-						flexWrap: 'wrap',
-					}}
-				>
-					<Text style={TextStyles().regular}>{period}</Text>
-				</View>
+				<Text style={styles.info}>{period}</Text>
 			</View>
 			<View style={styles.party_box}>
 				<Icon name="face" size={30} color="green" />
 				<Icon name="face" size={30} color="green" />
 				<Button
 					icon="plus"
-					style={styles.button}
-					mode="text"
-					labelStyle={TextStyles().regular}
+					style={[styles.outlineBtn, { marginLeft: 10 }]}
+					mode="outlined"
+					labelStyle={TextStyles({ color: '#91C0EB' }).regular}
 					onPress={() => setInviteModalVisible(true)}
 				>
 					일행 추가
 				</Button>
 			</View>
 			<View style={styles.center_box}>
-				<Text style={[TextStyles().medium, styles.end_date]}>
+				<Text style={styles.info}>
 					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={[TextStyles().header, styles.balance]}>{totalAmount}원</Text>
+				<Text style={styles.money}>{totalAmount}원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
 					icon="plus"
-					style={styles.button}
+					style={styles.lightSolidBtn}
 					labelStyle={TextStyles().regular}
-					mode="text"
+					mode="contained"
 					onPress={() =>
 						navigation.navigate('AddPayment', {
 							travel_id: travel_id ?? 0,
@@ -171,9 +156,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					내역 추가
 				</Button>
 				<Button
-					style={styles.button}
-					labelStyle={TextStyles().regular}
-					mode="text"
+					style={styles.solidBtn}
+					labelStyle={TextStyles({ color: '#ffffff' }).regular}
+					mode="contained"
 					onPress={() => handleAdjust()}
 				>
 					정산
@@ -181,7 +166,15 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			</View>
 
 			<View style={styles.order_button}>
-				<Button onPress={() => setModalVisible(!modalVisible)}>{orderType}</Button>
+				<Button
+					mode="text"
+					labelStyle={TextStyles().regular}
+					icon="chevron-down"
+					contentStyle={{ flexDirection: 'row-reverse' }}
+					onPress={() => setModalVisible(!modalVisible)}
+				>
+					{orderType}
+				</Button>
 			</View>
 			<Modal
 				animationType="slide"
@@ -307,27 +300,17 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 }
 
 const styles = StyleSheet.create({
-	order_type: {
-		width: 350,
-		padding: 10,
-		margin: 10,
-	},
 	order_type_container: {
-		padding: 50,
-		alignItems: 'center',
+		width: '100%',
 	},
 	modalView: {
-		marginTop: '100%',
-		height: '100%',
-		// flex: 1,
 		width: '100%',
-		alignSelf: 'stretch',
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		backgroundColor: 'white',
 		padding: 35,
 		position: 'absolute',
-		// alignItems: 'center',
+		bottom: 0,
 		shadowColor: '#000',
 		shadowOffset: {
 			width: 0,
@@ -348,18 +331,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		backgroundColor: 'white',
 	},
-	selectInput: {
-		borderWidth: 0,
-		borderBottomWidth: 0,
-		width: 150,
-	},
 	center_box: {
 		flexDirection: 'column',
 		alignItems: 'center',
 		padding: 50,
-	},
-	end_date: {
-		alignItems: 'center',
 	},
 	party_box: {
 		flexDirection: 'row',
@@ -373,23 +348,38 @@ const styles = StyleSheet.create({
 	detail_item_box: {
 		padding: 10,
 	},
+	topView: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 5,
+	},
+	title: {
+		...TextStyles({ weight: 'bold', mRight: 10 }).title,
+	},
+	info: {
+		...TextStyles({ align: 'left', color: '#666666' }).small,
+	},
 	body_button_group: {
 		paddingLeft: 10,
 		paddingRight: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		marginBottom: 20,
 	},
-	balance: {
-		justifyContent: 'center',
-		alignItems: 'center',
+	// balance: {
+	//     justifyContent: 'center',
+	//     alignItems: 'center',
+	// },
+	money: {
+		...TextStyles({ weight: 'bold' }).header,
 	},
 	period: {
 		fontSize: 13,
 	},
-	title: {
-		fontSize: 30,
-	},
+	// title: {
+	//     fontSize: 30,
+	// },
 	type: {
 		alignSelf: 'flex-end',
 	},
@@ -398,12 +388,25 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		flexWrap: 'wrap',
 	},
+	outlineBtn: {
+		borderColor: '#91C0EB',
+		borderRadius: 32,
+		padding: 0,
+	},
+	lightSolidBtn: {
+		backgroundColor: '#E0E6EC',
+		borderRadius: 32,
+	},
+	solidBtn: {
+		backgroundColor: '#91C0EB',
+		borderRadius: 32,
+	},
 	header_button_group: {
 		flexDirection: 'row',
 	},
 	header: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		justifyContent: 'flex-end',
 		alignItems: 'center',
 	},
 	centeredView: {
