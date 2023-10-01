@@ -16,7 +16,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
 const config = {
 	screens: {
-		Join: 'join',
+		Join: { path: 'join//:host/:travelName/:travelId' },
 	},
 };
 

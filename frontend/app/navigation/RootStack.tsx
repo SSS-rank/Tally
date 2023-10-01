@@ -9,8 +9,8 @@ import JoinScreen from '../screens/JoinScreen/JoinScreen';
 
 export type RootStackProps = {
 	MainTabs: undefined;
-	SignIn: { setUserToken: any };
-	Join: { travelId: number };
+	SignIn: { setUserToken: any } | undefined;
+	Join: { host: string; travelName: string; travelId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackProps>();
