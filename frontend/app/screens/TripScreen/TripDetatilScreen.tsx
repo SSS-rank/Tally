@@ -12,7 +12,7 @@ import { Button, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -22,6 +22,7 @@ import { TripDetailScreenProps } from '../../model/tripNavigator';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { MemberState } from '../../recoil/memberRecoil';
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const api = useAxiosWithAuth();
@@ -41,6 +42,9 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
 	const [inviteModalVisible, setInviteModalVisible] = useState(false);
+
+	const userInfo = useRecoilValue(MemberState);
+
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
@@ -274,7 +278,11 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							textColor="white"
 							style={{ marginTop: 30 }}
 							icon="link"
-							onPress={() => Clipboard.setString(`tally://join/히리/싸피졸업여행/${travel_id}`)}
+							onPress={() =>
+								Clipboard.setString(
+									`tally://join/${userInfo.nickname}/${curTripInfo.title}/${travel_id}`,
+								)
+							}
 						>
 							초대링크 복사
 						</Button>
