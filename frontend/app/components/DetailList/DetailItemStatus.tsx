@@ -45,6 +45,9 @@ function DetailItemStatus(props: status) {
 }
 const styles = StyleSheet.create({
 	chip: {
+		position: 'absolute',
+		top: 0,
+		right: -100,
 		borderRadius: 32,
 		marginLeft: 10,
 		marginTop: 0,
