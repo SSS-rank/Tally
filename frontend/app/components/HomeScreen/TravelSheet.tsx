@@ -22,7 +22,7 @@ interface TravelSheetProps extends TravelSheetItem {
 function TravelSheet({ item }: { item: TravelSheetProps }) {
 	return (
 		<>
-			{item.travel_id === undefined && (
+			{item.travel_id !== -1 && (
 				<TouchableOpacity
 					style={{
 						...ViewStyles({ height: 300 }).box,
@@ -50,26 +50,26 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 								<Avatar.Image
 									size={32}
 									source={{
-										uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${item.travelLocation}.png`,
+										uri: `https://sss-tally.s3.ap-northeast-2.amazonaws.com/${item.travel_location}.png`,
 									}}
 								/>
 								<Text style={TextStyles({ weight: 'bold', mLeft: 10 }).title}>
-									D - {item.remainDate}
+									D - {item.remain_date}
 								</Text>
 							</View>
 							<View style={styles.titleView}>
-								<Text style={TextStyles({ weight: 'bold' }).title}>{item.travelTitle}</Text>
-								<Text style={TextStyles({ mLeft: 5 }).small}>{item.travelType}</Text>
+								<Text style={TextStyles({ weight: 'bold' }).title}>{item.travel_title}</Text>
+								<Text style={TextStyles({ mLeft: 5 }).small}>{item.travel_type}</Text>
 							</View>
 							<Text style={TextStyles({ mBottom: 5 }).small}>
-								{item.startDate} ~ {item.endDate}
+								{item.start_date} ~ {item.end_date}
 							</Text>
 							<Text style={TextStyles({ weight: 'bold' }).header}>{item.money}원</Text>
 						</View>
 					</View>
 					<View style={{ alignItems: 'flex-start', backgroundColor: 'red' }}></View>
 					<View style={ViewStyles().boxMate}>
-						{item.travelParticipants.map((member) => (
+						{item.travel_participants.map((member) => (
 							<Avatar.Image
 								key={member.member_uuid}
 								style={ViewStyles({ left: 0 }).avatarMate}
