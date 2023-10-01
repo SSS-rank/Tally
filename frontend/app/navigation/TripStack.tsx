@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton } from 'react-native-paper';
+import { Button, IconButton } from 'react-native-paper';
 
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -17,6 +17,7 @@ import PaymentModifyScreen from '../screens/PaymentScreen/PaymentModifyScreen';
 import CreateTripScreen from '../screens/TripScreen/CreateTripScreen';
 import TripDetailScreen from '../screens/TripScreen/TripDetatilScreen';
 import TripListScreen from '../screens/TripScreen/TripListScreen';
+import { TextStyles } from '../styles/CommonStyles';
 
 export type TripStackProps = {
 	TripList: undefined;
@@ -82,8 +83,8 @@ function TripStack({ navigation }: TripDetailScreenProps) {
 			<Stack.Screen
 				name="TripDetail"
 				component={TripDetailScreen}
-				options={{
-					title: '상세 결제 내역',
+				options={({ route }) => ({
+					title: '',
 					headerLeft: () => (
 						<IconButton
 							icon="arrow-left"
@@ -97,7 +98,27 @@ function TripStack({ navigation }: TripDetailScreenProps) {
 							onPress={() => navigation.navigate('TripList')}
 						/>
 					),
-				}}
+					headerRight: () => (
+						<>
+							<Button
+								mode="text"
+								labelStyle={TextStyles({ color: '#91C0EB' }).regular}
+								onPress={() =>
+									navigation.navigate('AdjustTrip', { tripId: route.params.travel_id })
+								}
+							>
+								정산 현황
+							</Button>
+							<Button
+								labelStyle={TextStyles({ color: '#91C0EB' }).regular}
+								mode="text"
+								onPress={() => navigation.navigate('AnalysisTrip')}
+							>
+								분석
+							</Button>
+						</>
+					),
+				})}
 			/>
 			<Stack.Screen name="AnalysisTrip" component={AnalysisScreen} options={{ title: '분석' }} />
 			<Stack.Screen
