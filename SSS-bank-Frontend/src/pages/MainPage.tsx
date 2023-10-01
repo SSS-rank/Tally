@@ -60,7 +60,7 @@ function MainPage() {
 				>
 					<Container sx={{ py: 2 }} maxWidth="md">
 						<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="">
-							<Typography component="h1" variant="h5">
+							<Typography component="h1" variant="h5" sx={{ fontFamily: 'OTWelcomeRA' }}>
 								계좌 목록
 							</Typography>
 						</Stack>
@@ -78,7 +78,14 @@ function MainPage() {
 							/>
 						))}
 						<Grid item xs={12}>
-							<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+							<Card
+								sx={{
+									height: '100%',
+									display: 'flex',
+									flexDirection: 'column',
+									fontFamily: 'OTWelcomeRA',
+								}}
+							>
 								<Button variant="contained" href="/add" className="btn btn-primary">
 									추가
 								</Button>
@@ -90,4 +97,5 @@ function MainPage() {
 		</ThemeProvider>
 	);
 }
+
 export default MainPage;

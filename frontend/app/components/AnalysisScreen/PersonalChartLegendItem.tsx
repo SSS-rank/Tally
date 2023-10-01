@@ -10,7 +10,9 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 interface legendItem extends personalListItem {
 	color: string;
-	navigation: NativeStackNavigationProp<TripStackProps, 'AnalysisCategory'> | undefined;
+	navigation:
+		| NativeStackNavigationProp<TripStackProps, 'AnalysisCategory', 'AnalysisPersonal'>
+		| undefined;
 	member_uuid: string;
 }
 
@@ -38,7 +40,7 @@ function PersonalChartLegendItem({
 			<View style={styles.textView}>
 				<View style={{ ...styles.colorCircle, backgroundColor: color }}></View>
 				<Text style={styles.name}>{category_type}</Text>
-				<Text style={styles.text}>{percent}%</Text>
+				<Text style={styles.percent}>{percent}%</Text>
 			</View>
 			<View style={styles.textView}>
 				<Text style={styles.text}>{money}원</Text>
@@ -61,15 +63,18 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	colorCircle: {
-		width: 24,
-		height: 24,
+		width: 16,
+		height: 16,
 		borderRadius: 50,
 	},
 	name: {
 		...TextStyles({ align: 'left', mLeft: 10, weight: 'bold' }).regular,
 	},
+	percent: {
+		...TextStyles({ align: 'left', mLeft: 10, color: '#666666' }).regular,
+	},
 	text: {
-		...TextStyles({ align: 'left', mLeft: 10 }).regular,
+		...TextStyles({ align: 'left', mLeft: 10, weight: 'bold' }).medium,
 	},
 });
 

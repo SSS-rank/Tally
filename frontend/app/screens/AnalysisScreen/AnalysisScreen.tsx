@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions, FlatList } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
 import { groupListItem, personalListItem } from './../../model/analysis';
@@ -32,16 +33,17 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 
 	const [selectionMode, setSelectionMode] = useState(1);
 
-	useEffect(() => {
-		console.log(selectionMode);
-		if (selectionMode === 1) getGroupData();
-		else getPersonalData();
-	}, [selectionMode]);
+	useFocusEffect(
+		useCallback(() => {
+			console.log(selectionMode);
+			if (selectionMode === 1) getGroupData();
+			else getPersonalData();
+		}, [selectionMode]),
+	);
 
 	const api = useAxiosWithAuth();
 	const getGroupData = async () => {
 		const res = await api.get(`/analysis/${curTripInfo.id}`);
-		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.member_name,
@@ -60,14 +62,12 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 			color: `${charColor[index]}`,
 		}));
 
-		console.log('data ', data);
 		setPaymentData(data);
 		setList(listData);
 	};
 
 	const getPersonalData = async () => {
 		const res = await api.get(`/analysis/${curTripInfo.id}/${member.member_uuid}`);
-		console.log(res.data);
 
 		const data: charData[] = res.data.list.map((item: any, index: number) => ({
 			name: item.category_id,
@@ -87,7 +87,6 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 			}),
 		);
 
-		console.log('data ', data);
 		setPaymentData(data);
 		setList(listData);
 	};
@@ -110,62 +109,57 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 	};
 
 	return (
-		<View style={styles.viewContainer}>
-			<View style={styles.topView}>
-				<View style={styles.top}>
-					<Text style={styles.title}>{curTripInfo.title}</Text>
-					<Text style={styles.info}>{curTripInfo.location}</Text>
+		<>
+			<ScrollView style={styles.viewContainer}>
+				<View style={styles.topView}>
+					<View style={styles.top}>
+						<Text style={styles.title}>{curTripInfo.title}</Text>
+						<Text style={styles.info}>{curTripInfo.location}</Text>
+					</View>
+					<Text style={styles.info}>
+						{curTripInfo.startDay} ~ {curTripInfo.endDay}
+					</Text>
 				</View>
-				<Text style={styles.info}>
-					{curTripInfo.startDay} ~ {curTripInfo.endDay}
-				</Text>
-			</View>
-			<View style={styles.chartView}>
-				<PieChart
-					data={paymentData}
-					width={Dimensions.get('window').width}
-					height={280}
-					backgroundColor="transparent"
-					chartConfig={charConfig}
-					accessor={'money'}
-					paddingLeft={'20'}
-					hasLegend={false}
-				/>
-			</View>
-			{selectionMode === 1 ? (
-				<FlatList
-					data={list}
-					renderItem={({ item }) => (
-						<GroupChartLegendItem
-							key={item.member_uuid}
-							member_name={item.member_name}
-							member_uuid={item.member_uuid}
-							money={item.money}
-							percent={item.percent}
-							login={item.login}
-							color={item.color}
-						/>
-					)}
-					keyExtractor={(item) => item.member_uuid}
-				/>
-			) : (
-				<FlatList
-					data={list}
-					renderItem={({ item }) => (
-						<PersonalChartLegendItem
-							key={item.category_id}
-							category_id={item.category_id}
-							category_type={item.category_type}
-							money={item.money}
-							percent={item.percent}
-							member_uuid={member.member_uuid}
-							color={item.color}
-							navigation={navigation}
-						/>
-					)}
-					keyExtractor={(item) => item.member_uuid}
-				/>
-			)}
+				<View style={styles.chartView}>
+					<PieChart
+						data={paymentData}
+						width={Dimensions.get('window').width}
+						height={280}
+						backgroundColor="transparent"
+						chartConfig={charConfig}
+						accessor={'money'}
+						paddingLeft={'20'}
+						hasLegend={false}
+					/>
+				</View>
+				<View style={{ height: 450 }}>
+					{selectionMode === 1
+						? list.map((item) => (
+								<GroupChartLegendItem
+									key={item.member_uuid}
+									member_name={item.member_name}
+									member_uuid={item.member_uuid}
+									money={item.money}
+									percent={item.percent}
+									login={item.login}
+									color={item.color}
+									navigation={navigation}
+								/>
+						  ))
+						: list.map((item) => (
+								<PersonalChartLegendItem
+									key={item.category_id}
+									category_id={item.category_id}
+									category_type={item.category_type}
+									money={item.money}
+									percent={item.percent}
+									member_uuid={member.member_uuid}
+									color={item.color}
+									navigation={navigation}
+								/>
+						  ))}
+				</View>
+			</ScrollView>
 			<View style={styles.switchView}>
 				<CustomSwitch
 					selectionMode={1}
@@ -176,7 +170,7 @@ function AnalysisScreen({ navigation }: AnalysisCategoryScreenProps) {
 					selectionColor={'#91C0EB'}
 				/>
 			</View>
-		</View>
+		</>
 	);
 }
 
@@ -206,9 +200,8 @@ const styles = StyleSheet.create({
 	},
 	switchView: {
 		alignItems: 'center',
-		margin: 20,
 		position: 'absolute',
-		bottom: 0,
+		bottom: 20,
 		alignSelf: 'center',
 	},
 });

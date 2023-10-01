@@ -1,97 +1,119 @@
-import React, { useState } from 'react';
-import { Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Button } from 'react-native-paper';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Text, View, Dimensions, ScrollView } from 'react-native';
+import Config from 'react-native-config';
 
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Carousel from '../../components/Carousel';
+import ProfileBox from '../../components/HomeScreen/ProfileBox';
+import TravelSheet from '../../components/HomeScreen/TravelSheet';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { Location } from '../../model/mainTripItem';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
+import { useRecoilState } from 'recoil';
+import { JoinState } from '../../recoil/joinRecoil';
 
 const width = Dimensions.get('window').width - 70;
 
-const TravelSheetPage = ({
-	item,
-}: {
-	item: {
-		id: number;
-		color: string;
-		dday: number;
-		title: string;
-		startDate: string;
-		endDate: string;
-		balance: number;
-		profile1: string;
-		profile2: string;
-		profile3: string;
-	};
-}) => {
-	return (
-		<TouchableOpacity
-			style={{
-				...ViewStyles({ height: 300, color: item.color }).box,
-				width: width,
-				marginHorizontal: 0,
-				elevation: 2,
-			}}
-		>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					width: '100%',
-				}}
-			>
-				<View style={{ alignItems: 'flex-start', flex: 1 }}>
-					<Text style={TextStyles({ weight: 'bold', mBottom: 5 }).title}>🇩🇪 D - {item.dday}</Text>
-					<Text style={TextStyles().title}>{item.title}</Text>
-					<Text style={TextStyles({ mBottom: 5 }).small}>
-						{item.startDate} ~ {item.endDate}
-					</Text>
-					<Text style={TextStyles().header}>{item.balance}원</Text>
-				</View>
-			</View>
-			<View style={{ alignItems: 'flex-start', backgroundColor: 'red' }}></View>
-			<View style={ViewStyles().boxMate}>
-				<Avatar.Image
-					style={ViewStyles({ left: 0 }).avatarMate}
-					size={32}
-					source={require('../../assets/images/kakao.png')}
-				/>
-				<Avatar.Image
-					style={ViewStyles({ left: 16 }).avatarMate}
-					size={32}
-					source={require('../../assets/images/kakao.png')}
-				/>
-				<Avatar.Image
-					style={ViewStyles({ left: 32 }).avatarMate}
-					size={32}
-					source={require('../../assets/images/kakao.png')}
-				/>
-			</View>
-			<View
-				style={{
-					justifyContent: 'flex-end',
-					flex: 1,
-					// backgroundColor: 'red',
-				}}
-			>
-				<Button
-					icon="check"
-					mode="text"
-					// buttonColor="#000000"
-					onPress={() => console.log('Pressed')}
-				>
-					체크리스트
-				</Button>
-			</View>
-		</TouchableOpacity>
-	);
-};
-
 function HomeScreen({ navigation }: any) {
 	const [page, setPage] = useState(0);
+	const [afterTripList, setAfterTripList] = useState<any[]>([]);
+	const [joinState, setJoinState] = useRecoilState(JoinState);
+
+	useFocusEffect(
+		useCallback(() => {
+			getTripData();
+		}, []),
+	);
+
+	useEffect(() => {
+		console.log(joinState);
+		if (joinState.isAgreed) {
+			joinTravel(joinState.travel_id);
+		}
+	}, []);
+
+	const joinTravel = async (travelId: number) => {
+		const data = {
+			travel_id: travelId,
+		};
+		try {
+			const res = await api.post(`/group`, data);
+			if (res.status === 200) {
+				console.log(res.data);
+			}
+		} catch (err: any) {
+			console.error(err.response);
+		}
+		setJoinState({ isAgreed: false, travel_id: 0 });
+	};
+
+	const api = useAxiosWithAuth();
+
+	const getWeather = async (type: string) => {
+		const locationRes = await axios.get(
+			`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${Config.WEATHER_API_KEY}&q=${Location[type]}`,
+		);
+
+		// 현재 상태 얻기
+		const curState = await axios.get(
+			`http://dataservice.accuweather.com/currentconditions/v1/${locationRes.data[0].Key}?apikey=${Config.WEATHER_API_KEY}`,
+		);
+		return curState.data[0].WeatherText;
+	};
+
+	const getWeatherBackgroundColor = (weather: string) => {
+		if (weather.includes('sunny')) return ['#ffffff', '#ffffff'];
+		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
+		else if (weather.includes('snow')) return ['#cfd9df', '#e2ebf0'];
+		else return ['#ffffff', '#ffffff'];
+	};
+
+	const getTripData = async () => {
+		const res = await api.get(`/travel/info`);
+		let newInfo = [];
+		if (res.status === 200 && res.data.length > 0) {
+			newInfo = await Promise.all(
+				res.data.map(async (item: any, index: number) => {
+					const WeatherText = await getWeather(item.travelType);
+					console.log('WeatherText ', WeatherText);
+					return {
+						...item,
+						travelParticipants: item.travelParticipants.map((member: any) => ({
+							member_uuid: member.member_uuid,
+							nickname: member.member_nickname,
+							profile_image: member.image,
+						})),
+						color: getWeatherBackgroundColor(WeatherText),
+						width: width,
+						weather: WeatherText,
+						navigation: navigation,
+					};
+				}),
+			);
+		}
+
+		newInfo.push({
+			travel_id: -1,
+			travelTitle: '',
+			travelLocation: '',
+			travelType: '',
+			startDate: '',
+			endDate: '',
+			remainDate: 0,
+			travelParticipants: [],
+			money: 0,
+			color: ['#ffffff', '#ffffff'],
+			width: width,
+			navigation: navigation,
+		});
+
+		console.log('newInfo ', newInfo);
+		setAfterTripList(newInfo);
+	};
 
 	return (
 		<View style={HomeStyles.container}>
@@ -104,32 +126,16 @@ function HomeScreen({ navigation }: any) {
 						onPress={() => navigation.navigate('Setting')}
 					/>
 				</View>
-				<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).box}>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Avatar.Image
-							style={{ backgroundColor: 'transparent' }}
-							size={54}
-							source={require('../../assets/images/kakao.png')}
-						/>
-						<Text style={TextStyles().regular}>김싸피</Text>
-					</View>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Text style={TextStyles().title}>2</Text>
-						<Text style={TextStyles().regular}>국내</Text>
-					</View>
-					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-						<Text style={TextStyles().title}>2</Text>
-						<Text style={TextStyles().regular}>해외</Text>
-					</View>
-				</View>
+				<ProfileBox />
+
 				<View>
 					<Carousel
 						page={page}
 						setPage={setPage}
 						gap={10}
-						data={RainbowSheet}
+						data={afterTripList}
 						pageWidth={width}
-						RenderItem={TravelSheetPage}
+						RenderItem={TravelSheet}
 					/>
 				</View>
 				<View style={ViewStyles({ justifyContent: 'flex-start' }).box}>
@@ -150,77 +156,8 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles({ color: 'red' }).box} />
 				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
-
-			{/* <View style={styles.Box1} />
-      <View style={styles.viewRowContainer}>
-        <View style={styles.Box2} />
-        <View style={styles.Box3} />
-      </View> */}
 		</View>
 	);
 }
-
-const RainbowSheet = [
-	{
-		id: 0,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 1,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 2,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 3,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-	{
-		id: 4,
-		color: '#91C0EB',
-		dday: 6,
-		title: '싸피 졸업 여행',
-		startDate: '2023.09.11',
-		endDate: '2023.09.15',
-		balance: 675455,
-		profile1: '',
-		profile2: '',
-		profile3: '',
-	},
-];
 
 export default HomeScreen;

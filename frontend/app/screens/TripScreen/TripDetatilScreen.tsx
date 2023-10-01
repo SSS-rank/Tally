@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { Button, Chip, Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState } from 'recoil';
 
-import api from '../../api/api';
 import DetailListItem from '../../components/DetailList/DetailListItem';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
-import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
+	const api = useAxiosWithAuth();
 	const [payData, setPayData] = useState<Payment[]>([]);
 	const currentDate = new Date();
 	const [modalVisible, setModalVisible] = useState(false);
@@ -32,6 +31,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
+
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
@@ -64,6 +64,16 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
 		}, []),
 	);
+	async function handleAdjust() {
+		const adjust_data = payData.map((item) => {
+			return { payment_uuid: item.payment_uuid };
+		});
+		console.log(adjust_data);
+		const res = await api.post('calculate', adjust_data);
+		if (res.status == 200) {
+			console.log(res.data);
+		}
+	}
 
 	return (
 		<ScrollView style={styles.container}>
@@ -149,7 +159,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					style={styles.button}
 					labelStyle={TextStyles().regular}
 					mode="text"
-					onPress={() => console.log('Pressed')}
+					onPress={() => handleAdjust()}
 				>
 					정산
 				</Button>

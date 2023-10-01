@@ -10,7 +10,8 @@ export type AddPaymentScreenProps = NativeStackScreenProps<TripStackProps, 'AddP
 export type ModifyPaymentScreenProps = NativeStackScreenProps<TripStackProps, 'ModifyPayment'>;
 export type AnalysisCategoryScreenProps = NativeStackScreenProps<
 	TripStackProps,
-	'AnalysisCategory'
+	'AnalysisCategory',
+	'AnalysisPersonal'
 >;
 export type PayAdjustScreenProps = NativeStackScreenProps<TripStackProps, 'PayAdjust'>;
 export type PasswordScreenProps = NativeStackScreenProps<TripStackProps, 'Password'>;
