@@ -181,6 +181,11 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		});
 	};
 
+	async function sendAlarm() {
+		// 수정 요청 알람 보내는 함수
+		console.log('alarm');
+	}
+
 	async function handleSubmit() {
 		let member = partyMembers.map((item) => {
 			if (item.amount > 0) {
@@ -227,7 +232,16 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
 			}
 		} else {
-			console.log('태그자 수정 요청 ');
+			// 메모 수정
+			const req = {
+				travel_id: curTripInfo.id,
+				payment_uuid: paymentUuid,
+				memo: text,
+			};
+			const res = await api.patch('payment/memo', req);
+			if (res.status == 200) {
+				navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			}
 		}
 	}
 	return (
@@ -375,7 +389,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 						dark={true} // 어두운 테마 사용 여부
 						compact={true} // 작은 크기의 버튼 여부
-						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						onPress={() => sendAlarm()} // 클릭 이벤트 핸들러
 						style={{ marginTop: 10, marginBottom: 70 }}
 					>
 						수정 요청
