@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,15 +13,40 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import api from '../../api/api';
+import AccountSelectList from '../../components/AccountItem/AccountSelectList';
 import useNumberFormat from '../../hooks/useNumberFormat';
 
+interface Account {
+	account_number: string;
+	balance: number;
+	bank_code: string;
+}
 function Payment() {
 	const navigate = useNavigate();
 	const { state } = useLocation();
+	const { formattedValue, handleValueChange } = useNumberFormat('');
+	const [showAccounts, setShowAccounts] = useState(false);
+	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+
+	const [accountPassword, setAccountPassword] = useState(''); // 계좌 비밀번호
+
+	const handleAccountPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setAccountPassword(e.target.value);
+	};
 
 	// 결제 취소
 	const clickCancleBtn = () => {
 		navigate('/shop');
+	};
+
+	const [accounts, setAccounts] = useState<Account[]>([]);
+	const fetchAccountData = async () => {
+		try {
+			const response = await api.get('account');
+			if (response.status === 200) setAccounts(response.data);
+		} catch (error: any) {
+			console.log(error);
+		}
 	};
 
 	// 결제하기
@@ -32,7 +57,7 @@ function Payment() {
 		if (state.shopId !== '' && amountString != null && typeof amountString === 'string') {
 			const amountNumber = parseFloat(amountString.replace(/,/g, ''));
 			const paymentReq = {
-				sender_account_num: data.get('accountNum'),
+				sender_account_num: selectedAccount?.account_number,
 				shop_id: state.shopId,
 				payment_amount: amountNumber,
 				password: data.get('accountPassword'),
@@ -55,7 +80,20 @@ function Payment() {
 		}
 	};
 
-	const { formattedValue, handleValueChange } = useNumberFormat('');
+	useEffect(() => {
+		fetchAccountData();
+	}, []);
+
+	const handleAccountSelect = (account: Account) => {
+		setSelectedAccount(account);
+		setShowAccounts(false); // 선택 후 리스트 숨기기 (선택한 항목을 옆에 표시하면서)
+	};
+
+	const isButtonEnabled =
+		parseFloat(formattedValue.replace(/,/g, '')) > 0 &&
+		accountPassword.length == 4 &&
+		selectedAccount &&
+		!showAccounts;
 
 	return (
 		<Container component="main">
@@ -87,14 +125,37 @@ function Payment() {
 				<Box component="form" sx={{ mt: 3, width: '100%' }} onSubmit={handleSubmit}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<TextField
-								name="accountNum"
-								id="accountNum"
-								required
-								fullWidth
-								label="결제할 계좌번호 입력"
-								autoFocus
-							/>
+							<Button onClick={() => setShowAccounts(!showAccounts)}>
+								{showAccounts ? '계좌를 선택해 주세요.' : '결제할 계좌 선택'}
+							</Button>
+							{showAccounts && (
+								<div>
+									{accounts.map((account) => (
+										<div
+											key={account.account_number}
+											onClick={() => handleAccountSelect(account)} // 항목을 클릭하면 선택하도록 핸들러 호출
+										>
+											<AccountSelectList
+												key={account.account_number}
+												balance={account.balance}
+												bankcode={account.bank_code}
+												accountNum={account.account_number}
+											/>
+										</div>
+									))}
+								</div>
+							)}
+							{selectedAccount &&
+								!showAccounts && ( // 선택한 계좌가 있을 때만 표시
+									<div>
+										<AccountSelectList
+											key={selectedAccount.account_number}
+											balance={selectedAccount.balance}
+											bankcode={selectedAccount.bank_code}
+											accountNum={selectedAccount.account_number}
+										/>
+									</div>
+								)}
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
@@ -107,7 +168,10 @@ function Payment() {
 								onChange={handleValueChange}
 							/>
 						</Grid>
-						<Grid item xs={12} sx={{ mt: 6 }}>
+						<Grid item xs={12} sx={{ mt: 2 }}>
+							<Typography sx={{ marginBottom: '0.5rem', marginTop: '1rem' }}>
+								비밀번호 4자리를 입력하세요.
+							</Typography>
 							<TextField
 								required
 								fullWidth
@@ -116,6 +180,8 @@ function Payment() {
 								name="accountPassword"
 								variant="standard"
 								type="password"
+								value={accountPassword}
+								onChange={handleAccountPasswordChange}
 							/>
 						</Grid>
 					</Grid>
@@ -123,6 +189,7 @@ function Payment() {
 						fullWidth
 						type="submit"
 						variant="contained"
+						disabled={!isButtonEnabled}
 						sx={{
 							mt: 3,
 							mb: 2,

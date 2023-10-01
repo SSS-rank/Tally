@@ -176,7 +176,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				...prevState,
 				payment_date_time: formatDate(date),
 				payment_type: 'cash',
-				payment_unit_id: 14,
+				payment_unit_id: 8,
 				ratio: 1,
 				amount: parseFloat(totAmount),
 				category: selectedcategory,
@@ -375,6 +375,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 										name={item.member_nickname}
 										img={{ uri: item.image }}
 										involveCheck={item.checked}
+										isPayer={item.member_uuid == memberinfo.member_uuid}
 										onAmountChange={(input) =>
 											handleAmountChange(
 												item.member_uuid,
@@ -408,7 +409,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</Text>
 					</View>
 					<IIcon
-						name={visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
 						size={32}
 						color="#91C0EB"
 						style={{ marginLeft: 5 }}

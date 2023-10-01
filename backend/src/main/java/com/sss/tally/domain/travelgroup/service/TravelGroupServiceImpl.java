@@ -39,6 +39,9 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 		if (travelOptional.isEmpty())
 			throw new TravelException(ErrorCode.NOT_EXIST_TRAVEL);
 
+		if(travelGroupRepository.existsTravelGroupByMemberIdAndTravelId(member, travelOptional.get()))
+			throw new TravelGroupException(ErrorCode.ALREADY_EXIST_PARTICIPANTS);
+
 		travelGroupRepository.save(TravelGroup.of(member, travelOptional.get()));
 		customCheckListService.createInitCustomCheckList(member, travelOptional.get());
 

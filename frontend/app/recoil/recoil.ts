@@ -63,6 +63,7 @@ export const CurTripInfoState = atom<CurTripInfo>({
 		location: 0,
 		startDay: '',
 		endDay: '',
+		participants: [],
 	},
 });
 
