@@ -8,7 +8,7 @@ import {
 	Pressable,
 	Alert,
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Avatar, Button, Text } from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
@@ -121,8 +121,23 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				<Text style={styles.info}>{period}</Text>
 			</View>
 			<View style={styles.party_box}>
-				<Icon name="face" size={30} color="green" />
-				<Icon name="face" size={30} color="green" />
+				{participants.map((member, index: number) =>
+					index === 0 ? (
+						<Avatar.Image
+							key={member.member_uuid}
+							style={{ backgroundColor: 'transparent' }}
+							size={54}
+							source={{ uri: member.image }}
+						/>
+					) : (
+						<Avatar.Image
+							key={member.member_uuid}
+							style={{ backgroundColor: 'transparent', position: 'relative', left: -24 }}
+							size={54}
+							source={{ uri: member.image }}
+						/>
+					),
+				)}
 				<Button
 					icon="plus"
 					style={[styles.outlineBtn, { marginLeft: 10 }]}
