@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar, Button, Text } from 'react-native-paper';
 
+import CloudAnimation from './CloudAnimation';
 import RainAnimation from './RainAnimation';
 import SnowAnimation from './SnowAnimation';
 import SunnyAnimation from './SunnyAnimation';
@@ -34,6 +35,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					{item.weather?.includes('snow') && <SnowAnimation />}
 					{item.weather?.includes('rain') && <RainAnimation />}
 					{item.weather?.includes('sunny') && <SunnyAnimation />}
+					{item.weather?.includes('cloud') && <CloudAnimation />}
 
 					<View
 						style={{
