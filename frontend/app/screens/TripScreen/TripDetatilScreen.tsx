@@ -51,6 +51,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 							location: trip_data.travel_location,
 							startDay: trip_data.travel_period.split('~')[0],
 							endDay: trip_data.travel_period.split('~')[1],
+							participants: trip_data.participants,
 						};
 						setParticipants(trip_data.participants);
 						setCurTripInfo(updatedTripInfo);

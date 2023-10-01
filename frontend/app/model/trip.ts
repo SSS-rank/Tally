@@ -42,4 +42,5 @@ export interface CurTripInfo {
 	location: number;
 	startDay: string;
 	endDay: string;
+	participants: TripMember[];
 }
