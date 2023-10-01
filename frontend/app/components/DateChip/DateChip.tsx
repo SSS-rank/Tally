@@ -15,7 +15,7 @@ function DateChip({ date, open, setOpen, setDate }: DateChipProps) {
 	return (
 		<View style={styles.date_box}>
 			<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-			<Chip onPress={() => setOpen(true)}>
+			<Chip style={styles.chip} onPress={() => setOpen(true)}>
 				{date.getFullYear() +
 					'년 ' +
 					(date.getMonth() + 1) +
@@ -47,6 +47,13 @@ const styles = StyleSheet.create({
 	date_box: {
 		flex: 2,
 		justifyContent: 'flex-start',
-		marginTop: 20,
+		marginVertical: 30,
+	},
+	chip: {
+		backgroundColor: 'transparent',
+		borderBottomWidth: 1,
+		borderBottomColor: '#232323',
+		marginVertical: 20,
+		paddingLeft: 5,
 	},
 });
