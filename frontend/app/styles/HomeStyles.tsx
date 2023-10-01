@@ -49,7 +49,7 @@ export const ViewStyles = (props?: styleProps) =>
 			paddingHorizontal: 20,
 			paddingVertical: 15,
 			marginHorizontal: 30,
-			elevation: 3,
+			elevation: 5,
 		},
 		box: {
 			flexDirection: props?.flexDirection ? props.flexDirection : 'column',
@@ -57,12 +57,12 @@ export const ViewStyles = (props?: styleProps) =>
 			backgroundColor: props?.color ? props.color : 'white',
 			marginBottom: props?.mBottom ? props.mBottom : 20,
 			borderRadius: props?.bRadius ? props.bRadius : 10,
-			elevation: 3,
 			justifyContent: props?.justifyContent ? props.justifyContent : 'center',
 			alignItems: props?.alignItems ? props.alignItems : 'flex-start',
+			marginHorizontal: 35,
+			elevation: 5,
 			padding: 20,
 			flex: 1,
-			marginHorizontal: 35,
 		},
 		innerProfile: {
 			flexDirection: props?.flexDirection ? props.flexDirection : 'column',
