@@ -87,8 +87,11 @@ function AccountItem({
 				>
 					<View style={styles.modalView}>
 						<Text style={styles.title}>대표 계좌를 바꾸시겠습니까?</Text>
+						<Button mode="contained" onPress={hideModal} style={styles.buttonCancel}>
+							아니오
+						</Button>
 						<Button mode="contained" onPress={changeMainAccount} style={styles.button}>
-							확인
+							예
 						</Button>
 					</View>
 				</Modal>
@@ -109,6 +112,10 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		...TextStyles({ mBottom: 30 }).title,
+	},
+	buttonCancel: {
+		backgroundColor: '#D6D6D6',
+		marginBottom: 10,
 	},
 	button: {
 		backgroundColor: '#91C0EB',
