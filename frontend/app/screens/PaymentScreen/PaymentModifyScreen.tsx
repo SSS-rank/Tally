@@ -3,16 +3,16 @@ import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-
 import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
-import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
-import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
+import DateChip from '../../components/DateChip/DateChip';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import AmountBox from '../../components/Payment/AmountBox';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { SelectPayMember, ModMember, PaymentDetailRes } from '../../model/payment';
+import { TripMember } from '../../model/trip';
 import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
@@ -49,62 +49,65 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		}
 
 		async function fetchData() {
+			let role = 'tag';
 			if (memberinfo.member_uuid == payer) {
-				console.log('결제자');
-				const res = await api.get(`payment/payer/${payment_uuid}`);
-				if (res && res.status === 200) {
-					const responseData = res.data;
-					console.log(res.data);
-					// 비동기 처리를 위해 responseData 사용
-					setTotAmount(responseData.amount + '');
-					setStore(responseData.payment_name);
-					setText(responseData.memo);
-					setSelectedCategory(responseData.category);
-					setPaymentUnit(responseData.payment_unit);
-					setVisible(responseData.visible);
-					// setDate(responseData.payment_date);
-					const memberdata = responseData.payment_participants.map((item: ModMember) => {
-						return {
-							amount: item.amount,
-							member_uuid: item.member_uuid,
-							checked: item.with,
-							member_nickname: item.nickname,
-							image: item.profile_image,
-						};
-					});
-					setPartyMembers(memberdata);
-				}
-			} else {
-				// 태그된 사람
-				const res = await api.get(`payment/tag/${payment_uuid}`);
+				role = 'payer';
+			}
+			const res = await api.get(`payment/${role}/${payment_uuid}`);
+			if (res && res.status == 200) {
 				const responseData = res.data;
-				// 비동기 처리를 위해 responseData 사용
-				if (res && res.status == 200) {
-					console.log(res.data);
-					setTotAmount(responseData.amount + '');
-					setStore(responseData.payment_name);
-					setText(responseData.memo);
-					setSelectedCategory(responseData.category);
-					setPaymentUnit(responseData.payment_unit);
-					const memberdata = responseData.payment_participants.map((item: ModMember) => {
+				setTotAmount(responseData.amount + '');
+				setStore(responseData.payment_name);
+				setText(responseData.memo);
+				setPaymentUnit(responseData.payment_unit);
+				// 참가자 리스트 생성
+				const partyData = curTripInfo.participants.map((item: TripMember) => {
+					return {
+						amount: 0,
+						member_uuid: item.member_uuid,
+						checked: false,
+						member_nickname: item.member_nickname,
+						image: item.image,
+					};
+				});
+				// 기존 저장된 참가자 데이터 가져오기
+				const memberdata = responseData.payment_participants.map((item: ModMember) => {
+					return {
+						amount: item.amount,
+						member_uuid: item.member_uuid,
+						checked: item.with,
+						member_nickname: item.nickname,
+						image: item.profile_image,
+					};
+				});
+				// 참여자 데이터에 기존 참여자 데이터 업데이트
+				const updatedPartyData = partyData.map((partyItem) => {
+					const matchingMember = memberdata.find(
+						(memberItem: ModMember) => memberItem.member_uuid === partyItem.member_uuid,
+					);
+					if (matchingMember) {
 						return {
-							amount: item.amount,
-							member_uuid: item.member_uuid,
-							checked: item.with,
-							member_nickname: item.nickname,
-							image: item.profile_image,
+							...partyItem,
+							amount: matchingMember.amount,
+							checked: matchingMember.checked,
+							member_nickname: matchingMember.member_nickname,
+							image: matchingMember.image,
 						};
-					});
-					setPartyMembers(memberdata);
+					}
+					return partyItem; // 만약 일치하는 멤버가 없다면 기존의 partyData를 그대로 반환합니다.
+				});
+
+				setPartyMembers(updatedPartyData);
+
+				//결제자인 경우
+				if (role == 'payer') {
+					setSelectedCategory(responseData.category);
+					setVisible(responseData.visible);
 				}
 			}
 		}
 		fetchData();
 	}, []);
-
-	const handleIconClick = (category: number) => {
-		setSelectedCategory(category);
-	};
 
 	const handleInVolveChange = (
 		memberUuid: string,
@@ -169,46 +172,54 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 	async function handleSubmit() {
 		let member = partyMembers.map((item) => {
-			return { amount: item.amount, member_uuid: item.member_uuid };
+			if (item.amount > 0) {
+				return { amount: item.amount, member_uuid: item.member_uuid };
+			}
 		});
+		console.log(member);
+		// 나만 보기 설정한 경우
 		if (!visible) {
 			member = [{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid }];
 		}
 		if (isPayer) {
-			if (isCash) {
-				//수동입력된 케이스
-				const req = {
-					amount: totAmount,
-					category: selectedcategory,
-					memo: text,
-					payment_date_time: formatDate(date),
-					payment_participants: member,
-					payment_uuid: paymentUuid,
-					travel_id: curTripInfo.id,
-					title: store,
-					visible: visible,
-					ratio: 1,
-					payment_unit_id: 8,
-				};
-				const res = await api.patch('payment/manual', req);
-				if (res.status == 200) {
-					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
-				}
-			} else {
-				//자동 입력된 케이스
-				const req = {
-					category: selectedcategory,
-					memo: text,
-					payment_participants: member,
-					payment_uuid: paymentUuid,
-					travel_id: curTripInfo.id,
-					visible: visible,
-				};
-				const res = await api.patch('payment/auto', req);
-				if (res.status == 200) {
-					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
-				}
-			}
+			const payment_type = isCash ? 'manual' : 'auto';
+			console.log(payment_type);
+
+			// if (isCash) {
+			// 	//수동입력된 케이스
+			// 	const req = {
+			// 		amount: totAmount,
+			// 		category: selectedcategory,
+			// 		memo: text,
+			// 		payment_date_time: formatDate(date),
+			// 		payment_participants: member,
+			// 		payment_uuid: paymentUuid,
+			// 		travel_id: curTripInfo.id,
+			// 		title: store,
+			// 		visible: visible,
+			// 		ratio: 1,
+			// 		payment_unit_id: 8,
+			// 	};
+			// 	console.log(req);
+			// 	const res = await api.patch('payment/manual', req);
+			// 	if (res.status == 200) {
+			// 		navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			// 	}
+			// } else {
+			// 	//자동 입력된 케이스
+			// 	const req = {
+			// 		category: selectedcategory,
+			// 		memo: text,
+			// 		payment_participants: member,
+			// 		payment_uuid: paymentUuid,
+			// 		travel_id: curTripInfo.id,
+			// 		visible: visible,
+			// 	};
+			// 	const res = await api.patch('payment/auto', req);
+			// 	if (res.status == 200) {
+			// 		navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
+			// 	}
+			// }
 		} else {
 			console.log('태그자 수정 요청 ');
 		}
@@ -225,33 +236,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 			{isPayer ? (
 				<View>
-					<View style={styles.date_box}>
-						<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-						<Chip onPress={() => setOpen(true)}>
-							{date.getFullYear() +
-								'년 ' +
-								(date.getMonth() + 1) +
-								'월 ' +
-								date.getDate() +
-								'일 ' +
-								date.getHours() +
-								'시 ' +
-								date.getMinutes() +
-								'분 '}
-						</Chip>
-						<DatePicker
-							modal
-							open={open}
-							date={date}
-							onConfirm={(p_date) => {
-								setOpen(false);
-								setDate(p_date);
-							}}
-							onCancel={() => {
-								setOpen(false);
-							}}
-						/>
-					</View>
+					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
 					{isCash ? (
 						<View style={styles.memo_box}>
 							<Text style={TextStyles({ align: 'left' }).medium}>결제처</Text>
@@ -281,51 +266,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			</View>
 
 			{isPayer ? (
-				// <View style={styles.category_box}>
-				// 	<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
-				// 	<View style={styles.category_line}>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(1)}>
-				// 			<MIcon name="home" size={40} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
-				// 			<Text style={TextStyles().small}>숙소</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(2)}>
-				// 			<FIcon name="plane" size={40} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
-				// 			<Text style={TextStyles().small}>항공</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(3)}>
-				// 			<FIcon name="car" size={40} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
-				// 			<Text style={TextStyles().small}>교통</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(4)}>
-				// 			<MIcon name="ticket" size={40} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
-				// 			<Text style={TextStyles().small}>관광</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(5)}>
-				// 			<MIcon
-				// 				name="silverware-fork-knife"
-				// 				size={40}
-				// 				color={selectedcategory === 5 ? '#91C0EB' : 'gray'}
-				// 			/>
-				// 			<Text style={TextStyles().small}>식사</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(6)}>
-				// 			<MIcon
-				// 				name="shopping"
-				// 				size={40}
-				// 				color={selectedcategory === 6 ? '#91C0EB' : 'gray'}
-				// 			/>
-				// 			<Text style={TextStyles().small}>쇼핑</Text>
-				// 		</TouchableOpacity>
-				// 		<TouchableOpacity style={styles.icon_group} onPress={() => handleIconClick(7)}>
-				// 			<MIcon
-				// 				name="dots-horizontal-circle"
-				// 				size={40}
-				// 				color={selectedcategory === 7 ? '#91C0EB' : 'gray'}
-				// 			/>
-				// 			<Text style={TextStyles().small}>기타</Text>
-				// 		</TouchableOpacity>
-				// 	</View>
-				// </View>
 				<CategoryBox
 					selectedcategory={selectedcategory}
 					setSelectedCategory={setSelectedCategory}
@@ -385,59 +325,60 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			</View>
 
 			{isPayer ? (
-				<View style={styles.self_check_box}>
-					<View>
-						<Text style={TextStyles({ align: 'left' }).medium}>이 비용 나만보기</Text>
-						<Text style={TextStyles({ align: 'left' }).small}>
-							일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
-						</Text>
+				<View>
+					<View style={styles.self_check_box}>
+						<View>
+							<Text style={TextStyles({ align: 'left' }).medium}>이 비용 나만보기</Text>
+							<Text style={TextStyles({ align: 'left' }).small}>
+								일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+							</Text>
+						</View>
+						<IIcon
+							name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+							size={32}
+							color="#91C0EB"
+							style={{ marginLeft: 5 }}
+							onPress={() => {
+								setVisible(!visible);
+							}}
+						/>
 					</View>
-					<IIcon
-						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
-						size={32}
-						color="#91C0EB"
-						style={{ marginLeft: 5 }}
-						onPress={() => {
-							setVisible(!visible);
-						}}
-					/>
+					<Button
+						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+						dark={true} // 어두운 테마 사용 여부
+						compact={true} // 작은 크기의 버튼 여부
+						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						style={{ marginTop: 10, marginBottom: 70 }}
+					>
+						수정
+					</Button>
 				</View>
 			) : (
-				<View style={{ padding: 30 }}></View>
-			)}
-			{isPayer ? (
-				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-					dark={true} // 어두운 테마 사용 여부
-					compact={true} // 작은 크기의 버튼 여부
-					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-					style={{ marginTop: 10, marginBottom: 70 }}
-				>
-					수정
-				</Button>
-			) : (
-				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-					dark={true} // 어두운 테마 사용 여부
-					compact={true} // 작은 크기의 버튼 여부
-					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-					style={{ marginTop: 10, marginBottom: 70 }}
-				>
-					수정 요청
-				</Button>
+				<View>
+					<Button
+						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+						dark={true} // 어두운 테마 사용 여부
+						compact={true} // 작은 크기의 버튼 여부
+						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						style={{ marginTop: 10 }}
+					>
+						메모 수정
+					</Button>
+					<Button
+						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+						dark={true} // 어두운 테마 사용 여부
+						compact={true} // 작은 크기의 버튼 여부
+						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						style={{ marginTop: 10, marginBottom: 70 }}
+					>
+						수정 요청
+					</Button>
+				</View>
 			)}
 		</ScrollView>
 	);
 }
 const styles = StyleSheet.create({
-	category_line: {
-		flexDirection: 'row',
-		justifyContent: 'space-evenly',
-		padding: 10,
-	},
-	icon_group: {
-		flexDirection: 'column',
-	},
 	memo_box: {
 		flex: 3,
 		justifyContent: 'flex-start',
@@ -467,17 +408,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 
-	date_box: {
-		flex: 2,
-		justifyContent: 'flex-start',
-		marginTop: 20,
-	},
-	category_box: {
-		marginTop: 20,
-		flex: 2,
-		flexDirection: 'column',
-		paddingBottom: 20,
-	},
 	party_box: {
 		flex: 3,
 	},
