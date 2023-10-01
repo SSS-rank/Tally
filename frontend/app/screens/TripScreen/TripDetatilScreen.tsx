@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	ScrollView,
+	TouchableOpacity,
+	Modal,
+	Pressable,
+	Alert,
+} from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -13,6 +21,7 @@ import { TripMember } from '../../model/trip';
 import { TripDetailScreenProps } from '../../model/tripNavigator';
 import { CurTripInfoState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const api = useAxiosWithAuth();
@@ -31,7 +40,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [period, setPeriod] = useState('');
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
-
+	const [inviteModalVisible, setInviteModalVisible] = useState(false);
 	useFocusEffect(
 		React.useCallback(() => {
 			setPayData([]);
@@ -129,7 +138,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					style={styles.button}
 					mode="text"
 					labelStyle={TextStyles().regular}
-					onPress={() => console.log('Pressed')}
+					onPress={() => setInviteModalVisible(true)}
 				>
 					일행 추가
 				</Button>
@@ -222,7 +231,56 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					</View>
 				</View>
 			</Modal>
-
+			<Modal
+				animationType="fade"
+				transparent={true}
+				visible={inviteModalVisible}
+				onRequestClose={() => {
+					Alert.alert('Modal has been closed.');
+					setInviteModalVisible(!inviteModalVisible);
+				}}
+				style={{ justifyContent: 'center' }}
+			>
+				<Pressable
+					style={{
+						backgroundColor: '#00000070',
+						flex: 1,
+						position: 'absolute',
+						width: '100%',
+						height: '100%',
+					}}
+					onPress={() => setInviteModalVisible(!inviteModalVisible)}
+				></Pressable>
+				<View style={styles.centeredView}>
+					<View style={styles.inviteModalView}>
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+								일행 추가
+							</Text>
+							<Icon
+								name="close"
+								size={32}
+								color={'#666666'}
+								onPress={() => setInviteModalVisible(!inviteModalVisible)}
+							/>
+						</View>
+						<Text style={TextStyles({ align: 'left' }).small}>
+							함께 여행갈 친구나 가족을 초대해보세요{'\n'}
+							여행에 사용한 금액을 편리하게 정산할 수 있습니다.
+						</Text>
+						<Button
+							mode="contained"
+							buttonColor="#91C0EB"
+							textColor="white"
+							style={{ marginTop: 30 }}
+							icon="link"
+							onPress={() => Clipboard.setString(`tally://join/히리/싸피졸업여행/${travel_id}`)}
+						>
+							초대링크 복사
+						</Button>
+					</View>
+				</View>
+			</Modal>
 			{payData.map((item) => (
 				<View key={item.payment_uuid}>
 					<TouchableOpacity
@@ -351,6 +409,25 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+	},
+	centeredView: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+	inviteModalView: {
+		marginHorizontal: 15,
+		borderRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		justifyContent: 'center',
 	},
 });
 export default TripDetailScreen;
