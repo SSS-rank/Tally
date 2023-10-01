@@ -148,35 +148,34 @@ function HomeScreen({ navigation }: any) {
 						님, 어디로 떠나시나요?
 					</Text>
 					<Text
-						style={{ ...TextStyles({ align: 'left', weight: 'bold' }).title, marginVertical: 15 }}
+						style={{ ...TextStyles({ align: 'left', weight: 'bold' }).header, marginVertical: 15 }}
 					>
-						톡! 찍으면{'\n'}결제까지 딱!
+						톡! 찍으면{'\n'}이체까지 딱!
 					</Text>
 					<Text style={TextStyles({ align: 'left' }).small}>
 						언제 어디서든{'\n'}바로 확인하고 정산하는{'\n'}간편한 여행
 					</Text>
-					<TouchableOpacity style={ViewStyles().bannerButton}>
-						<Text
-							style={{
-								...TextStyles({ align: 'left', color: 'white', weight: 'bold' }).regular,
-								textAlignVertical: 'center',
-							}}
-						>
-							MY PASSPORT
-						</Text>
-						<MaterialIcon
-							name="arrow-right-thin"
-							size={32}
-							style={{ color: 'white', textAlignVertical: 'center' }}
-						/>
-						<MaterialIcon
-							name="passport"
-							size={40}
-							style={{ color: 'white', flex: 1, textAlign: 'right', textAlignVertical: 'center' }}
-						/>
-					</TouchableOpacity>
 				</View>
-
+				<TouchableOpacity style={ViewStyles().bannerButton}>
+					<Text
+						style={{
+							...TextStyles({ align: 'left', color: 'white', weight: 'bold' }).regular,
+							textAlignVertical: 'center',
+						}}
+					>
+						MY PASSPORT
+					</Text>
+					<MaterialIcon
+						name="arrow-right-thin"
+						size={32}
+						style={{ color: 'white', textAlignVertical: 'center' }}
+					/>
+					<MaterialIcon
+						name="passport"
+						size={40}
+						style={{ color: 'white', flex: 1, textAlign: 'right', textAlignVertical: 'center' }}
+					/>
+				</TouchableOpacity>
 				<View>
 					<Carousel
 						page={page}
