@@ -92,28 +92,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.header}>
-				<View style={styles.header_button_group}>
-					<Button
-						style={[styles.outlineBtn, { marginRight: 10 }]}
-						mode="outlined"
-						labelStyle={TextStyles({ color: '#91C0EB' }).regular}
-						onPress={() => navigation.navigate('AdjustTrip', { tripId: travel_id })}
-					>
-						정산 현황
-					</Button>
-					<Button
-						style={styles.outlineBtn}
-						labelStyle={TextStyles({ color: '#91C0EB' }).regular}
-						mode="outlined"
-						onPress={() => navigation.navigate('AnalysisTrip')}
-					>
-						분석
-					</Button>
-				</View>
-			</View>
-
-			<View style={styles.title_box}>
+			<View>
 				<View style={styles.topView}>
 					<Text style={styles.title}>{title}</Text>
 					<Text style={styles.info}>{location}</Text>
@@ -334,17 +313,14 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		alignItems: 'center',
 		paddingHorizontal: 10,
-	},
-	title_box: {
-		padding: 10,
+		marginTop: 10,
 	},
 	topView: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginBottom: 5,
 	},
 	title: {
-		...TextStyles({ weight: 'bold', mRight: 10 }).title,
+		...TextStyles({ weight: 'bold', mRight: 10, color: '#91C0EB' }).header,
 	},
 	info: {
 		...TextStyles({ align: 'left', color: '#666666' }).small,
@@ -357,19 +333,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginBottom: 20,
 	},
-	// balance: {
-	//     justifyContent: 'center',
-	//     alignItems: 'center',
-	// },
 	money: {
 		...TextStyles({ weight: 'bold' }).header,
 	},
 	period: {
 		fontSize: 13,
 	},
-	// title: {
-	//     fontSize: 30,
-	// },
 	type: {
 		alignSelf: 'flex-end',
 	},
@@ -390,14 +359,6 @@ const styles = StyleSheet.create({
 	solidBtn: {
 		backgroundColor: '#91C0EB',
 		borderRadius: 32,
-	},
-	header_button_group: {
-		flexDirection: 'row',
-	},
-	header: {
-		flexDirection: 'row',
-		justifyContent: 'flex-end',
-		alignItems: 'center',
 	},
 	centeredView: {
 		flex: 1,
