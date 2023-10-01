@@ -271,29 +271,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				</View>
 			</Modal>
 			{payData.map((item) => (
-				<View key={item.payment_uuid}>
-					<TouchableOpacity
-						style={styles.detail_item_box}
-						onPress={() =>
-							navigation.navigate('ModifyPayment', {
-								payment_uuid: item.payment_uuid,
-								payer: item.payer,
-								method: item.payment_method,
-							})
-						}
-					>
-						<Text>{item.payment_date.split('T')[0]}</Text>
-						<DetailListItem
-							title={item.payment_name}
-							time={item.payment_date}
-							balance={item.amount}
-							party={item.participants ? item.participants.join(',') : ''}
-							abroad={false}
-							calculateStatus={item.calculate_status}
-							visible={item.visible}
-						/>
-					</TouchableOpacity>
-				</View>
+				<DetailListItem key={item.payment_uuid} item={item} navigation={navigation} />
 			))}
 		</ScrollView>
 	);
@@ -343,9 +321,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 	},
 	title_box: {
-		padding: 10,
-	},
-	detail_item_box: {
 		padding: 10,
 	},
 	topView: {
