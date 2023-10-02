@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	ScrollView,
+	FlatList,
+	TouchableOpacity,
+	ImageURISource,
+} from 'react-native';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -7,10 +14,11 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DateChip from '../../components/DateChip/DateChip';
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
+import CameraButton from '../../components/OCR/CameraButton';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
+import { DirectPayMember, DirectPayReq, OcrData, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
@@ -34,6 +42,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [open, setOpen] = useState(false);
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
+	const [ocrData, setOcrData] = useState<OcrData | undefined>();
 
 	useEffect(() => {
 		console.log('useEffect');
@@ -60,6 +69,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}, [route.params]);
 
+	function handleOcrData() {
+		console.log('ocr');
+	}
 	const handleInVolveChange = (
 		memberUuid: string,
 		amount: number,
@@ -175,6 +187,14 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	}
 	return (
 		<View style={styles.container}>
+			<CameraButton setOcrData={setOcrData} />
+			{ocrData ? (
+				<>
+					<Text>결제처: {ocrData.title}</Text>
+					<Text>결제 일자: {ocrData.date} </Text>
+					<Text>결제 금액 {ocrData.amount} </Text>
+				</>
+			) : null}
 			<View style={styles.amount_container}>
 				<View style={styles.amount_left}>
 					<ExRateDropDown
