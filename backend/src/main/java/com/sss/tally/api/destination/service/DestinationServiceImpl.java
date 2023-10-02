@@ -32,11 +32,19 @@ public class DestinationServiceImpl implements DestinationService{
 
 	@Override
 	public void createCity(List<DestinationDto.StateCityRespDto> cityList) {
+		String state = "";
+		int cityCount = 0;
 		for(DestinationDto.StateCityRespDto city: cityList){
 			String[] c = city.getName().split(" ");
 			Optional<State> stateByStateName = stateRepository.findStateByStateName(c[0]);
 			if(stateByStateName.isEmpty()) throw new BusinessException(ErrorCode.NOT_EXIST_STATE);
-			cityRepository.save(City.of(c[1], stateByStateName.get()));
+			
+			// 최상단의 3개의 지역만 저장하도록 수정
+			if(state.equals(c[0])) cityCount++;
+			else {cityCount = 0; state=c[0];}
+
+			if(cityCount < 3)
+				cityRepository.save(City.of(c[1], stateByStateName.get()));
 		}
 	}
 

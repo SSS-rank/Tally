@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { FlatList, SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+	FlatList,
+	SafeAreaView,
+	View,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	Image,
+} from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
-import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { TripStackProps } from '../../navigation/TripStack';
 import { TextStyles } from '../../styles/CommonStyles';
-
-type TripDetailScreenProps = {
-	navigation?: NativeStackNavigationProp<TripStackProps, 'AdjustTrip'>;
-	route?: RouteProp<TripStackProps, 'GetAdjust'>;
-};
 
 type ItemData = {
 	calculate_group_uuid: string;
@@ -31,18 +34,19 @@ const Item = ({ item, navigation }: ItemProps) => (
 			backgroundColor: '#F6F6F6',
 			alignItems: 'center',
 			height: 80,
-			marginTop: 20,
+			marginVertical: 12,
 			paddingHorizontal: 10,
 		}}
 		onPress={() =>
 			navigation?.navigate('GetAdjust', {
 				adjustId: item.calculate_group_uuid,
 				requesterName: item.receiver_name,
+				status: item.status,
 			})
 		}
 	>
 		<Text style={{ ...TextStyles({ align: 'left' }).regular }}>{item.created_time}</Text>
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, marginRight: 40 }}>
 			<Text
 				style={{
 					...TextStyles({ align: 'right' }).title,
@@ -58,6 +62,48 @@ const Item = ({ item, navigation }: ItemProps) => (
 				요청자 {item.receiver_name}
 			</Text>
 		</View>
+		{item.status === 'REJECT' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_reject.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+					height: 100,
+				}}
+			/>
+		)}
+		{item.status === 'ONGOING' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_ongoing.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+					height: 100,
+				}}
+			/>
+		)}
+		{item.status === 'COMPLETE' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_complete.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+					height: 100,
+				}}
+			/>
+		)}
 	</TouchableOpacity>
 );
 

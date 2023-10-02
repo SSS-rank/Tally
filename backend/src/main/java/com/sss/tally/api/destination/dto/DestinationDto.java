@@ -50,11 +50,13 @@ public class DestinationDto {
 	public static class StateDto{
 		private Long stateId;
 		private String stateName;
+		private String englishName;
 
 		public static StateDto from(State state){
 			return StateDto.builder()
 				.stateId(state.getStateId())
 				.stateName(state.getStateName())
+				.englishName(state.getEnglishName())
 				.build();
 		}
 	}
@@ -67,11 +69,13 @@ public class DestinationDto {
 	public static class CityDto{
 		private Long cityId;
 		private String cityName;
+		private String englishName;
 
 		public static CityDto from(City city){
 			return CityDto.builder()
 				.cityId(city.getCityId())
 				.cityName(city.getCityName())
+				.englishName(city.getEnglishName())
 				.build();
 		}
 	}

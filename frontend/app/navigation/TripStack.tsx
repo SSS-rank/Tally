@@ -27,8 +27,8 @@ export type TripStackProps = {
 	AnalysisPersonal: { member_uuid: string; title: string };
 	AnalysisCategory: { category_id: number; title: string; member_uuid: string; money: number };
 	AdjustTrip: { tripId: number };
-	SendAdjust: { adjustId: string };
-	GetAdjust: { adjustId: string; requesterName?: string };
+	SendAdjust: { adjustId: string; status: string };
+	GetAdjust: { adjustId: string; requesterName?: string; status: string };
 	PayAdjust: { adjustId: string };
 	AddPayment: {
 		travel_id: number;
