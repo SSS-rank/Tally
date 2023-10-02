@@ -13,7 +13,10 @@ import { HomeStackProps } from '../../navigation/HomeStack';
 import { accountResgistReqState, transferPasswordState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
-type TransferPasswrodConfirmScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
+type TransferPasswrodConfirmScreenProps = NativeStackScreenProps<
+	HomeStackProps,
+	'TransferPasswordConfirm'
+>;
 
 function TransferPasswrodConfirmScreen({ navigation }: TransferPasswrodConfirmScreenProps) {
 	const transferPassword = useRecoilValue(transferPasswordState);
