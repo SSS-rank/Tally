@@ -8,10 +8,11 @@ import {
 	Pressable,
 	Alert,
 } from 'react-native';
-import { Avatar, Button, Text } from 'react-native-paper';
+import { Avatar, Button, Text, Chip } from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
@@ -113,27 +114,30 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						<Avatar.Image
 							key={member.member_uuid}
 							style={{ backgroundColor: 'transparent' }}
-							size={54}
+							size={36}
 							source={{ uri: member.image }}
 						/>
 					) : (
 						<Avatar.Image
 							key={member.member_uuid}
-							style={{ backgroundColor: 'transparent', position: 'relative', left: -24 }}
-							size={54}
+							style={{ backgroundColor: 'transparent', position: 'relative', left: -16 }}
+							size={36}
 							source={{ uri: member.image }}
 						/>
 					),
 				)}
-				<Button
-					icon="plus"
-					style={[styles.outlineBtn, { marginLeft: 10 }]}
-					mode="outlined"
-					labelStyle={TextStyles({ color: '#91C0EB' }).regular}
+				<Chip
+					style={styles.outlineBtn}
+					textStyle={{ color: '#91C0EB' }}
 					onPress={() => setInviteModalVisible(true)}
 				>
+					<MaterialIcon
+						name="plus"
+						size={16}
+						style={{ color: '#91C0EB', textAlignVertical: 'center' }}
+					/>{' '}
 					일행 추가
-				</Button>
+				</Chip>
 			</View>
 			<View style={styles.center_box}>
 				<Text style={styles.info}>
@@ -320,7 +324,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		alignItems: 'center',
-		paddingHorizontal: 10,
 		marginTop: 10,
 	},
 	topView: {
@@ -359,6 +362,8 @@ const styles = StyleSheet.create({
 		borderColor: '#91C0EB',
 		borderRadius: 32,
 		padding: 0,
+		borderWidth: 1,
+		backgroundColor: 'white',
 	},
 	lightSolidBtn: {
 		backgroundColor: '#E0E6EC',
