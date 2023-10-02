@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
-import DatePicker from 'react-native-date-picker';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
 
-import FIcon from 'react-native-vector-icons/FontAwesome';
 import IIcon from 'react-native-vector-icons/Ionicons';
-import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DateChip from '../../components/DateChip/DateChip';
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
@@ -17,6 +14,8 @@ import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/paym
 import { TripMember } from '../../model/trip';
 import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
+import { CurTripInfoState } from '../../recoil/recoil';
+import formatDate from '../../services/FormDate';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
@@ -33,23 +32,11 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [visible, setVisible] = useState(true);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
-
+	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
-	const [directPayReq, setDirectPayReq] = useState<DirectPayReq>({
-		amount: 0,
-		category: 0,
-		memo: '',
-		payment_date_time: '',
-		payment_participants: [],
-		payment_type: '',
-		payment_unit_id: 0,
-		ratio: 0,
-		title: '',
-		travel_id: 0,
-		visible: true,
-	});
+
 	useEffect(() => {
-		// route.params에 접근하는 부분
+		console.log('useEffect');
 		setTotAmount('');
 		setText('');
 		setStore('');
@@ -57,33 +44,22 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		setVisible(true);
 		setDate(new Date());
 		setOpen(false);
-		const { travel_id, travel_title, participants } = route.params || {
+		const { travel_id, participants } = route.params || {
 			travel_id: undefined,
-			travel_title: undefined,
 			participants: undefined,
 		};
+		console.log(participants);
 		if (participants) {
 			const directPayMembers = participants.map((member: TripMember) => ({
-				amount: 0, // 초기값 설정 (원하는 초기값으로 변경)
+				amount: 0,
 				member_uuid: member.member_uuid,
 				checked: false,
 				member_nickname: member.member_nickname,
 				image: member.image,
 			}));
 			setPartyMembers(directPayMembers);
-			setDirectPayReq((prevState: DirectPayReq) => ({
-				...prevState,
-				title: store || '',
-				travel_id: travel_id || 0,
-			}));
 		}
-
-		// route.params에 의존하는 추가적인 코드 작성
 	}, [route.params]);
-
-	const handleIconClick = (category: number) => {
-		setSelectedCategory(category);
-	};
 
 	const handleInVolveChange = (
 		memberUuid: string,
@@ -155,16 +131,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	};
 
-	function formatDate(in_date: Date) {
-		const year = in_date.getFullYear();
-		const month = String(in_date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
-		const day = String(in_date.getDate()).padStart(2, '0'); // 일자를 2자리로 포맷팅
-		const hours = String(in_date.getHours()).padStart(2, '0'); // 시간을 2자리로 포맷팅
-		const minutes = String(in_date.getMinutes()).padStart(2, '0'); // 분을 2자리로 포맷팅
-
-		return `${year}-${month}-${day} ${hours}:${minutes}`;
-	}
-
 	async function handleSubmit() {
 		try {
 			const partyData = partyMembers
@@ -173,33 +139,41 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					amount: item.amount,
 					member_uuid: item.member_uuid,
 				}));
-
-			setDirectPayReq((prevState: DirectPayReq) => ({
-				...prevState,
-				payment_date_time: formatDate(date),
-				payment_type: 'cash',
-				payment_unit_id: 8,
-				ratio: 1,
-				amount: parseFloat(totAmount),
-				category: selectedcategory,
-				memo: text,
-				title: store || '',
-				payment_participants: partyData || [],
-				visible: visible,
-			}));
-			if (!visible) {
+			let payment_add_req: DirectPayReq;
+			if (visible) {
+				payment_add_req = {
+					travel_id: curTripInfo.id,
+					payment_date_time: formatDate(date),
+					payment_type: 'cash',
+					payment_unit_id: 8,
+					ratio: 1,
+					amount: parseFloat(totAmount),
+					category: selectedcategory,
+					memo: text,
+					title: store,
+					payment_participants: partyData,
+					visible: visible,
+				};
+			} else {
 				const selfData: DirectPayMember[] = [
 					{ amount: Number(totAmount), member_uuid: memberinfo.member_uuid },
 				];
-
-				setDirectPayReq((prevState: DirectPayReq) => ({
-					...prevState,
-					payment_participants: selfData || [],
+				payment_add_req = {
+					travel_id: curTripInfo.id,
+					payment_date_time: formatDate(date),
+					payment_type: 'cash',
+					payment_unit_id: 8,
+					ratio: 1,
+					amount: parseFloat(totAmount),
+					category: selectedcategory,
+					memo: text,
+					title: store,
+					payment_participants: selfData,
 					visible: visible,
-				}));
+				};
 			}
 
-			const res = await api.post(`/payment/manual`, directPayReq);
+			const res = await api.post(`/payment/manual`, payment_add_req);
 
 			if (res.status === 201) {
 				navigation.goBack();
@@ -234,7 +208,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							selectionColor="#F6F6F6"
 							placeholder="0"
 						/>
-						{/* <Text style={TextStyles({ align: 'left' }).medium}>{exData.split(':')[1]}</Text> */}
 					</View>
 					<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
 						{' '}
@@ -242,7 +215,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					</Text>
 				</View>
 				<View style={styles.amount_right}>
-					<Text style={styles.amount__right_text}>1 {exData.split(':')[1]}</Text>
+					<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
 					<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
 				</View>
 			</View>
