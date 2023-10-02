@@ -178,7 +178,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				payer.getNickname() + " 님이 정산을 요청하였습니다.", "정산 요청");
 			notificationReqDtoList.add(notificationReqDto);
 			//알림 저장히기 위한 Dto 생성
-			Notification notification = Notification.of("request_calculate", payer.getMemberUuid(),
+			Notification notification = Notification.of("calculate-request", payer.getMemberUuid(),
 				payer.getNickname(), key.getMemberUuid(), key.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
@@ -370,7 +370,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//알림 보내기 위한 dto
 		List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
 		for (Member receiver : memberList) {
-			Notification notification = Notification.of("reject_calculate", member.getMemberUuid(),
+			Notification notification = Notification.of("calculate-reject", member.getMemberUuid(),
 				member.getNickname(), receiver.getMemberUuid(), receiver.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
@@ -636,7 +636,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
 				calculateGroupClient.deposit(CONTENT_TYPE, transferDepositReqDto);
 
-				Notification notification = Notification.of("complete_calculate", "555",
+				Notification notification = Notification.of("calculate-complete", "555",
 					"Tally", memberOfGroup.getMemberId().getMemberUuid(), memberOfGroup.getMemberId().getNickname(),
 					travelName, "");
 				//알림함에 저장

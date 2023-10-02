@@ -73,6 +73,8 @@ public class NotificationDto {
 
 		private String createdTime;
 
+		private String paymentName;
+
 		public static GetNotificationRespDto from(Notification notification) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			String formattedTime = notification.getCreatedTime().format(formatter);
@@ -82,6 +84,7 @@ public class NotificationDto {
 				.receiverName(notification.getReceiverName())
 				.travelName(notification.getTravelName())
 				.createdTime(formattedTime)
+				.paymentName(notification.getPaymentName())
 				.build();
 		}
 
