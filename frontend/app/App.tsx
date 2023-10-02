@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { MD3LightTheme, PaperProvider } from 'react-native-paper';
-
 import { Linking, Text } from 'react-native';
+import { MD3LightTheme, PaperProvider } from 'react-native-paper';
 
 import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer } from '@react-navigation/native';
