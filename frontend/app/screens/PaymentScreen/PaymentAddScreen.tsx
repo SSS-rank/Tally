@@ -16,12 +16,12 @@ import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import formatDate from '../../services/FormDate';
+import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const api = useAxiosWithAuth();
 	const [dropDownOpen, setDropDownOpen] = useState(false);
-	const [value, setValue] = useState(null);
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('');
 	const [totAmount, setTotAmount] = useState(''); // 원화 환산 결제 총액
@@ -44,8 +44,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		setVisible(true);
 		setDate(new Date());
 		setOpen(false);
-		const { travel_id, participants } = route.params || {
-			travel_id: undefined,
+		const { participants } = route.params || {
 			participants: undefined,
 		};
 		console.log(participants);
@@ -120,15 +119,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 			}
 			return updatedAmounts;
 		});
-	};
-	const removeCommaAndParseInt = (inputString: string): number => {
-		const numberWithoutComma = parseFloat(inputString.replace(/,/g, ''));
-
-		if (!isNaN(numberWithoutComma)) {
-			return numberWithoutComma;
-		} else {
-			return 0;
-		}
 	};
 
 	async function handleSubmit() {
@@ -325,9 +315,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	);
 }
 const styles = StyleSheet.create({
-	icon_group: {
-		flexDirection: 'column',
-	},
 	content_box: {
 		marginVertical: 30,
 	},
