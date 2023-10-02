@@ -74,3 +74,9 @@ export interface PaymentModifyReq {
 	ratio?: number;
 	payment_unit_id?: number;
 }
+
+export interface OcrData {
+	title: string;
+	date: string;
+	amount: string;
+}
