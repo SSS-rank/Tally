@@ -126,6 +126,7 @@ function HomeScreen({ navigation }: any) {
 				{ text: '나중에 확인할게요' },
 				{
 					text: '확인',
+					onPress: () => navigation.navigate('Alert'),
 				},
 			]);
 		});
