@@ -255,7 +255,9 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 				}
 				for (MemberPayment memberPayment : memberPaymentList) {
-					amount += Math.round(memberPayment.getAmount() * ratio);
+					if(!memberPayment.getMemberId().equals(member)) {
+						amount += Math.round(memberPayment.getAmount() * ratio);
+					}
 				}
 			}
 			CalculateDto.GetRequestCalculateListRespDto getRequestCalculateListRespDto =
