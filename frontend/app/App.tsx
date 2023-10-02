@@ -8,11 +8,6 @@ import { RecoilRoot } from 'recoil';
 
 import RootStack from './navigation/RootStack';
 
-// 백그라운드일 때 알림 받기
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-	console.log('Message handled in the background!', remoteMessage);
-});
-
 const config = {
 	screens: {
 		Join: { path: 'join//:host/:travelName/:travelId' },
