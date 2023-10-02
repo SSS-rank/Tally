@@ -93,7 +93,8 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 		const res = await api.post('calculate', adjust_data);
 		if (res.status == 200) {
-			console.log(res.data);
+			console.log('정산 요청 완료');
+			navigation.navigate('AdjustTrip', { tripId: travel_id });
 		}
 	}
 
