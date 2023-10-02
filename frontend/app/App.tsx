@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Text } from 'react-native';
 import { MD3LightTheme, PaperProvider } from 'react-native-paper';
-
-import { Linking, Text } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer } from '@react-navigation/native';
-import { RecoilRoot, useRecoilValue } from 'recoil';
+import { RecoilRoot } from 'recoil';
 
 import RootStack from './navigation/RootStack';
 
@@ -26,14 +25,6 @@ const linking = {
 };
 
 const App = () => {
-	// 포그라운드일 때 알림 받기
-	useEffect(() => {
-		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-			console.log('remoteMessage', JSON.stringify(remoteMessage));
-		});
-		return unsubscribe;
-	}, []);
-
 	// useEffect(() => {
 	// 	const handleDeepLink = async () => {
 	// 		const url = await Linking.getInitialURL();
