@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, Dimensions, ScrollView } from 'react-native';
 import Config from 'react-native-config';
+import LinearGradient from 'react-native-linear-gradient';
 
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -8,6 +9,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
 
 import Carousel from '../../components/Carousel';
+import MainBanner from '../../components/HomeScreen/MainBanner';
+import MainHeader from '../../components/HomeScreen/MainHeader';
+import PassportButton from '../../components/HomeScreen/PassportButton';
 import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -66,11 +70,13 @@ function HomeScreen({ navigation }: any) {
 	};
 
 	const getWeatherBackgroundColor = (weather: string) => {
-		if (weather.includes('sunny')) return ['#ffffff', '#ffffff'];
+		if (weather.includes('sunny')) return ['#ffffff', '#fffbe6'];
+		else if (weather.includes('clear')) return ['#ffffff', '#fffbe6'];
 		else if (weather.includes('rain')) return ['#cfd9df', '#e2ebf0'];
 		else if (weather.includes('snow')) return ['#e6e9f0', '#eef1f5'];
 		else if (weather.includes('clouds')) return ['#accbee', '#e7f0fd'];
 		else if (weather.includes('cloudy')) return ['#fdfbfb', '#ebedee'];
+		else if (weather.includes('fog')) return ['#fdfbfb', '#ebedee'];
 		else return ['#ffffff', '#ffffff'];
 	};
 
@@ -80,7 +86,8 @@ function HomeScreen({ navigation }: any) {
 		if (res.status === 200 && res.data.length > 0) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
-					const WeatherText = await getWeather(item.travel_type);
+					// const WeatherText = await getWeather(item.travel_type);
+					const WeatherText = 'sunny';
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
@@ -92,7 +99,6 @@ function HomeScreen({ navigation }: any) {
 				}),
 			);
 		}
-
 		newInfo.push({
 			travel_id: -1,
 			travel_title: '',
@@ -107,24 +113,16 @@ function HomeScreen({ navigation }: any) {
 			width: width,
 			navigation: navigation,
 		});
-
 		console.log('newInfo ', newInfo);
 		setAfterTripList(newInfo);
 	};
 
 	return (
-		<View style={HomeStyles.container}>
+		<LinearGradient colors={['#A7BFE8', '#CFDEF3', '#F2F2F2']} style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
-				<View style={ViewStyles().header}>
-					<Icon
-						name="settings-sharp"
-						size={24}
-						color="#91C0EB"
-						onPress={() => navigation.navigate('Setting')}
-					/>
-				</View>
-				<ProfileBox />
-
+				<MainHeader navigation={navigation} />
+				<MainBanner />
+				<PassportButton />
 				<View>
 					<Carousel
 						page={page}
@@ -135,6 +133,7 @@ function HomeScreen({ navigation }: any) {
 						RenderItem={TravelSheet}
 					/>
 				</View>
+				<ProfileBox />
 				<View style={ViewStyles({ justifyContent: 'flex-start' }).box}>
 					<Text style={TextStyles().title}>여행 도우미</Text>
 					<Text style={TextStyles().small}>여행에 도움이 되는정보를 찾아보세요</Text>
@@ -153,7 +152,7 @@ function HomeScreen({ navigation }: any) {
 				<View style={ViewStyles({ color: 'red' }).box} />
 				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
-		</View>
+		</LinearGradient>
 	);
 }
 

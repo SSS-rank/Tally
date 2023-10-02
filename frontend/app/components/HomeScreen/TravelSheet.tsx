@@ -41,8 +41,10 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					{item.weather?.includes('snow') && <SnowAnimation />}
 					{item.weather?.includes('rain') && <RainAnimation />}
 					{item.weather?.includes('sunny') && <SunnyAnimation />}
+					{item.weather?.includes('clear') && <SunnyAnimation />}
 					{item.weather?.includes('clouds') && <CloudAnimation type="" />}
 					{item.weather?.includes('cloudy') && <CloudAnimation type="cloudy" />}
+					{item.weather?.includes('fog') && <CloudAnimation type="cloudy" />}
 
 					<View
 						style={{
@@ -79,7 +81,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							<Avatar.Image
 								key={member.member_uuid}
 								style={ViewStyles({ left: 0 }).avatarMate}
-								size={40}
+								size={32}
 								source={{ uri: member.profile_image }}
 							/>
 						))}
