@@ -8,6 +8,11 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
+import com.sss.tally.domain.payment.entity.Payment;
+import com.sss.tally.domain.payment.repository.PaymentRepository;
+import com.sss.tally.global.error.exception.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -30,14 +35,13 @@ import com.sss.tally.domain.member.entity.Member;
 import com.sss.tally.domain.member.repository.MemberRepository;
 import com.sss.tally.domain.notification.repository.NotificationRepository;
 import com.sss.tally.global.error.ErrorCode;
-import com.sss.tally.global.error.exception.MemberException;
-import com.sss.tally.global.error.exception.NotificationException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
 	private final NotificationRepository notificationRepository;
@@ -46,19 +50,14 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private final MemberRepository memberRepository;
 
-	@Autowired
-	public NotificationServiceImpl(NotificationRepository notificationRepository, DeviceRepository deviceRepository,
-		MemberRepository memberRepository) {
-		this.notificationRepository = notificationRepository;
-		this.deviceRepository = deviceRepository;
-		this.memberRepository = memberRepository;
+	private final PaymentRepository paymentRepository;
 
-	}
+	private final MemberPaymentRepository memberPaymentRepository;
+
 
 	@Value("${fcm.key.path}")
 	private String FCM_PRIVATE_KEY_PATH;
 
-	//
 	// 메시징만 권한 설정
 	@Value("${fcm.key.scope}")
 	private String fireBaseScope;
@@ -133,6 +132,37 @@ public class NotificationServiceImpl implements NotificationService {
 		} catch (FirebaseMessagingException e) {
 			throw new NotificationException(ErrorCode.FAIL_SEND_NOTIFICATION);
 		}
+	}
+
+	public NotificationDto.NotificationRespDto sendNotificationToPayer(Member member, String paymentUuid){
+		Optional<Payment> paymentOptional = paymentRepository.findPaymentByPaymentUuidAndStatusIsFalse(paymentUuid);
+		if(paymentOptional.isEmpty()) throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT);
+
+		Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndIsLoginIsTrue(paymentOptional.get().getMemberId());
+		if(deviceOptional.isEmpty()) {log.error("결제자가 로그인 한 device가 없습니다."); return null;}
+
+		if(!memberPaymentRepository.existsByPaymentIdAndMemberIdAndStatusIsFalse(paymentOptional.get(), member))
+			throw new BusinessException(ErrorCode.NOT_EXIST_REQUEST_PERMISSION);
+
+		if(member.getMemberId().equals(paymentOptional.get().getMemberId().getMemberId()))
+			throw new BusinessException(ErrorCode.NOT_EXIST_REQUEST_PERMISSION);
+
+		// DB에 저장하기
+		com.sss.tally.domain.notification.document.Notification notification = com.sss.tally.domain.notification.document.Notification.of("payment-request", member.getMemberUuid(),
+				member.getNickname(), deviceOptional.get().getMemberId().getMemberUuid(), deviceOptional.get().getMemberId().getNickname(), paymentOptional.get().getTravelId().getTravelTitle(), paymentOptional.get().getPaymentName());
+		notificationRepository.save(notification);
+
+
+		NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(deviceOptional.get(),
+				member.getNickname() + " 님이 " + paymentOptional.get().getTravelId().getTravelTitle() + "의 " + paymentOptional.get().getPaymentName()+ " 금액 조정을 요청했습니다.", "금액 수정 요청");
+
+		NotificationDto.NotificationRespDto notificationRespDto = sendNotification(notificationReqDto);
+
+		// 실패했다면 다시 보내주기
+		if(notificationRespDto.getCode() == -1)
+			return sendNotification(notificationReqDto);
+		else
+			return notificationRespDto;
 	}
 
 	@Override
