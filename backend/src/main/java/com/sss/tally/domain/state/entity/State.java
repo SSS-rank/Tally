@@ -33,6 +33,7 @@ public class State {
 	@Column(nullable = false, unique = true)
 	private String stateName;
 
+	private String englishName;
 	public static State from(DestinationDto.StateCityRespDto state){
 		return State.builder()
 			.stateName(state.getName())
