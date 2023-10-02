@@ -52,13 +52,11 @@ function AlertListItem({ item }: AlertListItemProp) {
 	return (
 		<View style={styles.itemContainer}>
 			<View style={styles.row}>
-				<Icon name="heart" size={24} color={typeColor} />
+				<Icon name="heart" size={20} color={typeColor} />
 				<Text style={styles.type}>{typeName}</Text>
 				<Text style={styles.date}>{date}</Text>
 			</View>
-			<View>
-				<Text style={styles.message}>{message}</Text>
-			</View>
+			<Text style={styles.message}>{message}</Text>
 		</View>
 	);
 }
@@ -68,19 +66,20 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		paddingHorizontal: 15,
 		width: '100%',
+		marginVertical: 12,
 	},
 	row: {
 		flexDirection: 'row',
 	},
 	type: {
-		...TextStyles({ align: 'left', mLeft: 5 }).small,
+		...TextStyles({ align: 'left', mLeft: 5, color: '#A0A0A0' }).small,
 	},
 	date: {
 		...TextStyles({ align: 'right', color: '#A0A0A0' }).small,
 		marginLeft: 'auto',
 	},
 	message: {
-		...TextStyles({ align: 'left', mTop: 10, mBottom: 10 }).regular,
+		...TextStyles({ align: 'left', mTop: 8, mBottom: 10 }).regular,
 	},
 });
 export default AlertListItem;
