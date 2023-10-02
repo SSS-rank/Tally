@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-	FlatList,
-	SafeAreaView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-} from 'react-native';
+import { FlatList, SafeAreaView, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -34,7 +27,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 			backgroundColor: '#F6F6F6',
 			alignItems: 'center',
 			height: 80,
-			marginTop: 20,
+			marginVertical: 10,
 			paddingHorizontal: 10,
 		}}
 		onPress={() => {
@@ -42,16 +35,64 @@ const Item = ({ item, navigation }: ItemProps) => (
 			navigation?.navigate('SendAdjust', { adjustId: item.calculate_group_uuid });
 		}}
 	>
-		<Text style={TextStyles().regular}>{item.created_time}</Text>
+		<Text
+			style={{
+				...TextStyles({ align: 'left' }).regular,
+				flex: 1,
+				// lineHeight: 60,
+			}}
+		>
+			{item.created_time}
+		</Text>
+
 		<Text
 			style={{
 				...TextStyles({ align: 'right' }).title,
-				flex: 1,
 				lineHeight: 60,
+				marginRight: 40,
 			}}
 		>
 			{item.amount}원
 		</Text>
+		{item.status === 'REJECT' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_reject.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+				}}
+			/>
+		)}
+		{item.status === 'ONGOING' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_ongoing.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+				}}
+			/>
+		)}
+		{item.status === 'COMPLETE' && (
+			<Image
+				source={require('../../assets/images/adjust/payment_complete.png')}
+				style={{
+					resizeMode: 'contain',
+					width: 100,
+					opacity: 0.6,
+					position: 'absolute',
+					right: 0,
+					zIndex: -1,
+				}}
+			/>
+		)}
 	</TouchableOpacity>
 );
 

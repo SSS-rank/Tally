@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 
 import RequestListItem from '../../components/Adjust/RequestListItem';
@@ -28,13 +29,23 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 	const myName = useRecoilValue(MemberState).nickname;
 
 	const api = useAxiosWithAuth();
-	useEffect(() => {
-		if (isSend === true) {
-			getRequestAdjustList();
-		} else {
-			getReceiveAdjustList();
-		}
-	}, [isSend]);
+
+	useFocusEffect(
+		useCallback(() => {
+			if (isSend === true) {
+				getRequestAdjustList();
+			} else {
+				getReceiveAdjustList();
+			}
+		}, [isSend]),
+	);
+	// useEffect(() => {
+	// 	if (isSend === true) {
+	// 		getRequestAdjustList();
+	// 	} else {
+	// 		getReceiveAdjustList();
+	// 	}
+	// }, [isSend]);
 
 	const getRequestAdjustList = async () => {
 		try {
@@ -43,7 +54,6 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 			if (res.status === 200) {
 				console.log(res.data);
 				setReqeustItems(res.data);
-				console.log(requestItems);
 			}
 		} catch (err) {
 			console.log(err);
