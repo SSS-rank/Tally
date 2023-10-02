@@ -16,7 +16,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [responseAdjust, setResponseAdjust] = useState<responseList>();
-	const { adjustId, requesterName } = route.params;
+	const { adjustId, requesterName, status } = route.params;
 	const [rejectMessage, setRejectMessage] = useState('');
 	const api = useAxiosWithAuth();
 
@@ -112,8 +112,9 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 					)}
 				/>
 			</View>
+
 			<View>
-				<View style={{ marginHorizontal: 15 }}>
+				<View style={{ marginBottom: 20, marginHorizontal: 15 }}>
 					<DashLine />
 					<View
 						style={{
@@ -133,28 +134,31 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 						</Text>
 					</View>
 				</View>
-				<View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 15 }}>
-					<Button
-						mode="contained"
-						buttonColor="#E6E6E6"
-						textColor="#A0A0A0"
-						style={{ flex: 1, marginHorizontal: 5 }}
-						onPress={() => setModalVisible(true)}
-					>
-						반려
-					</Button>
+				{status === 'ONGOING' && (
+					<View style={{ flexDirection: 'row', marginBottom: 20, marginHorizontal: 15 }}>
+						<Button
+							mode="contained"
+							buttonColor="#E6E6E6"
+							textColor="#A0A0A0"
+							style={{ flex: 1, marginHorizontal: 5 }}
+							onPress={() => setModalVisible(true)}
+						>
+							반려
+						</Button>
 
-					<Button
-						mode="contained"
-						buttonColor="#91C0EB"
-						textColor="white"
-						style={{ flex: 1, marginHorizontal: 5 }}
-						onPress={() => navigation.navigate('PayAdjust', { adjustId: adjustId })}
-					>
-						정산
-					</Button>
-				</View>
+						<Button
+							mode="contained"
+							buttonColor="#91C0EB"
+							textColor="white"
+							style={{ flex: 1, marginHorizontal: 5 }}
+							onPress={() => navigation.navigate('PayAdjust', { adjustId: adjustId })}
+						>
+							정산
+						</Button>
+					</View>
+				)}
 			</View>
+
 			<Modal
 				animationType="slide"
 				transparent={true}
