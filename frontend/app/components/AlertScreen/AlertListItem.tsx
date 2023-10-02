@@ -1,20 +1,63 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import { AlertItem } from '../../model/alert';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function AlertListItem() {
+interface AlertListItemProp {
+	item: AlertItem;
+}
+
+function AlertListItem({ item }: AlertListItemProp) {
+	const getAlertContent = (type: string) => {
+		let color = '';
+		let name = '';
+		const splitDate = item.createdTime.split(' ')[0].split('-');
+		const date = `${splitDate[1]}월 ${splitDate[2]}일`;
+		let msg = '';
+
+		if (type === 'payment-request') {
+			color = '#FDDE61';
+			name = '더치페이';
+			msg = `${item.senderName}님이 ${item.travelName}의 ${item.paymentName} 결제의 금액 조정을 요청했어요.`;
+		} else if (type === 'calculate-request') {
+			color = '#B949F6';
+			name = '정산';
+			msg = `${item.travelName} 여행의 ${item.senderName}님이 정산을 요청했어요.`;
+		} else if (type === 'calculate-reject') {
+			color = '#B949F6';
+			name = '정산';
+			msg = `${item.travelName} 여행의 ${item.senderName}님이 정산을 거절했어요.`;
+		} else if (type === 'calculate-complete') {
+			color = '#B949F6';
+			name = '정산';
+			msg = `${item.travelName} 여행의 ${item.senderName}님이 요청한 정산이 완료 됐어요.`;
+		} else if (type === 'calculate-cancel') {
+			color = '#B949F6';
+			name = '정산';
+			msg = `${item.travelName} 여행의 ${item.senderName}님이 선택한 계좌에 잔액이 부족해요. 확인 후 다시 정산을 요청해 주세요.`;
+		} else if (type === 'travel-add') {
+			color = '#227CF8';
+			name = '초대';
+			msg = `${item.senderName}님이 ${item.travelName} 여행에 참여했어요.`;
+		}
+
+		return { typeColor: color, typeName: name, date, message: msg };
+	};
+
+	const { typeColor, typeName, message, date } = getAlertContent(item.type);
+
 	return (
 		<View style={styles.itemContainer}>
 			<View style={styles.row}>
-				<Text style={styles.type}>💜</Text>
-				<Text style={styles.type}>정산</Text>
-				<Text style={styles.date}>9월 5일</Text>
+				<Icon name="heart" size={24} color={typeColor} />
+				<Text style={styles.type}>{typeName}</Text>
+				<Text style={styles.date}>{date}</Text>
 			</View>
 			<View>
-				<Text style={styles.message}>
-					박싸피님이 80000원을 요청했어요. 정산 내역을 확인해보세요
-				</Text>
+				<Text style={styles.message}>{message}</Text>
 			</View>
 		</View>
 	);
@@ -30,13 +73,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 	},
 	type: {
-		...TextStyles({ align: 'left' }).small,
+		...TextStyles({ align: 'left', mLeft: 5 }).small,
 	},
 	date: {
-		...TextStyles({ align: 'right', color: '#d9d9d9' }).small,
+		...TextStyles({ align: 'right', color: '#A0A0A0' }).small,
+		marginLeft: 'auto',
 	},
 	message: {
-		...TextStyles({ align: 'left', mLeft: 20, mTop: 10, mBottom: 10 }).regular,
+		...TextStyles({ align: 'left', mTop: 10, mBottom: 10 }).regular,
 	},
 });
 export default AlertListItem;
