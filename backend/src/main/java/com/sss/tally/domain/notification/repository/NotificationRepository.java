@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.sss.tally.domain.notification.document.Notification;
 
-public interface NotificationRepository extends MongoRepository<Notification, Integer> {
+public interface NotificationRepository extends MongoRepository<Notification, String> {
 	List<Notification> findByReceiverUuid(String receiverUuid);
 }

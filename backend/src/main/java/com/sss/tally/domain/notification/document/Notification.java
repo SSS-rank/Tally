@@ -32,12 +32,13 @@ public class Notification {
 
 	private String travelName;
 
+	private String paymentName;
 	@CreatedDate
 	private LocalDateTime createdTime;
 
 	public static Notification of(String type, String senderUuid, String senderName, String receiverUuid,
 		String receiverName
-		, String travelName) {
+		, String travelName, String paymentName) {
 		return Notification.builder()
 			.type(type)
 			.senderName(senderName)
@@ -45,6 +46,7 @@ public class Notification {
 			.receiverName(receiverName)
 			.receiverUuid(receiverUuid)
 			.travelName(travelName)
+			.paymentName(paymentName)
 			.build();
 	}
 

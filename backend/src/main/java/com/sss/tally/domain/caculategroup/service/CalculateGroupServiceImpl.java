@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.sss.tally.api.account.dto.AccountDto;
+import com.sss.tally.domain.account.client.AccountInfoClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +89,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 	private final StateRepository stateRepository;
 
 	private final CountryRepository countryRepository;
+
+	private final AccountInfoClient accountInfoClient;
 
 	@Override
 	public String createCalculate(List<CalculateDto.CalculateCreateReqDto> calculateCreateDto, String memberUuid) {
@@ -175,7 +179,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			notificationReqDtoList.add(notificationReqDto);
 			//알림 저장히기 위한 Dto 생성
 			Notification notification = Notification.of("request_calculate", payer.getMemberUuid(),
-				payer.getNickname(), key.getMemberUuid(), key.getNickname(), travelName);
+				payer.getNickname(), key.getMemberUuid(), key.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
 
@@ -251,7 +255,9 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 					throw new CalculateException(ErrorCode.NOT_EXIST_PAYMENT_MEMBER);
 				}
 				for (MemberPayment memberPayment : memberPaymentList) {
-					amount += Math.round(memberPayment.getAmount() * ratio);
+					if(!memberPayment.getMemberId().equals(member)) {
+						amount += Math.round(memberPayment.getAmount() * ratio);
+					}
 				}
 			}
 			CalculateDto.GetRequestCalculateListRespDto getRequestCalculateListRespDto =
@@ -365,7 +371,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
 		for (Member receiver : memberList) {
 			Notification notification = Notification.of("reject_calculate", member.getMemberUuid(),
-				member.getNickname(), receiver.getMemberUuid(), receiver.getNickname(), travelName);
+				member.getNickname(), receiver.getMemberUuid(), receiver.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
 
@@ -515,7 +521,6 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		//넘겨준 계좌를 저장하자 ! ! ! ! !!
 		groupMember.updateAccountNumber(calculateAcceptReqDto.getAccountNumber());
 		//모든 사람이 true인지 확인하자
-		boolean isAllTrue = false;
 		int cnt = 0;
 		List<GroupMember> groupMemberList = groupMemberRepository.findGroupMembersByCalculateGroupId(calculateGroup);
 		for (GroupMember memberOfGroup : groupMemberList) {
@@ -526,14 +531,60 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		}
 		//모두 확인일 경우
 		if (cnt == groupMemberList.size()) {
-			//그룹을 정산 완료로 상태 변경
-			calculateGroup.updateStatus(CalculateGroupStatusEnum.COMPLETE);
-
+			//돈이 있는지부터 제일 먼저 확인
 			List<GroupPayment> groupPaymentList = groupPaymentRepository.findGroupPaymentsByCalculateGroupId(
 				calculateGroup);
 			if (groupPaymentList.isEmpty()) {
 				throw new CalculateException(ErrorCode.NOT_EXIST_GROUP_PAYMENT);
 			}
+			String travelName = groupPaymentList.get(0).getPaymentId().getTravelId().getTravelTitle();
+			for (GroupMember memberOfGroup : groupMemberList) {
+				Long amount = 0l;
+				for (GroupPayment groupPayment : groupPaymentList) {
+					double ratio = groupPayment.getPaymentId().getRatio();
+					//멤버 별 지불할 총 금액 구하기
+					Optional<MemberPayment> memberPaymentOptional = memberPaymentRepository.findMemberPaymentByPaymentIdAndMemberIdAndStatusIsFalse(
+							groupPayment.getPaymentId(), memberOfGroup.getMemberId());
+					if (memberPaymentOptional.isEmpty()) {
+						continue;
+					}
+					MemberPayment memberPayment = memberPaymentOptional.get();
+					amount += Math.round(memberPayment.getAmount() * ratio);
+
+				}
+
+				Account account = accountRepository.findAccountByAccountNumberAndStatusIsFalse(memberOfGroup.getAccountNumber())
+						.orElseThrow(()->new AccountException(ErrorCode.NOT_EXIST_ACCOUNT));
+				String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
+				AccountDto.AccountInfoReqDto accountInfoReqDto = AccountDto.AccountInfoReqDto.of(account);
+				AccountDto.AccountInfoRespDto accountInfoRespDto = accountInfoClient.getAccountBalance(
+						CONTENT_TYPE, accountInfoReqDto);
+				if(amount>accountInfoRespDto.getBalance()){
+					//결제부족이니 해당 사용자 확인을 확인필요로 바꾸고
+					memberOfGroup.updateStatus(false);
+					Member cancelMember = memberOfGroup.getMemberId();
+					//알림보내기
+					//알림에 저장
+					Notification notification = Notification.of("calculate-cancel", "555",
+							"Tally_", cancelMember.getMemberUuid(), cancelMember.getNickname(), travelName, "");
+					notificationRepository.save(notification);
+					//실제 보내기 위한 준비
+					Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+							cancelMember);
+					if (deviceOptional.isEmpty()) {
+						throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+					}
+					Device device = deviceOptional.get();
+					NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+						"잔액이 부족하여 "	+ travelName + " 여행의 정산에 실패하였습니다. 잔액을 확인해주세요.", "정산 취소");
+					notificationService.sendNotification(notificationReqDto);
+
+					return "cancel";
+				}
+			}
+
+			//그룹을 정산 완료로 상태 변경
+			calculateGroup.updateStatus(CalculateGroupStatusEnum.COMPLETE);
 			//각 결제별 상태 변경
 			for (GroupPayment groupPayment : groupPaymentList) {
 				//하나라도 상태가 ONGION이 아니라면 에러
@@ -554,7 +605,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 			Account payerAccount = payerAccountOptional.get();
 			//여행 이름
-			String travelName = groupPaymentList.get(0).getPaymentId().getTravelId().getTravelTitle();
+
 			//알림 리스트
 			List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
 			//사용자 별 보내줘야 할 금액 구하고 보내기....
@@ -587,7 +638,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 				Notification notification = Notification.of("complete_calculate", "555",
 					"Tally", memberOfGroup.getMemberId().getMemberUuid(), memberOfGroup.getMemberId().getNickname(),
-					travelName);
+					travelName, "");
 				//알림함에 저장
 				notificationRepository.save(notification);
 
@@ -605,7 +656,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 			}
 			//결제자 알림 저장 및 알림 보내기 저장
 			Notification notification = Notification.of("complete_calculate", "555",
-				"Tally_", payer.getMemberUuid(), payer.getNickname(), travelName);
+				"Tally_", payer.getMemberUuid(), payer.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
 
