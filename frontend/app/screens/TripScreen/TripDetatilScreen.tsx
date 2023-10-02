@@ -80,9 +80,11 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 		}, []),
 	);
 	async function handleAdjust() {
-		const adjust_data = payData.map((item) => {
-			return { payment_uuid: item.payment_uuid };
-		});
+		const adjust_data = payData
+			.filter((item) => item.calculate_status == 'BEFORE')
+			.map((item) => {
+				return { payment_uuid: item.payment_uuid };
+			});
 		console.log(adjust_data);
 		const res = await api.post('calculate', adjust_data);
 		if (res.status == 200) {
