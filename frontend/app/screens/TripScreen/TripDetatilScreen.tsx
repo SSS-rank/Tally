@@ -15,6 +15,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import AdjustEmptyAlert from '../../components/Alert/AdjustEmptyAlert';
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import SortItem from '../../components/TripScreen/SortItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -80,13 +81,20 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 		}, []),
 	);
 	async function handleAdjust() {
-		const adjust_data = payData.map((item) => {
-			return { payment_uuid: item.payment_uuid };
-		});
-		console.log(adjust_data);
+		const adjust_data = payData
+			.filter((item) => item.calculate_status == 'BEFORE')
+			.map((item) => {
+				return { payment_uuid: item.payment_uuid };
+			});
+		if (adjust_data.length == 0) {
+			AdjustEmptyAlert();
+			return;
+		}
+
 		const res = await api.post('calculate', adjust_data);
 		if (res.status == 200) {
-			console.log(res.data);
+			console.log('정산 요청 완료');
+			navigation.navigate('AdjustTrip', { tripId: travel_id });
 		}
 	}
 
