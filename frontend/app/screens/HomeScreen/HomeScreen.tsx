@@ -7,7 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import Carousel from '../../components/Carousel';
 import MainBanner from '../../components/HomeScreen/MainBanner';
@@ -17,6 +17,7 @@ import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
+import { alertCheckState } from '../../recoil/alertRecoil';
 import { JoinState } from '../../recoil/joinRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
@@ -118,10 +119,18 @@ function HomeScreen({ navigation }: any) {
 		setAfterTripList(newInfo);
 	};
 
+	// // 백그라운드일 때 알림 받기
+	const setAlertCheck = useSetRecoilState(alertCheckState);
+	messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+		console.log('Message handled in the background!', remoteMessage);
+		setAlertCheck(true);
+	});
+
 	// 포그라운드일 때 알림 받기
 	useEffect(() => {
 		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
 			console.log('remoteMessage', JSON.stringify(remoteMessage));
+			setAlertCheck(true);
 			Alert.alert(String(remoteMessage.notification?.title), remoteMessage.notification?.body, [
 				{ text: '나중에 확인할게요' },
 				{
