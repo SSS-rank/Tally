@@ -8,7 +8,7 @@ import TransferPasswordInput from '../../components/TransferPasswordInput/Transf
 import { HomeStackProps } from '../../navigation/HomeStack';
 import { transferPasswordState } from '../../recoil/recoil';
 
-type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
+type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'TransferPassword'>;
 
 function TransferPasswordScreen({ navigation }: AuthAccountScreenProps) {
 	const setTransferPassword = useSetRecoilState(transferPasswordState);

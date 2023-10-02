@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilValue } from 'recoil';
 
 import { MemberState } from '../../recoil/memberRecoil';
@@ -18,11 +19,11 @@ function MainHeader({ navigation }: any) {
 			>
 				TALLY
 			</Text>
-			<Icon
-				name="settings-sharp"
-				size={24}
+			<MaterialCommunityIcons
+				name="bell"
 				color="white"
-				onPress={() => navigation.navigate('Setting')}
+				size={24}
+				onPress={() => navigation.navigate('Alert')}
 			/>
 		</View>
 	);

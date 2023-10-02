@@ -3,9 +3,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MainTabs from './MainTabs';
+import JoinScreen from '../screens/JoinScreen/JoinScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import SplashScreen from '../screens/SplashScreen/SplashScreen';
-import JoinScreen from '../screens/JoinScreen/JoinScreen';
 
 export type RootStackProps = {
 	MainTabs: undefined;
