@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { Linking, Text } from 'react-native';
 import { MD3LightTheme, PaperProvider } from 'react-native-paper';
 
 import messaging from '@react-native-firebase/messaging';
