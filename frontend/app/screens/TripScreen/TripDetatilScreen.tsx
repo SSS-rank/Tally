@@ -84,6 +84,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	async function handleAdjust() {
 		const adjust_data = payData
 			.filter((item) => item.calculate_status == 'BEFORE')
+			.filter((item) => item.payer == userInfo.member_uuid)
 			.map((item) => {
 				return { payment_uuid: item.payment_uuid };
 			});
