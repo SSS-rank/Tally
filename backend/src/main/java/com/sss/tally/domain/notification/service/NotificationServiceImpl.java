@@ -12,6 +12,7 @@ import com.sss.tally.domain.memberpayment.repository.MemberPaymentRepository;
 import com.sss.tally.domain.payment.entity.Payment;
 import com.sss.tally.domain.payment.repository.PaymentRepository;
 import com.sss.tally.global.error.exception.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -40,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
 	private final NotificationRepository notificationRepository;
@@ -52,16 +54,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private final MemberPaymentRepository memberPaymentRepository;
 
-	@Autowired
-	public NotificationServiceImpl(NotificationRepository notificationRepository, DeviceRepository deviceRepository,
-		MemberRepository memberRepository, PaymentRepository paymentRepository, MemberPaymentRepository memberPaymentRepository) {
-		this.notificationRepository = notificationRepository;
-		this.deviceRepository = deviceRepository;
-		this.memberRepository = memberRepository;
-		this.paymentRepository = paymentRepository;
-		this.memberPaymentRepository = memberPaymentRepository;
-
-	}
 
 	@Value("${fcm.key.path}")
 	private String FCM_PRIVATE_KEY_PATH;
@@ -162,7 +154,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
 		NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(deviceOptional.get(),
-				member.getNickname() + " 님이 " + paymentOptional.get().getTravelId().getTravelTitle() + "의 <" + paymentOptional.get().getPaymentName()+ "> 금액 조정을 요청했습니다.", "금액 수정 요청");
+				member.getNickname() + " 님이 " + paymentOptional.get().getTravelId().getTravelTitle() + "의 " + paymentOptional.get().getPaymentName()+ " 금액 조정을 요청했습니다.", "금액 수정 요청");
 
 		NotificationDto.NotificationRespDto notificationRespDto = sendNotification(notificationReqDto);
 
