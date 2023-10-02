@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,7 +10,24 @@ interface AlertListItemProp {
 	item: AlertItem;
 }
 
+interface AlertContent {
+	typeColor: string;
+	typeName: string;
+	date: string;
+	message: string;
+}
+
 function AlertListItem({ item }: AlertListItemProp) {
+	const [alertContent, setAlertContent] = useState<AlertContent>({
+		typeColor: '#232323',
+		typeName: '',
+		date: '',
+		message: '',
+	});
+
+	useEffect(() => {
+		getAlertContent(item.type);
+	}, [item]);
 	const getAlertContent = (type: string) => {
 		let color = '';
 		let name = '';
@@ -44,19 +61,17 @@ function AlertListItem({ item }: AlertListItemProp) {
 			msg = `${item.senderName}님이 ${item.travelName} 여행에 참여했어요.`;
 		}
 
-		return { typeColor: color, typeName: name, date, message: msg };
+		setAlertContent({ typeColor: color, typeName: name, date, message: msg });
 	};
-
-	const { typeColor, typeName, message, date } = getAlertContent(item.type);
 
 	return (
 		<View style={styles.itemContainer}>
 			<View style={styles.row}>
-				<Icon name="heart" size={20} color={typeColor} />
-				<Text style={styles.type}>{typeName}</Text>
-				<Text style={styles.date}>{date}</Text>
+				<Icon name="heart" size={20} color={alertContent.typeColor} />
+				<Text style={styles.type}>{alertContent.typeName}</Text>
+				<Text style={styles.date}>{alertContent.date}</Text>
 			</View>
-			<Text style={styles.message}>{message}</Text>
+			<Text style={styles.message}>{alertContent.message}</Text>
 		</View>
 	);
 }
