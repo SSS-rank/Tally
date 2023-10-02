@@ -5,7 +5,7 @@ import { Avatar } from 'react-native-paper';
 import { requestDetail } from '../../model/adjust';
 import { TextStyles } from '../../styles/CommonStyles';
 
-const AdjustStatus = ({ member_name, status, member_profile }: requestDetail) => {
+const AdjustStatus = ({ member_name, status, member_profile, paymentStatus }: requestDetail) => {
 	return (
 		<View
 			style={{
@@ -24,7 +24,9 @@ const AdjustStatus = ({ member_name, status, member_profile }: requestDetail) =>
 			>
 				{member_name}
 			</Text>
-			{status === '요청 중' ? (
+			{paymentStatus === 'REJECT' ? (
+				<Text style={{ ...TextStyles({ align: 'right', color: 'red' }).medium }}>정산 취소</Text>
+			) : status === '요청 중' ? (
 				<Text style={{ ...TextStyles({ align: 'right', color: '#91C0EB' }).medium }}>요청 중</Text>
 			) : (
 				<Text style={{ ...TextStyles({ align: 'right' }).medium }}>확인 완료</Text>
