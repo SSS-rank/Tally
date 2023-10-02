@@ -28,6 +28,7 @@ export type requestDetail = {
 	member_profile?: string | undefined;
 	amount?: number | undefined;
 	status?: string | undefined;
+	paymentStatus?: string | undefined;
 };
 
 export type requestList = {
