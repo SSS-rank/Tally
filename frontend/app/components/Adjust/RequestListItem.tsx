@@ -27,12 +27,15 @@ const Item = ({ item, navigation }: ItemProps) => (
 			backgroundColor: '#F6F6F6',
 			alignItems: 'center',
 			height: 80,
-			marginVertical: 10,
+			marginVertical: 12,
 			paddingHorizontal: 10,
 		}}
 		onPress={() => {
 			console.log(navigation);
-			navigation?.navigate('SendAdjust', { adjustId: item.calculate_group_uuid });
+			navigation?.navigate('SendAdjust', {
+				adjustId: item.calculate_group_uuid,
+				status: item.status,
+			});
 		}}
 	>
 		<Text
@@ -64,6 +67,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 					position: 'absolute',
 					right: 0,
 					zIndex: -1,
+					height: 100,
 				}}
 			/>
 		)}
@@ -77,6 +81,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 					position: 'absolute',
 					right: 0,
 					zIndex: -1,
+					height: 100,
 				}}
 			/>
 		)}
@@ -90,6 +95,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 					position: 'absolute',
 					right: 0,
 					zIndex: -1,
+					height: 100,
 				}}
 			/>
 		)}

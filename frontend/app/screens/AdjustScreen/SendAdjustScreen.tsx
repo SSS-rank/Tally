@@ -13,7 +13,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 	const [requestAdjust, setRequestAdjust] = useState<requestList>();
-	const { adjustId } = route.params;
+	const { adjustId, status } = route.params;
 	const api = useAxiosWithAuth();
 
 	useFocusEffect(
@@ -25,7 +25,7 @@ const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 					if (res.status === 200) {
 						console.log(res.data);
 						setRequestAdjust(res.data);
-						console.log(requestAdjust);
+						// console.log(requestAdjust);
 					}
 				} catch (err) {
 					console.log(err);
@@ -102,6 +102,7 @@ const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 							member_name={item.member_name}
 							status={item.status}
 							member_profile={item.member_profile}
+							paymentStatus={status}
 						/>
 					)}
 				/>
