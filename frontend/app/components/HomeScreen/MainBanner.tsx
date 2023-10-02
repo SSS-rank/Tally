@@ -11,8 +11,8 @@ function MainBanner() {
 	const memberinfo = useRecoilValue(MemberState);
 	return (
 		<View style={ViewStyles().banner}>
-			<Text style={TextStyles({ align: 'left' }).small}>
-				<Text style={TextStyles({ align: 'left', weight: 'bold' }).regular}>
+			<Text style={TextStyles({ align: 'left' }).regular}>
+				<Text style={TextStyles({ align: 'left', weight: 'bold' }).title}>
 					{memberinfo.nickname}
 				</Text>
 				님, 어디로 떠나시나요?
@@ -24,7 +24,7 @@ function MainBanner() {
 					>
 						톡! 찍으면{'\n'}이체까지 딱!
 					</Text>
-					<Text style={TextStyles({ align: 'left' }).small}>
+					<Text style={TextStyles({ align: 'left' }).regular}>
 						언제 어디서든{'\n'}바로 확인하고 정산하는{'\n'}간편한 여행
 					</Text>
 				</View>
