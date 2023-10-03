@@ -79,4 +79,5 @@ export interface OcrData {
 	title: string;
 	date: string;
 	amount: string;
+	cur_type: string;
 }
