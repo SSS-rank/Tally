@@ -23,7 +23,8 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 	useFocusEffect(
 		useCallback(() => {
-			if (customCheckList[travel_id] === undefined) getCustomCheckList();
+			getCustomCheckList();
+			// if (customCheckList[travel_id] === undefined) getCustomCheckList();
 		}, []),
 	);
 
@@ -51,6 +52,22 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 	const reset = () => {
 		setItemName('');
+	};
+
+	const addCheckListItem = async () => {
+		try {
+			const res = await api.post(`/custom-checklist`, {
+				travel_id: travel_id,
+				content: itemName,
+			});
+
+			if (res.status === 200) {
+				console.log(res.data);
+				setModalVisible(false);
+			}
+		} catch (err: any) {
+			console.error(err);
+		}
 	};
 
 	return (
@@ -113,7 +130,7 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 						/>
 						<Icon name="close-circle" style={styles.resetIcon} onPress={reset} />
 					</View>
-					<Button mode="contained" style={styles.addCheckListItemBtn}>
+					<Button mode="contained" style={styles.addCheckListItemBtn} onPress={addCheckListItem}>
 						확인
 					</Button>
 				</View>
