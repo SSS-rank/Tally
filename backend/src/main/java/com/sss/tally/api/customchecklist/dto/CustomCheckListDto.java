@@ -31,6 +31,7 @@ public class CustomCheckListDto {
 		private Long customCheckListId;
 
 		private String content;
+
 	}
 
 	@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -44,10 +45,13 @@ public class CustomCheckListDto {
 
 		private String content;
 
+		private Boolean status;
+
 		public static CustomCheckListDto.GetCustomCheckListRespDto from(CustomChecklist customChecklist) {
-			return CustomCheckListDto.GetCustomCheckListRespDto.builder()
+			return GetCustomCheckListRespDto.builder()
 				.customCheckListId(customChecklist.getCustomChecklistId())
 				.content(customChecklist.getContent())
+				.status(customChecklist.getStatus())
 				.build();
 		}
 	}
