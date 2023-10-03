@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Linking, Text } from 'react-native';
 import { MD3LightTheme, PaperProvider } from 'react-native-paper';
 
+import { firebase, FirebaseDynamicLinksTypes } from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer } from '@react-navigation/native';
 import { RecoilRoot } from 'recoil';
@@ -15,23 +16,29 @@ const config = {
 };
 
 const linking = {
-	prefixes: ['tally://'],
+	prefixes: ['tally://', 'https://tally.page.link'],
 	config,
 };
 
 const App = () => {
-	// useEffect(() => {
-	// 	const handleDeepLink = async () => {
-	// 		const url = await Linking.getInitialURL();
-	// 		console.log(url);
-	// 		if (url) {
-	// 			console.log(url);
-	// 			// URL 처리 로직을 작성합니다.
-	// 			// 예: 특정 화면으로 네비게이션, 데이터 불러오기 등
-	// 		}
-	// 	};
-	// 	handleDeepLink();
-	// }, []);
+	useEffect(() => {
+		const unsubscribe = firebase.dynamicLinks().onLink((link) => {
+			// foregounrd 링크 로직
+			console.log(link);
+		});
+		return () => unsubscribe();
+	}, []);
+
+	useEffect(() => {
+		firebase
+			.dynamicLinks()
+			.getInitialLink()
+			.then(async (url) => {
+				// background & quit 링크 로직
+				console.log('background & quit');
+				console.log(url);
+			});
+	}, []);
 
 	return (
 		<RecoilRoot>
