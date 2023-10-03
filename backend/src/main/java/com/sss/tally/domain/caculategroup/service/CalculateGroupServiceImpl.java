@@ -636,8 +636,8 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
 				calculateGroupClient.deposit(CONTENT_TYPE, transferDepositReqDto);
 
-				Notification notification = Notification.of("calculate-complete", "555",
-					"Tally_", memberOfGroup.getMemberId().getMemberUuid(), memberOfGroup.getMemberId().getNickname(),
+				Notification notification = Notification.of("calculate-complete", payer.getMemberUuid(),
+					payer.getNickname(), memberOfGroup.getMemberId().getMemberUuid(), memberOfGroup.getMemberId().getNickname(),
 					travelName, "");
 				//알림함에 저장
 				notificationRepository.save(notification);
