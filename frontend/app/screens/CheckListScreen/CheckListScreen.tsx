@@ -18,14 +18,14 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 	const { travel_id, travel_title, start_date, end_date } = route.params;
 	const [customCheckList, setCustomCheckList] = useRecoilState(CheckListState);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [load, setLoad] = useState(true);
 	const [itemName, setItemName] = useState('');
 	const api = useAxiosWithAuth();
 
 	useFocusEffect(
 		useCallback(() => {
 			getCustomCheckList();
-			// if (customCheckList[travel_id] === undefined) getCustomCheckList();
-		}, []),
+		}, [load]),
 	);
 
 	const getCustomCheckList = async () => {
@@ -38,12 +38,15 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 					status: false,
 				}));
 
-				const updatedDefaultCheckList = { ...customCheckList };
-				updatedDefaultCheckList[travel_id] = {
-					checkListItem: newData,
-				};
+				if (load) {
+					const updatedDefaultCheckList = { ...customCheckList };
+					updatedDefaultCheckList[travel_id] = {
+						checkListItem: newData,
+					};
 
-				setCustomCheckList(updatedDefaultCheckList);
+					setCustomCheckList(updatedDefaultCheckList);
+				}
+				setLoad(false);
 			}
 		} catch (err: any) {
 			console.error(err);
@@ -63,6 +66,7 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 			if (res.status === 200) {
 				console.log(res.data);
+				setLoad(true);
 				setModalVisible(false);
 			}
 		} catch (err: any) {
@@ -98,6 +102,7 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 						custom_check_list_id={item.custom_check_list_id}
 						content={item.content}
 						status={item.status}
+						setLoad={setLoad}
 					/>
 				)}
 				keyExtractor={(item) => String(item.custom_check_list_id)}

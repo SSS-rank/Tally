@@ -12,9 +12,16 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 interface CheckListItemProp extends CustomCheckListItem {
 	travel_id: number;
+	setLoad: (value: boolean) => void;
 }
 
-function CheckListItem({ travel_id, custom_check_list_id, content, status }: CheckListItemProp) {
+function CheckListItem({
+	travel_id,
+	custom_check_list_id,
+	content,
+	status,
+	setLoad,
+}: CheckListItemProp) {
 	const [checkList, setCheckList] = useRecoilState(CheckListState);
 	const [isCheckted, setIsChecked] = useState(status);
 	const api = useAxiosWithAuth();
@@ -42,23 +49,19 @@ function CheckListItem({ travel_id, custom_check_list_id, content, status }: Che
 
 	const deleteCheckListItem = () => {
 		try {
-			Alert.alert(
-				'',
-				'선택한 체크리스트를 삭제하겠습니까?',
-				[
-					{ text: '취소' },
-					{
-						text: '삭제',
-						onPress: async () => {
-							const res = await api.delete(`/custom-checklist/${custom_check_list_id}`);
-							if (res.status === 200) {
-								Alert.alert('성공적으로 삭제되었습니다.');
-							}
-						},
+			Alert.alert('', '선택한 체크리스트를 삭제하겠습니까?', [
+				{ text: '취소' },
+				{
+					text: '삭제',
+					onPress: async () => {
+						const res = await api.delete(`/custom-checklist/${custom_check_list_id}`);
+						if (res.status === 200) {
+							setLoad(true);
+							Alert.alert('성공적으로 삭제되었습니다.');
+						}
 					},
-				],
-				{},
-			);
+				},
+			]);
 		} catch (err: any) {
 			console.error(err);
 		}
