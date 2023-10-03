@@ -4,9 +4,10 @@ import { Button, IconButton } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { DefaultCheckListItem } from '../../model/checkList';
 import { TextStyles } from '../../styles/CommonStyles';
 
-function CheckListItem() {
+function CheckListItem({ default_check_list_id, content }: DefaultCheckListItem) {
 	const [isChecked, setIsChecked] = useState(false);
 	return (
 		<TouchableOpacity style={styles.itemContainer} onPress={() => setIsChecked(!isChecked)}>
@@ -18,7 +19,7 @@ function CheckListItem() {
 					color={isChecked ? '#91C0EB' : '#D0D0D0'}
 				/>
 				<Text style={[styles.text, isChecked ? { textDecorationLine: 'line-through' } : {}]}>
-					휴대폰 충전기
+					{content}
 				</Text>
 			</View>
 			<IconButton icon="close" iconColor="#b3261e" onPress={() => console.log('삭제')} />
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginVertical: 10,
 	},
 	leftView: {
 		flexDirection: 'row',
