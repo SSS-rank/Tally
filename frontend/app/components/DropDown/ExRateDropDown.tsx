@@ -56,7 +56,7 @@ const ExRateDropDown: FC<ExRateDropDownProps> = (props) => {
 			zIndex={10000}
 			zIndexInverse={1000}
 			style={styles.box}
-			containerStyle={{ width: '90%' }}
+			containerStyle={styles.container}
 		/>
 	);
 };
@@ -65,6 +65,12 @@ const styles = StyleSheet.create({
 	box: {
 		borderWidth: 0,
 		backgroundColor: 'transparent',
+	},
+	container: {
+		width: '60%',
+		position: 'absolute',
+		top: 30,
+		left: 25,
 	},
 });
 

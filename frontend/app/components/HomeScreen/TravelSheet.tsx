@@ -62,7 +62,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 									}}
 								/>
 								<Text style={TextStyles({ weight: 'bold', mLeft: 10 }).title}>
-									D - {item.remain_date}
+									D {0 <= item.remain_date ? `- ${item.remain_date}` : `+ ${-item.remain_date}`}
 								</Text>
 							</View>
 							<View style={styles.titleView}>
@@ -77,14 +77,23 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 					</View>
 					<View style={{ alignItems: 'flex-start', backgroundColor: 'red' }}></View>
 					<View style={ViewStyles().boxMate}>
-						{item.travel_participants.map((member) => (
-							<Avatar.Image
-								key={member.member_uuid}
-								style={ViewStyles({ left: 0 }).avatarMate}
-								size={32}
-								source={{ uri: member.profile_image }}
-							/>
-						))}
+						{item.travel_participants.map((member, index: number) =>
+							index === 0 ? (
+								<Avatar.Image
+									key={member.member_uuid}
+									style={ViewStyles({ left: 0 }).avatarMate}
+									size={32}
+									source={{ uri: member.profile_image }}
+								/>
+							) : (
+								<Avatar.Image
+									key={member.member_uuid}
+									style={[ViewStyles({ left: 0 }).avatarMate, { position: 'relative', left: 20 }]}
+									size={32}
+									source={{ uri: member.profile_image }}
+								/>
+							),
+						)}
 					</View>
 					<View
 						style={{
@@ -97,7 +106,14 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							icon="check"
 							mode="text"
 							// buttonColor="#000000"
-							onPress={() => console.log('Pressed')}
+							onPress={() =>
+								item.navigation.navigate('CheckList', {
+									travel_id: item.travel_id,
+									travel_title: item.travel_title,
+									start_date: item.start_date,
+									end_date: item.end_date,
+								})
+							}
 						>
 							체크리스트
 						</Button>

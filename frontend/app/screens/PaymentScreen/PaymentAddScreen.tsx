@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
+import { Image } from 'react-native-svg';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DateChip from '../../components/DateChip/DateChip';
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
+import OcrModal from '../../components/Modal/OcrModal';
+import CameraButton from '../../components/OCR/CameraButton';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
+import { DirectPayMember, DirectPayReq, OcrData, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
+import { OcrState } from '../../recoil/ocrRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import formatDate from '../../services/FormDate';
 import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
@@ -21,6 +25,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [ocrRecoil, setOcrRecoil] = useRecoilState(OcrState);
 	const [dropDownOpen, setDropDownOpen] = useState(false);
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('');
@@ -32,6 +37,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [visible, setVisible] = useState(true);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 
@@ -60,6 +66,17 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}, [route.params]);
 
+	function handleOcrData(ocr_data: OcrData) {
+		if (ocr_data.title != 'error') {
+			console.log(ocr_data);
+			setOcrRecoil(ocr_data);
+			console.log(ocrRecoil);
+			setModalVisible(true);
+			console.log('handleOcrdata' + ocrRecoil.title);
+		} else {
+			Alert.alert('데이터가 없습니다');
+		}
+	}
 	const handleInVolveChange = (
 		memberUuid: string,
 		amount: number,
@@ -174,144 +191,155 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}
 	return (
-		<View style={styles.container}>
-			<View style={styles.amount_container}>
-				<View style={styles.amount_left}>
-					<ExRateDropDown
-						setValue={setExData}
-						setOpen={setDropDownOpen}
-						open={dropDownOpen}
-						value={exData}
-					/>
-					<View style={styles.amount_left_input}>
-						<TextInput
-							value={money}
-							onChangeText={(memo) => {
-								setMoney(memo);
-								setTotAmount(
-									(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
-								);
-							}}
-							returnKeyType="next"
-							keyboardType="numeric"
-							style={styles.amountInput}
-							selectionColor="#F6F6F6"
-							placeholder="0"
-						/>
-					</View>
-					<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
-						{' '}
-						총 금액 {totAmount} 원
-					</Text>
-				</View>
-				<View style={styles.amount_right}>
-					<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
-					<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
-				</View>
-			</View>
-			<ScrollView>
-				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>결제처</Text>
-					<TextInput
-						value={store}
-						onChangeText={(memo) => {
-							setStore(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>메모</Text>
-					<TextInput
-						value={text}
-						onChangeText={(memo) => {
-							setText(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<CategoryBox
-					selectedcategory={selectedcategory}
-					setSelectedCategory={setSelectedCategory}
+		<>
+			<View style={styles.container}>
+				<CameraButton handleOcrData={handleOcrData} />
+				<OcrModal
+					setDate={setDate}
+					setStore={setStore}
+					setTotAmount={setTotAmount}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
 				/>
 
-				<View style={[styles.party_box, styles.content_box]}>
-					{visible ? (
-						<View>
-							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-								<Text style={styles.content_title}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row' }}>
-									<Text style={styles.party_type}>결제</Text>
-									<Text style={styles.party_type}>함께</Text>
-								</View>
-							</View>
-							<ScrollView>
-								{partyMembers.map((item) => (
-									<PartyListItem
-										amount={item.amount}
-										key={item.member_uuid}
-										name={item.member_nickname}
-										img={{ uri: item.image }}
-										involveCheck={item.checked}
-										block={false}
-										isPayer={item.member_uuid == memberinfo.member_uuid}
-										onAmountChange={(input) =>
-											handleAmountChange(
-												item.member_uuid,
-												input,
-												item.checked,
-												item.member_nickname,
-												item.image,
-											)
-										}
-										onInvolveChange={(input) =>
-											handleInVolveChange(
-												item.member_uuid,
-												item.amount,
-												input,
-												item.member_nickname,
-												item.image,
-											)
-										}
-									/>
-								))}
-							</ScrollView>
+				<ExRateDropDown
+					setValue={setExData}
+					setOpen={setDropDownOpen}
+					open={dropDownOpen}
+					value={exData}
+				/>
+				<View style={styles.amount_container}>
+					<View style={styles.amount_left}>
+						<View style={styles.amount_left_input}>
+							<TextInput
+								value={money}
+								onChangeText={(memo) => {
+									setMoney(memo);
+									setTotAmount(
+										(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
+									);
+								}}
+								returnKeyType="next"
+								keyboardType="numeric"
+								style={styles.amountInput}
+								selectionColor="#F6F6F6"
+								placeholder="0"
+							/>
 						</View>
-					) : null}
-				</View>
-
-				<View style={[styles.self_check_box, styles.content_box]}>
-					<View>
-						<Text style={styles.content_title}>이 비용 나만보기</Text>
-						<Text style={TextStyles({ align: 'left' }).small}>
-							일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+						<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
+							{' '}
+							총 금액 {totAmount} 원
 						</Text>
 					</View>
-					<IIcon
-						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
-						size={32}
-						color={visible ? '#D0D0D0' : '#91C0EB'}
-						style={{ marginLeft: 5 }}
-						onPress={() => {
-							setVisible(!visible);
-						}}
-					/>
+					<View style={styles.amount_right}>
+						<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
+						<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
+					</View>
 				</View>
-				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-					dark={true} // 어두운 테마 사용 여부
-					compact={true} // 작은 크기의 버튼 여부
-					uppercase={false} // 레이블 텍스트 대문자 변환 여부
-					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-					style={{ marginBottom: 50 }}
-				>
-					등록
-				</Button>
-			</ScrollView>
-		</View>
+				<ScrollView>
+					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+					<View style={[styles.memo_box, styles.content_box]}>
+						<Text style={styles.content_title}>결제처</Text>
+						<TextInput
+							value={store}
+							onChangeText={(memo) => {
+								setStore(memo);
+							}}
+							returnKeyType="next"
+							style={styles.textInput}
+						/>
+					</View>
+					<View style={[styles.memo_box, styles.content_box]}>
+						<Text style={styles.content_title}>메모</Text>
+						<TextInput
+							value={text}
+							onChangeText={(memo) => {
+								setText(memo);
+							}}
+							returnKeyType="next"
+							style={styles.textInput}
+						/>
+					</View>
+					<CategoryBox
+						selectedcategory={selectedcategory}
+						setSelectedCategory={setSelectedCategory}
+					/>
+
+					<View style={[styles.party_box, styles.content_box]}>
+						{visible ? (
+							<View>
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+									<Text style={styles.content_title}>함께 한 사람</Text>
+									<View style={{ flexDirection: 'row' }}>
+										<Text style={styles.party_type}>결제</Text>
+										<Text style={styles.party_type}>함께</Text>
+									</View>
+								</View>
+								<ScrollView>
+									{partyMembers.map((item) => (
+										<PartyListItem
+											amount={item.amount}
+											key={item.member_uuid}
+											name={item.member_nickname}
+											img={{ uri: item.image }}
+											involveCheck={item.checked}
+											block={false}
+											isPayer={item.member_uuid == memberinfo.member_uuid}
+											onAmountChange={(input) =>
+												handleAmountChange(
+													item.member_uuid,
+													input,
+													item.checked,
+													item.member_nickname,
+													item.image,
+												)
+											}
+											onInvolveChange={(input) =>
+												handleInVolveChange(
+													item.member_uuid,
+													item.amount,
+													input,
+													item.member_nickname,
+													item.image,
+												)
+											}
+										/>
+									))}
+								</ScrollView>
+							</View>
+						) : null}
+					</View>
+
+					<View style={[styles.self_check_box, styles.content_box]}>
+						<View>
+							<Text style={styles.content_title}>이 비용 나만보기</Text>
+							<Text style={TextStyles({ align: 'left' }).small}>
+								일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+							</Text>
+						</View>
+						<IIcon
+							name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+							size={32}
+							color={visible ? '#D0D0D0' : '#91C0EB'}
+							style={{ marginLeft: 5 }}
+							onPress={() => {
+								setVisible(!visible);
+							}}
+						/>
+					</View>
+					<Button
+						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+						dark={true} // 어두운 테마 사용 여부
+						compact={true} // 작은 크기의 버튼 여부
+						uppercase={false} // 레이블 텍스트 대문자 변환 여부
+						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						style={{ marginBottom: 50 }}
+					>
+						등록
+					</Button>
+				</ScrollView>
+			</View>
+		</>
 	);
 }
 const styles = StyleSheet.create({

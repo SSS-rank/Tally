@@ -1,16 +1,16 @@
 import * as React from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeStack from './HomeStack';
 import TripStack from './TripStack';
-import AlertScreen from '../screens/AlertScreen/AlertScreen';
-
+import SettingScreen from '../screens/SettingScreen/SettingScreen';
 export type MainTabsProps = {
 	HomeStack: undefined;
 	TripStack: undefined;
-	Alert: undefined;
+	Setting: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabsProps>();
@@ -45,14 +45,13 @@ function MainTabs() {
 				}}
 			/>
 			<Tab.Screen
-				name="Alert"
-				component={AlertScreen}
+				name="Setting"
+				component={SettingScreen}
 				options={{
-					title: '알림',
-					tabBarLabel: 'Alert',
-					tabBarIcon: ({ color }: any) => (
-						<MaterialCommunityIcons name="bell" color={color} size={26} />
-					),
+					title: '설정',
+					tabBarLabel: 'Setting',
+					headerTitleAlign: 'center',
+					tabBarIcon: ({ color }: any) => <Icon name="settings-sharp" size={24} color={color} />,
 				}}
 			/>
 		</Tab.Navigator>

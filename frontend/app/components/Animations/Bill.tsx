@@ -19,7 +19,7 @@ const Bill = () => {
 				// flex: 1,
 				// backgroundColor: 'red',
 				position: 'absolute',
-				right: -20,
+				right: -30,
 				bottom: -20,
 			}}
 			source={require('../../assets/animation/mainAnimation.json')}
