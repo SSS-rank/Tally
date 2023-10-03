@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Text, TextInput, Button, Chip } from 'react-native-paper';
+import { Image } from 'react-native-svg';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import DateChip from '../../components/DateChip/DateChip';
 import ExRateDropDown from '../../components/DropDown/ExRateDropDown';
+import OcrModal from '../../components/Modal/OcrModal';
+import CameraButton from '../../components/OCR/CameraButton';
 import PartyListItem from '../../components/PartyList/PartyListItem';
 import CategoryBox from '../../components/Payment/CategoryBox';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DirectPayMember, DirectPayReq, SelectPayMember } from '../../model/payment';
+import { DirectPayMember, DirectPayReq, OcrData, SelectPayMember } from '../../model/payment';
 import { TripMember } from '../../model/trip';
 import { AddPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
+import { OcrState } from '../../recoil/ocrRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import formatDate from '../../services/FormDate';
 import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
@@ -21,6 +25,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const api = useAxiosWithAuth();
+	const [ocrRecoil, setOcrRecoil] = useRecoilState(OcrState);
 	const [dropDownOpen, setDropDownOpen] = useState(false);
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('');
@@ -32,6 +37,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [visible, setVisible] = useState(true);
 	const [date, setDate] = useState(new Date());
 	const [open, setOpen] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
 	const curTripInfo = useRecoilValue(CurTripInfoState);
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제 멤버
 
@@ -60,6 +66,17 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}, [route.params]);
 
+	function handleOcrData(ocr_data: OcrData) {
+		if (ocr_data.title != 'error') {
+			console.log(ocr_data);
+			setOcrRecoil(ocr_data);
+			console.log(ocrRecoil);
+			setModalVisible(true);
+			console.log('handleOcrdata' + ocrRecoil.title);
+		} else {
+			Alert.alert('데이터가 없습니다');
+		}
+	}
 	const handleInVolveChange = (
 		memberUuid: string,
 		amount: number,
@@ -176,6 +193,15 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	return (
 		<>
 			<View style={styles.container}>
+				<CameraButton handleOcrData={handleOcrData} />
+				<OcrModal
+					setDate={setDate}
+					setStore={setStore}
+					setTotAmount={setTotAmount}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
+				/>
+
 				<ExRateDropDown
 					setValue={setExData}
 					setOpen={setDropDownOpen}
@@ -363,7 +389,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 30,
 		paddingHorizontal: 10,
-		paddingTop: 70,
 		backgroundColor: '#F6F6F6',
 	},
 	amount_left: {
