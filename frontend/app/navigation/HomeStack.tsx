@@ -10,10 +10,12 @@ import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
 import ManageAccountScreen from '../screens/SettingScreen/ManageAccountScreen';
 import TransferPasswrodConfirmScreen from '../screens/SettingScreen/TransferPasswrodConfirmScreen';
 import TransferPasswordScreen from '../screens/SettingScreen/TransferPasswrodScreen';
+import StampScreen from '../screens/StampScreen/StampScreen';
 
 export type HomeStackProps = {
 	Home: undefined;
 	Alert: undefined;
+	Stamp: undefined;
 	CheckList: { travel_id: number; travel_title: string; start_date: string; end_date: string };
 	Account: undefined;
 	AddAccount: undefined;
@@ -26,7 +28,12 @@ const Stack = createNativeStackNavigator();
 
 function HomeStack() {
 	return (
-		<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShadowVisible: false }}>
+		<Stack.Navigator
+			initialRouteName="Home"
+			screenOptions={{
+				headerShadowVisible: false,
+			}}
+		>
 			<Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
 			<Stack.Screen
 				name="CheckList"
@@ -37,6 +44,14 @@ function HomeStack() {
 				name="Alert"
 				component={AlertScreen}
 				options={{ title: '알림', headerTitleAlign: 'center' }}
+			/>
+			<Stack.Screen
+				name="Stamp"
+				component={StampScreen}
+				options={{
+					title: 'MY PASSPORT',
+					headerTitleAlign: 'center',
+				}}
 			/>
 			<Stack.Screen name="Account" component={ManageAccountScreen} options={{ title: '' }} />
 			<Stack.Screen name="AddAccount" component={AddAccountScreen} options={{ title: '' }} />

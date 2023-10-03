@@ -50,6 +50,7 @@ function MainTabs() {
 				options={{
 					title: '설정',
 					tabBarLabel: 'Setting',
+					headerTitleAlign: 'center',
 					tabBarIcon: ({ color }: any) => <Icon name="settings-sharp" size={24} color={color} />,
 				}}
 			/>
