@@ -3,22 +3,24 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
 
 import DashLine from '../../components/DashLine';
 import CheckListItem from '../../components/HomeScreen/CheckListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { DefaultCheckListItem } from '../../model/checkList';
 import { CheckListScreenProps } from '../../model/homeNavigator';
+import { CheckListState } from '../../recoil/checkListRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CheckListScreen({ route }: CheckListScreenProps) {
-	const { travel_title, start_date, end_date } = route.params;
-	const [defaultCheckList, setDefaultCheckList] = useState<DefaultCheckListItem[]>([]);
+	const { travel_id, travel_title, start_date, end_date } = route.params;
+	const [defaultCheckList, setDefaultCheckList] = useRecoilState(CheckListState);
 	const api = useAxiosWithAuth();
 
 	useFocusEffect(
 		useCallback(() => {
-			getDefaultCheckList();
+			if (defaultCheckList[travel_id] === undefined) getDefaultCheckList();
 		}, []),
 	);
 
@@ -27,12 +29,23 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 			const res = await api.get(`/default-checklist`);
 
 			if (res.status === 200) {
-				setDefaultCheckList(res.data);
+				const newData: DefaultCheckListItem[] = res.data.map((item: any) => ({
+					...item,
+					status: false,
+				}));
+
+				const updatedDefaultCheckList = { ...defaultCheckList };
+				updatedDefaultCheckList[travel_id] = {
+					checkListItem: newData,
+				};
+
+				setDefaultCheckList(updatedDefaultCheckList);
 			}
 		} catch (err: any) {
 			console.error(err);
 		}
 	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.topView}>
@@ -44,11 +57,13 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 			<DashLine />
 			<FlatList
-				data={defaultCheckList}
+				data={defaultCheckList && defaultCheckList[travel_id]?.checkListItem}
 				renderItem={({ item }) => (
 					<CheckListItem
+						travel_id={travel_id}
 						default_check_list_id={item.default_check_list_id}
 						content={item.content}
+						status={item.status}
 					/>
 				)}
 				keyExtractor={(item) => String(item.default_check_list_id)}
