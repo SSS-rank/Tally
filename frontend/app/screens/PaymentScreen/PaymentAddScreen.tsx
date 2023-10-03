@@ -200,8 +200,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					setTotAmount={setTotAmount}
 					modalVisible={modalVisible}
 					setModalVisible={setModalVisible}
+					setMoney={setMoney}
+					setExData={setExData}
 				/>
-
 				<ExRateDropDown
 					setValue={setExData}
 					setOpen={setDropDownOpen}
