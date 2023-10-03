@@ -174,144 +174,146 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}
 	return (
-		<View style={styles.container}>
-			<View style={styles.amount_container}>
-				<View style={styles.amount_left}>
-					<ExRateDropDown
-						setValue={setExData}
-						setOpen={setDropDownOpen}
-						open={dropDownOpen}
-						value={exData}
-					/>
-					<View style={styles.amount_left_input}>
-						<TextInput
-							value={money}
-							onChangeText={(memo) => {
-								setMoney(memo);
-								setTotAmount(
-									(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
-								);
-							}}
-							returnKeyType="next"
-							keyboardType="numeric"
-							style={styles.amountInput}
-							selectionColor="#F6F6F6"
-							placeholder="0"
-						/>
-					</View>
-					<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
-						{' '}
-						총 금액 {totAmount} 원
-					</Text>
-				</View>
-				<View style={styles.amount_right}>
-					<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
-					<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
-				</View>
-			</View>
-			<ScrollView>
-				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>결제처</Text>
-					<TextInput
-						value={store}
-						onChangeText={(memo) => {
-							setStore(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>메모</Text>
-					<TextInput
-						value={text}
-						onChangeText={(memo) => {
-							setText(memo);
-						}}
-						returnKeyType="next"
-						style={styles.textInput}
-					/>
-				</View>
-				<CategoryBox
-					selectedcategory={selectedcategory}
-					setSelectedCategory={setSelectedCategory}
+		<>
+			<View style={styles.container}>
+				<ExRateDropDown
+					setValue={setExData}
+					setOpen={setDropDownOpen}
+					open={dropDownOpen}
+					value={exData}
 				/>
-
-				<View style={[styles.party_box, styles.content_box]}>
-					{visible ? (
-						<View>
-							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-								<Text style={styles.content_title}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row' }}>
-									<Text style={styles.party_type}>결제</Text>
-									<Text style={styles.party_type}>함께</Text>
-								</View>
-							</View>
-							<ScrollView>
-								{partyMembers.map((item) => (
-									<PartyListItem
-										amount={item.amount}
-										key={item.member_uuid}
-										name={item.member_nickname}
-										img={{ uri: item.image }}
-										involveCheck={item.checked}
-										block={false}
-										isPayer={item.member_uuid == memberinfo.member_uuid}
-										onAmountChange={(input) =>
-											handleAmountChange(
-												item.member_uuid,
-												input,
-												item.checked,
-												item.member_nickname,
-												item.image,
-											)
-										}
-										onInvolveChange={(input) =>
-											handleInVolveChange(
-												item.member_uuid,
-												item.amount,
-												input,
-												item.member_nickname,
-												item.image,
-											)
-										}
-									/>
-								))}
-							</ScrollView>
+				<View style={styles.amount_container}>
+					<View style={styles.amount_left}>
+						<View style={styles.amount_left_input}>
+							<TextInput
+								value={money}
+								onChangeText={(memo) => {
+									setMoney(memo);
+									setTotAmount(
+										(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
+									);
+								}}
+								returnKeyType="next"
+								keyboardType="numeric"
+								style={styles.amountInput}
+								selectionColor="#F6F6F6"
+								placeholder="0"
+							/>
 						</View>
-					) : null}
-				</View>
-
-				<View style={[styles.self_check_box, styles.content_box]}>
-					<View>
-						<Text style={styles.content_title}>이 비용 나만보기</Text>
-						<Text style={TextStyles({ align: 'left' }).small}>
-							일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+						<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
+							{' '}
+							총 금액 {totAmount} 원
 						</Text>
 					</View>
-					<IIcon
-						name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
-						size={32}
-						color={visible ? '#D0D0D0' : '#91C0EB'}
-						style={{ marginLeft: 5 }}
-						onPress={() => {
-							setVisible(!visible);
-						}}
-					/>
+					<View style={styles.amount_right}>
+						<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
+						<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
+					</View>
 				</View>
-				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-					dark={true} // 어두운 테마 사용 여부
-					compact={true} // 작은 크기의 버튼 여부
-					uppercase={false} // 레이블 텍스트 대문자 변환 여부
-					onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-					style={{ marginBottom: 50 }}
-				>
-					등록
-				</Button>
-			</ScrollView>
-		</View>
+				<ScrollView>
+					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+					<View style={[styles.memo_box, styles.content_box]}>
+						<Text style={styles.content_title}>결제처</Text>
+						<TextInput
+							value={store}
+							onChangeText={(memo) => {
+								setStore(memo);
+							}}
+							returnKeyType="next"
+							style={styles.textInput}
+						/>
+					</View>
+					<View style={[styles.memo_box, styles.content_box]}>
+						<Text style={styles.content_title}>메모</Text>
+						<TextInput
+							value={text}
+							onChangeText={(memo) => {
+								setText(memo);
+							}}
+							returnKeyType="next"
+							style={styles.textInput}
+						/>
+					</View>
+					<CategoryBox
+						selectedcategory={selectedcategory}
+						setSelectedCategory={setSelectedCategory}
+					/>
+
+					<View style={[styles.party_box, styles.content_box]}>
+						{visible ? (
+							<View>
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+									<Text style={styles.content_title}>함께 한 사람</Text>
+									<View style={{ flexDirection: 'row' }}>
+										<Text style={styles.party_type}>결제</Text>
+										<Text style={styles.party_type}>함께</Text>
+									</View>
+								</View>
+								<ScrollView>
+									{partyMembers.map((item) => (
+										<PartyListItem
+											amount={item.amount}
+											key={item.member_uuid}
+											name={item.member_nickname}
+											img={{ uri: item.image }}
+											involveCheck={item.checked}
+											block={false}
+											isPayer={item.member_uuid == memberinfo.member_uuid}
+											onAmountChange={(input) =>
+												handleAmountChange(
+													item.member_uuid,
+													input,
+													item.checked,
+													item.member_nickname,
+													item.image,
+												)
+											}
+											onInvolveChange={(input) =>
+												handleInVolveChange(
+													item.member_uuid,
+													item.amount,
+													input,
+													item.member_nickname,
+													item.image,
+												)
+											}
+										/>
+									))}
+								</ScrollView>
+							</View>
+						) : null}
+					</View>
+
+					<View style={[styles.self_check_box, styles.content_box]}>
+						<View>
+							<Text style={styles.content_title}>이 비용 나만보기</Text>
+							<Text style={TextStyles({ align: 'left' }).small}>
+								일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+							</Text>
+						</View>
+						<IIcon
+							name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+							size={32}
+							color={visible ? '#D0D0D0' : '#91C0EB'}
+							style={{ marginLeft: 5 }}
+							onPress={() => {
+								setVisible(!visible);
+							}}
+						/>
+					</View>
+					<Button
+						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+						dark={true} // 어두운 테마 사용 여부
+						compact={true} // 작은 크기의 버튼 여부
+						uppercase={false} // 레이블 텍스트 대문자 변환 여부
+						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+						style={{ marginBottom: 50 }}
+					>
+						등록
+					</Button>
+				</ScrollView>
+			</View>
+		</>
 	);
 }
 const styles = StyleSheet.create({
@@ -361,6 +363,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 30,
 		paddingHorizontal: 10,
+		paddingTop: 70,
 		backgroundColor: '#F6F6F6',
 	},
 	amount_left: {
