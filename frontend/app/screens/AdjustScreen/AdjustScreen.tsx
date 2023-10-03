@@ -49,7 +49,7 @@ function AdjustScreen({ navigation, route }: AdjustTripScreenProps) {
 
 	const getRequestAdjustList = async () => {
 		try {
-			const res = await api.get(`calculate/request/${tripId}`);
+			const res = await api.get(`/calculate/request/${tripId}`);
 			console.log(tripId);
 			if (res.status === 200) {
 				console.log(res.data);
