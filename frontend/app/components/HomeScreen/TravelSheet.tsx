@@ -108,6 +108,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							// buttonColor="#000000"
 							onPress={() =>
 								item.navigation.navigate('CheckList', {
+									travel_id: item.travel_id,
 									travel_title: item.travel_title,
 									start_date: item.start_date,
 									end_date: item.end_date,
