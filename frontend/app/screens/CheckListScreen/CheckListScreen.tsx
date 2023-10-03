@@ -33,15 +33,10 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 			const res = await api.get(`/custom-checklist/${travel_id}`);
 
 			if (res.status === 200) {
-				const newData: CustomCheckListItem[] = res.data.map((item: any) => ({
-					...item,
-					status: false,
-				}));
-
 				if (load) {
 					const updatedDefaultCheckList = { ...customCheckList };
 					updatedDefaultCheckList[travel_id] = {
-						checkListItem: newData,
+						checkListItem: res.data,
 					};
 
 					setCustomCheckList(updatedDefaultCheckList);
