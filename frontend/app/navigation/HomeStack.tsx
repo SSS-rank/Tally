@@ -14,7 +14,7 @@ import TransferPasswordScreen from '../screens/SettingScreen/TransferPasswrodScr
 export type HomeStackProps = {
 	Home: undefined;
 	Alert: undefined;
-	CheckList: { travel_title: string; start_date: string; end_date: string };
+	CheckList: { travel_id: number; travel_title: string; start_date: string; end_date: string };
 	Account: undefined;
 	AddAccount: undefined;
 	AuthAccount: undefined;
