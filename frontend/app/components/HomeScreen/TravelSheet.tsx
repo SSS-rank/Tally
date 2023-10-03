@@ -106,7 +106,14 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							icon="check"
 							mode="text"
 							// buttonColor="#000000"
-							onPress={() => console.log('Pressed')}
+							onPress={() =>
+								item.navigation.navigate('CheckList', {
+									travel_id: item.travel_id,
+									travel_title: item.travel_title,
+									start_date: item.start_date,
+									end_date: item.end_date,
+								})
+							}
 						>
 							체크리스트
 						</Button>

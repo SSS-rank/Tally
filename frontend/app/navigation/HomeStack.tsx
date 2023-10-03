@@ -3,6 +3,7 @@ import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AlertScreen from '../screens/AlertScreen/AlertScreen';
+import CheckListScreen from '../screens/CheckListScreen/CheckListScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import AddAccountScreen from '../screens/SettingScreen/AddAccountScreen';
 import AuthAccountScreen from '../screens/SettingScreen/AuthAccountScreen';
@@ -15,6 +16,7 @@ export type HomeStackProps = {
 	Home: undefined;
 	Alert: undefined;
 	Stamp: undefined;
+	CheckList: { travel_id: number; travel_title: string; start_date: string; end_date: string };
 	Account: undefined;
 	AddAccount: undefined;
 	AuthAccount: undefined;
@@ -33,6 +35,11 @@ function HomeStack() {
 			}}
 		>
 			<Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+			<Stack.Screen
+				name="CheckList"
+				component={CheckListScreen}
+				options={{ title: '체크리스트' }}
+			/>
 			<Stack.Screen
 				name="Alert"
 				component={AlertScreen}
