@@ -5,9 +5,12 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
-function PassportButton() {
+function PassportButton({ navigation }: any) {
 	return (
-		<TouchableOpacity style={ViewStyles().bannerButton}>
+		<TouchableOpacity
+			style={ViewStyles().bannerButton}
+			onPress={() => navigation.navigate('Stamp')}
+		>
 			<Text
 				style={{
 					...TextStyles({ align: 'left', color: 'white', weight: 'bold' }).regular,

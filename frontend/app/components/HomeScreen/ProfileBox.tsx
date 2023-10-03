@@ -31,24 +31,27 @@ function ProfileBox() {
 		}, []),
 	);
 	return (
-		<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).box}>
-			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-				<Avatar.Image
-					style={{ backgroundColor: 'transparent' }}
-					size={48}
-					source={{ uri: memberinfo.profile_image }}
-				/>
-				<Text style={TextStyles({ mTop: 10 }).regular}>{memberinfo.nickname}</Text>
+		<>
+			<View style={ViewStyles({ alignItems: 'center', height: 100 }).box}>
+				<Text style={TextStyles({ weight: 'bold', color: '#91C0EB' }).title}>
+					국내파 여행가
+					<Text style={TextStyles().regular}> {memberinfo.nickname}</Text>
+				</Text>
 			</View>
-			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-				<Text style={TextStyles().header}>{nationalCount}</Text>
-				<Text style={TextStyles().regular}>국내</Text>
+			<View style={ViewStyles({ alignItems: 'center', height: 180 }).box}>
+				<Text style={TextStyles({ align: 'left' }).regular}>내가 다녀 온 여행지</Text>
+				<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).innerProfile}>
+					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
+						<Text style={TextStyles().regular}>국내</Text>
+						<Text style={TextStyles().header}>{nationalCount}</Text>
+					</View>
+					<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
+						<Text style={TextStyles().regular}>해외</Text>
+						<Text style={TextStyles().header}>{overseasCount}</Text>
+					</View>
+				</View>
 			</View>
-			<View style={ViewStyles({ alignItems: 'center' }).innerProfile}>
-				<Text style={TextStyles().header}>{overseasCount}</Text>
-				<Text style={TextStyles().regular}>해외</Text>
-			</View>
-		</View>
+		</>
 	);
 }
 export default ProfileBox;

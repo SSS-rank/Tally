@@ -147,7 +147,7 @@ function HomeScreen({ navigation }: any) {
 			<ScrollView style={HomeStyles.scrollView}>
 				<MainHeader navigation={navigation} />
 				<MainBanner />
-				<PassportButton />
+				<PassportButton navigation={navigation} />
 				<View>
 					<Carousel
 						page={page}
@@ -172,10 +172,6 @@ function HomeScreen({ navigation }: any) {
 						<Icon name="information-circle-outline" size={54} color="#4F8EF7" />
 					</View>
 				</View>
-				<View style={ViewStyles({ color: 'green' }).box} />
-				<View style={ViewStyles({ color: 'blue' }).box} />
-				<View style={ViewStyles({ color: 'red' }).box} />
-				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
 		</LinearGradient>
 	);
