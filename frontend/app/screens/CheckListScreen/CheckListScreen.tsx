@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Modal, Pressable, TextInput } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -17,6 +17,8 @@ import { TextStyles } from '../../styles/CommonStyles';
 function CheckListScreen({ route }: CheckListScreenProps) {
 	const { travel_id, travel_title, start_date, end_date } = route.params;
 	const [customCheckList, setCustomCheckList] = useRecoilState(CheckListState);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [itemName, setItemName] = useState('');
 	const api = useAxiosWithAuth();
 
 	useFocusEffect(
@@ -47,6 +49,10 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 		}
 	};
 
+	const reset = () => {
+		setItemName('');
+	};
+
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.topView}>
@@ -58,7 +64,11 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 			<DashLine />
 			<View style={styles.buttonView}>
-				<Chip style={styles.addBtn} textStyle={{ color: '#ffffff' }}>
+				<Chip
+					style={styles.addBtn}
+					textStyle={{ color: '#ffffff' }}
+					onPress={() => setModalVisible(true)}
+				>
 					<Icon name="plus" size={16} style={{ color: '#ffffff', textAlignVertical: 'center' }} />{' '}
 					체크리스트 추가하기
 				</Chip>
@@ -75,6 +85,39 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 				)}
 				keyExtractor={(item) => String(item.custom_check_list_id)}
 			/>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(false);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModalVisible(false)}
+				/>
+				<View style={styles.modalView}>
+					<View style={styles.modalHeader}>
+						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+							체크리스트 추가
+						</Text>
+						<Icon name="close" size={32} color={'#666666'} onPress={() => setModalVisible(false)} />
+					</View>
+					<View style={styles.inputView}>
+						<TextInput
+							style={styles.textInput}
+							value={itemName}
+							onChangeText={setItemName}
+							placeholder="추가할 체크리스트 항목을 입력해주세요"
+						/>
+						<Icon name="close-circle" style={styles.resetIcon} onPress={reset} />
+					</View>
+					<Button mode="contained" style={styles.addCheckListItemBtn}>
+						확인
+					</Button>
+				</View>
+			</Modal>
 		</View>
 	);
 }
@@ -107,6 +150,55 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: '#91C0EB',
 		width: 'auto',
+	},
+	modalView: {
+		width: '100%',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		bottom: 0,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+	},
+	modalHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 40,
+	},
+	inputView: {
+		position: 'relative',
+		width: '100%',
+	},
+	textInput: {
+		backgroundColor: '#ffffff',
+		height: 40,
+		borderBottomWidth: 1,
+		width: '100%',
+		borderBottomColor: '#666666',
+		...TextStyles({ align: 'left' }).regular,
+	},
+	resetIcon: {
+		color: '#666666',
+		fontSize: 20,
+		position: 'absolute',
+		bottom: 10,
+		right: 10,
+	},
+	addCheckListItemBtn: {
+		width: '100%',
+		backgroundColor: '#91C0EB',
+		...TextStyles({ align: 'left', color: '#ffffff' }).regular,
+		marginTop: 30,
 	},
 });
 export default CheckListScreen;
