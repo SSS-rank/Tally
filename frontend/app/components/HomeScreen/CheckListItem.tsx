@@ -82,6 +82,22 @@ function CheckListItem({
 		}
 	};
 
+	const modifyCheckListItem = async () => {
+		try {
+			const res = await api.patch(`/custom-checklist`, {
+				custom_check_list_id: custom_check_list_id,
+				content: itemName,
+			});
+
+			if (res.status === 200) {
+				setLoad(true);
+				setModifyModalVisible(false);
+			}
+		} catch (err: any) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<>
 			<TouchableOpacity style={styles.itemContainer} onPress={toggleItemStatus}>
@@ -136,7 +152,7 @@ function CheckListItem({
 						/>
 						<Icon name="close-circle" style={styles.resetIcon} onPress={reset} />
 					</View>
-					<Button mode="contained" style={styles.addCheckListItemBtn}>
+					<Button mode="contained" style={styles.addCheckListItemBtn} onPress={modifyCheckListItem}>
 						확인
 					</Button>
 				</View>
