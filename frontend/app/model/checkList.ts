@@ -11,5 +11,5 @@ export interface CustomCheckListItem {
 }
 
 export interface CheckItemState {
-	checkListItem: DefaultCheckListItem[];
+	checkListItem: CustomCheckListItem[];
 }

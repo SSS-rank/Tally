@@ -8,38 +8,38 @@ import { useRecoilState } from 'recoil';
 import DashLine from '../../components/DashLine';
 import CheckListItem from '../../components/HomeScreen/CheckListItem';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
-import { DefaultCheckListItem } from '../../model/checkList';
+import { CustomCheckListItem } from '../../model/checkList';
 import { CheckListScreenProps } from '../../model/homeNavigator';
 import { CheckListState } from '../../recoil/checkListRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function CheckListScreen({ route }: CheckListScreenProps) {
 	const { travel_id, travel_title, start_date, end_date } = route.params;
-	const [defaultCheckList, setDefaultCheckList] = useRecoilState(CheckListState);
+	const [customCheckList, setCustomCheckList] = useRecoilState(CheckListState);
 	const api = useAxiosWithAuth();
 
 	useFocusEffect(
 		useCallback(() => {
-			if (defaultCheckList[travel_id] === undefined) getDefaultCheckList();
+			if (customCheckList[travel_id] === undefined) getCustomCheckList();
 		}, []),
 	);
 
-	const getDefaultCheckList = async () => {
+	const getCustomCheckList = async () => {
 		try {
-			const res = await api.get(`/default-checklist`);
+			const res = await api.get(`/custom-checklist/${travel_id}`);
 
 			if (res.status === 200) {
-				const newData: DefaultCheckListItem[] = res.data.map((item: any) => ({
+				const newData: CustomCheckListItem[] = res.data.map((item: any) => ({
 					...item,
 					status: false,
 				}));
 
-				const updatedDefaultCheckList = { ...defaultCheckList };
+				const updatedDefaultCheckList = { ...customCheckList };
 				updatedDefaultCheckList[travel_id] = {
 					checkListItem: newData,
 				};
 
-				setDefaultCheckList(updatedDefaultCheckList);
+				setCustomCheckList(updatedDefaultCheckList);
 			}
 		} catch (err: any) {
 			console.error(err);
@@ -57,16 +57,16 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 
 			<DashLine />
 			<FlatList
-				data={defaultCheckList && defaultCheckList[travel_id]?.checkListItem}
+				data={customCheckList && customCheckList[travel_id]?.checkListItem}
 				renderItem={({ item }) => (
 					<CheckListItem
 						travel_id={travel_id}
-						default_check_list_id={item.default_check_list_id}
+						custom_check_list_id={item.custom_check_list_id}
 						content={item.content}
 						status={item.status}
 					/>
 				)}
-				keyExtractor={(item) => String(item.default_check_list_id)}
+				keyExtractor={(item) => String(item.custom_check_list_id)}
 			/>
 		</View>
 	);
