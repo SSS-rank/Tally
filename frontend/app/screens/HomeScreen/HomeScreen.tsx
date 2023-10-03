@@ -50,6 +50,11 @@ function HomeScreen({ navigation }: any) {
 			const res = await api.post(`/group`, data);
 			if (res.status === 200) {
 				console.log(res.data);
+				navigation.navigate('TripStack', {
+					screen: 'TripDetail',
+					initial: false,
+					params: { travel_id: travelId },
+				});
 			}
 		} catch (err: any) {
 			console.error(err.response);

@@ -8,14 +8,17 @@ import {
 	Pressable,
 	Alert,
 } from 'react-native';
+import Config from 'react-native-config';
 import { Avatar, Button, Text, Chip } from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import firebaseApi from '../../api/firebaseApi';
 import AdjustEmptyAlert from '../../components/Alert/AdjustEmptyAlert';
 import DetailListItem from '../../components/DetailList/DetailListItem';
 import SortItem from '../../components/TripScreen/SortItem';
@@ -45,6 +48,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [participants, setParticipants] = useState<TripMember[]>([]);
 	const [inviteModalVisible, setInviteModalVisible] = useState(false);
+	const [isCopy, setIsCopy] = useState(false);
 
 	const userInfo = useRecoilValue(MemberState);
 
@@ -100,6 +104,27 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 		}
 	}
 
+	async function makeInviteLink() {
+		const urlData = {
+			dynamicLinkInfo: {
+				domainUriPrefix: 'https://tally.page.link',
+				link: `https://tally.com/join/${userInfo.nickname}/${curTripInfo.title}/${travel_id}`,
+				androidInfo: {
+					androidPackageName: 'com.tally',
+				},
+			},
+			suffix: {
+				option: 'SHORT',
+			},
+		};
+		console.log(urlData);
+		const res = await firebaseApi.post(``, urlData);
+		console.log(res.data.shortLink);
+		Clipboard.setString(res.data.shortLink);
+		setIsCopy(true);
+		console.log('복사d완료');
+	}
+
 	return (
 		<ScrollView style={styles.container}>
 			<View>
@@ -130,7 +155,10 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				<Chip
 					style={styles.outlineBtn}
 					textStyle={{ color: '#91C0EB' }}
-					onPress={() => setInviteModalVisible(true)}
+					onPress={() => {
+						setInviteModalVisible(true);
+						setIsCopy(false);
+					}}
 				>
 					<MaterialIcon
 						name="plus"
@@ -262,17 +290,13 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						</Text>
 						<Button
 							mode="contained"
-							buttonColor="#91C0EB"
+							buttonColor={isCopy ? '#D6D6D6' : '#91C0EB'}
 							textColor="white"
 							style={{ marginTop: 30 }}
 							icon="link"
-							onPress={() =>
-								Clipboard.setString(
-									`tally://join/${userInfo.nickname}/${curTripInfo.title}/${travel_id}`,
-								)
-							}
+							onPress={() => makeInviteLink()}
 						>
-							초대링크 복사
+							{isCopy ? '복사 완료' : '초대링크 복사'}
 						</Button>
 					</View>
 				</View>
