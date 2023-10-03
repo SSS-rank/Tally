@@ -13,6 +13,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { OcrData } from '../../model/payment';
+import getCurrencyType from '../../services/getCurrencyType';
 import UploadModeModal from '../Modal/UploadModeModal';
 
 const imagePickerOption = {
@@ -21,10 +22,11 @@ const imagePickerOption = {
 	maxHeight: 768,
 	includeBase64: Platform.OS === 'android',
 };
+
 interface CameraButtonProps {
-	setOcrData: React.Dispatch<React.SetStateAction<OcrData | undefined>>;
+	handleOcrData: (ocr_data: OcrData) => void;
 }
-function CameraButton({ setOcrData }: CameraButtonProps) {
+function CameraButton({ handleOcrData }: CameraButtonProps) {
 	const [img, setImg] = useState<ImageURISource>();
 
 	interface RawData {
@@ -37,6 +39,7 @@ function CameraButton({ setOcrData }: CameraButtonProps) {
 			title: '',
 			amount: '',
 			date: '',
+			cur_type: '',
 		};
 
 		rawData.forEach((item) => {
@@ -55,6 +58,8 @@ function CameraButton({ setOcrData }: CameraButtonProps) {
 			}
 		});
 
+		const currencyType = getCurrencyType(formattedData.amount);
+		formattedData.cur_type = currencyType;
 		return formattedData;
 	};
 
@@ -85,6 +90,7 @@ function CameraButton({ setOcrData }: CameraButtonProps) {
 				type: res.assets[0].type,
 				name: res.assets[0].fileName,
 			});
+			setImg({ uri: res.assets[0].uri });
 
 			axios
 				.post(
@@ -99,19 +105,22 @@ function CameraButton({ setOcrData }: CameraButtonProps) {
 				)
 				.then((result) => {
 					if (result.status === 200) {
-						console.log('response:', result.data);
+						console.log(result.data.images[0]);
 						const extracted_data = result.data.images[0].fields.map((item: any) => {
 							return { infer_text: item.inferText, name: item.name };
 						});
-						console.log(extracted_data);
-						setOcrData(formatData(extracted_data));
+						handleOcrData(formatData(extracted_data));
 					}
 				})
 				.catch((e) => {
-					console.warn('requestWithBase64 error', e.response);
+					const error_ocr_data = {
+						title: 'error',
+						date: 'error',
+						amount: 'error',
+						cur_type: 'error',
+					};
+					handleOcrData(error_ocr_data);
 				});
-
-			setImg({ uri: res.assets[0].uri });
 		}
 	};
 
