@@ -26,7 +26,6 @@ function SettingScreen({ navigation }: any) {
 			</View>
 			<View style={styles.wrap}>
 				<Text style={styles.title}>계좌 관리</Text>
-				<Text style={styles.subTitle}>대표 계좌 지정</Text>
 				<Text style={styles.subTitle} onPress={() => navigation.navigate('Account')}>
 					계좌 연결 관리
 				</Text>
@@ -56,6 +55,7 @@ const styles = StyleSheet.create({
 		// alignItems: 'center',
 		backgroundColor: 'white',
 		padding: 10,
+		paddingHorizontal: 20,
 	},
 
 	wrap: {
