@@ -160,8 +160,12 @@ public class CustomCheckListServiceImpl implements CustomCheckListService {
 		if (!customChecklist.getMemberId().equals(member)) {
 			throw new CustomCheckListException(ErrorCode.NOT_EQUAL_CHECKLIST_MEMBER);
 		}
+		if(customChecklist.getStatus()){
+			customChecklist.updateStatus(false);
+		}else{
+			customChecklist.updateStatus(true);
+		}
 
-		customChecklist.updateStatus(true);
 		return "ok";
 	}
 }
