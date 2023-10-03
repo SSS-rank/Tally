@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, Dimensions, ScrollView } from 'react-native';
+import { Text, View, Dimensions, ScrollView, Alert } from 'react-native';
 import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
 
+import messaging from '@react-native-firebase/messaging';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import Carousel from '../../components/Carousel';
 import MainBanner from '../../components/HomeScreen/MainBanner';
@@ -16,6 +17,7 @@ import ProfileBox from '../../components/HomeScreen/ProfileBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
+import { alertCheckState } from '../../recoil/alertRecoil';
 import { JoinState } from '../../recoil/joinRecoil';
 import { TextStyles } from '../../styles/CommonStyles';
 import { HomeStyles, ViewStyles } from '../../styles/HomeStyles';
@@ -88,7 +90,7 @@ function HomeScreen({ navigation }: any) {
 				res.data.map(async (item: any, index: number) => {
 					// const WeatherText = await getWeather(item.travel_type);
 					const WeatherText = 'sunny';
-					console.log('WeatherText ', WeatherText);
+					// console.log('WeatherText ', WeatherText);
 					return {
 						...item,
 						color: getWeatherBackgroundColor(WeatherText),
@@ -113,16 +115,39 @@ function HomeScreen({ navigation }: any) {
 			width: width,
 			navigation: navigation,
 		});
-		console.log('newInfo ', newInfo);
+		// console.log('newInfo ', newInfo);
 		setAfterTripList(newInfo);
 	};
+
+	// // 백그라운드일 때 알림 받기
+	const setAlertCheck = useSetRecoilState(alertCheckState);
+	messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+		console.log('Message handled in the background!', remoteMessage);
+		setAlertCheck(true);
+	});
+
+	// 포그라운드일 때 알림 받기
+	useEffect(() => {
+		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+			console.log('remoteMessage', JSON.stringify(remoteMessage));
+			setAlertCheck(true);
+			Alert.alert(String(remoteMessage.notification?.title), remoteMessage.notification?.body, [
+				{ text: '나중에 확인할게요' },
+				{
+					text: '확인',
+					onPress: () => navigation.navigate('Alert'),
+				},
+			]);
+		});
+		return unsubscribe;
+	}, []);
 
 	return (
 		<LinearGradient colors={['#A7BFE8', '#CFDEF3', '#F2F2F2']} style={HomeStyles.container}>
 			<ScrollView style={HomeStyles.scrollView}>
 				<MainHeader navigation={navigation} />
 				<MainBanner />
-				<PassportButton />
+				<PassportButton navigation={navigation} />
 				<View>
 					<Carousel
 						page={page}
@@ -147,10 +172,6 @@ function HomeScreen({ navigation }: any) {
 						<Icon name="information-circle-outline" size={54} color="#4F8EF7" />
 					</View>
 				</View>
-				<View style={ViewStyles({ color: 'green' }).box} />
-				<View style={ViewStyles({ color: 'blue' }).box} />
-				<View style={ViewStyles({ color: 'red' }).box} />
-				<View style={ViewStyles({ color: 'blue' }).box} />
 			</ScrollView>
 		</LinearGradient>
 	);
