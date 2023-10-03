@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, Chip } from 'react-native-paper';
 
 import { useFocusEffect } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
 import DashLine from '../../components/DashLine';
@@ -56,6 +57,12 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 			</View>
 
 			<DashLine />
+			<View style={styles.buttonView}>
+				<Chip style={styles.addBtn} textStyle={{ color: '#ffffff' }}>
+					<Icon name="plus" size={16} style={{ color: '#ffffff', textAlignVertical: 'center' }} />{' '}
+					체크리스트 추가하기
+				</Chip>
+			</View>
 			<FlatList
 				data={defaultCheckList && defaultCheckList[travel_id]?.checkListItem}
 				renderItem={({ item }) => (
@@ -86,6 +93,20 @@ const styles = StyleSheet.create({
 	},
 	date: {
 		...TextStyles({ align: 'left', color: '#A0A0A0' }).small,
+	},
+	buttonView: {
+		marginTop: 10,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'flex-end',
+	},
+	addBtn: {
+		borderColor: '#91C0EB',
+		borderRadius: 32,
+		padding: 0,
+		borderWidth: 1,
+		backgroundColor: '#91C0EB',
+		width: 'auto',
 	},
 });
 export default CheckListScreen;
