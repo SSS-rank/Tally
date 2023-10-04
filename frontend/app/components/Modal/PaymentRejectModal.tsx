@@ -4,18 +4,29 @@ import { Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TextStyles } from '../../styles/CommonStyles';
 interface PaymentRejectModalProps {
 	modalVisible: boolean;
 	setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+	paymentUuid: string;
 }
-function PaymentRejectModal({ modalVisible, setModalVisible }: PaymentRejectModalProps) {
+function PaymentRejectModal({
+	modalVisible,
+	setModalVisible,
+	paymentUuid,
+}: PaymentRejectModalProps) {
 	const [message, setMessage] = useState('');
+	const api = useAxiosWithAuth();
 	function reset() {
 		setMessage('');
 	}
-	function sendRejectAlarm() {
-		console.log(message);
+	async function sendRejectAlarm() {
+		// 결제 수정 요청에 대한 처리
+		const res = await api.post(`notification/payer/${paymentUuid}`);
+		if (res.status) {
+			console.log(res.data);
+		}
 	}
 	return (
 		<Modal
