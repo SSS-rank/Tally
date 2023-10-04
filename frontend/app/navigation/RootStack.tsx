@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useRecoilValue } from 'recoil';
 
 import MainTabs from './MainTabs';
+import { TokenState } from '../recoil/recoil';
 import JoinScreen from '../screens/JoinScreen/JoinScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import SplashScreen from '../screens/SplashScreen/SplashScreen';
@@ -17,7 +19,7 @@ const Stack = createNativeStackNavigator<RootStackProps>();
 
 function RootStack() {
 	const [isLoading, setIsLoading] = React.useState(true);
-	const [userToken, setUserToken] = React.useState(null);
+	const tokenState = useRecoilValue(TokenState);
 
 	const getUserToken = async () => {
 		// testing purposes
@@ -40,9 +42,9 @@ function RootStack() {
 	}
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			{userToken === null ? (
+			{tokenState.accessToken === '' ? (
 				// No token found, user isn't signed in
-				<Stack.Screen name="SignIn" component={LoginScreen} initialParams={{ setUserToken }} />
+				<Stack.Screen name="SignIn" component={LoginScreen} />
 			) : (
 				// User is signed in
 				<Stack.Screen name="MainTabs" component={MainTabs} />

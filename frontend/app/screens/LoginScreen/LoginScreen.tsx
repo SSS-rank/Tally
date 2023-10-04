@@ -15,7 +15,6 @@ import { FcmTokenState, TokenState, tallyAccountListState } from '../../recoil/r
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 
 function LoginScreen({ route }: RootStackProp) {
-	const { setUserToken } = route.params ?? {};
 	const setTokenState = useSetRecoilState(TokenState);
 	const api = useAxiosWithAuth();
 	const setFcmToken = useSetRecoilState(FcmTokenState);
@@ -62,7 +61,6 @@ function LoginScreen({ route }: RootStackProp) {
 						}
 						getAccountList();
 						setTokenState(tokenState);
-						setUserToken(res.data.accessToken);
 					}
 				} catch (error) {
 					console.error(error);
