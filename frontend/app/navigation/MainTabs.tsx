@@ -5,8 +5,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeStack from './HomeStack';
+import SettingStack from './SettingStack';
 import TripStack from './TripStack';
-import SettingScreen from '../screens/SettingScreen/SettingScreen';
 export type MainTabsProps = {
 	HomeStack: undefined;
 	TripStack: undefined;
@@ -46,12 +46,13 @@ function MainTabs() {
 			/>
 			<Tab.Screen
 				name="Setting"
-				component={SettingScreen}
+				component={SettingStack}
 				options={{
 					title: '설정',
 					tabBarLabel: 'Setting',
 					headerTitleAlign: 'center',
 					tabBarIcon: ({ color }: any) => <Icon name="settings-sharp" size={24} color={color} />,
+					headerShown: false,
 				}}
 			/>
 		</Tab.Navigator>
