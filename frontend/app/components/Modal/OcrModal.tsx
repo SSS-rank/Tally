@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
 
 import { OcrState } from '../../recoil/ocrRecoil';
+import getExRate from '../../services/getExRate';
 import { TextStyles } from '../../styles/CommonStyles';
 interface OcrModalProps {
 	modalVisible: boolean;
@@ -60,11 +61,20 @@ function OcrModal({
 	useEffect(() => {
 		if (ocrRecoil.cur_type === 'jp') {
 			setOcrCurType('JPY(엔)');
-			setExRate(5);
+			getExRate('JPY(100)').then((rate) => {
+				if (rate) {
+					setExRate(rate);
+				}
+			});
 		} else if (ocrRecoil.cur_type === 'us') {
-			setExRate(10);
 			setOcrCurType('USD(달러)');
+			getExRate('USD').then((rate) => {
+				if (rate) {
+					setExRate(rate);
+				}
+			});
 		} else {
+			setOcrCurType('KRW(원)');
 			setExRate(1);
 		}
 	}, [ocrRecoil.cur_type]);
