@@ -193,7 +193,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	return (
 		<>
 			<View style={styles.container}>
-				<CameraButton handleOcrData={handleOcrData} />
+				<View style={{ alignItems: 'flex-end' }}>
+					<CameraButton handleOcrData={handleOcrData} />
+				</View>
 				<OcrModal
 					setDate={setDate}
 					setStore={setStore}
