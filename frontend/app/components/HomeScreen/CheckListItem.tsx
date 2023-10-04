@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	TouchableOpacity,
+	Alert,
+	Modal,
+	Pressable,
+	TextInput,
+} from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,29 +31,25 @@ function CheckListItem({
 	status,
 	setLoad,
 }: CheckListItemProp) {
-	const [checkList, setCheckList] = useRecoilState(CheckListState);
-	const [isCheckted, setIsChecked] = useState(status);
+	const [modifyModalVisible, setModifyModalVisible] = useState(false);
+	const [itemName, setItemName] = useState(content);
 	const api = useAxiosWithAuth();
 
-	const toggleItemStatus = () => {
-		const updatedCheckListItem = checkList[travel_id].checkListItem.map((item) => {
-			setIsChecked(!isCheckted);
-			if (item.custom_check_list_id === custom_check_list_id) {
-				return {
-					...item,
-					status: !isCheckted,
-				};
-			} else
-				return {
-					...item,
-				};
-		});
+	const reset = () => {
+		setItemName('');
+	};
 
-		const updatedCheckList = { ...checkList };
-		updatedCheckList[travel_id] = {
-			checkListItem: updatedCheckListItem,
-		};
-		setCheckList(updatedCheckList);
+	const toggleItemStatus = async () => {
+		try {
+			const res = await api.patch(`/custom-checklist/check/${custom_check_list_id}`);
+
+			if (res.status === 200) {
+				console.log('toggleItemStatus ', res.data);
+				setLoad(true);
+			}
+		} catch (err: any) {
+			console.error(err);
+		}
 	};
 
 	const deleteCheckListItem = () => {
@@ -67,21 +72,82 @@ function CheckListItem({
 		}
 	};
 
+	const modifyCheckListItem = async () => {
+		try {
+			const res = await api.patch(`/custom-checklist`, {
+				custom_check_list_id: custom_check_list_id,
+				content: itemName,
+			});
+
+			if (res.status === 200) {
+				setLoad(true);
+				setModifyModalVisible(false);
+			}
+		} catch (err: any) {
+			console.error(err);
+		}
+	};
+
 	return (
-		<TouchableOpacity style={styles.itemContainer} onPress={toggleItemStatus}>
-			<View style={styles.leftView}>
-				<Icon
-					name={isCheckted ? 'check-circle' : 'checkbox-blank-circle-outline'}
-					size={28}
-					style={{ marginRight: 5 }}
-					color={isCheckted ? '#91C0EB' : '#D0D0D0'}
+		<>
+			<TouchableOpacity style={styles.itemContainer} onPress={toggleItemStatus}>
+				<View style={styles.row}>
+					<Icon
+						name={status ? 'check-circle' : 'checkbox-blank-circle-outline'}
+						size={28}
+						style={{ marginRight: 5 }}
+						color={status ? '#91C0EB' : '#D0D0D0'}
+					/>
+					<Text style={[styles.text, status ? { textDecorationLine: 'line-through' } : {}]}>
+						{content}
+					</Text>
+				</View>
+				<View style={styles.row}>
+					<Button mode="text" textColor="#91C0EB" onPress={() => setModifyModalVisible(true)}>
+						수정
+					</Button>
+					<IconButton icon="close" iconColor="#b3261e" onPress={deleteCheckListItem} />
+				</View>
+			</TouchableOpacity>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modifyModalVisible}
+				onRequestClose={() => {
+					setModifyModalVisible(!modifyModalVisible);
+				}}
+			>
+				<Pressable
+					style={{ backgroundColor: '#00000070', flex: 1 }}
+					onPress={() => setModifyModalVisible(!modifyModalVisible)}
 				/>
-				<Text style={[styles.text, isCheckted ? { textDecorationLine: 'line-through' } : {}]}>
-					{content}
-				</Text>
-			</View>
-			<IconButton icon="close" iconColor="#b3261e" onPress={deleteCheckListItem} />
-		</TouchableOpacity>
+				<View style={styles.modalView}>
+					<View style={styles.modalHeader}>
+						<Text style={{ ...TextStyles({ align: 'left', weight: 'bold' }).regular, flex: 1 }}>
+							체크리스트 수정
+						</Text>
+						<Icon
+							name="close"
+							size={32}
+							color={'#666666'}
+							onPress={() => setModifyModalVisible(!modifyModalVisible)}
+						/>
+					</View>
+					<View style={styles.inputView}>
+						<TextInput
+							style={styles.textInput}
+							value={itemName}
+							onChangeText={setItemName}
+							autoFocus={true}
+						/>
+						<Icon name="close-circle" style={styles.resetIcon} onPress={reset} />
+					</View>
+					<Button mode="contained" style={styles.addCheckListItemBtn} onPress={modifyCheckListItem}>
+						확인
+					</Button>
+				</View>
+			</Modal>
+		</>
 	);
 }
 
@@ -91,7 +157,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 	},
-	leftView: {
+	row: {
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
@@ -100,6 +166,55 @@ const styles = StyleSheet.create({
 	},
 	deleteBtn: {
 		color: '#b3261e',
+	},
+	modalView: {
+		width: '100%',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		backgroundColor: 'white',
+		padding: 35,
+		position: 'absolute',
+		bottom: 0,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+	},
+	modalHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 40,
+	},
+	inputView: {
+		position: 'relative',
+		width: '100%',
+	},
+	textInput: {
+		backgroundColor: '#ffffff',
+		height: 40,
+		borderBottomWidth: 1,
+		width: '100%',
+		borderBottomColor: '#666666',
+		...TextStyles({ align: 'left' }).regular,
+	},
+	resetIcon: {
+		color: '#666666',
+		fontSize: 20,
+		position: 'absolute',
+		bottom: 10,
+		right: 10,
+	},
+	addCheckListItemBtn: {
+		width: '100%',
+		backgroundColor: '#91C0EB',
+		...TextStyles({ align: 'left', color: '#ffffff' }).regular,
+		marginTop: 30,
 	},
 });
 
