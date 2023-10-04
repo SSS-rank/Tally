@@ -31,8 +31,6 @@ function CheckListItem({
 	status,
 	setLoad,
 }: CheckListItemProp) {
-	const [checkList, setCheckList] = useRecoilState(CheckListState);
-	const [isCheckted, setIsChecked] = useState(status);
 	const [modifyModalVisible, setModifyModalVisible] = useState(false);
 	const [itemName, setItemName] = useState(content);
 	const api = useAxiosWithAuth();
@@ -41,25 +39,17 @@ function CheckListItem({
 		setItemName('');
 	};
 
-	const toggleItemStatus = () => {
-		const updatedCheckListItem = checkList[travel_id].checkListItem.map((item) => {
-			setIsChecked(!isCheckted);
-			if (item.custom_check_list_id === custom_check_list_id) {
-				return {
-					...item,
-					status: !isCheckted,
-				};
-			} else
-				return {
-					...item,
-				};
-		});
+	const toggleItemStatus = async () => {
+		try {
+			const res = await api.patch(`/custom-checklist/check/${custom_check_list_id}`);
 
-		const updatedCheckList = { ...checkList };
-		updatedCheckList[travel_id] = {
-			checkListItem: updatedCheckListItem,
-		};
-		setCheckList(updatedCheckList);
+			if (res.status === 200) {
+				console.log('toggleItemStatus ', res.data);
+				setLoad(true);
+			}
+		} catch (err: any) {
+			console.error(err);
+		}
 	};
 
 	const deleteCheckListItem = () => {
@@ -103,12 +93,12 @@ function CheckListItem({
 			<TouchableOpacity style={styles.itemContainer} onPress={toggleItemStatus}>
 				<View style={styles.row}>
 					<Icon
-						name={isCheckted ? 'check-circle' : 'checkbox-blank-circle-outline'}
+						name={status ? 'check-circle' : 'checkbox-blank-circle-outline'}
 						size={28}
 						style={{ marginRight: 5 }}
-						color={isCheckted ? '#91C0EB' : '#D0D0D0'}
+						color={status ? '#91C0EB' : '#D0D0D0'}
 					/>
-					<Text style={[styles.text, isCheckted ? { textDecorationLine: 'line-through' } : {}]}>
+					<Text style={[styles.text, status ? { textDecorationLine: 'line-through' } : {}]}>
 						{content}
 					</Text>
 				</View>
