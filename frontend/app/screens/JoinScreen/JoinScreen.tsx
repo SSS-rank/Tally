@@ -5,20 +5,22 @@ import { Button } from 'react-native-paper';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 type JoinScreenProps = BottomTabScreenProps<RootStackProps, 'Join'>;
-import { RootStackProps } from '../../navigation/RootStack';
-import { TextStyles } from '../../styles/CommonStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { TokenState } from '../../recoil/recoil';
-import { JoinState } from '../../recoil/joinRecoil';
 
-function JoinScreen({ navigation, route }: JoinScreenProps) {
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { RootStackProps } from '../../navigation/RootStack';
+import { JoinState } from '../../recoil/joinRecoil';
+import { TokenState } from '../../recoil/recoil';
+import { TextStyles } from '../../styles/CommonStyles';
+
+function JoinScreen({ navigation, route }: any) {
 	const { travelId, host, travelName } = route.params;
 	const api = useAxiosWithAuth();
 	const tokenState = useRecoilValue(TokenState);
 	const [joinInfo, setJoinInfo] = useRecoilState(JoinState);
 
+	// eslint-disable-next-line @typescript-eslint/no-shadow
 	const joinTravel = async (travelId: number) => {
 		const data = {
 			travel_id: travelId,
@@ -29,6 +31,7 @@ function JoinScreen({ navigation, route }: JoinScreenProps) {
 				const res = await api.post(`/group`, data);
 				if (res.status === 200) {
 					console.log(res.data);
+					navigation.navigate('MainTabs', { screen: 'TripStack' });
 				}
 			} else {
 				//로그인이 안되어있는 경우

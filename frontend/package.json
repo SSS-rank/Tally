@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@react-native-clipboard/clipboard": "^1.12.1",
+    "@react-native-firebase/analytics": "^18.5.0",
     "@react-native-firebase/app": "^18.5.0",
+    "@react-native-firebase/dynamic-links": "^18.5.0",
     "@react-native-firebase/messaging": "^18.5.0",
     "@react-native-seoul/kakao-login": "^5.3.0",
     "@react-navigation/bottom-tabs": "^6.5.8",
