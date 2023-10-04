@@ -33,7 +33,6 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 		if (accountNumElement) {
 			const accountNumValue = accountNumElement.innerText;
 
-			console.log('클릭된 Typography의 값:', accountNumValue);
 			navigate(`/accountdetail`, {
 				state: { accountNum: accountNumValue, balance: balance, bankcode: bankcode },
 			});
@@ -70,13 +69,11 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 				account_num: { accountNum }.accountNum,
 				account_password: password,
 			};
-			console.log(accountDeleteReqDto);
 			const res = await api.patch('account', accountDeleteReqDto);
 			if (res.status === 200) {
 				window.location.replace('/main');
 			}
 		} catch (error: any) {
-			console.log(error);
 			if (error.response.status == 401) {
 				window.location.replace('/main');
 			} else {
@@ -186,8 +183,9 @@ function AccountListItem({ balance, bankcode, accountNum }: accountListItemProps
 						value={password}
 						onChange={handleChangePassword}
 						sx={{ mb: 2 }}
+						inputProps={{ maxLength: 4 }}
 					/>
-					<Button variant="contained" onClick={handleDeleteConfirm}>
+					<Button variant="contained" onClick={handleDeleteConfirm} disabled={password.length != 4}>
 						삭제
 					</Button>
 					<Button variant="contained" onClick={handleCloseModal} sx={{ ml: 2 }}>
