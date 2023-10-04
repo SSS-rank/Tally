@@ -283,6 +283,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		width: '100%',
 		bottom: 20,
+		left: 15,
 	},
 });
 
