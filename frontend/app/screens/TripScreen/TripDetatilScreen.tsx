@@ -182,7 +182,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				<Text style={styles.info}>
 					{year}년 {month}월 {day}일까지
 				</Text>
-				<Text style={styles.money}>{totalAmount}원</Text>
+				<Text style={styles.money}>{totalAmount.toLocaleString()}원</Text>
 			</View>
 			<View style={styles.body_button_group}>
 				<Button
