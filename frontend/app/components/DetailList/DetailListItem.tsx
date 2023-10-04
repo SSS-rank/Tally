@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Portal, Modal, Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/AntDesign';
 
 import DetailItemStatus from './DetailItemStatus';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -12,6 +14,23 @@ type detailItemProps = {
 	navigation: any;
 };
 function DetailListItem({ item, navigation }: detailItemProps) {
+	const [modalVisible, setModalVisible] = useState(false);
+
+	const api = useAxiosWithAuth();
+	const deleteItem = async () => {
+		try {
+			const res = await api.patch(`/payment`, {
+				payment_uuid: item.payment_uuid,
+			});
+
+			if (res.status === 200) {
+				console.log('deleteItem ', res.data);
+			}
+		} catch (err: any) {
+			console.error(err.response);
+		}
+	};
+
 	return (
 		<TouchableOpacity
 			style={styles.itemContainer}
@@ -22,6 +41,7 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 					method: item.payment_method,
 				})
 			}
+			onLongPress={() => setModalVisible(true)}
 		>
 			<Text style={[styles.info, { marginBottom: 3 }]}>{item.payment_date.split('T')[0]}</Text>
 			<View style={styles.detail_item_main}>
@@ -39,6 +59,25 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 				<Text style={styles.info}>{item.payment_date.split('T')[1]}</Text>
 				<Text style={styles.info}>{item.participants ? item.participants.join(',') : ''}</Text>
 			</View>
+			<Portal>
+				<Modal
+					visible={modalVisible}
+					onDismiss={() => setModalVisible(false)}
+					contentContainerStyle={styles.modalContainer}
+				>
+					<View style={styles.modalView}>
+						<Text style={styles.modalHeaderText}>
+							{`거래 내역을 여행지 거래 내역에서 \n 삭제하시겠습니까?`}
+						</Text>
+						<Text style={styles.modalText}>
+							{`삭제한 거래 내역은 해당 여행지의 소비에 포함되지 않습니다.`}
+						</Text>
+						<Button mode="contained" style={styles.modalBtn} onPress={deleteItem}>
+							삭제
+						</Button>
+					</View>
+				</Modal>
+			</Portal>
 		</TouchableOpacity>
 	);
 }
@@ -71,6 +110,29 @@ const styles = StyleSheet.create({
 		marginLeft: 5,
 		fontSize: 20,
 		justifyContent: 'center',
+	},
+	modalContainer: {
+		width: '100%',
+		paddingHorizontal: 20,
+	},
+	modalView: {
+		backgroundColor: '#ffffff',
+		// height: '50%',
+		borderRadius: 8,
+		paddingVertical: 30,
+		paddingHorizontal: 18,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	modalHeaderText: {
+		...TextStyles({ mBottom: 10 }).title,
+	},
+	modalText: {
+		...TextStyles({ mBottom: 20 }).small,
+	},
+	modalBtn: {
+		width: '100%',
+		backgroundColor: '#DC3545',
 	},
 });
 export default DetailListItem;
