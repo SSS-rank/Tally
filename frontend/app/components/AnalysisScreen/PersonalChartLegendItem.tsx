@@ -43,7 +43,7 @@ function PersonalChartLegendItem({
 				<Text style={styles.percent}>{percent}%</Text>
 			</View>
 			<View style={styles.textView}>
-				<Text style={styles.text}>{money}원</Text>
+				<Text style={styles.text}>{money.toLocaleString()}원</Text>
 				<Icon name="chevron-forward" size={24} color="#666666" />
 			</View>
 		</TouchableOpacity>
