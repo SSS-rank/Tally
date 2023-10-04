@@ -70,17 +70,17 @@ public class OauthLoginServiceImpl implements OauthLoginService {
 			);
 			// 해당 멤버 + 기기토큰으로 검색했는데 이미 존재하면 true 처리
 			// 한 기기에서 로그아웃 하고 다시 로그인 하는 경우
+			// 기기가 다른 멤버 아이디로 로그인 되어 있는 경우
+			Optional<Device> device = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(
+				oauthLoginReqDto.getDeviceToken());
+			device.ifPresent(value -> value.updateLogin(false));
+			// 멤버가 다른 기기에서 로그인 되어 있는 경우
+			device = deviceRepository.findDeviceByMemberIdAndIsLoginIsTrue(oauthMember);
+			device.ifPresent(value -> value.updateLogin(false));
+
 			if (checkDevice.isPresent()) {
 				checkDevice.get().updateLogin(true);
 			} else {
-				// 기기가 다른 멤버 아이디로 로그인 되어 있는 경우
-				Optional<Device> device = deviceRepository.findDeviceByDeviceTokenAndIsLoginIsTrue(
-					oauthLoginReqDto.getDeviceToken());
-				device.ifPresent(value -> value.updateLogin(false));
-				// 멤버가 다른 기기에서 로그인 되어 있는 경우
-				device = deviceRepository.findDeviceByMemberIdAndIsLoginIsTrue(oauthMember);
-				device.ifPresent(value -> value.updateLogin(false));
-				// 예외처리 후 insert 시켜주기
 				deviceRepository.save(Device.of(oauthMember, oauthLoginReqDto.getDeviceToken()));
 			}
 		}
