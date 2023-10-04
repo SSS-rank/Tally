@@ -242,7 +242,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					</View>
 				</View>
 				<ScrollView>
-					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} block={false} />
 					<View style={[styles.memo_box, styles.content_box]}>
 						<Text style={styles.content_title}>결제처</Text>
 						<TextInput
@@ -268,6 +268,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					<CategoryBox
 						selectedcategory={selectedcategory}
 						setSelectedCategory={setSelectedCategory}
+						blocked={false}
 					/>
 
 					<View style={[styles.party_box, styles.content_box]}>
