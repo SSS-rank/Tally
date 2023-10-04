@@ -378,6 +378,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					<PaymentRejectModal
 						modalVisible={rejectModalVisible}
 						setModalVisible={setRejectModalVisible}
+						paymentUuid={paymentUuid}
 					/>
 
 					<Button

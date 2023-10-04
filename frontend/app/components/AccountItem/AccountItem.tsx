@@ -75,7 +75,7 @@ function AccountItem({
 						lineHeight: 20,
 					}}
 				>
-					{balance}원
+					{balance.toLocaleString()}원
 				</Text>
 			</View>
 			<View>{representativeAccount && <Text>대표</Text>}</View>

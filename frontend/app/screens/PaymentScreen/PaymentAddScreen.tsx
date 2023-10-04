@@ -231,12 +231,14 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</View>
 						<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
 							{' '}
-							총 금액 {totAmount} 원
+							총 금액 {totAmount.toLocaleString()} 원
 						</Text>
 					</View>
 					<View style={styles.amount_right}>
 						<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
-						<Text style={styles.amount__right_text}>{exData.split(':')[0]} 원</Text>
+						<Text style={styles.amount__right_text}>
+							{exData.split(':')[0].toLocaleString()} 원
+						</Text>
 					</View>
 				</View>
 				<ScrollView>

@@ -56,9 +56,10 @@ public class TravelDto {
 		private LocalDate endDate;
 		private int remainDate;
 		private Long money;
+		private String weather;
 		private List<MemberDto.MemberRespDto> travelParticipants;
 
-		public static TravelNotStartDto of(Long money, int remainDate, Travel travel, String travelLocation, String travelType, List<MemberDto.MemberRespDto> members){
+		public static TravelNotStartDto of(String weather, Long money, int remainDate, Travel travel, String travelLocation, String travelType, List<MemberDto.MemberRespDto> members){
 			return TravelNotStartDto.builder()
 				.travelId(travel.getTravelId())
 				.travelTitle(travel.getTravelTitle())
@@ -69,6 +70,7 @@ public class TravelDto {
 				.remainDate(remainDate)
 				.travelParticipants(members)
 				.money(money)
+				.weather(weather)
 				.build();
 		}
 	}

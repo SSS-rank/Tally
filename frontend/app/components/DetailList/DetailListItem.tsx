@@ -53,7 +53,7 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 					{!item.visible ? <Icon style={styles.lock} name="lock" /> : null}
 				</View>
 
-				<Text style={styles.money}>{item.amount}원</Text>
+				<Text style={styles.money}>{item.amount.toLocaleString()}원</Text>
 			</View>
 			<View style={styles.detail_item_sub}>
 				<Text style={styles.info}>{item.payment_date.split('T')[1]}</Text>
