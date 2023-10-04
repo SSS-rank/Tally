@@ -9,7 +9,7 @@ import { TokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function SettingScreen({ navigation }: any) {
-	const [isEnabled, setIsEnabled] = useState(false);
+	const [isEnabled, setIsEnabled] = useState(true);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
 	const api = useAxiosWithAuth();
