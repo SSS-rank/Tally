@@ -35,8 +35,10 @@ function AlertListItem({ item }: AlertListItemProp) {
 		const date = `${splitDate[1]}월 ${splitDate[2]}일`;
 		let msg = '';
 
+		console.log('date ', item.createdTime);
+
 		if (type === 'payment-request') {
-			color = '#FDDE61';
+			color = '#4ECF34';
 			name = '더치페이';
 			msg = `${item.senderName}님이 ${item.travelName}의 ${item.paymentName} 결제의 금액 조정을 요청했어요.`;
 		} else if (type === 'calculate-request') {
@@ -44,15 +46,19 @@ function AlertListItem({ item }: AlertListItemProp) {
 			name = '정산';
 			msg = `${item.travelName} 여행의 ${item.senderName}님이 정산을 요청했어요.`;
 		} else if (type === 'calculate-reject') {
-			color = '#B949F6';
+			color = '#FF3E30';
 			name = '정산';
 			msg = `${item.travelName} 여행의 ${item.senderName}님이 정산을 거절했어요.`;
 		} else if (type === 'calculate-complete') {
-			color = '#B949F6';
+			color = '#FDDE61';
 			name = '정산';
 			msg = `${item.travelName} 여행의 ${item.senderName}님이 요청한 정산이 완료 됐어요.`;
+		} else if (type === 'calculate-complete-sender') {
+			color = '#FDDE61';
+			name = '정산';
+			msg = `${item.travelName} 여행의 ${item.receiverName}님이 요청한 정산이 완료 됐어요.`;
 		} else if (type === 'calculate-cancel') {
-			color = '#B949F6';
+			color = '#FB8B0B';
 			name = '정산';
 			msg = `${item.travelName} 여행의 ${item.senderName}님이 선택한 계좌에 잔액이 부족해요. 확인 후 다시 정산을 요청해 주세요.`;
 		} else if (type === 'travel-add') {

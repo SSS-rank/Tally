@@ -34,7 +34,7 @@ function AlertScreen() {
 
 	return (
 		<ScrollView style={styles.viewContainer}>
-			{alertList.map((item: AlertItem, index: number) => (
+			{alertList.reverse().map((item: AlertItem, index: number) => (
 				<AlertListItem key={index} item={item} />
 			))}
 		</ScrollView>
