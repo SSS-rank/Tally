@@ -82,7 +82,7 @@ const SendAdjuestScreen = ({ navigation, route }: SendAdjustScreenProps) => {
 						lineHeight: 70,
 					}}
 				>
-					{requestAdjust?.total_amount}원
+					{requestAdjust?.total_amount.toLocaleString()}원
 				</Text>
 			</View>
 			<View

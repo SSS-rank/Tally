@@ -55,7 +55,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 				marginRight: 40,
 			}}
 		>
-			{item.amount}원
+			{item.amount.toLocaleString()}원
 		</Text>
 		{item.status === 'REJECT' && (
 			<Image
