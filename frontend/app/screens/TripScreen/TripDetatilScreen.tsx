@@ -57,7 +57,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	useFocusEffect(
 		React.useCallback(() => {
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
-		}, []),
+		}, [travel_id]),
 	);
 
 	useEffect(() => {
