@@ -3,6 +3,8 @@ package com.sss.tally.domain.notification.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -207,6 +209,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 			getNotificationRespDtoList.add(getNotificationRespDto);
 		}
+
+		Collections.reverse(getNotificationRespDtoList);
 
 		return getNotificationRespDtoList;
 	}
