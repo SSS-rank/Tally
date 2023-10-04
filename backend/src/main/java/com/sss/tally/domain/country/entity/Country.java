@@ -39,6 +39,8 @@ public class Country {
 
 	private float timeDifference;
 
+	private String capital;
+
 	public static Country of(String countryCode, String countryName, String visa){
 		return Country.builder()
 			.countryCode(countryCode)
