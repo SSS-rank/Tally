@@ -164,19 +164,6 @@ function HomeScreen({ navigation }: any) {
 					/>
 				</View>
 				<ProfileBox />
-				<View style={ViewStyles({ justifyContent: 'flex-start' }).box}>
-					<Text style={TextStyles().title}>여행 도우미</Text>
-					<Text style={TextStyles().small}>여행에 도움이 되는정보를 찾아보세요</Text>
-					<View
-						style={{
-							flex: 1,
-							alignSelf: 'flex-end',
-							flexDirection: 'column-reverse',
-						}}
-					>
-						<Icon name="information-circle-outline" size={54} color="#4F8EF7" />
-					</View>
-				</View>
 			</ScrollView>
 		</LinearGradient>
 	);
