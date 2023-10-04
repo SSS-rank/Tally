@@ -41,14 +41,12 @@ function AccountAdd() {
 		try {
 			const response = await api.post('account', reqDto);
 			if (response.status === 201) {
-				console.log('계정 생성 성공!');
 				window.alert('계좌가 생성 되었습니다!');
 				window.location.replace('/main');
 			} else {
 				console.error('계정 생성 실패:', response.data);
 			}
 		} catch (error: any) {
-			console.log(error);
 			if (error.response.status == 401) {
 				window.location.replace('/main');
 			} else {

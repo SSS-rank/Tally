@@ -56,8 +56,6 @@ function AccountDetail() {
 				};
 				const response = await api.post('/transfer/history', transactionReqDto);
 				if (response.status === 200) {
-					console.log('계좌 내역 조회 성공!');
-					console.log(response.data);
 					setTransactions(response.data);
 				} else {
 					console.error('계정 내역 조회 실패:', response.data);
