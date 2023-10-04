@@ -256,24 +256,21 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				setTotAmount={setTotAmount}
 			/>
 
-			{isPayer ? (
-				<View>
-					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
-					{isCash ? (
-						<View style={[styles.memo_box, styles.content_box]}>
-							<Text style={styles.content_title}>결제처</Text>
-							<TextInput
-								value={store}
-								onChangeText={(memo) => {
-									setStore(memo);
-								}}
-								returnKeyType="next"
-								style={styles.textInput}
-							/>
-						</View>
-					) : null}
+			<View>
+				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+				<View style={[styles.memo_box, styles.content_box]}>
+					<Text style={styles.content_title}>결제처</Text>
+					<TextInput
+						value={store}
+						onChangeText={(memo) => {
+							setStore(memo);
+						}}
+						returnKeyType="next"
+						style={styles.textInput}
+						editable={isPayer && isCash}
+					/>
 				</View>
-			) : null}
+			</View>
 
 			<View style={[styles.memo_box, styles.content_box]}>
 				<Text style={styles.content_title}>메모</Text>
