@@ -20,6 +20,7 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 					payment_uuid: item.payment_uuid,
 					payer: item.payer,
 					method: item.payment_method,
+					payment_date: item.payment_date,
 				})
 			}
 		>
