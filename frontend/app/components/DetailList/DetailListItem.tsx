@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { Portal, Modal, Button } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -12,8 +12,9 @@ import { TextStyles } from '../../styles/CommonStyles';
 type detailItemProps = {
 	item: Payment;
 	navigation: any;
+	setLoad: (status: boolean) => void;
 };
-function DetailListItem({ item, navigation }: detailItemProps) {
+function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const api = useAxiosWithAuth();
@@ -24,11 +25,18 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 			});
 
 			if (res.status === 200) {
-				console.log('deleteItem ', res.data);
+				setLoad(true);
+				setModalVisible(false);
 			}
 		} catch (err: any) {
 			console.error(err.response);
 		}
+	};
+
+	const openDeleteItemModal = () => {
+		if (item.calculate_status === 'ONGOING' || item.calculate_status === 'AFTER') {
+			Alert.alert('', '정산 중, 정산 완료 내역은 삭제할 수 없습니다');
+		} else setModalVisible(true);
 	};
 
 	return (
@@ -41,7 +49,7 @@ function DetailListItem({ item, navigation }: detailItemProps) {
 					method: item.payment_method,
 				})
 			}
-			onLongPress={() => setModalVisible(true)}
+			onLongPress={openDeleteItemModal}
 		>
 			<Text style={[styles.info, { marginBottom: 3 }]}>{item.payment_date.split('T')[0]}</Text>
 			<View style={styles.detail_item_main}>
