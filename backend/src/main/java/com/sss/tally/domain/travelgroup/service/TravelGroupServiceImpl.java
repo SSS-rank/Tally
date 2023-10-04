@@ -72,16 +72,21 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 				Notification notification = Notification.of("travel-add", "555",
 					"Tally", memberInTravel.getMemberUuid(), memberInTravel.getNickname(), travelName, "");
 				notificationRepository.save(notification);
+				List<Device> deviceList = deviceRepository.findDevicesByMemberId(memberInTravel);
+				if (deviceList.isEmpty()) {
+					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				}
 				//실제 보내기 위한 준비
 				Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
 					memberInTravel);
-				if (deviceOptional.isEmpty()) {
-					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				if (!deviceOptional.isEmpty()) {
+					Device device = deviceOptional.get();
+					NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(
+						device,
+						member.getNickname() + " 님이 " + travel.getTravelTitle() + "에 참여하였습니다.", "여행 참여");
+					notificationReqDtoList.add(notificationReqDto);
 				}
-				Device device = deviceOptional.get();
-				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
-					member.getNickname() + " 님이 " + travel.getTravelTitle() + "에 참여하였습니다.", "여행 참여");
-				notificationReqDtoList.add(notificationReqDto);
+
 			}
 
 			//실제 전송
