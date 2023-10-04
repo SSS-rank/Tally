@@ -156,7 +156,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					) : (
 						<Avatar.Image
 							key={member.member_uuid}
-							style={{ backgroundColor: 'transparent', position: 'relative', left: -16 }}
+							style={{ backgroundColor: 'transparent', position: 'relative', left: -16 * index }}
 							size={36}
 							source={{ uri: member.image }}
 						/>

@@ -9,7 +9,7 @@ import com.sss.tally.domain.caculategroup.entity.CalculateGroup;
 import com.sss.tally.domain.member.entity.Member;
 
 public interface CalculateGroupRepository extends JpaRepository<CalculateGroup, Integer> {
-	List<CalculateGroup> findCalculateGroupsByMemberId(Member member);
+	List<CalculateGroup> findCalculateGroupsByMemberIdOrderByCreateDateDesc(Member member);
 
 	Optional<CalculateGroup> findCalculateGroupByCalculateGroupUuid(String uuid);
 }

@@ -2,6 +2,8 @@ package com.sss.tally.domain.caculategroup.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -227,7 +229,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 		}
 		Member member = memberOptional.get();
 		List<CalculateDto.GetRequestCalculateListRespDto> getRequestCalculateListRespDtoList = new ArrayList<>();
-		List<CalculateGroup> calculateGroupList = calculateGroupRepository.findCalculateGroupsByMemberId(member);
+		List<CalculateGroup> calculateGroupList = calculateGroupRepository.findCalculateGroupsByMemberIdOrderByCreateDateDesc(member);
 		Optional<Travel> travelOptional = travelRepository.findTravelByTravelId(
 			travelId);
 		if (travelOptional.isEmpty()) {
@@ -313,6 +315,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				groupMember.getCalculateGroupId());
 			getResponseCalculateListRespDtoList.add(getResponseCalculateListRespDto);
 		}
+		Collections.reverse(getResponseCalculateListRespDtoList);
 		return getResponseCalculateListRespDtoList;
 	}
 
