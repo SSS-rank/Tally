@@ -52,7 +52,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 					...TextStyles({ align: 'right' }).title,
 				}}
 			>
-				-{item.amount}원
+				-{item.amount.toLocaleString()}원
 			</Text>
 			<Text
 				style={{

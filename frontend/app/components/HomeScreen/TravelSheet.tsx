@@ -72,7 +72,9 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							<Text style={TextStyles({ mBottom: 5 }).small}>
 								{item.start_date} ~ {item.end_date}
 							</Text>
-							<Text style={TextStyles({ weight: 'bold' }).header}>{item.money}원</Text>
+							<Text style={TextStyles({ weight: 'bold' }).header}>
+								{item.money.toLocaleString()}원
+							</Text>
 						</View>
 					</View>
 					<View style={{ alignItems: 'flex-start', backgroundColor: 'red' }}></View>

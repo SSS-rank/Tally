@@ -24,8 +24,8 @@ function PaymentRejectModal({
 	async function sendRejectAlarm() {
 		// 결제 수정 요청에 대한 처리
 		const res = await api.post(`notification/payer/${paymentUuid}`);
-		if (res.status) {
-			console.log(res.data);
+		if (res.status == 200) {
+			setModalVisible(false);
 		}
 	}
 	return (

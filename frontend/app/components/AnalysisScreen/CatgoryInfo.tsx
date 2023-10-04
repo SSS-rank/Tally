@@ -13,7 +13,9 @@ function CategoryInfo({ label, value, children }: categoryInfoProps) {
 		<View style={styles.view}>
 			<Text style={styles.label}>{label}</Text>
 			{children === undefined && (
-				<Text style={styles.value}>{typeof value == 'string' ? `${value}` : `${value}원`}</Text>
+				<Text style={styles.value}>
+					{typeof value == 'string' ? `${value.toLocaleString()}` : `${value.toLocaleString()}원`}
+				</Text>
 			)}
 			{children}
 		</View>

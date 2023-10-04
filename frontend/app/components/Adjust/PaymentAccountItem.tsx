@@ -50,7 +50,7 @@ const PaymentAccountItem = ({
 						lineHeight: 20,
 					}}
 				>
-					{balance}원
+					{balance.toLocaleString()}원
 				</Text>
 			</View>
 			<Icon

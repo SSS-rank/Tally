@@ -162,7 +162,7 @@ function OcrModal({
 						onPress={amountReset}
 					/>
 				</View>
-				<Text style={TextStyles().medium}>총 금액 : {ocrTotAmount} 원</Text>
+				<Text style={TextStyles().medium}>총 금액 : {ocrTotAmount.toLocaleString()} 원</Text>
 
 				<Button
 					mode="contained"
