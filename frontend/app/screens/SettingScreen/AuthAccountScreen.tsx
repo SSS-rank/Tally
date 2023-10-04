@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { RefObject, useState, useRef } from 'react';
 import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
@@ -19,46 +19,15 @@ import { TextStyles } from '../../styles/CommonStyles';
 type AuthAccountScreenProps = NativeStackScreenProps<HomeStackProps, 'AuthAccount'>;
 
 function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
+	const input1: RefObject<TextInput> = useRef<TextInput>(null);
+	const input2: RefObject<TextInput> = useRef<TextInput>(null);
+	const input3: RefObject<TextInput> = useRef<TextInput>(null);
+	const input4: RefObject<TextInput> = useRef<TextInput>(null);
+
 	const [first, setFirst] = useState('');
 	const [second, setSecond] = useState('');
 	const [third, setThird] = useState('');
 	const [last, setLast] = useState('');
-
-	const handleFirstInput = (value: string) => {
-		console.log('first ', value);
-		setFirst(value);
-		if (first !== '') {
-			// TODO : 다음으로 포커스 이동
-			console.log('포커스 이동');
-		}
-	};
-
-	const handleSecondInput = (value: string) => {
-		console.log('second ', value);
-		setSecond(value);
-		if (first !== '') {
-			// TODO : 다음으로 포커스 이동
-			console.log('포커스 이동');
-		}
-	};
-
-	const handleThirdInput = (value: string) => {
-		console.log('third ', value);
-		setThird(value);
-		if (first !== '') {
-			// TODO : 다음으로 포커스 이동
-			console.log('포커스 이동');
-		}
-	};
-
-	const handleLastInput = (value: string) => {
-		console.log('last ', value);
-		setLast(value);
-		if (first !== '') {
-			// TODO : 다음으로 포커스 이동
-			console.log('포커스 이동');
-		}
-	};
 
 	const { accountNumber, bankCode }: any = route.params;
 	const verifyTransfer = async () => {
@@ -141,31 +110,45 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 					<TextInput
 						style={styles.input}
 						value={first}
-						onChangeText={handleFirstInput}
 						keyboardType="number-pad"
 						textAlign="center"
 						autoFocus={true}
+						ref={input1}
+						blurOnSubmit={false}
+						onChangeText={(input: string) => {
+							setFirst(input);
+							if (input !== '') input2.current?.focus();
+						}}
 					/>
 					<TextInput
 						style={styles.input}
 						value={second}
-						onChangeText={handleSecondInput}
 						keyboardType="number-pad"
 						textAlign="center"
+						ref={input2}
+						onChangeText={(input: string) => {
+							setSecond(input);
+							if (input !== '') input3.current?.focus();
+						}}
 					/>
 					<TextInput
 						style={styles.input}
 						value={third}
-						onChangeText={handleThirdInput}
 						keyboardType="number-pad"
 						textAlign="center"
+						ref={input3}
+						onChangeText={(input: string) => {
+							setThird(input);
+							if (input !== '') input4.current?.focus();
+						}}
 					/>
 					<TextInput
 						style={styles.input}
 						value={last}
-						onChangeText={handleLastInput}
+						onChangeText={setLast}
 						keyboardType="number-pad"
 						textAlign="center"
+						ref={input4}
 					/>
 				</View>
 				<Button mode="elevated" style={styles.button} textColor="#ffffff" onPress={verifyTransfer}>
