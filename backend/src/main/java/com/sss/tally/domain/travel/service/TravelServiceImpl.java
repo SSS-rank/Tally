@@ -282,8 +282,8 @@ public class TravelServiceImpl implements TravelService {
 				if (paymentListRespDto.getFlag().equals("입금"))
 					continue;
 
-				Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuid(
-					paymentListRespDto.getTransferUuid());
+				Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuidAndTravelId(
+					paymentListRespDto.getTransferUuid(), travelOptional.get());
 
 				Optional<Category> category = categoryRepository.findCategoryByCategoryId(
 					Long.parseLong(paymentListRespDto.getShopType() + ""));
