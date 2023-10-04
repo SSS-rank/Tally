@@ -110,7 +110,7 @@ function LoginScreen({ route }: RootStackProp) {
 				onPress={() => login()}
 				style={{ borderRadius: 24, padding: 4 }}
 			>
-				<Image source={require('../../assets/images/kakao.png')} />
+				<Image source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/kakao.png' }} />
 				카카오톡으로 시작하기
 			</Button>
 		</View>

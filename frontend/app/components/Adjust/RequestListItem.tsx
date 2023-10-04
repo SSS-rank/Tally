@@ -59,7 +59,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 		</Text>
 		{item.status === 'REJECT' && (
 			<Image
-				source={require('../../assets/images/adjust/payment_reject.png')}
+				source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/payment_reject.png' }}
 				style={{
 					resizeMode: 'contain',
 					width: 100,
@@ -73,7 +73,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 		)}
 		{item.status === 'ONGOING' && (
 			<Image
-				source={require('../../assets/images/adjust/payment_ongoing.png')}
+				source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/payment_ongoing.png' }}
 				style={{
 					resizeMode: 'contain',
 					width: 100,
@@ -87,7 +87,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 		)}
 		{item.status === 'COMPLETE' && (
 			<Image
-				source={require('../../assets/images/adjust/payment_complete.png')}
+				source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/payment_complete.png' }}
 				style={{
 					resizeMode: 'contain',
 					width: 100,

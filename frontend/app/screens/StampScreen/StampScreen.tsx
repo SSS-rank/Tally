@@ -47,12 +47,14 @@ function StampScreen() {
 						<View style={{ flex: 1 }}>
 							{visitedCountries?.national.includes('부산광역시') ? (
 								<Image
-									source={require('../../assets/images/stamp/BUSAN.png')}
+									source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/BUSAN.png' }}
 									style={styles.BUSAN}
 								/>
 							) : (
 								<Image
-									source={require('../../assets/images/stamp/BUSAN_GRAY.png')}
+									source={{
+										uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/BUSAN_GRAY.png',
+									}}
 									style={styles.BUSAN}
 								/>
 							)}
@@ -61,12 +63,14 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('서울특별시') ? (
 									<Image
-										source={require('../../assets/images/stamp/SEOUL.png')}
+										source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/SEOUL.png' }}
 										style={styles.SEOUL}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/SEOUL_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/SEOUL_GRAY.png',
+										}}
 										style={styles.SEOUL}
 									/>
 								)}
@@ -74,12 +78,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('충청북도') ? (
 									<Image
-										source={require('../../assets/images/stamp/CHUNGBUK.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/CHUNGBUK.png',
+										}}
 										style={styles.CHUNGBUK}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/CHUNGBUK_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/CHUNGBUK_GRAY.png',
+										}}
 										style={styles.CHUNGBUK}
 									/>
 								)}
@@ -90,12 +98,14 @@ function StampScreen() {
 						<View style={{ flex: 1 }}>
 							{visitedCountries?.national.includes('대구광역시') ? (
 								<Image
-									source={require('../../assets/images/stamp/DAEGU.png')}
+									source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/DAEGU.png' }}
 									style={styles.DAEGU}
 								/>
 							) : (
 								<Image
-									source={require('../../assets/images/stamp/DAEGU_GRAY.png')}
+									source={{
+										uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/DAEGU_GRAY.png',
+									}}
 									style={styles.DAEGU}
 								/>
 							)}
@@ -103,12 +113,14 @@ function StampScreen() {
 						<View style={{ flex: 1 }}>
 							{visitedCountries?.national.includes('충청남도') ? (
 								<Image
-									source={require('../../assets/images/stamp/CHUNGNAM.png')}
+									source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/CHUNGNAM.png' }}
 									style={styles.CHUNGNAM}
 								/>
 							) : (
 								<Image
-									source={require('../../assets/images/stamp/CHUNGNAM_GRAY.png')}
+									source={{
+										uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/CHUNGNAM_GRAY.png',
+									}}
 									style={styles.CHUNGNAM}
 								/>
 							)}
@@ -119,12 +131,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('대전광역시') ? (
 									<Image
-										source={require('../../assets/images/stamp/DAEJEON.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/DAEJEON.png',
+										}}
 										style={styles.DAEJEON}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/DAEJEON_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/DAEJEON_GRAY.png',
+										}}
 										style={styles.DAEJEON}
 									/>
 								)}
@@ -132,12 +148,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('경상북도') ? (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGBUK.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGBUK.png',
+										}}
 										style={styles.GYEONGBUK}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGBUK_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGBUK_GRAY.png',
+										}}
 										style={styles.GYEONGBUK}
 									/>
 								)}
@@ -147,12 +167,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('경상남도') ? (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGNAM.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGNAM.png',
+										}}
 										style={styles.GYEONGNAM}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGNAM_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGNAM_GRAY.png',
+										}}
 										style={styles.GYEONGNAM}
 									/>
 								)}
@@ -164,12 +188,14 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('제주특별자치도') ? (
 									<Image
-										source={require('../../assets/images/stamp/JEJU.png')}
+										source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEJU.png' }}
 										style={styles.JEJU}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/JEJU_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEJU_GRAY.png',
+										}}
 										style={styles.JEJU}
 									/>
 								)}
@@ -177,12 +203,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('전라북도') ? (
 									<Image
-										source={require('../../assets/images/stamp/JEONBUK.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEONBUK.png',
+										}}
 										style={styles.JEONBUK}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/JEONBUK_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEONBUK_GRAY.png',
+										}}
 										style={styles.JEONBUK}
 									/>
 								)}
@@ -192,12 +222,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('전라남도') ? (
 									<Image
-										source={require('../../assets/images/stamp/JEONNAM.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEONNAM.png',
+										}}
 										style={styles.JEONNAM}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/JEONNAM_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/JEONNAM_GRAY.png',
+										}}
 										style={styles.JEONNAM}
 									/>
 								)}
@@ -205,12 +239,14 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('울산광역시') ? (
 									<Image
-										source={require('../../assets/images/stamp/ULSAN.png')}
+										source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/ULSAN.png' }}
 										style={styles.ULSAN}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/ULSAN_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/ULSAN_GRAY.png',
+										}}
 										style={styles.ULSAN}
 									/>
 								)}
@@ -218,12 +254,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('인천광역시') ? (
 									<Image
-										source={require('../../assets/images/stamp/INCHEON.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/INCHEON.png',
+										}}
 										style={styles.INCHEON}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/INCHEON_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/INCHEON_GRAY.png',
+										}}
 										style={styles.INCHEON}
 									/>
 								)}
@@ -235,12 +275,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('경기도') ? (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGGI.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGGI.png',
+										}}
 										style={styles.GYEONGGI}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/GYEONGGI_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GYEONGGI_GRAY.png',
+										}}
 										style={styles.GYEONGGI}
 									/>
 								)}
@@ -248,12 +292,16 @@ function StampScreen() {
 							<View style={{ flex: 1 }}>
 								{visitedCountries?.national.includes('강원특별자치도') ? (
 									<Image
-										source={require('../../assets/images/stamp/GANGWON.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GANGWON.png',
+										}}
 										style={styles.GANGWON}
 									/>
 								) : (
 									<Image
-										source={require('../../assets/images/stamp/GANGWON_GRAY.png')}
+										source={{
+											uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GANGWON_GRAY.png',
+										}}
 										style={styles.GANGWON}
 									/>
 								)}
@@ -262,12 +310,14 @@ function StampScreen() {
 						<View style={{ flex: 1 }}>
 							{visitedCountries?.national.includes('광주광역시') ? (
 								<Image
-									source={require('../../assets/images/stamp/GWANGJU.png')}
+									source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GWANGJU.png' }}
 									style={styles.GWANGJU}
 								/>
 							) : (
 								<Image
-									source={require('../../assets/images/stamp/GWANGJU_GRAY.png')}
+									source={{
+										uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/GWANGJU_GRAY.png',
+									}}
 									style={styles.GWANGJU}
 								/>
 							)}
