@@ -285,15 +285,15 @@ public class TravelServiceImpl implements TravelService {
 					if (paymentListRespDto.getFlag().equals("입금"))
 						continue;
 
-					Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuid(
-						paymentListRespDto.getTransferUuid());
+					Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuidAndTravelId(
+						paymentListRespDto.getTransferUuid(), travelOptional.get());
 
 					Optional<Category> category = categoryRepository.findCategoryByCategoryId(
 						Long.parseLong(paymentListRespDto.getShopType() + ""));
 					if (category.isEmpty())
 						throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
 
-					Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(8L);
+					Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(payment.get().getPaymentUnitId().getPaymentUnitId());
 					if (paymentUnitOptional.isEmpty())
 						throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
 
