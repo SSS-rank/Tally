@@ -96,7 +96,7 @@ function CameraButton({ handleOcrData }: CameraButtonProps) {
 
 			axios
 				.post(
-					'https://dc4ulqm65h.apigw.ntruss.com/custom/v1/25277/e15a4310092ca2dce262ee02cb67f759c8194f3fa01d3508a353b57ca235656e/infer',
+					'https://b6gibfmiqv.apigw.ntruss.com/custom/v1/25309/c3db612ed828bb3ada7da70f0333e556d44d06a847ff6c11c1117a6efcdd46b2/infer',
 					formData,
 					{
 						headers: {
