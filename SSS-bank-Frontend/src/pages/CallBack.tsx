@@ -18,7 +18,6 @@ function CallBack() {
 						.post('login')
 						.then((res) => {
 							if (res.status === 200) {
-								console.log(res.data);
 								return res.data; // 응답 데이터 파싱
 							} else {
 								throw new Error('로그인에 실패했습니다.');
@@ -33,11 +32,9 @@ function CallBack() {
 							navigate('/main');
 						});
 				}
-			} else {
-				console.error('계정 생성 실패:', response.data);
 			}
 		} catch (error) {
-			console.log('카카오 로그인 콜백 실패');
+			console.error('카카오 로그인 콜백 실패');
 		}
 	};
 

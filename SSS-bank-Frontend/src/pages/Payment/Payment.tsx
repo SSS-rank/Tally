@@ -45,7 +45,7 @@ function Payment() {
 			const response = await api.get('account');
 			if (response.status === 200) setAccounts(response.data);
 		} catch (error: any) {
-			console.log(error);
+			console.error(error);
 		}
 	};
 
@@ -70,7 +70,6 @@ function Payment() {
 					navigate('/shop');
 				}
 			} catch (error: any) {
-				console.log(error);
 				if (error.response.status == 401) {
 					window.location.replace('/main');
 				} else {

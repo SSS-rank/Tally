@@ -23,11 +23,9 @@ export default function ShopPage() {
 		try {
 			const res = await api.get('/shop');
 			if (res.status === 200) {
-				console.log('shop 조회성공!');
 				setShops(res.data);
 			}
 		} catch (error: any) {
-			console.log(error);
 			if (error.response.status == 401) {
 				window.location.replace('/main');
 			} else {

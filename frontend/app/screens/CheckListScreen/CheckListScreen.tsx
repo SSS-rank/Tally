@@ -100,6 +100,7 @@ function CheckListScreen({ route }: CheckListScreenProps) {
 						setLoad={setLoad}
 					/>
 				)}
+				removeClippedSubviews={false}
 				keyExtractor={(item) => String(item.custom_check_list_id)}
 			/>
 			<Modal

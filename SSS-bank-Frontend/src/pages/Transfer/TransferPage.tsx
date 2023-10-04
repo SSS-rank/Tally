@@ -64,7 +64,6 @@ const Transfer = () => {
 					navigate('/main');
 				}
 			} catch (error: any) {
-				console.log(error);
 				if (error.response.status == 401) {
 					window.location.replace('/main');
 				} else {
