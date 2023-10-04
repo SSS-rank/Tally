@@ -9,30 +9,51 @@ import { TextStyles } from '../../styles/CommonStyles';
 interface CategoryBoxProps {
 	selectedcategory: number;
 	setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
+	blocked: boolean;
 }
 
-function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps) {
+function CategoryBox({ selectedcategory, setSelectedCategory, blocked }: CategoryBoxProps) {
 	return (
 		<View style={styles.category_box}>
 			<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
 			<View style={styles.category_line}>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(1)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(1)}
+				>
 					<MIcon name="home" size={36} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>숙소</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(2)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(2)}
+				>
 					<FIcon name="plane" size={36} color={selectedcategory === 2 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>항공</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(3)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(3)}
+				>
 					<FIcon name="car" size={36} color={selectedcategory === 3 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>교통</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(4)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(4)}
+				>
 					<MIcon name="ticket" size={36} color={selectedcategory === 4 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>관광</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(5)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(5)}
+				>
 					<MIcon
 						name="silverware-fork-knife"
 						size={40}
@@ -40,11 +61,19 @@ function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps
 					/>
 					<Text style={TextStyles().small}>식사</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(6)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(6)}
+				>
 					<MIcon name="shopping" size={36} color={selectedcategory === 6 ? '#91C0EB' : 'gray'} />
 					<Text style={TextStyles().small}>쇼핑</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(7)}>
+				<TouchableOpacity
+					disabled={blocked}
+					style={styles.icon_group}
+					onPress={() => setSelectedCategory(7)}
+				>
 					<MIcon
 						name="dots-horizontal-circle"
 						size={40}
