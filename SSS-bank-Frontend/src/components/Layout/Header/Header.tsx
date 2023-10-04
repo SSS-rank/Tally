@@ -27,8 +27,7 @@ function ResponsiveAppBar() {
 	const navigate = useNavigate();
 
 	const handleClickNavMenu = (page: string) => {
-		console.log(page);
-		// setAnchorElNav(null);
+		setAnchorElNav(null);
 		if (page === '조회') {
 			navigate('/main');
 		} else if (page === 'SHOP') {
@@ -37,7 +36,6 @@ function ResponsiveAppBar() {
 	};
 
 	const handleCloseNavMenu = () => {
-		console.log('!');
 		setAnchorElNav(null);
 	};
 
