@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Switch } from 'react-native';
 
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import Line from '../../components/Line';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -13,7 +13,7 @@ function SettingScreen({ navigation }: any) {
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
 	const api = useAxiosWithAuth();
-	const [tokenState, setTokenState] = useRecoilState(TokenState);
+	const setTokenState = useSetRecoilState(TokenState);
 	const logout = async () => {
 		try {
 			const res = await api.post(`/logout`);
