@@ -223,6 +223,7 @@ public class TravelServiceImpl implements TravelService {
 			LocalDateTime travelStart = travel.getStartDate().atStartOfDay();
 			LocalDateTime now = LocalDate.now().atStartOfDay();
 			int remainDate = (int)Duration.between(travelStart, now).toDays() * -1;
+			String engName = "";
 			// 여행지 정보를 받아옴
 			// travelType은 국가 코드
 			// travelLocation은 여행지 명
@@ -232,12 +233,14 @@ public class TravelServiceImpl implements TravelService {
 				if (cityByCityId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_CITY);
 				travelLocation = cityByCityId.get().getCityName();
+				engName = cityByCityId.get().getEnglishName();
 			} else if (travel.getTravelType().equals(TravelTypeEnum.STATE)) {
 				travelType = "KR";
 				Optional<State> stateByStateId = stateRepository.findStateByStateId(travel.getTravelLocation());
 				if (stateByStateId.isEmpty())
 					throw new CityException(ErrorCode.NOT_EXIST_STATE);
 				travelLocation = stateByStateId.get().getStateName();
+				engName = stateByStateId.get().getEnglishName();
 			} else if (travel.getTravelType().equals(TravelTypeEnum.GLOBAL)) {
 				Optional<Country> countryByCountryId = countryRepository.findCountryByCountryId(
 					travel.getTravelLocation());
@@ -245,6 +248,7 @@ public class TravelServiceImpl implements TravelService {
 					throw new CityException(ErrorCode.NOT_EXIST_COUNTRY);
 				travelType = countryByCountryId.get().getCountryCode();
 				travelLocation = countryByCountryId.get().getCountryName();
+				engName = countryByCountryId.get().getCapital();
 			}
 
 			// travelId를 통해 여행 참여자들의 정보를 받아옴.
@@ -253,7 +257,7 @@ public class TravelServiceImpl implements TravelService {
 			Long totalAmount = this.totalTravelMoney(member, members, travel);
 
 			// 사용자의 정보를 MembeTravelDto로 변환 및 travelsInfo에 추가
-			travelsInfo.add(TravelDto.TravelNotStartDto.of(totalAmount, remainDate, travel, travelType, travelLocation,
+			travelsInfo.add(TravelDto.TravelNotStartDto.of(engName, totalAmount, remainDate, travel, travelType, travelLocation,
 				members.stream()
 					.map(mem -> MemberDto.MemberRespDto.of(mem.getMemberUuid(), mem.getNickname(), mem.getProfileImage()))
 					.collect(Collectors.toList())));
