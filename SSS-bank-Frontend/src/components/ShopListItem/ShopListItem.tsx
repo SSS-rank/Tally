@@ -22,7 +22,6 @@ interface shopListItemProps {
 function ShopListItem({ shopId, shopType, shopName, shopNationCode }: shopListItemProps) {
 	const navigate = useNavigate();
 	const modifyItem = () => {
-		console.log('수정');
 		navigate('/shop/form', {
 			state: {
 				isModify: true,

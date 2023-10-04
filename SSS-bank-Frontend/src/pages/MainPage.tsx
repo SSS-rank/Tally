@@ -29,12 +29,9 @@ function MainPage() {
 		try {
 			const response = await api.get('account');
 			if (response.status === 200) {
-				console.log('계좌 조회 성공!');
-				console.log(response.data);
 				setAccounts(response.data);
 			}
 		} catch (error: any) {
-			console.log(error);
 			if (error.response.status == 401) {
 				window.location.replace('/main');
 			} else {
