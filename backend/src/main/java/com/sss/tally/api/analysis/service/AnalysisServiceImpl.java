@@ -128,9 +128,9 @@ public class AnalysisServiceImpl implements AnalysisService{
 		List<Payment> payments;
 		// 본인 정보를 조회할 셩우
 		if(auth.getMemberUuid().equals(searchMember.getMemberUuid()))
-			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalse(travel, category);
+			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(travel, category);
 		else
-			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrue(travel, category);
+			payments = paymentRepository.findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrueOrderByPaymentKoreaDateDesc(travel, category);
 
 		List<AnalysisDto.CategoryRespDto> categoryRespDtoList = new ArrayList<>();
 		for(Payment payment : payments){

@@ -9,13 +9,14 @@ interface DateChipProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	setDate: React.Dispatch<React.SetStateAction<Date>>;
+	block: boolean;
 }
 
-function DateChip({ date, open, setOpen, setDate }: DateChipProps) {
+function DateChip({ date, open, setOpen, setDate, block }: DateChipProps) {
 	return (
 		<View style={styles.date_box}>
 			<Text style={TextStyles({ align: 'left' }).medium}>날짜 선택</Text>
-			<Chip style={styles.chip} onPress={() => setOpen(true)}>
+			<Chip style={styles.chip} onPress={() => setOpen(true)} disabled={block}>
 				{date.getFullYear() +
 					'년 ' +
 					(date.getMonth() + 1) +

@@ -34,6 +34,8 @@ function CategoryListItem({
 	my_money,
 	navigation,
 }: listItem) {
+	const date = payment_korea_date.split(' ')[0];
+	const time = payment_korea_date.split(' ')[1].split(':');
 	const [modalVisible, setModalVisible] = useState(false);
 	const [openCategory, setOpenCategory] = useState(false);
 	const [category, setCategory] = useState(category_id);
@@ -74,8 +76,14 @@ function CategoryListItem({
 					/>
 					<View>
 						<Text style={styles.name}>{payment_title}</Text>
-						<Text style={styles.info}>{tag_member}</Text>
-						<Text style={{ marginLeft: 12 }}>{payment_korea_date}</Text>
+						<Text style={styles.info}>
+							{tag_member.map((member, index) =>
+								index !== tag_member.length - 1 ? `${member}, ` : `${member}`,
+							)}
+						</Text>
+						<Text style={{ marginLeft: 12, width: '100%' }}>
+							{date} {time[0]}:{time[1]}
+						</Text>
 					</View>
 				</View>
 				<View>

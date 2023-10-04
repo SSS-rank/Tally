@@ -43,15 +43,13 @@ function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 		<TouchableOpacity
 			style={styles.itemContainer}
 			onPress={() => {
-				if (item.calculate_status == 'BEFORE' || item.calculate_status == 'NONE') {
-					// 태그가 없거나 정산전상태만 수정 가능
-					navigation.navigate('ModifyPayment', {
-						payment_uuid: item.payment_uuid,
-						payer: item.payer,
-						method: item.payment_method,
-						payment_date: item.payment_date,
-					});
-				}
+				navigation.navigate('ModifyPayment', {
+					payment_uuid: item.payment_uuid,
+					payer: item.payer,
+					method: item.payment_method,
+					payment_date: item.payment_date,
+					calculate_status: item.calculate_status,
+				});
 			}}
 			onLongPress={openDeleteItemModal}
 		>

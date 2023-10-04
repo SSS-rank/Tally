@@ -39,13 +39,28 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [payerUuid, setPayerUuid] = useState('');
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제할 참가자
 	const [rejectModalVisible, setRejectModalVisible] = useState(false);
+	const [calculateStatus, setCalculateStatus] = useState(0); //NONE:0 , BEFORE:1, ONGOING:2, AFTER:3
 
 	useEffect(() => {
-		const { payment_uuid, payer, method, payment_date } = route.params;
+		const { payment_uuid, payer, method, payment_date, calculate_status } = route.params;
 		setPaymentUuid(payment_uuid);
 		setPayerUuid(payer);
 		const payDate = new Date(payment_date);
 		setDate(payDate);
+
+		if (calculate_status == 'NONE') {
+			// 태그 없음
+			setCalculateStatus(0);
+		} else if (calculate_status == 'BEFORE') {
+			// 정산 전
+			setCalculateStatus(1);
+		} else if (calculate_status == 'ONGOING') {
+			// 정산 중
+			setCalculateStatus(2);
+		} else if (calculate_status == 'AFTER') {
+			// 정산 후
+			setCalculateStatus(3);
+		}
 		if (memberinfo.member_uuid == payer) {
 			//본인이 결제자 인 경우
 			setIspayer(true);
@@ -254,10 +269,17 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				totAmount={totAmount}
 				paymentUnit={paymentUnit}
 				setTotAmount={setTotAmount}
+				calculateStatus={calculateStatus}
 			/>
 
 			<View>
-				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+				<DateChip
+					date={date}
+					setDate={setDate}
+					open={open}
+					setOpen={setOpen}
+					block={!isPayer || calculateStatus == 2 || calculateStatus == 3}
+				/>
 				<View style={[styles.memo_box, styles.content_box]}>
 					<Text style={styles.content_title}>결제처</Text>
 					<TextInput
@@ -267,7 +289,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						}}
 						returnKeyType="next"
 						style={styles.textInput}
-						editable={isPayer && isCash}
+						editable={isPayer && isCash && (calculateStatus == 0 || calculateStatus == 1)}
 					/>
 				</View>
 			</View>
@@ -281,6 +303,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					}}
 					returnKeyType="next"
 					style={styles.textInput}
+					editable={calculateStatus == 0 || calculateStatus == 1}
 				/>
 			</View>
 
@@ -288,6 +311,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				<CategoryBox
 					selectedcategory={selectedcategory}
 					setSelectedCategory={setSelectedCategory}
+					blocked={calculateStatus == 2 || calculateStatus == 3}
 				/>
 			) : (
 				<View style={{ padding: 30 }}></View>
@@ -317,7 +341,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
-									block={!isPayer} //결제자가 아닌 경우 안보이도록 변수 설정
+									block={!isPayer || !(calculateStatus == 0 || calculateStatus == 1)} //결제자가 아닌 경우 안보이도록 변수 설정
 									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
@@ -346,59 +370,71 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 
 			{isPayer ? (
 				<View>
-					<View style={[styles.self_check_box, styles.content_box]}>
-						<View>
-							<Text style={styles.content_title}>이 비용 나만보기</Text>
-							<Text style={TextStyles({ align: 'left' }).small}>
-								일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
-							</Text>
+					{calculateStatus == 0 || calculateStatus == 1 ? (
+						<View style={[styles.self_check_box, styles.content_box]}>
+							<View>
+								<Text style={styles.content_title}>이 비용 나만보기</Text>
+								<Text style={TextStyles({ align: 'left' }).small}>
+									일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
+								</Text>
+							</View>
+							<IIcon
+								name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
+								size={32}
+								color={visible ? '#D0D0D0' : '#91C0EB'}
+								style={{ marginLeft: 5 }}
+								onPress={() => {
+									setVisible(!visible);
+								}}
+							/>
 						</View>
-						<IIcon
-							name={!visible ? 'checkmark-circle' : 'checkmark-circle-outline'}
-							size={32}
-							color={visible ? '#D0D0D0' : '#91C0EB'}
-							style={{ marginLeft: 5 }}
-							onPress={() => {
-								setVisible(!visible);
-							}}
-						/>
-					</View>
-					<Button
-						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-						dark={true} // 어두운 테마 사용 여부
-						compact={true} // 작은 크기의 버튼 여부
-						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-						style={{ marginTop: 10, marginBottom: 70 }}
-					>
-						수정
-					</Button>
+					) : (
+						<View style={{ paddingBottom: 50 }} />
+					)}
+					{calculateStatus == 0 || calculateStatus == 1 ? (
+						<Button
+							mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+							dark={true} // 어두운 테마 사용 여부
+							compact={true} // 작은 크기의 버튼 여부
+							onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+							style={{ marginTop: 10, marginBottom: 70 }}
+						>
+							수정
+						</Button>
+					) : null}
 				</View>
 			) : (
 				<View>
-					<PaymentRejectModal
-						modalVisible={rejectModalVisible}
-						setModalVisible={setRejectModalVisible}
-						paymentUuid={paymentUuid}
-					/>
+					{calculateStatus == 0 || calculateStatus == 1 ? (
+						<View>
+							<PaymentRejectModal
+								modalVisible={rejectModalVisible}
+								setModalVisible={setRejectModalVisible}
+								paymentUuid={paymentUuid}
+							/>
 
-					<Button
-						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-						dark={true} // 어두운 테마 사용 여부
-						compact={true} // 작은 크기의 버튼 여부
-						onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-						style={{ marginTop: 10 }}
-					>
-						메모 수정
-					</Button>
-					<Button
-						mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
-						dark={true} // 어두운 테마 사용 여부
-						compact={true} // 작은 크기의 버튼 여부
-						onPress={() => handleModifyRequest()} // 클릭 이벤트 핸들러
-						style={{ marginTop: 10, marginBottom: 70 }}
-					>
-						수정 요청
-					</Button>
+							<Button
+								mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+								dark={true} // 어두운 테마 사용 여부
+								compact={true} // 작은 크기의 버튼 여부
+								onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
+								style={{ marginTop: 10 }}
+							>
+								메모 수정
+							</Button>
+							<Button
+								mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+								dark={true} // 어두운 테마 사용 여부
+								compact={true} // 작은 크기의 버튼 여부
+								onPress={() => handleModifyRequest()} // 클릭 이벤트 핸들러
+								style={{ marginTop: 10, marginBottom: 70 }}
+							>
+								수정 요청
+							</Button>
+						</View>
+					) : (
+						<View style={{ paddingBottom: 100 }} />
+					)}
 				</View>
 			)}
 		</ScrollView>

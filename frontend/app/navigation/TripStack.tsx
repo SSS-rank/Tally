@@ -40,6 +40,7 @@ export type TripStackProps = {
 		payer: string; // 결제자의 uuid(String)
 		method: string;
 		payment_date: string;
+		calculate_status: string;
 	};
 	Password: { adjustId: string; accountNumber: string };
 };
