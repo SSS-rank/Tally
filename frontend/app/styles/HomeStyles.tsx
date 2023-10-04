@@ -74,7 +74,7 @@ export const ViewStyles = (props?: styleProps) =>
 		},
 
 		avatarMate: {
-			backgroundColor: 'white',
+			backgroundColor: 'transparent',
 			left: props?.left,
 			position: 'absolute',
 		},

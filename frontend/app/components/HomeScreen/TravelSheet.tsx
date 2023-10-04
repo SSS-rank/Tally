@@ -90,7 +90,7 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 							) : (
 								<Avatar.Image
 									key={member.member_uuid}
-									style={[ViewStyles({ left: 0 }).avatarMate, { position: 'relative', left: 20 }]}
+									style={[ViewStyles({ left: 20 * index }).avatarMate]}
 									size={32}
 									source={{ uri: member.profile_image }}
 								/>
