@@ -293,7 +293,7 @@ public class TravelServiceImpl implements TravelService {
 					if (category.isEmpty())
 						throw new CategoryException(ErrorCode.NOT_EXIST_CATEGORY);
 
-					Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(payment.get().getPaymentUnitId().getPaymentUnitId());
+					Optional<PaymentUnit> paymentUnitOptional = paymentUnitRepository.findPaymentUnitByPaymentUnitId(8L);
 					if (paymentUnitOptional.isEmpty())
 						throw new PaymentException(ErrorCode.NOT_EXIST_PAYMENT_UNIT);
 
