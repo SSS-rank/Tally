@@ -205,6 +205,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					setMoney={setMoney}
 					setExData={setExData}
 				/>
+
 				<ExRateDropDown
 					setValue={setExData}
 					setOpen={setDropDownOpen}
@@ -212,6 +213,21 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					value={exData}
 				/>
 				<View style={styles.amount_container}>
+					<View style={styles.currencyRow}>
+						<Chip
+							icon="cash"
+							selectedColor={'red'}
+							textStyle={{ color: 'red' }}
+							style={{ backgroundColor: 'transparent', flex: 1 }}
+							onPress={() => console.log('Pressed')}
+						>
+							통화선택
+						</Chip>
+						<View style={styles.currencyInfo}>
+							<Text style={TextStyles().regular}>{exData.split(':')[1]}</Text>
+							<Text style={TextStyles().regular}>{exData.split(':')[0].toLocaleString()}원</Text>
+						</View>
+					</View>
 					<View style={styles.amount_left}>
 						<View style={styles.amount_left_input}>
 							<TextInput
@@ -232,12 +248,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<Text style={[TextStyles({ align: 'left', color: '#666666' }).regular]}>
 							{' '}
 							총 금액 {totAmount.toLocaleString()} 원
-						</Text>
-					</View>
-					<View style={styles.amount_right}>
-						<Text style={styles.amount__right_text}>{exData.split(':')[1]}</Text>
-						<Text style={styles.amount__right_text}>
-							{exData.split(':')[0].toLocaleString()} 원
 						</Text>
 					</View>
 				</View>
@@ -389,26 +399,31 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	amount_container: {
+		// flexDirection: 'row',
+		justifyContent: 'center',
+		// alignItems: 'center',
+		// paddingVertical: 30,
+		// paddingHorizontal: 10,
+		// backgroundColor: '#F6F6F6',
+		// backgroundColor: 'red',
+	},
+	currencyRow: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 30,
-		paddingHorizontal: 10,
-		backgroundColor: '#F6F6F6',
+		justifyContent: 'center',
+		alignContent: 'center',
 	},
 	amount_left: {
 		flex: 0.55,
 	},
-	amount_right: {
-		flex: 0.45,
+	currencyInfo: {
+		flexDirection: 'row',
+		flex: 1,
+		justifyContent: 'space-between',
 	},
 	amount_left_input: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		marginBottom: 10,
-	},
-	amount__right_text: {
-		...TextStyles({ align: 'right', mTop: 10 }).regular,
 	},
 	date_box: {
 		justifyContent: 'flex-start',
