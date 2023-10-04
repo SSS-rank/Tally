@@ -52,39 +52,49 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 	const userInfo = useRecoilValue(MemberState);
 
+	const [load, setLoad] = useState(true);
+
 	useFocusEffect(
 		React.useCallback(() => {
-			setPayData([]);
-			const fetchData = async () => {
-				try {
-					const res = await api.get(`/travel/${travel_id}`);
-					if (res.status === 200) {
-						const trip_data = res.data;
-						console.log(trip_data);
-						setTitle(trip_data.travel_title);
-						setLocation(trip_data.travel_location);
-						setPeriod(trip_data.travel_period);
-						setTotalAmount(trip_data.total_amount);
-						const updatedTripInfo = {
-							id: travel_id,
-							title: trip_data.travel_title,
-							location: trip_data.travel_location,
-							startDay: trip_data.travel_period.split('~')[0],
-							endDay: trip_data.travel_period.split('~')[1],
-							participants: trip_data.participants,
-						};
-						setParticipants(trip_data.participants);
-						setCurTripInfo(updatedTripInfo);
-						setPayData(trip_data.payment_list);
-					}
-				} catch (err) {
-					console.log(err);
-				}
-			};
-
 			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
 		}, []),
 	);
+
+	useEffect(() => {
+		fetchData();
+	}, [load]);
+
+	const fetchData = async () => {
+		try {
+			const res = await api.get(`/travel/${travel_id}`);
+			if (res.status === 200) {
+				const trip_data = res.data;
+				console.log(trip_data);
+				setTitle(trip_data.travel_title);
+				setLocation(trip_data.travel_location);
+				setPeriod(trip_data.travel_period);
+				setTotalAmount(trip_data.total_amount);
+				const updatedTripInfo = {
+					id: travel_id,
+					title: trip_data.travel_title,
+					location: trip_data.travel_location,
+					startDay: trip_data.travel_period.split('~')[0],
+					endDay: trip_data.travel_period.split('~')[1],
+					participants: trip_data.participants,
+				};
+				setParticipants(trip_data.participants);
+				setCurTripInfo(updatedTripInfo);
+
+				if (load) {
+					setPayData(trip_data.payment_list);
+					setLoad(false);
+				}
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	async function handleAdjust() {
 		const adjust_data = payData
 			.filter((item) => item.calculate_status == 'BEFORE')
@@ -302,7 +312,12 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				</View>
 			</Modal>
 			{payData.map((item) => (
-				<DetailListItem key={item.payment_uuid} item={item} navigation={navigation} />
+				<DetailListItem
+					key={item.payment_uuid}
+					item={item}
+					navigation={navigation}
+					setLoad={setLoad}
+				/>
 			))}
 		</ScrollView>
 	);
