@@ -8,12 +8,20 @@ interface AmountBoxProps {
 	isPayer: boolean;
 	totAmount: string;
 	paymentUnit: string;
+	calculateStatus: number;
 	setTotAmount: React.Dispatch<React.SetStateAction<string>>;
 }
-function AmountBox({ isCash, isPayer, totAmount, paymentUnit, setTotAmount }: AmountBoxProps) {
+function AmountBox({
+	isCash,
+	isPayer,
+	totAmount,
+	paymentUnit,
+	setTotAmount,
+	calculateStatus,
+}: AmountBoxProps) {
 	return (
 		<View style={styles.amount_container}>
-			{isCash && isPayer ? (
+			{isCash && isPayer && (calculateStatus == 0 || calculateStatus == 1) ? (
 				<TextInput
 					value={totAmount}
 					onChangeText={(memo) => {
