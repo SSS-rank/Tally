@@ -6,29 +6,33 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
 
 import { OcrState } from '../../recoil/ocrRecoil';
+import getExRate from '../../services/getExRate';
 import { TextStyles } from '../../styles/CommonStyles';
-import ExRateDropDown from '../DropDown/ExRateDropDown';
 interface OcrModalProps {
 	modalVisible: boolean;
 	setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 	setStore: React.Dispatch<React.SetStateAction<string>>;
 	setTotAmount: React.Dispatch<React.SetStateAction<string>>;
 	setDate: React.Dispatch<React.SetStateAction<Date>>;
+	setMoney: React.Dispatch<React.SetStateAction<string>>;
+	setExData: React.Dispatch<React.SetStateAction<string>>;
 }
 function OcrModal({
 	modalVisible,
 	setModalVisible,
 	setStore,
 	setTotAmount,
+	setMoney,
 	setDate,
+	setExData,
 }: OcrModalProps) {
 	const [ocrRecoil, setOcrRecoil] = useRecoilState(OcrState);
-	const [ocrAmount, setOcrAmount] = useState(ocrRecoil.amount);
+	const [ocrAmount, setOcrAmount] = useState(ocrRecoil.amount); // OCR 영수증 금액 (환율 적용 전)
 	const [ocrStore, setOcrStore] = useState(ocrRecoil.title);
 	const [ocrDate, setOcrDate] = useState(ocrRecoil.date);
-	const [dropDownOpen, setDropDownOpen] = useState(false);
 	const [ocrCurType, setOcrCurType] = useState(ocrRecoil.cur_type);
-	const [value, setValue] = useState('');
+	const [ocrTotAmount, setOcrTotAmount] = useState(0);
+	const [exRate, setExRate] = useState(1);
 
 	function amountReset() {
 		setOcrAmount('');
@@ -42,17 +46,42 @@ function OcrModal({
 
 	function handleSubmit() {
 		setStore(ocrStore);
-		setTotAmount(ocrAmount);
+		setTotAmount(ocrTotAmount + '');
 		console.log(ocrDate);
-		setDate(new Date());
+		// setDate(new Date());
+		setMoney(ocrAmount + '');
+		setExData(exRate + ':' + ocrCurType);
 	}
+
 	useEffect(() => {
 		setOcrAmount(ocrRecoil.amount);
 		setOcrStore(ocrRecoil.title);
 		setOcrDate(ocrRecoil.date);
-		setOcrCurType(ocrRecoil.cur_type);
 	}, [ocrRecoil]);
+	useEffect(() => {
+		if (ocrRecoil.cur_type === 'jp') {
+			setOcrCurType('JPY(엔)');
+			getExRate('JPY(100)').then((rate) => {
+				if (rate) {
+					setExRate(rate);
+				}
+			});
+		} else if (ocrRecoil.cur_type === 'us') {
+			setOcrCurType('USD(달러)');
+			getExRate('USD').then((rate) => {
+				if (rate) {
+					setExRate(rate);
+				}
+			});
+		} else {
+			setOcrCurType('KRW(원)');
+			setExRate(1);
+		}
+	}, [ocrRecoil.cur_type]);
 
+	useEffect(() => {
+		setOcrTotAmount(Number(ocrAmount) * exRate);
+	}, [ocrAmount, exRate]);
 	return (
 		<Modal
 			animationType="slide"
@@ -63,6 +92,7 @@ function OcrModal({
 				amountReset();
 				storeReset();
 				dateReset();
+				setExRate(1);
 				setOcrRecoil({ title: '', amount: '', date: '', cur_type: '' });
 				setModalVisible(!modalVisible);
 			}}
@@ -116,9 +146,13 @@ function OcrModal({
 							flex: 1,
 						}}
 						value={ocrAmount}
-						onChangeText={setOcrAmount}
+						onChangeText={(newAmount) => {
+							setOcrAmount(newAmount);
+							setOcrTotAmount(Number(newAmount) * exRate); // ocrTotAmount 업데이트
+						}}
 						placeholder={'금액을 입력해주세요'}
 					/>
+					<Text>{ocrCurType}</Text>
 					<Icon
 						name="close-circle"
 						style={{
@@ -128,14 +162,8 @@ function OcrModal({
 						onPress={amountReset}
 					/>
 				</View>
-				<Text>{ocrDate}</Text>
-				<Text>화폐단위 {ocrCurType}</Text>
-				<ExRateDropDown
-					open={dropDownOpen}
-					value={value}
-					setOpen={setDropDownOpen}
-					setValue={setValue}
-				/>
+				<Text style={TextStyles().medium}>총 금액 : {ocrTotAmount} 원</Text>
+
 				<Button
 					mode="contained"
 					buttonColor="#91C0EB"

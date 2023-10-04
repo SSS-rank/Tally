@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { OcrData } from '../../model/payment';
 import getCurrencyType from '../../services/getCurrencyType';
+import removeCurrencySymbol from '../../services/RemoveCurrencySymbol';
 import UploadModeModal from '../Modal/UploadModeModal';
 
 const imagePickerOption = {
@@ -60,6 +61,7 @@ function CameraButton({ handleOcrData }: CameraButtonProps) {
 
 		const currencyType = getCurrencyType(formattedData.amount);
 		formattedData.cur_type = currencyType;
+		formattedData.amount = removeCurrencySymbol(formattedData.amount);
 		return formattedData;
 	};
 
@@ -73,13 +75,13 @@ function CameraButton({ handleOcrData }: CameraButtonProps) {
 				'message',
 				JSON.stringify({
 					version: 'V2',
-					requestId: 'string', //uuid로 아무 값 넣으면 된다123456
-					timestamp: 0, //현재 타임스탬프  근데 0이라도 써도 잘 나옴
+					requestId: 'string', //uuid
+					timestamp: 0, //현재 타임스탬프
 					images: [
 						{
-							format: 'jpg', //사진 포맷 데이터 형식 png, jpg 다 됨
-							name: 'test 1', //이미지 이름 res.assets[0].fileName 이거 넣으면 될듯??
-							// templateIds: [26521], //일본스벅 [26523], 일본 편의점 [26524]
+							format: 'jpg', //사진 포맷 데이터 형식 png, jpg
+							name: 'test 1', //이미지 이름 res.assets[0].fileName
+							// templateIds: [26521], //일본스벅 [26523], 일본 편의점 [26524] 아무것도 없으면 자동으로 인식
 						},
 					],
 				}),
@@ -94,7 +96,7 @@ function CameraButton({ handleOcrData }: CameraButtonProps) {
 
 			axios
 				.post(
-					'https://dc4ulqm65h.apigw.ntruss.com/custom/v1/25277/e15a4310092ca2dce262ee02cb67f759c8194f3fa01d3508a353b57ca235656e/infer',
+					'https://b6gibfmiqv.apigw.ntruss.com/custom/v1/25309/c3db612ed828bb3ada7da70f0333e556d44d06a847ff6c11c1117a6efcdd46b2/infer',
 					formData,
 					{
 						headers: {

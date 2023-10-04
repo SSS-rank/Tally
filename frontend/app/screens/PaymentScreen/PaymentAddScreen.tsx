@@ -193,15 +193,18 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	return (
 		<>
 			<View style={styles.container}>
-				<CameraButton handleOcrData={handleOcrData} />
+				<View style={{ alignItems: 'flex-end' }}>
+					<CameraButton handleOcrData={handleOcrData} />
+				</View>
 				<OcrModal
 					setDate={setDate}
 					setStore={setStore}
 					setTotAmount={setTotAmount}
 					modalVisible={modalVisible}
 					setModalVisible={setModalVisible}
+					setMoney={setMoney}
+					setExData={setExData}
 				/>
-
 				<ExRateDropDown
 					setValue={setExData}
 					setOpen={setDropDownOpen}
