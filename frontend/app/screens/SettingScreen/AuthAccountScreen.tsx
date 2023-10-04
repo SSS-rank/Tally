@@ -196,9 +196,8 @@ const styles = StyleSheet.create({
 	img: {
 		alignSelf: 'center',
 		width: '90%',
-		// height: 50,
+		height: '40%',
 		resizeMode: 'contain',
-		// marginVertical: 50,
 	},
 	button: {
 		backgroundColor: '#91C0EB',
