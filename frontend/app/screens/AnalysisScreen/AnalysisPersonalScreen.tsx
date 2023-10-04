@@ -110,7 +110,7 @@ function AnalysisPersonalScreen({ navigation, route }: AnalysisCategoryScreenPro
 						key={item.category_id}
 						category_id={item.category_id}
 						category_type={item.category_type}
-						money={item.money}
+						money={item.money.toLocaleString()}
 						percent={item.percent}
 						color={item.color}
 						member_uuid={member_uuid}
