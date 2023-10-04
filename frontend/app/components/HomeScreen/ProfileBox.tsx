@@ -50,7 +50,16 @@ function ProfileBox() {
 	);
 	return (
 		<>
-			<View style={ViewStyles({ alignItems: 'center', height: 100, flexDirection: 'row' }).box}>
+			<View
+				style={
+					ViewStyles({
+						alignItems: 'center',
+						height: 100,
+						flexDirection: 'row',
+						color: '#91C0EB',
+					}).box
+				}
+			>
 				<Image
 					style={{
 						width: 100,
@@ -64,7 +73,7 @@ function ProfileBox() {
 				/>
 				<Text
 					style={{
-						...TextStyles({ weight: 'bold', color: '#91C0EB' }).title,
+						...TextStyles({ weight: 'bold', color: 'white' }).title,
 						flex: 2,
 					}}
 				>
@@ -72,7 +81,15 @@ function ProfileBox() {
 					{travelerTitle}
 				</Text>
 			</View>
-			<View style={ViewStyles({ alignItems: 'center', flexDirection: 'row', height: 170 }).box}>
+			<View
+				style={
+					ViewStyles({
+						alignItems: 'center',
+						flexDirection: 'row',
+						height: 170,
+					}).box
+				}
+			>
 				<View style={ViewStyles({ flexDirection: 'row', alignItems: 'center' }).innerProfile}>
 					<Text
 						style={{
