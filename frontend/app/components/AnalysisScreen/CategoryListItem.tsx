@@ -74,7 +74,11 @@ function CategoryListItem({
 					/>
 					<View>
 						<Text style={styles.name}>{payment_title}</Text>
-						<Text style={styles.info}>{tag_member}</Text>
+						<Text style={styles.info}>
+							{tag_member.map((member, index) =>
+								index !== tag_member.length - 1 ? `${member}, ` : `${member}`,
+							)}
+						</Text>
 						<Text style={{ marginLeft: 12 }}>{payment_korea_date}</Text>
 					</View>
 				</View>
