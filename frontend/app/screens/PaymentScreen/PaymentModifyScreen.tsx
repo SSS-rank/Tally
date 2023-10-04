@@ -41,9 +41,11 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [rejectModalVisible, setRejectModalVisible] = useState(false);
 
 	useEffect(() => {
-		const { payment_uuid, payer, method } = route.params;
+		const { payment_uuid, payer, method, payment_date } = route.params;
 		setPaymentUuid(payment_uuid);
 		setPayerUuid(payer);
+		const payDate = new Date(payment_date);
+		setDate(payDate);
 		if (memberinfo.member_uuid == payer) {
 			//본인이 결제자 인 경우
 			setIspayer(true);
@@ -66,6 +68,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				setStore(responseData.payment_name);
 				setText(responseData.memo);
 				setPaymentUnit(responseData.payment_unit);
+				// setDate(responseData.payment_date);
 				// 참가자 리스트 생성
 				const partyData = curTripInfo.participants.map((item: TripMember) => {
 					return {
@@ -253,24 +256,21 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				setTotAmount={setTotAmount}
 			/>
 
-			{isPayer ? (
-				<View>
-					<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
-					{isCash ? (
-						<View style={[styles.memo_box, styles.content_box]}>
-							<Text style={styles.content_title}>결제처</Text>
-							<TextInput
-								value={store}
-								onChangeText={(memo) => {
-									setStore(memo);
-								}}
-								returnKeyType="next"
-								style={styles.textInput}
-							/>
-						</View>
-					) : null}
+			<View>
+				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+				<View style={[styles.memo_box, styles.content_box]}>
+					<Text style={styles.content_title}>결제처</Text>
+					<TextInput
+						value={store}
+						onChangeText={(memo) => {
+							setStore(memo);
+						}}
+						returnKeyType="next"
+						style={styles.textInput}
+						editable={isPayer && isCash}
+					/>
 				</View>
-			) : null}
+			</View>
 
 			<View style={[styles.memo_box, styles.content_box]}>
 				<Text style={styles.content_title}>메모</Text>
