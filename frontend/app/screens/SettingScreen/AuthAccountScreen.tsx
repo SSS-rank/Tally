@@ -104,7 +104,10 @@ function AuthAccountScreen({ navigation, route }: AuthAccountScreenProps) {
 			<Text style={{ ...TextStyles({ align: 'left', mBottom: 10, color: '#666666' }).regular }}>
 				입금내역에 표시된 숫자 4자리를 입력해주세요.
 			</Text>
-			<Image style={styles.img} source={require('../../assets/images/1won.png')} />
+			<Image
+				style={styles.img}
+				source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/1won.png' }}
+			/>
 			<View style={styles.sectionView}>
 				<View style={styles.inputBox}>
 					<TextInput
