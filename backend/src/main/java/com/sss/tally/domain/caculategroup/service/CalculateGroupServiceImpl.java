@@ -170,21 +170,24 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 
 			groupMemberRepository.save(GroupMember.of(key, calculateGroup, false));
 			//알림 보내기 위해 Dto 생성
-			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
-				key);
-			if (deviceOptional.isEmpty()) {
+			List<Device> deviceList = deviceRepository.findDevicesByMemberId(key);
+			if (deviceList.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
 			}
-			Device device = deviceOptional.get();
-			NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
-				payer.getNickname() + " 님이 정산을 요청하였습니다.", "정산 요청");
-			notificationReqDtoList.add(notificationReqDto);
 			//알림 저장히기 위한 Dto 생성
 			Notification notification = Notification.of("calculate-request", payer.getMemberUuid(),
 				payer.getNickname(), key.getMemberUuid(), key.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
+			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+				key);
 
+			if (!deviceOptional.isEmpty()) {
+				Device device = deviceOptional.get();
+				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+					payer.getNickname() + " 님이 정산을 요청하였습니다.", "정산 요청");
+				notificationReqDtoList.add(notificationReqDto);
+			}
 		}
 
 		//알림 보내기
@@ -377,18 +380,19 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				member.getNickname(), receiver.getMemberUuid(), receiver.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
-
+			List<Device> deviceList = deviceRepository.findDevicesByMemberId(receiver);
+			if (deviceList.isEmpty()) {
+				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			}
 			//알림 보내기 위한 dto 값 채우기
 			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
 				receiver);
-			if (deviceOptional.isEmpty()) {
-				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+			if (!deviceOptional.isEmpty()) {
+				Device device = deviceOptional.get();
+				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+					member.getNickname() + " 님이 " + calculateRejectReqDto.getContent() + " 사유로 정산을 반려했습니다.", "정산 반려");
+				notificationReqDtoList.add(notificationReqDto);
 			}
-			Device device = deviceOptional.get();
-			NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
-				member.getNickname() + " 님이 " + calculateRejectReqDto.getContent() + " 사유로 정산을 반려했습니다.", "정산 반려");
-			notificationReqDtoList.add(notificationReqDto);
-
 		}
 
 		//알림 보내기
@@ -573,17 +577,19 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 						"Tally", cancelMember.getMemberUuid(), cancelMember.getNickname(), travelName, "");
 					notificationRepository.save(notification);
 					//실제 보내기 위한 준비
-					Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
-						cancelMember);
-					if (deviceOptional.isEmpty()) {
+					List<Device> deviceList = deviceRepository.findDevicesByMemberId(cancelMember);
+					if (deviceList.isEmpty()) {
 						throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
 					}
-					Device device = deviceOptional.get();
-					NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(
-						device,
-						"잔액이 부족하여 " + travelName + " 여행의 정산에 실패하였습니다. 잔액을 확인해주세요.", "정산 취소");
-					notificationService.sendNotification(notificationReqDto);
-
+					Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+						cancelMember);
+					if (!deviceOptional.isEmpty()) {
+						Device device = deviceOptional.get();
+						NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(
+							device,
+							"잔액이 부족하여 " + travelName + " 여행의 정산에 실패하였습니다. 잔액을 확인해주세요.", "정산 취소");
+						notificationService.sendNotification(notificationReqDto);
+					}
 					return "cancel";
 				}
 			}
@@ -648,16 +654,20 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				//알림함에 저장
 				notificationRepository.save(notification);
 
+				List<Device> deviceList = deviceRepository.findDevicesByMemberId(memberOfGroup.getMemberId());
+				if (deviceList.isEmpty()) {
+					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				}
 				//알림 DTO 생성
 				Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
 					memberOfGroup.getMemberId());
-				if (deviceOptional.isEmpty()) {
-					throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
+				if (!deviceOptional.isEmpty()) {
+					Device device = deviceOptional.get();
+					NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(
+						device,
+						travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
+					notificationReqDtoList.add(notificationReqDto);
 				}
-				Device device = deviceOptional.get();
-				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
-					travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
-				notificationReqDtoList.add(notificationReqDto);
 
 			}
 			//결제자 알림 저장 및 알림 보내기 저장
@@ -665,16 +675,19 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				"Tally", payer.getMemberUuid(), payer.getNickname(), travelName, "");
 			//알림함에 저장
 			notificationRepository.save(notification);
-
-			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
-				payer);
-			if (deviceOptional.isEmpty()) {
+			List<Device> deviceList = deviceRepository.findDevicesByMemberId(payer);
+			if (deviceList.isEmpty()) {
 				throw new NotificationException(ErrorCode.NOT_VALID_DEVICETOKEN);
 			}
-			Device device = deviceOptional.get();
-			NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
-				travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
-			notificationReqDtoList.add(notificationReqDto);
+			Optional<Device> deviceOptional = deviceRepository.findDeviceByMemberIdAndDeviceStatusIsTrueAndIsLoginIsTrue(
+				payer);
+			if (!deviceOptional.isEmpty()) {
+				Device device = deviceOptional.get();
+				NotificationDto.NotificationReqDto notificationReqDto = NotificationDto.NotificationReqDto.of(device,
+					travelName + "의 " + payer.getNickname() + "님이 신청한 정산이 완료되었습니다.", "정산 완료");
+				notificationReqDtoList.add(notificationReqDto);
+
+			}
 
 			//알림 전송
 
