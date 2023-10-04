@@ -31,7 +31,7 @@ function AnalysisCategoryScreen({ navigation, route }: AnalysisCategoryScreenPro
 	};
 	return (
 		<View style={styles.viewContainer}>
-			<Text style={styles.title}>{money}원</Text>
+			<Text style={styles.title}>{money.toLocaleString()}원</Text>
 			<DashLine />
 			<FlatList
 				data={paymentList}

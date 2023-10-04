@@ -79,8 +79,8 @@ function CategoryListItem({
 					</View>
 				</View>
 				<View>
-					<Text style={styles.text}>{my_money}원</Text>
-					<Text style={styles.totalMoney}>{total_money}원</Text>
+					<Text style={styles.text}>{my_money.toLocaleString()}원</Text>
+					<Text style={styles.totalMoney}>{total_money.toLocaleString()}원</Text>
 				</View>
 			</View>
 			<Modal

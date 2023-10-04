@@ -130,7 +130,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 								flex: 1,
 							}}
 						>
-							-{responseAdjust?.total_amount}원
+							-{responseAdjust?.total_amount.toLocaleString()}원
 						</Text>
 					</View>
 				</View>

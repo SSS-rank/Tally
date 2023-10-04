@@ -26,7 +26,7 @@ const RequestDetailItem = ({ member_name, amount }: requestDetail) => {
 					verticalAlign: 'middle',
 				}}
 			>
-				{amount}원
+				{amount?.toLocaleString()}원
 			</Text>
 			<Icon name="chevron-forward" size={20} color="#666666" style={{ marginLeft: 5 }} />
 		</TouchableOpacity>
