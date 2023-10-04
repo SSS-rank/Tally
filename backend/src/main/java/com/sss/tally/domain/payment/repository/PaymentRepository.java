@@ -35,6 +35,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 	@Query("SELECT p FROM Payment p " +
 		"JOIN MemberPayment mp ON p.paymentId = mp.paymentId.paymentId " +
 		"WHERE p.travelId = :travelId " +
+		"AND p.status = false " +
 		"AND mp.memberId = :memberId " +
 		"AND mp.status = false " +
 		"ORDER BY p.paymentKoreaDate Desc")
