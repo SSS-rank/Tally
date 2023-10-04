@@ -44,7 +44,8 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 		const { payment_uuid, payer, method, payment_date } = route.params;
 		setPaymentUuid(payment_uuid);
 		setPayerUuid(payer);
-		console.log(payment_date);
+		const payDate = new Date(payment_date);
+		setDate(payDate);
 		if (memberinfo.member_uuid == payer) {
 			//본인이 결제자 인 경우
 			setIspayer(true);
