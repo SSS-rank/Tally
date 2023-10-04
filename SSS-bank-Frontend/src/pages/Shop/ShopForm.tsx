@@ -104,7 +104,6 @@ function ShopAdd() {
 	// shop 등록
 	const [shopCountryCode, setShopCountryCode] = useState('');
 	const submitShop = async () => {
-		console.log('shop 등록');
 		if (confirm('등록하시겠습니까?')) {
 			const data = {
 				shop_type: shopType,
@@ -144,7 +143,6 @@ function ShopAdd() {
 
 	// shop 수정
 	const modifyShop = async () => {
-		console.log('shop 수정');
 		if (confirm('수정하시겠습니까?')) {
 			const data = {
 				shop_id: state.shopId,
@@ -161,7 +159,6 @@ function ShopAdd() {
 					navigate('/shop');
 				}
 			} catch (error: any) {
-				console.log(error);
 				if (error.response.status == 401) {
 					window.location.replace('/shop');
 				} else {
@@ -187,13 +184,11 @@ function ShopAdd() {
 	}, [countries]);
 
 	const handleChange = (e: SelectChangeEvent<string>) => {
-		console.log(e);
 		setShopCountryCode(e.target.value);
 	};
 
 	const findCountryName = (code: string) => {
 		const country = countries.filter((con: Country) => con.country_code === code);
-		console.log(country[0].country_name);
 		return country[0].country_name;
 	};
 
