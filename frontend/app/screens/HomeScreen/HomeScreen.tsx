@@ -64,9 +64,9 @@ function HomeScreen({ navigation }: any) {
 
 	const api = useAxiosWithAuth();
 
-	const getWeather = async (type: string) => {
+	const getWeather = async (place: string) => {
 		const locationRes = await axios.get(
-			`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${Config.WEATHER_API_KEY}&q=${Location[type]}`,
+			`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${Config.WEATHER_API_KEY}&q=${place}`,
 		);
 
 		// 현재 상태 얻기
@@ -93,7 +93,7 @@ function HomeScreen({ navigation }: any) {
 		if (res.status === 200 && res.data.length > 0) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
-					const WeatherText = await getWeather(item.travel_type);
+					const WeatherText = await getWeather(item.weather);
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
