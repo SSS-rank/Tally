@@ -50,7 +50,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('1:한국 원(KRW)');
 	const [totAmount, setTotAmount] = useState(0); // 원화 환산 결제 총액
-	const [money, setMoney] = useState(''); // 결제 금액 (현지 결제 단위)
+	const [money, setMoney] = useState('1'); // 결제 금액 (현지 결제 단위)
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
 	const [selectedcategory, setSelectedCategory] = useState(0);
@@ -67,7 +67,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	useEffect(() => {
 		console.log('useEffect');
-		setTotAmount(0);
+		setTotAmount(1);
 		setText('');
 		setStore('');
 		setSelectedCategory(0);
@@ -244,11 +244,10 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}, []),
 	);
 
-	// 통화선택에서 선택한 통화가 바뀔 때마다 금액 입력에 1원 들어가기
+	// 통화선택에서 선택한 통화가 바뀔 때마다 해당 통화로 환율 계산하기 들어가기
 	useEffect(() => {
 		if (curUnit !== '') {
-			setMoney('1');
-			setTotAmount(removeCommaAndParseInt(exData.split(':')[0]) * 1);
+			setTotAmount(removeCommaAndParseInt(exData.split(':')[0]) * Number(money));
 		}
 	}, [curUnit]);
 
