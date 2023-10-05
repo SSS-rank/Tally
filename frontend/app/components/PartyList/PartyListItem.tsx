@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/Avatar/AvatarImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { SelectPayMember } from '../../model/payment';
 import { TextStyles } from '../../styles/CommonStyles';
 interface partyItemprops {
+	memberUuid: string;
 	amount: number;
 	name: string;
 	img: AvatarImageSource;
@@ -16,10 +19,15 @@ interface partyItemprops {
 	onAmountChange: (amount: string) => void;
 	onInvolveChange: (involveCheck: boolean) => void;
 	setTagedMemberCount: (prevState: number | ((prevState: number) => number)) => void;
+	setPartyMembers: (
+		partyMembers: SelectPayMember[] | ((prevState: SelectPayMember[]) => SelectPayMember[]),
+	) => void;
 }
 function PartyListItem(props: partyItemprops) {
 	console.log(
-		'amount ',
+		'name ',
+		props.name,
+		' amount ',
 		props.amount + '',
 		' involveCheck ',
 		props.involveCheck,
@@ -33,10 +41,37 @@ function PartyListItem(props: partyItemprops) {
 		props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
 	};
 	const handleInVolveChange = () => {
+		// console.log(`handleInVolveChange ${props.name} ${involveCheck}`);
+		if (involveCheck) {
+			props.setTagedMemberCount((prev) => {
+				// console.log('setTagedMemberCount minus');
+				return prev - 1;
+			});
+		} else
+			props.setTagedMemberCount((prev) => {
+				// console.log('setTagedMemberCount plus');
+				return prev + 1;
+			});
 		props.onInvolveChange(!involveCheck);
+
+		props.setPartyMembers((prevMembers: SelectPayMember[]) => {
+			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
+				if (member.member_uuid === props.memberUuid) {
+					return {
+						...member,
+						checked: !involveCheck,
+					};
+				} else {
+					return { ...member };
+				}
+			});
+			// console.log('updatedInvolveState 22', updatedInvolveState);
+			return updatedInvolveState;
+		});
 	};
 
 	useEffect(() => {
+		// console.log('partyItem amount useEffect');
 		setAmount(props.amount + '');
 	}, [props.amount]);
 
@@ -46,7 +81,6 @@ function PartyListItem(props: partyItemprops) {
 			disabled={props.block}
 			onPress={() => {
 				setInvolveCheck(!involveCheck);
-				props.setTagedMemberCount((prev: number) => prev + 1);
 				handleInVolveChange();
 			}}
 		>
