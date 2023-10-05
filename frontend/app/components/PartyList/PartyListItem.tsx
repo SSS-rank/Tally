@@ -27,7 +27,14 @@ function PartyListItem(props: partyItemprops) {
 		props.onInvolveChange(!involveCheck);
 	};
 	return (
-		<TouchableOpacity style={styles.partyItem} disabled={props.block}>
+		<TouchableOpacity
+			style={styles.partyItem}
+			disabled={props.block}
+			onPress={() => {
+				setInvolveCheck(!involveCheck);
+				handleInVolveChange();
+			}}
+		>
 			<View style={styles.profile_group}>
 				<Avatar.Image size={36} source={props.img} style={styles.profile_img} />
 				<Text style={styles.nickname}>{props.name}</Text>
