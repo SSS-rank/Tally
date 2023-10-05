@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { Chip } from 'react-native-paper';
 
@@ -15,18 +15,29 @@ function DateChip({ date, open, setOpen, setDate }: DateChipProps) {
 	return (
 		<View style={styles.date_box}>
 			<Text style={TextStyles({ align: 'left', mBottom: 5 }).regular}>날짜 선택</Text>
-			<Chip style={styles.chip} onPress={() => setOpen(true)}>
-				{date.getFullYear() +
-					'년 ' +
-					(date.getMonth() + 1) +
-					'월 ' +
-					date.getDate() +
-					'일 ' +
-					date.getHours() +
-					'시 ' +
-					date.getMinutes() +
-					'분 '}
-			</Chip>
+			<TouchableOpacity style={styles.inputBox} onPress={() => setOpen(true)}>
+				<TextInput
+					value={
+						date.getFullYear() +
+						'년 ' +
+						(date.getMonth() + 1) +
+						'월 ' +
+						date.getDate() +
+						'일 ' +
+						date.getHours() +
+						'시 ' +
+						date.getMinutes() +
+						'분 '
+					}
+					returnKeyType="next"
+					keyboardType="numeric"
+					selectionColor="#91C0EB"
+					placeholder="0"
+					editable={false}
+					style={TextStyles({ align: 'left' }).regular}
+				/>
+			</TouchableOpacity>
+
 			<DatePicker
 				modal
 				open={open}
@@ -58,7 +69,6 @@ const styles = StyleSheet.create({
 	inputBox: {
 		borderBottomColor: '#A0A0A0',
 		borderBottomWidth: 0.5,
-		marginVertical: 5,
 		justifyContent: 'center',
 		// alignItems: 'center',
 

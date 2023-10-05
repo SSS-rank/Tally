@@ -298,7 +298,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					selectedcategory={selectedcategory}
 					setSelectedCategory={setSelectedCategory}
 				/>
-
 				<View style={[styles.party_box, styles.contentBox]}>
 					{visible ? (
 						<View>
