@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Text, Button, Chip } from 'react-native-paper';
+import { View, TextInput, StyleSheet, ScrollView, Alert, Text } from 'react-native';
+import { Button, Chip } from 'react-native-paper';
 import { Image } from 'react-native-svg';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -257,7 +257,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</View>
 						<Text style={{ ...TextStyles().regular, verticalAlign: 'middle' }}>원</Text>
 					</View>
-					<View style={styles.amountInputContainer}>
+					<View style={styles.priceBottomBox}>
 						<Text
 							style={{
 								...TextStyles({ align: 'right', weight: 'bold' }).regular,
@@ -273,10 +273,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</Text>
 					</View>
 				</View>
-
 				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>결제처</Text>
+				<View style={[styles.contentBox]}>
+					<Text style={styles.contentTitle}>결제처</Text>
 					<TextInput
 						value={store}
 						onChangeText={(memo) => {
@@ -286,8 +285,8 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						style={styles.textInput}
 					/>
 				</View>
-				<View style={[styles.memo_box, styles.content_box]}>
-					<Text style={styles.content_title}>메모</Text>
+				<View style={[styles.contentBox]}>
+					<Text style={styles.contentTitle}>메모</Text>
 					<TextInput
 						value={text}
 						onChangeText={(memo) => {
@@ -302,11 +301,11 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					setSelectedCategory={setSelectedCategory}
 				/>
 
-				<View style={[styles.party_box, styles.content_box]}>
+				<View style={[styles.party_box, styles.contentBox]}>
 					{visible ? (
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-								<Text style={styles.content_title}>함께 한 사람</Text>
+								<Text style={styles.contentTitle}>함께 한 사람</Text>
 								<View style={{ flexDirection: 'row' }}>
 									<Text style={styles.party_type}>결제</Text>
 									<Text style={styles.party_type}>함께</Text>
@@ -346,10 +345,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</View>
 					) : null}
 				</View>
-
-				<View style={[styles.self_check_box, styles.content_box]}>
+				<View style={[styles.self_check_box, styles.contentBox]}>
 					<View>
-						<Text style={styles.content_title}>이 비용 나만보기</Text>
+						<Text style={styles.contentTitle}>이 비용 나만보기</Text>
 						<Text style={TextStyles({ align: 'left' }).small}>
 							일행에게 보이지 않는 비용이며, 정산에서 제외됩니다.
 						</Text>
@@ -365,7 +363,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					/>
 				</View>
 				<Button
-					mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
+					mode="contained"
+					buttonColor="#91C0EB"
+					textColor="white"
 					dark={true} // 어두운 테마 사용 여부
 					compact={true} // 작은 크기의 버튼 여부
 					uppercase={false} // 레이블 텍스트 대문자 변환 여부
@@ -379,19 +379,30 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	);
 }
 const styles = StyleSheet.create({
+	container: {
+		paddingHorizontal: 20,
+		paddingTop: 10,
+		backgroundColor: 'white',
+		flex: 1,
+	},
 	priceContainer: {
 		backgroundColor: '#E6E6E6',
 		paddingHorizontal: 10,
 		paddingVertical: 10,
 		textAlignVertical: 'center',
 		verticalAlign: 'middle',
-		// flex: 1,
-		height: 150,
+		flex: 1,
+		// height: 150,
 		// flexWrap: 'wrap',
 	},
 	amountInputContainer: {
 		flexDirection: 'row',
 		flex: 1,
+	},
+	priceBottomBox: {
+		flexDirection: 'row',
+		flex: 1,
+		marginVertical: 5,
 	},
 	priceTopBox: {
 		flexDirection: 'row',
@@ -424,22 +435,19 @@ const styles = StyleSheet.create({
 		flex: 3,
 		verticalAlign: 'middle',
 	},
-
-	content_box: {
-		marginVertical: 30,
+	contentBox: {
+		marginTop: 30,
 	},
-	content_title: {
-		...TextStyles({ align: 'left', weight: 'bold', mBottom: 10 }).regular,
+	contentTitle: {
+		...TextStyles({ align: 'left' }).regular,
 	},
-	memo_box: {
-		justifyContent: 'flex-start',
-	},
-
 	textInput: {
 		...TextStyles({ align: 'left' }).regular,
-		// marginLeft: 10,
+		borderBottomColor: '#A0A0A0',
+		borderBottomWidth: 0.5,
+		justifyContent: 'center',
+		verticalAlign: 'middle',
 	},
-
 	selectInput: {
 		borderWidth: 0,
 		borderBottomWidth: 1,
@@ -449,13 +457,6 @@ const styles = StyleSheet.create({
 	header_button: {
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flex: 1,
-	},
-	container: {
-		flexDirection: 'column',
-		paddingHorizontal: 15,
-		paddingTop: 15,
-		backgroundColor: 'white',
 		flex: 1,
 	},
 
