@@ -39,6 +39,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [payerUuid, setPayerUuid] = useState('');
 	const [partyMembers, setPartyMembers] = useState<SelectPayMember[]>([]); // 결제할 참가자
 	const [rejectModalVisible, setRejectModalVisible] = useState(false);
+	const [tagedMemberCount, setTagedMemberCount] = useState(1);
 	const [calculateStatus, setCalculateStatus] = useState(0); //NONE:0 , BEFORE:1, ONGOING:2, AFTER:3
 
 	useEffect(() => {
@@ -334,8 +335,9 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						<ScrollView>
 							{partyMembers.map((item) => (
 								<PartyListItem
-									amount={item.amount}
 									key={item.member_uuid}
+									memberUuid={item.member_uuid}
+									amount={item.amount}
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
@@ -359,6 +361,8 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 											item.image,
 										)
 									}
+									setTagedMemberCount={setTagedMemberCount}
+									setPartyMembers={setPartyMembers}
 								/>
 							))}
 						</ScrollView>
