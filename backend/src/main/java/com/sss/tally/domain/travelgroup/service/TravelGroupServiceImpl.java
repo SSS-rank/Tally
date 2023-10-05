@@ -69,8 +69,8 @@ public class TravelGroupServiceImpl implements TravelGroupService {
 			List<NotificationDto.NotificationReqDto> notificationReqDtoList = new ArrayList<>();
 			for (Member memberInTravel : memberList) {
 				//알림에 저장
-				Notification notification = Notification.of("travel-add", "555",
-					"Tally", memberInTravel.getMemberUuid(), memberInTravel.getNickname(), travelName, "");
+				Notification notification = Notification.of("travel-add", member.getMemberUuid(),
+					member.getNickname(), memberInTravel.getMemberUuid(), memberInTravel.getNickname(), travelName, "");
 				notificationRepository.save(notification);
 				List<Device> deviceList = deviceRepository.findDevicesByMemberId(memberInTravel);
 				if (deviceList.isEmpty()) {
