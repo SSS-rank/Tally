@@ -17,7 +17,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 	Optional<Payment> findPaymentByPaymentUuidAndStatusIsFalse(String uuid);
 
 	Optional<Payment> findPaymentByPaymentUuid(String paymentUuid);
-	Optional<Payment> findPaymentByPaymentUuidAndTravelId(String paymentUuid, Travel travel);
+	Optional<Payment> findPaymentByTransferUuidAndTravelId(String transferUuid, Travel travel);
 
 	@Query("SELECT NEW com.sss.tally.api.calculate.dto.CalculateDto$Detail(" +
 		"P.paymentName, " +

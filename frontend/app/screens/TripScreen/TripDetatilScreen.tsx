@@ -1,19 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-	View,
-	StyleSheet,
-	ScrollView,
-	TouchableOpacity,
-	Modal,
-	Pressable,
-	Alert,
-} from 'react-native';
-import Config from 'react-native-config';
+import { View, StyleSheet, ScrollView, Modal, Pressable, Alert } from 'react-native';
 import { Avatar, Button, Text, Chip } from 'react-native-paper';
 
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
-import axios from 'axios';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -49,26 +39,15 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	const [participants, setParticipants] = useState<TripMember[]>([]);
 	const [inviteModalVisible, setInviteModalVisible] = useState(false);
 	const [isCopy, setIsCopy] = useState(false);
-
 	const userInfo = useRecoilValue(MemberState);
 
 	const [load, setLoad] = useState(true);
-
-	useFocusEffect(
-		React.useCallback(() => {
-			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
-		}, [travel_id]),
-	);
-
-	useEffect(() => {
-		fetchData();
-	}, [load]);
-
 	const fetchData = async () => {
 		try {
 			const res = await api.get(`/travel/${travel_id}`);
 			if (res.status === 200) {
 				const trip_data = res.data;
+				console.log('trip 정보: ');
 				console.log(trip_data);
 				setTitle(trip_data.travel_title);
 				setLocation(trip_data.travel_location);
@@ -85,15 +64,26 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				setParticipants(trip_data.participants);
 				setCurTripInfo(updatedTripInfo);
 
-				if (load) {
-					setPayData(trip_data.payment_list);
-					setLoad(false);
-				}
+				setPayData(trip_data.payment_list);
+				setLoad(true); // 삭제 후 state 갱신
 			}
 		} catch (err) {
 			console.log(err);
 		}
 	};
+
+	useFocusEffect(
+		React.useCallback(() => {
+			fetchData(); // 화면이 focus될 때마다 데이터를 가져옴
+		}, [travel_id]),
+	);
+
+	useEffect(() => {
+		if (!load) {
+			//삭제 후 state
+			fetchData();
+		}
+	}, [load]);
 
 	async function handleAdjust() {
 		const adjust_data = payData
@@ -109,7 +99,6 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 		const res = await api.post('calculate', adjust_data);
 		if (res.status == 200) {
-			console.log('정산 요청 완료');
 			navigation.navigate('AdjustTrip', { tripId: travel_id });
 		}
 	}
@@ -209,7 +198,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					정산
 				</Button>
 			</View>
-
+			{/*
 			<View style={styles.order_button}>
 				<Button
 					mode="text"
@@ -221,7 +210,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 					{orderType}
 				</Button>
 			</View>
-			<Modal
+			 <Modal
 				animationType="slide"
 				transparent={true}
 				visible={modalVisible}
@@ -260,7 +249,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 						/>
 					</View>
 				</View>
-			</Modal>
+			</Modal> */}
 			<Modal
 				animationType="fade"
 				transparent={true}
