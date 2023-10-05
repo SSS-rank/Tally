@@ -297,6 +297,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 				<CategoryBox
 					selectedcategory={selectedcategory}
 					setSelectedCategory={setSelectedCategory}
+					blocked={false}
 				/>
 				<View style={[styles.party_box, styles.contentBox]}>
 					{visible ? (
