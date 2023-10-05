@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
 	profile_group: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		flex: 1,
 	},
 	partyItem: {
 		flexDirection: 'row',
@@ -102,6 +103,6 @@ const styles = StyleSheet.create({
 	},
 	priceTextInput: {
 		...TextStyles({ align: 'right' }).regular,
-		flex: 1,
+		// flex: 1,
 	},
 });

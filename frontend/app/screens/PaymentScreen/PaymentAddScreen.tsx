@@ -280,6 +280,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							setStore(memo);
 						}}
 						returnKeyType="next"
+						selectionColor="#91C0EB"
 						style={styles.textInput}
 					/>
 				</View>
@@ -291,6 +292,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							setText(memo);
 						}}
 						returnKeyType="next"
+						selectionColor="#91C0EB"
 						style={styles.textInput}
 					/>
 				</View>
@@ -457,17 +459,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flex: 1,
 	},
-
-	amount_left: {
-		flex: 0.55,
-	},
-
-	amount_left_input: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		marginBottom: 10,
-	},
-
 	date_box: {
 		justifyContent: 'flex-start',
 		zIndex: 9000,

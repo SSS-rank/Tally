@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, StyleSheet, Text, TextInput } from 'react-native';
 
 import { TextStyles } from '../../styles/CommonStyles';
 interface AmountBoxProps {
@@ -30,11 +29,13 @@ function AmountBox({
 					returnKeyType="next"
 					keyboardType="numeric"
 					style={styles.amountInput}
-					selectionColor="#F6F6F6"
+					selectionColor="#91C0EB"
 					placeholder={totAmount}
 				/>
 			) : (
-				<Text style={TextStyles({ align: 'left', weight: 'bold', mRight: 10 }).header}>
+				<Text
+					style={{ ...TextStyles({ align: 'right', weight: 'bold', mRight: 10 }).header, flex: 1 }}
+				>
 					{totAmount}
 				</Text>
 			)}
@@ -46,14 +47,15 @@ export default AmountBox;
 const styles = StyleSheet.create({
 	amount_container: {
 		flex: 2,
-		padding: 40,
+		padding: 20,
 		backgroundColor: '#F6F6F6',
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
 	amountInput: {
 		width: 100,
-		backgroundColor: 'F6F6F6',
-		...TextStyles({ align: 'left', weight: 'bold' }).header,
+		// backgroundColor: 'F6F6F6',
+		flex: 1,
+		...TextStyles({ align: 'right', weight: 'bold' }).header,
 	},
 });

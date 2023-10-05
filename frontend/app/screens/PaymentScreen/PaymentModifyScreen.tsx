@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { Text, Button } from 'react-native-paper';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 import { useRecoilState } from 'recoil';
@@ -288,6 +288,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 							setStore(memo);
 						}}
 						returnKeyType="next"
+						selectionColor="#91C0EB"
 						style={styles.textInput}
 						editable={isPayer && isCash && (calculateStatus == 0 || calculateStatus == 1)}
 					/>
@@ -302,6 +303,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						setText(memo);
 					}}
 					returnKeyType="next"
+					selectionColor="#91C0EB"
 					style={styles.textInput}
 					editable={calculateStatus == 0 || calculateStatus == 1}
 				/>
@@ -314,10 +316,10 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					blocked={calculateStatus == 2 || calculateStatus == 3}
 				/>
 			) : (
-				<View style={{ padding: 30 }}></View>
+				<View style={{ padding: 20 }}></View>
 			)}
 
-			<View style={[styles.party_box]}>
+			<View style={[styles.party_box, styles.contentBox]}>
 				{visible ? (
 					<View>
 						<View
@@ -328,10 +330,6 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 							}}
 						>
 							<Text style={styles.content_title}>함께 한 사람</Text>
-							<View style={{ flexDirection: 'row' }}>
-								<Text style={styles.party_type}>금액</Text>
-								<Text style={styles.party_type}>참여</Text>
-							</View>
 						</View>
 						<ScrollView>
 							{partyMembers.map((item) => (
@@ -393,6 +391,8 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					)}
 					{calculateStatus == 0 || calculateStatus == 1 ? (
 						<Button
+							buttonColor="#91C0EB"
+							textColor="white"
 							mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 							dark={true} // 어두운 테마 사용 여부
 							compact={true} // 작은 크기의 버튼 여부
@@ -414,15 +414,19 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 							/>
 
 							<Button
+								buttonColor="#91C0EB"
+								textColor="white"
 								mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 								dark={true} // 어두운 테마 사용 여부
 								compact={true} // 작은 크기의 버튼 여부
 								onPress={() => handleSubmit()} // 클릭 이벤트 핸들러
-								style={{ marginTop: 10 }}
+								style={{ marginTop: 30 }}
 							>
 								메모 수정
 							</Button>
 							<Button
+								buttonColor="#91C0EB"
+								textColor="white"
 								mode="contained" // 버튼 스타일: 'contained' (채워진 스타일) 또는 'outlined' (테두리 스타일)
 								dark={true} // 어두운 테마 사용 여부
 								compact={true} // 작은 크기의 버튼 여부
@@ -446,15 +450,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 	},
 	content_box: {
-		marginVertical: 30,
+		marginTop: 30,
 	},
 	textInput: {
-		backgroundColor: '#ffffff',
-		height: 48,
-		marginBottom: 20,
+		...TextStyles({ align: 'left' }).regular,
+		borderBottomColor: '#A0A0A0',
+		borderBottomWidth: 0.5,
+		justifyContent: 'center',
+		verticalAlign: 'middle',
 	},
 	content_title: {
-		...TextStyles({ align: 'left', weight: 'bold', mBottom: 10 }).regular,
+		...TextStyles({ align: 'left', mBottom: 5 }).regular,
 	},
 	party_type: {
 		...TextStyles({ mLeft: 40 }).small,
@@ -481,13 +487,16 @@ const styles = StyleSheet.create({
 	party_box: {
 		flex: 3,
 	},
+	contentBox: {
+		marginTop: 30,
+	},
 	check_box_container: {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	self_check_box: {
-		padding: 10,
+		marginBottom: 20,
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
