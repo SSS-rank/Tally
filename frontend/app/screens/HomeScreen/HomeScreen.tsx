@@ -94,8 +94,7 @@ function HomeScreen({ navigation }: any) {
 		if (res.status === 200 && res.data.length > 0) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
-					const WeatherText = 'snow';
-					// const WeatherText = await getWeather(item.weather);
+					const WeatherText = await getWeather(item.weather);
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
