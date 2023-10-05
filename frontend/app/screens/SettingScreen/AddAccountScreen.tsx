@@ -80,6 +80,7 @@ function AddAccountScreen({ navigation }: any) {
 						}}
 						value={accountNumber}
 						onChangeText={setAccountNumber}
+						selectionColor="#91C0EB"
 						placeholder="계좌 번호"
 						keyboardType="number-pad"
 					/>

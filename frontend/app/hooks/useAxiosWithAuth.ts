@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Alert } from 'react-native';
 import Config from 'react-native-config';
 
 import axios from 'axios';
@@ -44,7 +45,6 @@ const useAxiosWithAuth = () => {
 							);
 
 							if (res.status === 200) {
-								console.log('get newToken success');
 								const newAccessToken = res.data.accessToken;
 								const newAccessTokenExpireTime = res.data.accessTokenExpireTime;
 
@@ -61,8 +61,13 @@ const useAxiosWithAuth = () => {
 							console.error('error refreshig accessToken ', refreshError);
 						}
 					}
+				} else if (response.status == 400) {
+					// 400 에러시 에러 메시지 Alert 발생
+					Alert.alert(response.data.errorMessage);
+					return response;
 				}
 				return Promise.reject(error);
+				// return null;
 			},
 		);
 

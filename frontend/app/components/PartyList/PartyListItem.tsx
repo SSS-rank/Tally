@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Avatar, TextInput } from 'react-native-paper';
+import { View, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { Avatar } from 'react-native-paper';
 
 import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/Avatar/AvatarImage';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -27,39 +27,46 @@ function PartyListItem(props: partyItemprops) {
 		props.onInvolveChange(!involveCheck);
 	};
 	return (
-		<TouchableOpacity style={styles.partyItem} disabled={props.block}>
+		<TouchableOpacity
+			style={styles.partyItem}
+			disabled={props.block}
+			onPress={() => {
+				setInvolveCheck(!involveCheck);
+				handleInVolveChange();
+			}}
+		>
 			<View style={styles.profile_group}>
-				<Avatar.Image size={48} source={props.img} style={styles.profile_img} />
+				<Avatar.Image size={36} source={props.img} style={styles.profile_img} />
 				<Text style={styles.nickname}>{props.name}</Text>
 				{props.isPayer ? <Text style={styles.prayer}>결제자</Text> : null}
 			</View>
-
-			<View style={styles.input_group}>
-				<View style={styles.textInputView}>
-					<TextInput
-						value={amount}
-						onChangeText={(input) => {
-							handleAmountChange(input);
-						}}
-						returnKeyType="next"
-						placeholder={amount + ''}
-						style={styles.textInput}
-						disabled={props.block}
-					/>
-					<Text style={styles.text_won}>원</Text>
-				</View>
-				<Icon
-					name={involveCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
-					size={32}
-					color={involveCheck ? '#91C0EB' : '#D0D0D0'}
-					style={{ marginLeft: 5 }}
-					onPress={() => {
-						setInvolveCheck(!involveCheck);
-						handleInVolveChange();
-					}}
-					disabled={props.block}
-				/>
-			</View>
+			<TextInput
+				style={styles.priceTextInput}
+				value={amount}
+				onChangeText={(input) => {
+					handleAmountChange(input);
+				}}
+				returnKeyType="next"
+				keyboardType="numeric"
+				selectionColor="#91C0EB"
+				placeholder={amount + ''}
+				// editable={!props.block}
+				editable={involveCheck}
+			/>
+			<Text style={{ ...TextStyles({ align: 'left', mRight: 10 }).regular, lineHeight: 23 }}>
+				원
+			</Text>
+			<Icon
+				name={involveCheck ? 'checkmark-circle' : 'checkmark-circle-outline'}
+				size={32}
+				color={involveCheck ? '#91C0EB' : '#D0D0D0'}
+				style={{ marginLeft: 5 }}
+				onPress={() => {
+					setInvolveCheck(!involveCheck);
+					handleInVolveChange();
+				}}
+				disabled={props.block}
+			/>
 		</TouchableOpacity>
 	);
 }
@@ -70,38 +77,32 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 	},
 	nickname: {
-		...TextStyles({ align: 'left', mRight: 5, weight: 'bold' }).regular,
+		...TextStyles({ align: 'left', mRight: 5 }).regular,
+		lineHeight: 23,
 	},
 	prayer: {
-		...TextStyles({ color: '#666666' }).small,
+		...TextStyles({ color: '#FFFFFF' }).small,
+		backgroundColor: '#91C0EB',
+		borderRadius: 10,
+		paddingHorizontal: 4,
+		paddingTop: 1,
+		paddingBottom: 3,
+		verticalAlign: 'middle',
+		textAlignVertical: 'center',
 	},
 	profile_group: {
 		flexDirection: 'row',
 		alignItems: 'center',
-	},
-	input_group: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		// backgroundColor: 'blue',
+		flex: 1,
 	},
 	partyItem: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginBottom: 15,
+		marginBottom: 5,
 	},
-	textInputView: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-	textInput: {
-		backgroundColor: '#ffffff',
-		borderBottomColor: 'rgba(102, 102, 102, 0.4)',
-		borderBottomWidth: 1,
-		height: 40,
-		...TextStyles({ align: 'left' }).regular,
-	},
-	text_won: {
-		...TextStyles({ align: 'left', mRight: 10 }).regular,
+	priceTextInput: {
+		...TextStyles({ align: 'right' }).regular,
+		// flex: 1,
 	},
 });

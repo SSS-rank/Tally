@@ -15,7 +15,7 @@ interface CategoryBoxProps {
 function CategoryBox({ selectedcategory, setSelectedCategory, blocked }: CategoryBoxProps) {
 	return (
 		<View style={styles.category_box}>
-			<Text style={TextStyles({ align: 'left' }).medium}>카테고리</Text>
+			<Text style={TextStyles({ align: 'left', mBottom: 5 }).regular}>카테고리</Text>
 			<View style={styles.category_line}>
 				<TouchableOpacity
 					disabled={blocked}
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 
 	category_box: {
 		flexDirection: 'column',
-		marginVertical: 30,
+		marginTop: 30,
 	},
 	icon_group: {
 		flexDirection: 'column',

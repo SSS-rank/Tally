@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Pressable, Platform, ImageURISource, Image } from 'react-native';
+import { View, Pressable, Platform, ImageURISource, Image, Text } from 'react-native';
 import Config from 'react-native-config';
 import {
 	launchImageLibrary,
@@ -8,6 +8,7 @@ import {
 	ImageLibraryOptions,
 	ImagePickerResponse,
 } from 'react-native-image-picker';
+import { Button } from 'react-native-paper';
 
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -15,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { OcrData } from '../../model/payment';
 import getCurrencyType from '../../services/getCurrencyType';
 import removeCurrencySymbol from '../../services/RemoveCurrencySymbol';
+import { TextStyles } from '../../styles/CommonStyles';
 import UploadModeModal from '../Modal/UploadModeModal';
 
 const imagePickerOption = {
@@ -146,11 +148,26 @@ function CameraButton({ handleOcrData }: CameraButtonProps) {
 
 	return (
 		<>
-			<View>
-				<Pressable onPress={modalOpen}>
-					<Icon name="camera-alt" color="black" size={24} />
-				</Pressable>
-			</View>
+			<Pressable style={{ flexDirection: 'row', justifyContent: 'center' }} onPress={modalOpen}>
+				<Icon
+					name="camera-alt"
+					size={20}
+					style={{
+						color: '#666666',
+						textAlignVertical: 'center',
+						verticalAlign: 'middle',
+					}}
+				/>
+				<Text
+					style={{
+						...TextStyles({ color: '#666666' }).small,
+						textAlignVertical: 'center',
+						verticalAlign: 'middle',
+					}}
+				>
+					영수증 찍기
+				</Text>
+			</Pressable>
 			<UploadModeModal
 				visible={modalVisible}
 				onClose={() => setModalVisible(false)}
