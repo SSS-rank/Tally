@@ -54,6 +54,7 @@ function OcrModal({
 		// setDate(new Date());
 		setMoney(ocrAmount + '');
 		setExData(exRate + ':' + ocrCurType);
+		//화폐 단위를 바꾸기 위해 추가
 		setCurUnit(ocrCurUnit);
 		setModalVisible(false);
 	}
