@@ -26,6 +26,10 @@ function TranslateBox() {
 		language_code: 'en',
 	});
 
+	useEffect(() => {
+		if (value === '') setResult('');
+	}, [value]);
+
 	const api = useAxiosWithAuth();
 	const requestTranslate = async () => {
 		try {
@@ -55,6 +59,7 @@ function TranslateBox() {
 					}).box
 				}
 			>
+				<Text></Text>
 				<View style={[styles.contentView, { marginBottom: 15 }]}>
 					<View style={styles.bottomBorder}>
 						<Button
@@ -71,7 +76,12 @@ function TranslateBox() {
 						</Button>
 					</View>
 
-					<TextInput value={value} onChangeText={setValue} style={styles.textInput} />
+					<TextInput
+						value={value}
+						onChangeText={setValue}
+						style={styles.textInput}
+						placeholder="번역할 내용을 입력하세요"
+					/>
 
 					<View style={styles.topBorder}>
 						<Button mode="contained" style={styles.btn} onPress={requestTranslate}>
