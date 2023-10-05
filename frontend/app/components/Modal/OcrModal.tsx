@@ -12,7 +12,7 @@ interface OcrModalProps {
 	modalVisible: boolean;
 	setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 	setStore: React.Dispatch<React.SetStateAction<string>>;
-	setTotAmount: React.Dispatch<React.SetStateAction<string>>;
+	setTotAmount: React.Dispatch<React.SetStateAction<number>>;
 	setDate: React.Dispatch<React.SetStateAction<Date>>;
 	setMoney: React.Dispatch<React.SetStateAction<string>>;
 	setExData: React.Dispatch<React.SetStateAction<string>>;
@@ -46,7 +46,7 @@ function OcrModal({
 
 	function handleSubmit() {
 		setStore(ocrStore);
-		setTotAmount(ocrTotAmount + '');
+		setTotAmount(ocrTotAmount);
 		console.log(ocrDate);
 		// setDate(new Date());
 		setMoney(ocrAmount + '');

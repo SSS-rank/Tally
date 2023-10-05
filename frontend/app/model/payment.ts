@@ -81,3 +81,9 @@ export interface OcrData {
 	amount: string;
 	cur_type: string;
 }
+
+export interface GlobalFinance {
+	cur_unit: string;
+	deal_bas_r: string;
+	cur_nm: string;
+}

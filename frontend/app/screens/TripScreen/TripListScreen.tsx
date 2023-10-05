@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRecoilState } from 'recoil';
 
+import DashLine from '../../components/DashLine';
+import Line from '../../components/Line';
 import TripListItem from '../../components/TripListItem/TripListItem';
 import TripSwitch from '../../components/TripScreen/TripSwitch';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
@@ -130,9 +132,10 @@ function TripListScreen({ navigation }: TripStackProp) {
 
 	return (
 		<View style={styles.viewContainer}>
-			<View>
+			<View style={{ marginBottom: 30 }}>
 				<Text style={styles.titleText}>나의 여행지</Text>
-				<View style={styles.searchView}>
+				<DashLine />
+				{/* <View style={styles.searchView}>
 					<TextInput
 						style={styles.searchBar}
 						placeholder="검색어를 입력해주세요"
@@ -140,7 +143,7 @@ function TripListScreen({ navigation }: TripStackProp) {
 						value={searchText}
 					/>
 					<Icon name="search" style={styles.searchIcon} />
-				</View>
+				</View> */}
 			</View>
 			<TouchableOpacity style={styles.tripAddBtn} onPress={() => navigation.navigate('CreateTrip')}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -239,7 +242,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		backgroundColor: '#ffffff',
 	},
-	titleText: TextStyles({ align: 'left', mBottom: 30, weight: 'bold' }).header,
+	titleText: TextStyles({ align: 'left', mBottom: 20, weight: 'bold' }).header,
 	searchView: {
 		position: 'relative',
 	},
@@ -280,6 +283,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		width: '100%',
 		bottom: 20,
+		left: 15,
 	},
 });
 
