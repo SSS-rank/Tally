@@ -297,7 +297,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				groupMember.getCalculateGroupId(), travel);
 
 			if (groupPaymentList.isEmpty()) {
-				return null;
+				continue;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
 				double ratio = groupPayment.getPaymentId().getRatio();
