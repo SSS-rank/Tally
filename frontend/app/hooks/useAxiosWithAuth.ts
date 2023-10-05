@@ -45,7 +45,6 @@ const useAxiosWithAuth = () => {
 							);
 
 							if (res.status === 200) {
-								console.log('get newToken success');
 								const newAccessToken = res.data.accessToken;
 								const newAccessTokenExpireTime = res.data.accessTokenExpireTime;
 
