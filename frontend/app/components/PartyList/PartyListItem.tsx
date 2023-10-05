@@ -37,8 +37,17 @@ function PartyListItem(props: partyItemprops) {
 	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
 	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
-		setAmount(input); // 입력값 업데이트
-		props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
+		const parsedInput = parseFloat(input);
+
+		if (!isNaN(parsedInput)) {
+			setAmount(parsedInput.toString());
+			props.onAmountChange(parsedInput.toString());
+		} else {
+			setAmount('0');
+			props.onAmountChange('0');
+		}
+		// setAmount(input); // 입력값 업데이트
+		// props.onAmountChange(input); // 상위 컴포넌트로 입력값 전달
 	};
 	const handleInVolveChange = () => {
 		// console.log(`handleInVolveChange ${props.name} ${involveCheck}`);
