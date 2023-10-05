@@ -17,7 +17,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 	Optional<Payment> findPaymentByPaymentUuidAndStatusIsFalse(String uuid);
 
 	Optional<Payment> findPaymentByPaymentUuid(String paymentUuid);
-	Optional<Payment> findPaymentByPaymentUuidAndTravelId(String paymentUuid, Travel travel);
+	Optional<Payment> findPaymentByTransferUuidAndTravelId(String transferUuid, Travel travel);
 
 	@Query("SELECT NEW com.sss.tally.api.calculate.dto.CalculateDto$Detail(" +
 		"P.paymentName, " +
@@ -49,7 +49,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
 	List<Payment> findAllByTravelIdAndStatusIsFalse(Travel travel);
 
-	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalse(Travel travel, Category category);
+	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalseOrderByPaymentKoreaDateDesc(Travel travel, Category category);
 
-	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrue(Travel travel, Category category);
+	List<Payment> findAllByTravelIdAndCategoryIdAndStatusIsFalseAndVisibleIsTrueOrderByPaymentKoreaDateDesc(Travel travel, Category category);
 }

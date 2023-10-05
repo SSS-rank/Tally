@@ -271,7 +271,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						</Text>
 					</View>
 				</View>
-				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} />
+				<DateChip date={date} setDate={setDate} open={open} setOpen={setOpen} block={false} />
 				<View style={[styles.contentBox]}>
 					<Text style={styles.contentTitle}>결제처</Text>
 					<TextInput

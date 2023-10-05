@@ -1,12 +1,34 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Switch } from 'react-native';
 
+import { useSetRecoilState } from 'recoil';
+
 import Line from '../../components/Line';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
+import { TokenState } from '../../recoil/recoil';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function SettingScreen({ navigation }: any) {
-	const [isEnabled, setIsEnabled] = useState(false);
+	const [isEnabled, setIsEnabled] = useState(true);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+	const api = useAxiosWithAuth();
+	const setTokenState = useSetRecoilState(TokenState);
+	const logout = async () => {
+		try {
+			const res = await api.post(`/logout`);
+			if (res.status === 200) {
+				setTokenState({
+					accessToken: '',
+					accessTokenExpireTime: '',
+					refreshToken: '',
+					refreshTokenExpireTime: '',
+				});
+			}
+		} catch (err) {
+			console.error('logout err ', err);
+		}
+	};
 	return (
 		<View style={styles.viewContainer}>
 			<View style={styles.wrap}>
@@ -35,6 +57,7 @@ function SettingScreen({ navigation }: any) {
 			<View style={{ flexDirection: 'row' }}>
 				<Text
 					style={{ ...TextStyles({ align: 'right', color: '#666666', mRight: 15 }).small, flex: 1 }}
+					onPress={logout}
 				>
 					로그아웃
 				</Text>

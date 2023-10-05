@@ -309,9 +309,10 @@ public class PaymentServiceImpl implements PaymentService{
 				LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
 				if(payment.isEmpty()){
+					String uuid = UUID.randomUUID().toString();
 					Payment save = paymentRepository.save(
 						Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
-							paymentUnitOptional.get(), dateTime));
+							paymentUnitOptional.get(), dateTime, uuid));
 
 					List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(travelOptional.get().getTravelId());
 					for(Long memberId : memberIds){

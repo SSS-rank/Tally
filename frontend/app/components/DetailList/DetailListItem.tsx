@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import DetailItemStatus from './DetailItemStatus';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Payment } from '../../model/payment';
+import ExTractHourAndMinute from '../../services/ExTractHourAndMinute';
+import TruncateString from '../../services/TruncateString';
 import { TextStyles } from '../../styles/CommonStyles';
 
 type detailItemProps = {
@@ -25,7 +27,7 @@ function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 			});
 
 			if (res.status === 200) {
-				setLoad(true);
+				setLoad(false);
 				setModalVisible(false);
 			}
 		} catch (err: any) {
@@ -43,22 +45,20 @@ function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 		<TouchableOpacity
 			style={styles.itemContainer}
 			onPress={() => {
-				if (item.calculate_status == 'BEFORE' || item.calculate_status == 'NONE') {
-					// 태그가 없거나 정산전상태만 수정 가능
-					navigation.navigate('ModifyPayment', {
-						payment_uuid: item.payment_uuid,
-						payer: item.payer,
-						method: item.payment_method,
-						payment_date: item.payment_date,
-					});
-				}
+				navigation.navigate('ModifyPayment', {
+					payment_uuid: item.payment_uuid,
+					payer: item.payer,
+					method: item.payment_method,
+					payment_date: item.payment_date,
+					calculate_status: item.calculate_status,
+				});
 			}}
 			onLongPress={openDeleteItemModal}
 		>
 			<Text style={[styles.info, { marginBottom: 3 }]}>{item.payment_date.split('T')[0]}</Text>
 			<View style={styles.detail_item_main}>
 				<View style={styles.title_status}>
-					<Text style={styles.paymentName}>{item.payment_name}</Text>
+					<Text style={styles.paymentName}>{TruncateString(item.payment_name, 8)}</Text>
 					{item.calculate_status != 'NONE' ? (
 						<DetailItemStatus status={item.calculate_status} />
 					) : null}
@@ -68,7 +68,7 @@ function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 				<Text style={styles.money}>{item.amount.toLocaleString()}원</Text>
 			</View>
 			<View style={styles.detail_item_sub}>
-				<Text style={styles.info}>{item.payment_date.split('T')[1]}</Text>
+				<Text style={styles.info}>{ExTractHourAndMinute(item.payment_date.split('T')[1])}</Text>
 				<Text style={styles.info}>{item.participants ? item.participants.join(',') : ''}</Text>
 			</View>
 			<Portal>
@@ -98,13 +98,13 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	paymentName: {
-		...TextStyles({ align: 'left', weight: 'bold' }).title,
+		...TextStyles({ align: 'left', weight: 'bold' }).regular,
 	},
 	info: {
 		...TextStyles({ align: 'left', color: '#666666' }).small,
 	},
 	money: {
-		...TextStyles({ align: 'left', weight: 'bold' }).medium,
+		...TextStyles({ align: 'left', weight: 'bold' }).regular,
 	},
 	title_status: {
 		flexDirection: 'row',

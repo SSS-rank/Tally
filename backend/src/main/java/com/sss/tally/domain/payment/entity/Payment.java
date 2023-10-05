@@ -90,6 +90,8 @@ public class Payment {
 	@Column(nullable = false)
 	private CalculateStatusEnum calculateStatus;
 
+	private String transferUuid;
+
 
 	public static Payment of(PaymentDto.PaymentManualDto paymentManualDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, String uuid, PaymentMethodEnum paymentMethod, LocalDateTime dateTime, String memo){
 		return Payment.builder()
@@ -139,7 +141,7 @@ public class Payment {
 		this.visible = paymentCardUpdateDto.isVisible();
 	}
 
-	public static Payment of(PaymentDto.PaymentListRespDto paymentListRespDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, LocalDateTime datetime){
+	public static Payment of(PaymentDto.PaymentListRespDto paymentListRespDto, Member member, Travel travel, Category category, PaymentUnit paymentUnit, LocalDateTime datetime, String uuid){
 		return Payment.builder()
 			.paymentName(paymentListRespDto.getContent())
 			.amount(paymentListRespDto.getAmount())
@@ -147,7 +149,8 @@ public class Payment {
 			.travelId(travel)
 			.ratio(1.0)
 			.categoryId(category)
-			.paymentUuid(paymentListRespDto.getTransferUuid())
+			.paymentUuid(uuid)
+			.transferUuid(paymentListRespDto.getTransferUuid())
 			.paymentMethod(PaymentMethodEnum.CARD)
 			.paymentUnitId(paymentUnit)
 			.visible(true)

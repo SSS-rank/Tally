@@ -15,7 +15,6 @@ import { FcmTokenState, TokenState, tallyAccountListState } from '../../recoil/r
 type RootStackProp = NativeStackScreenProps<RootStackProps, 'SignIn'>;
 
 function LoginScreen({ route }: RootStackProp) {
-	const { setUserToken } = route.params ?? {};
 	const setTokenState = useSetRecoilState(TokenState);
 	const api = useAxiosWithAuth();
 	const setFcmToken = useSetRecoilState(FcmTokenState);
@@ -39,7 +38,7 @@ function LoginScreen({ route }: RootStackProp) {
 					};
 
 					const res = await api.post(`/login`, data);
-
+					console.log(res.status);
 					if (res.status === 200) {
 						console.log(res.data);
 
@@ -62,7 +61,6 @@ function LoginScreen({ route }: RootStackProp) {
 						}
 						getAccountList();
 						setTokenState(tokenState);
-						setUserToken(res.data.accessToken);
 					}
 				} catch (error) {
 					console.error(error);
@@ -80,7 +78,7 @@ function LoginScreen({ route }: RootStackProp) {
 	const getProfile = () => {
 		KakaoLogin.getProfile()
 			.then((result) => {
-				// console.log(`getProfile Success`, JSON.stringify(result));
+				console.log(`getProfile Success`, JSON.stringify(result));
 			})
 			.catch((err) => {
 				console.log(`getProfile fail ${err.code} ${err.message}`);
@@ -110,7 +108,13 @@ function LoginScreen({ route }: RootStackProp) {
 				onPress={() => login()}
 				style={{ borderRadius: 24, padding: 4 }}
 			>
-				<Image source={{ uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/kakao.png' }} />
+				<Image
+					source={{
+						uri: 'https://sss-tally.s3.ap-northeast-2.amazonaws.com/kakao.png',
+					}}
+					style={{ width: 40, height: 40 }} // 이미지 크기 조정
+					resizeMode="contain" // 이미지가 버튼 안에 맞게 표시될 수 있도록 설정
+				/>
 				카카오톡으로 시작하기
 			</Button>
 		</View>
