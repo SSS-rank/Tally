@@ -14,7 +14,7 @@ interface CategoryBoxProps {
 function CategoryBox({ selectedcategory, setSelectedCategory }: CategoryBoxProps) {
 	return (
 		<View style={styles.category_box}>
-			<Text style={TextStyles({ align: 'left' }).regular}>카테고리</Text>
+			<Text style={TextStyles({ align: 'left', mBottom: 5 }).regular}>카테고리</Text>
 			<View style={styles.category_line}>
 				<TouchableOpacity style={styles.icon_group} onPress={() => setSelectedCategory(1)}>
 					<MIcon name="home" size={36} color={selectedcategory === 1 ? '#91C0EB' : 'gray'} />
