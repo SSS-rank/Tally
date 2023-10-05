@@ -26,7 +26,7 @@ function RootStack() {
 		const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 		try {
 			// custom logic
-			await sleep(2000);
+			await sleep(1700);
 		} finally {
 			setIsLoading(false);
 		}
