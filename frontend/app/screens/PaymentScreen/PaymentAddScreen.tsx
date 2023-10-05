@@ -63,6 +63,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [paymentUnitModalVisible, setPaymentUnitModalVisible] = useState(false); // 통화 선택 모달
 	const [paymentUnits, setPaymentUnits] = useState<GlobalFinance[]>([]); // 통화 api 호출 response
 	const [curUnit, setCurUnit] = useState('KRW'); // 현재 선택된 통화 코드
+	const [tagedMemberCount, setTagedMemberCount] = useState(1);
 
 	useEffect(() => {
 		console.log('useEffect');
@@ -107,6 +108,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		memberNickname: string,
 		image: string,
 	) => {
+		console.log('tagedMemberCount ', tagedMemberCount);
 		setPartyMembers((prevMemebers: SelectPayMember[]) => {
 			const updatedInvolveState = [...prevMemebers];
 			const index = updatedInvolveState.findIndex((item) => item.member_uuid === memberUuid);
@@ -351,13 +353,15 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							<ScrollView>
 								{partyMembers.map((item) => (
 									<PartyListItem
-										amount={item.amount}
+										amount={item.member_uuid == memberinfo.member_uuid ? totAmount : item.amount}
 										key={item.member_uuid}
 										name={item.member_nickname}
 										img={{ uri: item.image }}
-										involveCheck={item.checked}
+										involveCheck={item.member_uuid == memberinfo.member_uuid ? true : item.checked}
+										// involveCheck={item.checked}
 										block={false}
 										isPayer={item.member_uuid == memberinfo.member_uuid}
+										setTagedMemberCount={setTagedMemberCount}
 										onAmountChange={(input) =>
 											handleAmountChange(
 												item.member_uuid,
