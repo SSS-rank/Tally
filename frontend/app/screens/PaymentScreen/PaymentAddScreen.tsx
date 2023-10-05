@@ -63,6 +63,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [paymentUnitModalVisible, setPaymentUnitModalVisible] = useState(false); // 통화 선택 모달
 	const [paymentUnits, setPaymentUnits] = useState<GlobalFinance[]>([]); // 통화 api 호출 response
 	const [curUnit, setCurUnit] = useState('KRW'); // 현재 선택된 통화 코드
+	const [tagedMemberCount, setTagedMemberCount] = useState(1);
 
 	useEffect(() => {
 		console.log('useEffect');
@@ -78,13 +79,16 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		};
 		console.log(participants);
 		if (participants) {
-			const directPayMembers = participants.map((member: TripMember) => ({
-				amount: 0,
-				member_uuid: member.member_uuid,
-				checked: false,
-				member_nickname: member.member_nickname,
-				image: member.image,
-			}));
+			const directPayMembers = participants.map((member: TripMember) => {
+				return {
+					amount: member.member_uuid === memberinfo.member_uuid ? 1 : 0,
+					member_uuid: member.member_uuid,
+					checked: member.member_uuid === memberinfo.member_uuid ? true : false,
+					member_nickname: member.member_nickname,
+					image: member.image,
+				};
+			});
+			console.log('directPayMembers ', directPayMembers);
 			setPartyMembers(directPayMembers);
 		}
 	}, [route.params]);
@@ -228,7 +232,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					cur_nm: item.cur_nm,
 				}));
 
-				console.log('responseData ', responseData);
+				// console.log('responseData ', responseData);
 				setPaymentUnits(responseData);
 			}
 		} catch (err: any) {
@@ -251,14 +255,48 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}, [curUnit]);
 
+	// 태그된 멤버 수가 바뀔 때마다 전체 금액 n빵하기
+	useEffect(() => {
+		if (money !== '') devideAmount();
+	}, [tagedMemberCount, totAmount]);
+
+	const devideAmount = () => {
+		const floorTotAmount = Math.floor(totAmount);
+		console.log('Math.floor(totAmount) ', floorTotAmount);
+		const deviededWithNAmount = Math.floor(floorTotAmount / tagedMemberCount);
+
+		// 남은 금액 계산
+		let restMoney = 0;
+		if (deviededWithNAmount * tagedMemberCount !== floorTotAmount) {
+			restMoney = Math.round(floorTotAmount - deviededWithNAmount * tagedMemberCount);
+		}
+		console.log('restMoney ', restMoney);
+		setPartyMembers((prevMembers: SelectPayMember[]) => {
+			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
+				// 결제자에게 남은 금액 추가
+				if (member.checked && member.member_uuid === memberinfo.member_uuid) {
+					return {
+						...member,
+						amount: deviededWithNAmount + restMoney,
+					};
+				}
+				// 결제자 외 태그된 사람
+				else if (member.checked) {
+					return {
+						...member,
+						amount: deviededWithNAmount,
+					};
+				} else {
+					return { ...member, amount: 0 };
+				}
+			});
+			// console.log('updatedInvolveState devied', updatedInvolveState);
+			return updatedInvolveState;
+		});
+	};
+
 	return (
 		<>
-			{/* <ExRateDropDown
-				setValue={setExData}
-				setOpen={setDropDownOpen}
-				open={dropDownOpen}
-				value={exData}
-			/> */}
 			<ScrollView style={styles.container}>
 				<OcrModal
 					setDate={setDate}
@@ -279,7 +317,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							icon="chevron-down"
 							style={{ justifyContent: 'flex-start' }}
 							mode="text"
-							// buttonColor="#91C0EB"
 							textColor="#232323"
 							labelStyle={TextStyles().regular}
 							contentStyle={{ flexDirection: 'row-reverse' }}
@@ -287,9 +324,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						>
 							{exData.split(':')[0] ? exData.split(':')[1].split(' ')[0] : '통화 선택'}
 						</Button>
-						{/* <Text style={{ ...TextStyles().regular, verticalAlign: 'middle', flex: 1 }}>
-							통화 선택 {'>'}
-						</Text> */}
 						<View style={styles.inputBox}>
 							<TextInput
 								style={styles.priceTextInput}
@@ -357,21 +391,20 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<Text style={styles.contentTitle}>함께 한 사람</Text>
-								{/* <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 5 }}>
-									<Text style={styles.party_type}>금액</Text>
-									<Text style={styles.party_type}>함께</Text>
-								</View> */}
 							</View>
 							<ScrollView>
 								{partyMembers.map((item) => (
 									<PartyListItem
+										memberUuid={item.member_uuid}
 										amount={item.amount}
 										key={item.member_uuid}
 										name={item.member_nickname}
 										img={{ uri: item.image }}
 										involveCheck={item.checked}
+										// involveCheck={item.checked}
 										block={false}
 										isPayer={item.member_uuid == memberinfo.member_uuid}
+										setTagedMemberCount={setTagedMemberCount}
 										onAmountChange={(input) =>
 											handleAmountChange(
 												item.member_uuid,
@@ -390,6 +423,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 												item.image,
 											)
 										}
+										setPartyMembers={setPartyMembers}
 									/>
 								))}
 							</ScrollView>
