@@ -16,7 +16,7 @@ import { TextStyles } from '../../styles/CommonStyles';
 const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [responseAdjust, setResponseAdjust] = useState<responseList>();
-	const { adjustId, requesterName, status } = route.params;
+	const { adjustId, requesterName, adjustStatus } = route.params;
 	const [rejectMessage, setRejectMessage] = useState('');
 	const api = useAxiosWithAuth();
 
@@ -134,7 +134,7 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 						</Text>
 					</View>
 				</View>
-				{status === 'ONGOING' && (
+				{adjustStatus === 'ONGOING' && !responseAdjust?.status && (
 					<View style={{ flexDirection: 'row', marginBottom: 20, marginHorizontal: 15 }}>
 						<Button
 							mode="contained"
@@ -154,6 +154,19 @@ const GetAdjustScreen = ({ navigation, route }: GetAdjustScreenProps) => {
 							onPress={() => navigation.navigate('PayAdjust', { adjustId: adjustId })}
 						>
 							정산
+						</Button>
+					</View>
+				)}
+				{adjustStatus === 'ONGOING' && responseAdjust?.status && (
+					<View style={{ flexDirection: 'row', marginBottom: 20, marginHorizontal: 15 }}>
+						<Button
+							mode="contained"
+							buttonColor="#E6E6E6"
+							textColor="#A0A0A0"
+							style={{ flex: 1, marginHorizontal: 5 }}
+							onPress={() => Alert.alert('', '이미 확인한 정산입니다')}
+						>
+							확인 완료
 						</Button>
 					</View>
 				)}
