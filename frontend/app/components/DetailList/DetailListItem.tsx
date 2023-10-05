@@ -27,7 +27,7 @@ function DetailListItem({ item, navigation, setLoad }: detailItemProps) {
 			});
 
 			if (res.status === 200) {
-				setLoad(true);
+				setLoad(false);
 				setModalVisible(false);
 			}
 		} catch (err: any) {
