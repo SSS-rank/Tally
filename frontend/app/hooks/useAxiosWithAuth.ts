@@ -63,7 +63,7 @@ const useAxiosWithAuth = () => {
 						}
 					}
 				} else if (response.status == 400) {
-					console.log(response.data.errorMessage);
+					// 400 에러시 에러 메시지 Alert 발생
 					Alert.alert(response.data.errorMessage);
 					return response;
 				}
