@@ -24,16 +24,16 @@ interface partyItemprops {
 	) => void;
 }
 function PartyListItem(props: partyItemprops) {
-	console.log(
-		'name ',
-		props.name,
-		' amount ',
-		props.amount + '',
-		' involveCheck ',
-		props.involveCheck,
-		' isPayer ',
-		props.isPayer,
-	);
+	// console.log(
+	// 	'name ',
+	// 	props.name,
+	// 	' amount ',
+	// 	props.amount + '',
+	// 	' involveCheck ',
+	// 	props.involveCheck,
+	// 	' isPayer ',
+	// 	props.isPayer,
+	// );
 	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
 	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
