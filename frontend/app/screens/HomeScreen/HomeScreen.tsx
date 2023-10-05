@@ -97,7 +97,7 @@ function HomeScreen({ navigation }: any) {
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
-						color: getWeatherBackgroundColor(WeatherText),
+						color: getWeatherBackgroundColor(WeatherText.toLowerCase()),
 						width: width,
 						weather: WeatherText.toLowerCase(),
 						navigation: navigation,

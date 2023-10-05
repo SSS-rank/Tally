@@ -41,7 +41,7 @@ const Item = ({ item, navigation }: ItemProps) => (
 			navigation?.navigate('GetAdjust', {
 				adjustId: item.calculate_group_uuid,
 				requesterName: item.receiver_name,
-				status: item.status,
+				adjustStatus: item.status,
 			})
 		}
 	>
