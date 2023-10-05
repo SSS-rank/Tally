@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "217657741103",
+    "project_id": "tally-ec2a7",
+    "storage_bucket": "tally-ec2a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217657741103:android:71b9e12c0951f409111bda",
+        "android_client_info": {
+          "package_name": "com.tally"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMSY_HSaFEk08YGe7geSJe9KJ0v0c9sJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
