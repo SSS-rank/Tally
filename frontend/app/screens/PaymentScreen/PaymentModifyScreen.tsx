@@ -83,7 +83,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 				setStore(responseData.payment_name);
 				setText(responseData.memo);
 				setPaymentUnit(responseData.payment_unit);
-				// setDate(responseData.payment_date);
+
 				// 참가자 리스트 생성
 				const partyData = curTripInfo.participants.map((item: TripMember) => {
 					return {
@@ -246,7 +246,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 					navigation.navigate('TripDetail', { travel_id: curTripInfo.id });
 				}
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 			}
 		} else {
 			// 태그자 입장메모 수정
@@ -339,7 +339,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									name={item.member_nickname}
 									img={{ uri: item.image }}
 									involveCheck={item.checked}
-									block={!isPayer || !(calculateStatus == 0 || calculateStatus == 1)} //결제자가 아닌 경우 안보이도록 변수 설정
+									block={!isPayer || calculateStatus == 2 || calculateStatus == 3} //결제자가 아닌 경우 안보이도록 변수 설정
 									isPayer={item.member_uuid == payerUuid}
 									onAmountChange={(input) =>
 										handleAmountChange(
