@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
@@ -15,8 +15,17 @@ interface partyItemprops {
 	block: boolean; //
 	onAmountChange: (amount: string) => void;
 	onInvolveChange: (involveCheck: boolean) => void;
+	setTagedMemberCount: (prevState: number | ((prevState: number) => number)) => void;
 }
 function PartyListItem(props: partyItemprops) {
+	console.log(
+		'amount ',
+		props.amount + '',
+		' involveCheck ',
+		props.involveCheck,
+		' isPayer ',
+		props.isPayer,
+	);
 	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
 	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
@@ -26,12 +35,18 @@ function PartyListItem(props: partyItemprops) {
 	const handleInVolveChange = () => {
 		props.onInvolveChange(!involveCheck);
 	};
+
+	useEffect(() => {
+		setAmount(props.amount + '');
+	}, [props.amount]);
+
 	return (
 		<TouchableOpacity
 			style={styles.partyItem}
 			disabled={props.block}
 			onPress={() => {
 				setInvolveCheck(!involveCheck);
+				props.setTagedMemberCount((prev: number) => prev + 1);
 				handleInVolveChange();
 			}}
 		>
