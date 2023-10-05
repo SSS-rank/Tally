@@ -29,7 +29,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 	const [dropDownOpen, setDropDownOpen] = useState(false);
 	const [memberinfo, setMemberInfo] = useRecoilState(MemberState);
 	const [exData, setExData] = useState('');
-	const [totAmount, setTotAmount] = useState(''); // 원화 환산 결제 총액
+	const [totAmount, setTotAmount] = useState(0); // 원화 환산 결제 총액
 	const [money, setMoney] = useState(''); // 결제 금액 (현지 결제 단위)
 	const [text, setText] = useState('');
 	const [store, setStore] = useState('');
@@ -43,7 +43,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	useEffect(() => {
 		console.log('useEffect');
-		setTotAmount('');
+		setTotAmount(0);
 		setText('');
 		setStore('');
 		setSelectedCategory(0);
@@ -154,7 +154,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					payment_type: 'cash',
 					payment_unit_id: 8,
 					ratio: 1,
-					amount: parseFloat(totAmount),
+					amount: totAmount,
 					category: selectedcategory,
 					memo: text,
 					title: store,
@@ -171,7 +171,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					payment_type: 'cash',
 					payment_unit_id: 8,
 					ratio: 1,
-					amount: parseFloat(totAmount),
+					amount: totAmount,
 					category: selectedcategory,
 					memo: text,
 					title: store,
@@ -245,9 +245,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 								value={money}
 								onChangeText={(memo) => {
 									setMoney(memo);
-									setTotAmount(
-										(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo)).toString(),
-									);
+									setTotAmount(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo));
 								}}
 								returnKeyType="next"
 								keyboardType="numeric"
