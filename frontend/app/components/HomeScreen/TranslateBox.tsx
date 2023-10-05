@@ -54,12 +54,17 @@ function TranslateBox() {
 			<View
 				style={
 					ViewStyles({
-						alignItems: 'center',
+						alignItems: 'flext-start',
 						height: 500,
 					}).box
 				}
 			>
-				<Text></Text>
+				<Text style={styles.title}>
+					어디든지 {'\n'}
+					<Text style={styles.titleBold}>불편함 없이 </Text>
+					여행하세요!
+				</Text>
+
 				<View style={[styles.contentView, { marginBottom: 15 }]}>
 					<View style={styles.bottomBorder}>
 						<Button
@@ -221,6 +226,12 @@ const styles = StyleSheet.create({
 	topBorder: {
 		borderTopWidth: 1,
 		borderTopColor: '#A0A0A0',
+	},
+	title: {
+		...TextStyles({ mBottom: 10, align: 'left' }).regular,
+	},
+	titleBold: {
+		...TextStyles({ color: '#91C0EB', weight: 'bold' }).regular,
 	},
 	modalView: {
 		width: '100%',
