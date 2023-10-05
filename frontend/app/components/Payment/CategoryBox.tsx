@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 
 	category_box: {
 		flexDirection: 'column',
-		marginVertical: 30,
+		marginTop: 30,
 	},
 	icon_group: {
 		flexDirection: 'column',

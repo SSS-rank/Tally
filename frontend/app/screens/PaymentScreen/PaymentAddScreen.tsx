@@ -304,8 +304,8 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<Text style={styles.contentTitle}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row' }}>
-									<Text style={styles.party_type}>결제</Text>
+								<View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+									<Text style={styles.party_type}>금액</Text>
 									<Text style={styles.party_type}>함께</Text>
 								</View>
 							</View>
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
 		marginTop: 30,
 	},
 	contentTitle: {
-		...TextStyles({ align: 'left' }).regular,
+		...TextStyles({ align: 'left', mBottom: 5 }).regular,
 	},
 	textInput: {
 		...TextStyles({ align: 'left' }).regular,
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	self_check_box: {
-		padding: 10,
+		marginBottom: 20,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
