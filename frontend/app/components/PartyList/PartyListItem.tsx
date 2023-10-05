@@ -91,7 +91,7 @@ function PartyListItem(props: partyItemprops) {
 			</View>
 			<TextInput
 				style={styles.priceTextInput}
-				value={amount}
+				value={amount === '0' ? '' : amount}
 				onChangeText={(input) => {
 					handleAmountChange(input);
 				}}
@@ -99,8 +99,7 @@ function PartyListItem(props: partyItemprops) {
 				keyboardType="numeric"
 				selectionColor="#91C0EB"
 				placeholder={amount + ''}
-				// editable={!props.block}
-				editable={involveCheck}
+				editable={involveCheck && !props.block}
 			/>
 			<Text style={{ ...TextStyles({ align: 'left', mRight: 10 }).regular, lineHeight: 23 }}>
 				원
@@ -152,6 +151,7 @@ const styles = StyleSheet.create({
 	},
 	priceTextInput: {
 		...TextStyles({ align: 'right' }).regular,
+		minWidth: 50,
 		// flex: 1,
 	},
 });
