@@ -66,6 +66,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 
 	const fetchData = async () => {
 		try {
+			setLoad(true);
 			const res = await api.get(`/travel/${travel_id}`);
 			if (res.status === 200) {
 				const trip_data = res.data;
