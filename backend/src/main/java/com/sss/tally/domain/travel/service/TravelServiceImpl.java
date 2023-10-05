@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -289,7 +290,7 @@ public class TravelServiceImpl implements TravelService {
 					if (paymentListRespDto.getFlag().equals("입금"))
 						continue;
 
-					Optional<Payment> payment = paymentRepository.findPaymentByPaymentUuidAndTravelId(
+					Optional<Payment> payment = paymentRepository.findPaymentByTransferUuidAndTravelId(
 						paymentListRespDto.getTransferUuid(), travelOptional.get());
 
 					Optional<Category> category = categoryRepository.findCategoryByCategoryId(
@@ -305,9 +306,10 @@ public class TravelServiceImpl implements TravelService {
 					LocalDateTime dateTime = LocalDateTime.parse(paymentListRespDto.getTransferDate(), formatter);
 
 					if (payment.isEmpty()) {
+						String uuid = UUID.randomUUID().toString();
 						Payment save = paymentRepository.save(
 							Payment.of(paymentListRespDto, member, travelOptional.get(), category.get(),
-								paymentUnitOptional.get(), dateTime));
+								paymentUnitOptional.get(), dateTime, uuid));
 
 						List<Long> memberIds = travelGroupRepository.findMemberIdsByTravelId(
 							travelOptional.get().getTravelId());
