@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Alert } from 'react-native';
 import Config from 'react-native-config';
 
 import axios from 'axios';
@@ -61,8 +62,13 @@ const useAxiosWithAuth = () => {
 							console.error('error refreshig accessToken ', refreshError);
 						}
 					}
+				} else if (response.status == 400) {
+					console.log(response.data.errorMessage);
+					Alert.alert(response.data.errorMessage);
+					return response;
 				}
 				return Promise.reject(error);
+				// return null;
 			},
 		);
 
