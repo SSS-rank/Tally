@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, Dimensions, ScrollView, Alert } from 'react-native';
+import { Text, View, Dimensions, ScrollView, Alert, StyleSheet } from 'react-native';
 import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -14,6 +14,7 @@ import MainBanner from '../../components/HomeScreen/MainBanner';
 import MainHeader from '../../components/HomeScreen/MainHeader';
 import PassportButton from '../../components/HomeScreen/PassportButton';
 import ProfileBox from '../../components/HomeScreen/ProfileBox';
+import TranslateBox from '../../components/HomeScreen/TranslateBox';
 import TravelSheet from '../../components/HomeScreen/TravelSheet';
 import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { Location } from '../../model/mainTripItem';
@@ -93,7 +94,8 @@ function HomeScreen({ navigation }: any) {
 		if (res.status === 200 && res.data.length > 0) {
 			newInfo = await Promise.all(
 				res.data.map(async (item: any, index: number) => {
-					const WeatherText = await getWeather(item.weather);
+					const WeatherText = 'snow';
+					// const WeatherText = await getWeather(item.weather);
 					console.log('WeatherText ', WeatherText);
 					return {
 						...item,
@@ -163,9 +165,9 @@ function HomeScreen({ navigation }: any) {
 					/>
 				</View>
 				<ProfileBox />
+				<TranslateBox />
 			</ScrollView>
 		</LinearGradient>
 	);
 }
-
 export default HomeScreen;
