@@ -65,7 +65,7 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 				setCurTripInfo(updatedTripInfo);
 
 				setPayData(trip_data.payment_list);
-				setLoad(true);
+				setLoad(true); // 삭제 후 state 갱신
 			}
 		} catch (err) {
 			console.log(err);
@@ -79,8 +79,8 @@ function TripDetailScreen({ navigation, route }: TripDetailScreenProps) {
 	);
 
 	useEffect(() => {
-		console.log('Component re-rendered');
 		if (!load) {
+			//삭제 후 state
 			fetchData();
 		}
 	}, [load]);
