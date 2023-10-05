@@ -278,14 +278,29 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	const devideAmount = () => {
 		// console.log('tagedMemberCount ', tagedMemberCount);
-		const deviededWithNAmount = Math.floor(totAmount / tagedMemberCount);
+		const floorTotAmount = Math.floor(totAmount);
+		console.log('Math.floor(totAmount) ', floorTotAmount);
+		const deviededWithNAmount = Math.floor(floorTotAmount / tagedMemberCount);
 		// console.log('deviededWithNAmount floor ', deviededWithNAmount);
 
 		// console.log('devideAmount partyMembers', partyMembers);
-
+		// 남은 금액 계산
+		let restMoney = 0;
+		if (deviededWithNAmount * tagedMemberCount !== floorTotAmount) {
+			restMoney = Math.round(totAmount - deviededWithNAmount * tagedMemberCount);
+			console.log('restMoney ', restMoney);
+		}
 		setPartyMembers((prevMembers: SelectPayMember[]) => {
 			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
-				if (member.checked) {
+				// 결제자에게 남은 금액 추가
+				if (member.checked && member.member_uuid === memberinfo.member_uuid) {
+					return {
+						...member,
+						amount: deviededWithNAmount + restMoney,
+					};
+				}
+				// 결제자 외 태그된 사람
+				else if (member.checked) {
 					return {
 						...member,
 						amount: deviededWithNAmount,
