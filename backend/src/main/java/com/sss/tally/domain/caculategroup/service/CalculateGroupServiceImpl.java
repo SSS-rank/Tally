@@ -246,7 +246,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				calculateGroup, travel);
 
 			if (groupPaymentList.isEmpty()) {
-				return null;
+				continue;
 			}
 
 			Long amount = 0L;
