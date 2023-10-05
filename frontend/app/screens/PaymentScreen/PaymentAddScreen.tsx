@@ -88,14 +88,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					image: member.image,
 				};
 			});
-			// const directPayMembers = participants.map((member: TripMember) => ({
-			// 	amount: 0,
-			// 	member_uuid: member.member_uuid,
-			// 	checked: false,
-			// 	member_nickname: member.member_nickname,
-			// 	image: member.image,
-			// }));
-
 			console.log('directPayMembers ', directPayMembers);
 			setPartyMembers(directPayMembers);
 		}
@@ -265,31 +257,20 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	// 태그된 멤버 수가 바뀔 때마다 전체 금액 n빵하기
 	useEffect(() => {
-		// const deviededWithNAmount = Math.floor(totAmount / tagedMemberCount);
-		// console.log('deviededWithNAmount round ', Math.round(deviededWithNAmount));
-		// console.log('deviededWithNAmount ceil ', Math.ceil(deviededWithNAmount));
-		// console.log('deviededWithNAmount floor ', Math.floor(deviededWithNAmount));
-		// console.log('deviededWithNAmount floor ', deviededWithNAmount);
-
-		// console.log('party members ', partyMembers);
-
 		if (money !== '') devideAmount();
 	}, [tagedMemberCount, totAmount]);
 
 	const devideAmount = () => {
-		// console.log('tagedMemberCount ', tagedMemberCount);
 		const floorTotAmount = Math.floor(totAmount);
 		console.log('Math.floor(totAmount) ', floorTotAmount);
 		const deviededWithNAmount = Math.floor(floorTotAmount / tagedMemberCount);
-		// console.log('deviededWithNAmount floor ', deviededWithNAmount);
 
-		// console.log('devideAmount partyMembers', partyMembers);
 		// 남은 금액 계산
 		let restMoney = 0;
 		if (deviededWithNAmount * tagedMemberCount !== floorTotAmount) {
-			restMoney = Math.round(totAmount - deviededWithNAmount * tagedMemberCount);
-			console.log('restMoney ', restMoney);
+			restMoney = Math.round(floorTotAmount - deviededWithNAmount * tagedMemberCount);
 		}
+		console.log('restMoney ', restMoney);
 		setPartyMembers((prevMembers: SelectPayMember[]) => {
 			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
 				// 결제자에게 남은 금액 추가
@@ -309,7 +290,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					return { ...member, amount: 0 };
 				}
 			});
-			console.log('updatedInvolveState devied', updatedInvolveState);
+			// console.log('updatedInvolveState devied', updatedInvolveState);
 			return updatedInvolveState;
 		});
 	};
