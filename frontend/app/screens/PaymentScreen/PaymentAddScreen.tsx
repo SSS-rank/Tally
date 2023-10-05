@@ -228,7 +228,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					cur_nm: item.cur_nm,
 				}));
 
-				console.log('responseData ', responseData);
+				// console.log('responseData ', responseData);
 				setPaymentUnits(responseData);
 			}
 		} catch (err: any) {
@@ -253,12 +253,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	return (
 		<>
-			{/* <ExRateDropDown
-				setValue={setExData}
-				setOpen={setDropDownOpen}
-				open={dropDownOpen}
-				value={exData}
-			/> */}
 			<ScrollView style={styles.container}>
 				<OcrModal
 					setDate={setDate}
@@ -279,7 +273,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							icon="chevron-down"
 							style={{ justifyContent: 'flex-start' }}
 							mode="text"
-							// buttonColor="#91C0EB"
 							textColor="#232323"
 							labelStyle={TextStyles().regular}
 							contentStyle={{ flexDirection: 'row-reverse' }}
@@ -287,9 +280,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						>
 							{exData.split(':')[0] ? exData.split(':')[1].split(' ')[0] : '통화 선택'}
 						</Button>
-						{/* <Text style={{ ...TextStyles().regular, verticalAlign: 'middle', flex: 1 }}>
-							통화 선택 {'>'}
-						</Text> */}
 						<View style={styles.inputBox}>
 							<TextInput
 								style={styles.priceTextInput}
@@ -357,10 +347,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<Text style={styles.contentTitle}>함께 한 사람</Text>
-								{/* <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 5 }}>
-									<Text style={styles.party_type}>금액</Text>
-									<Text style={styles.party_type}>함께</Text>
-								</View> */}
 							</View>
 							<ScrollView>
 								{partyMembers.map((item) => (
