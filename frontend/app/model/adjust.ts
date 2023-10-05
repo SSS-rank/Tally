@@ -44,6 +44,7 @@ export type responseList = {
 	travel_name: string;
 	request_date: string;
 	total_amount: number;
+	status: boolean;
 	detail_list: responseDetail[];
 };
 

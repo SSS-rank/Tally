@@ -331,6 +331,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							setStore(memo);
 						}}
 						returnKeyType="next"
+						selectionColor="#91C0EB"
 						style={styles.textInput}
 					/>
 				</View>
@@ -342,6 +343,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							setText(memo);
 						}}
 						returnKeyType="next"
+						selectionColor="#91C0EB"
 						style={styles.textInput}
 					/>
 				</View>
@@ -355,10 +357,10 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<Text style={styles.contentTitle}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+								{/* <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 5 }}>
 									<Text style={styles.party_type}>금액</Text>
 									<Text style={styles.party_type}>함께</Text>
-								</View>
+								</View> */}
 							</View>
 							<ScrollView>
 								{partyMembers.map((item) => (
@@ -553,17 +555,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flex: 1,
 	},
-
-	amount_left: {
-		flex: 0.55,
-	},
-
-	amount_left_input: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		marginBottom: 10,
-	},
-
 	date_box: {
 		justifyContent: 'flex-start',
 		zIndex: 9000,
@@ -576,7 +567,7 @@ const styles = StyleSheet.create({
 		flex: 6,
 	},
 	party_type: {
-		...TextStyles({ mLeft: 40 }).small,
+		...TextStyles({ mLeft: 20 }).small,
 	},
 	check_box_container: {
 		flexDirection: 'column',

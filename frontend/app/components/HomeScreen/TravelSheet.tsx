@@ -62,7 +62,9 @@ function TravelSheet({ item }: { item: TravelSheetProps }) {
 									}}
 								/>
 								<Text style={TextStyles({ weight: 'bold', mLeft: 10 }).title}>
-									D {0 <= item.remain_date ? `- ${item.remain_date}` : `+ ${-item.remain_date}`}
+									{0 < item.remain_date && `D - ${item.remain_date} `}
+									{0 === item.remain_date && `D - day `}
+									{0 > item.remain_date && `D + ${-item.remain_date} `}
 								</Text>
 							</View>
 							<View style={styles.titleView}>

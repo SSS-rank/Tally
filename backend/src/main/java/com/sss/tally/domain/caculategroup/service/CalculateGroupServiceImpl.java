@@ -248,7 +248,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				calculateGroup, travel);
 
 			if (groupPaymentList.isEmpty()) {
-				return null;
+				continue;
 			}
 
 			Long amount = 0L;
@@ -299,7 +299,7 @@ public class CalculateGroupServiceImpl implements CalculateGroupService {
 				groupMember.getCalculateGroupId(), travel);
 
 			if (groupPaymentList.isEmpty()) {
-				return null;
+				continue;
 			}
 			for (GroupPayment groupPayment : groupPaymentList) {
 				double ratio = groupPayment.getPaymentId().getRatio();

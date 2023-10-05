@@ -27,7 +27,14 @@ function PartyListItem(props: partyItemprops) {
 		props.onInvolveChange(!involveCheck);
 	};
 	return (
-		<TouchableOpacity style={styles.partyItem} disabled={props.block}>
+		<TouchableOpacity
+			style={styles.partyItem}
+			disabled={props.block}
+			onPress={() => {
+				setInvolveCheck(!involveCheck);
+				handleInVolveChange();
+			}}
+		>
 			<View style={styles.profile_group}>
 				<Avatar.Image size={36} source={props.img} style={styles.profile_img} />
 				<Text style={styles.nickname}>{props.name}</Text>
@@ -43,7 +50,8 @@ function PartyListItem(props: partyItemprops) {
 				keyboardType="numeric"
 				selectionColor="#91C0EB"
 				placeholder={amount + ''}
-				editable={!props.block}
+				// editable={!props.block}
+				editable={involveCheck}
 			/>
 			<Text style={{ ...TextStyles({ align: 'left', mRight: 10 }).regular, lineHeight: 23 }}>
 				원
@@ -85,6 +93,7 @@ const styles = StyleSheet.create({
 	profile_group: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		flex: 1,
 	},
 	partyItem: {
 		flexDirection: 'row',
@@ -94,6 +103,6 @@ const styles = StyleSheet.create({
 	},
 	priceTextInput: {
 		...TextStyles({ align: 'right' }).regular,
-		flex: 1,
+		// flex: 1,
 	},
 });
