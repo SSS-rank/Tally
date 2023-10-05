@@ -21,8 +21,6 @@ function LanguageItem({
 	setter,
 	modalSetter,
 }: LanguageItemProp) {
-	console.log('laguage ', language, ' cur_language_code ', cur_language_code);
-
 	const handleOnPress = () => {
 		setter({ language, language_code });
 		modalSetter(false);
