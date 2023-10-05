@@ -51,6 +51,7 @@ function OcrModal({
 		// setDate(new Date());
 		setMoney(ocrAmount + '');
 		setExData(exRate + ':' + ocrCurType);
+		setModalVisible(false);
 	}
 
 	useEffect(() => {
