@@ -43,7 +43,8 @@ function PartyListItem(props: partyItemprops) {
 				keyboardType="numeric"
 				selectionColor="#91C0EB"
 				placeholder={amount + ''}
-				editable={!props.block}
+				// editable={!props.block}
+				editable={involveCheck}
 			/>
 			<Text style={{ ...TextStyles({ align: 'left', mRight: 10 }).regular, lineHeight: 23 }}>
 				원

@@ -304,10 +304,10 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 						<View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<Text style={styles.contentTitle}>함께 한 사람</Text>
-								<View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+								{/* <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 5 }}>
 									<Text style={styles.party_type}>금액</Text>
 									<Text style={styles.party_type}>함께</Text>
-								</View>
+								</View> */}
 							</View>
 							<ScrollView>
 								{partyMembers.map((item) => (
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
 		flex: 6,
 	},
 	party_type: {
-		...TextStyles({ mLeft: 40 }).small,
+		...TextStyles({ mLeft: 20 }).small,
 	},
 	check_box_container: {
 		flexDirection: 'column',
