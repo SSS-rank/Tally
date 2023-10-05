@@ -79,13 +79,24 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		};
 		console.log(participants);
 		if (participants) {
-			const directPayMembers = participants.map((member: TripMember) => ({
-				amount: 0,
-				member_uuid: member.member_uuid,
-				checked: false,
-				member_nickname: member.member_nickname,
-				image: member.image,
-			}));
+			const directPayMembers = participants.map((member: TripMember) => {
+				return {
+					amount: member.member_uuid === memberinfo.member_uuid ? 1 : 0,
+					member_uuid: member.member_uuid,
+					checked: member.member_uuid === memberinfo.member_uuid ? true : false,
+					member_nickname: member.member_nickname,
+					image: member.image,
+				};
+			});
+			// const directPayMembers = participants.map((member: TripMember) => ({
+			// 	amount: 0,
+			// 	member_uuid: member.member_uuid,
+			// 	checked: false,
+			// 	member_nickname: member.member_nickname,
+			// 	image: member.image,
+			// }));
+
+			console.log('directPayMembers ', directPayMembers);
 			setPartyMembers(directPayMembers);
 		}
 	}, [route.params]);
@@ -108,7 +119,6 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		memberNickname: string,
 		image: string,
 	) => {
-		console.log('tagedMemberCount ', tagedMemberCount);
 		setPartyMembers((prevMemebers: SelectPayMember[]) => {
 			const updatedInvolveState = [...prevMemebers];
 			const index = updatedInvolveState.findIndex((item) => item.member_uuid === memberUuid);
@@ -253,6 +263,42 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}, [curUnit]);
 
+	// 태그된 멤버 수가 바뀔 때마다 전체 금액 n빵하기
+	useEffect(() => {
+		// const deviededWithNAmount = Math.floor(totAmount / tagedMemberCount);
+		// console.log('deviededWithNAmount round ', Math.round(deviededWithNAmount));
+		// console.log('deviededWithNAmount ceil ', Math.ceil(deviededWithNAmount));
+		// console.log('deviededWithNAmount floor ', Math.floor(deviededWithNAmount));
+		// console.log('deviededWithNAmount floor ', deviededWithNAmount);
+
+		// console.log('party members ', partyMembers);
+
+		if (money !== '') devideAmount();
+	}, [tagedMemberCount, totAmount]);
+
+	const devideAmount = () => {
+		// console.log('tagedMemberCount ', tagedMemberCount);
+		const deviededWithNAmount = Math.floor(totAmount / tagedMemberCount);
+		// console.log('deviededWithNAmount floor ', deviededWithNAmount);
+
+		// console.log('devideAmount partyMembers', partyMembers);
+
+		setPartyMembers((prevMembers: SelectPayMember[]) => {
+			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
+				if (member.checked) {
+					return {
+						...member,
+						amount: deviededWithNAmount,
+					};
+				} else {
+					return { ...member, amount: 0 };
+				}
+			});
+			console.log('updatedInvolveState devied', updatedInvolveState);
+			return updatedInvolveState;
+		});
+	};
+
 	return (
 		<>
 			<ScrollView style={styles.container}>
@@ -353,11 +399,12 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 							<ScrollView>
 								{partyMembers.map((item) => (
 									<PartyListItem
-										amount={item.member_uuid == memberinfo.member_uuid ? totAmount : item.amount}
+										memberUuid={item.member_uuid}
+										amount={item.amount}
 										key={item.member_uuid}
 										name={item.member_nickname}
 										img={{ uri: item.image }}
-										involveCheck={item.member_uuid == memberinfo.member_uuid ? true : item.checked}
+										involveCheck={item.checked}
 										// involveCheck={item.checked}
 										block={false}
 										isPayer={item.member_uuid == memberinfo.member_uuid}
@@ -380,6 +427,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 												item.image,
 											)
 										}
+										setPartyMembers={setPartyMembers}
 									/>
 								))}
 							</ScrollView>
