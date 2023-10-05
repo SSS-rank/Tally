@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import LanguageItem from './LanguageItem';
+import useAxiosWithAuth from '../../hooks/useAxiosWithAuth';
 import { TranslateInfo, TranslateInfos } from '../../model/translate';
 import { TextStyles } from '../../styles/CommonStyles';
 import { ViewStyles } from '../../styles/HomeStyles';
@@ -24,6 +25,25 @@ function TranslateBox() {
 		language: '영어',
 		language_code: 'en',
 	});
+
+	const api = useAxiosWithAuth();
+	const requestTranslate = async () => {
+		try {
+			const data = {
+				country_code: traslate.language_code,
+				content: value,
+				transfer_country_code: reSultTraslate.language_code,
+			};
+
+			const res = await api.post(`/conversation`, data);
+
+			if (res.status === 200) {
+				setResult(res.data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	return (
 		<>
@@ -54,7 +74,7 @@ function TranslateBox() {
 					<TextInput value={value} onChangeText={setValue} style={styles.textInput} />
 
 					<View style={styles.topBorder}>
-						<Button mode="contained" style={styles.btn}>
+						<Button mode="contained" style={styles.btn} onPress={requestTranslate}>
 							번역하기
 						</Button>
 					</View>
