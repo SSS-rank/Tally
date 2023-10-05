@@ -16,7 +16,7 @@ function DateChip({ date, open, setOpen, setDate, block }: DateChipProps) {
 	return (
 		<View style={styles.date_box}>
 			<Text style={TextStyles({ align: 'left', mBottom: 5 }).regular}>날짜 선택</Text>
-			<TouchableOpacity style={styles.inputBox} onPress={() => setOpen(true)}>
+			<TouchableOpacity disabled={block} style={styles.inputBox} onPress={() => setOpen(true)}>
 				<TextInput
 					value={
 						date.getFullYear() +
