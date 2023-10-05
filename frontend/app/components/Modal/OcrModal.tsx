@@ -16,6 +16,7 @@ interface OcrModalProps {
 	setDate: React.Dispatch<React.SetStateAction<Date>>;
 	setMoney: React.Dispatch<React.SetStateAction<string>>;
 	setExData: React.Dispatch<React.SetStateAction<string>>;
+	setCurUnit: React.Dispatch<React.SetStateAction<string>>;
 }
 function OcrModal({
 	modalVisible,
@@ -25,6 +26,7 @@ function OcrModal({
 	setMoney,
 	setDate,
 	setExData,
+	setCurUnit,
 }: OcrModalProps) {
 	const [ocrRecoil, setOcrRecoil] = useRecoilState(OcrState);
 	const [ocrAmount, setOcrAmount] = useState(ocrRecoil.amount); // OCR 영수증 금액 (환율 적용 전)
@@ -33,6 +35,7 @@ function OcrModal({
 	const [ocrCurType, setOcrCurType] = useState(ocrRecoil.cur_type);
 	const [ocrTotAmount, setOcrTotAmount] = useState(0);
 	const [exRate, setExRate] = useState(1);
+	const [ocrCurUnit, setOcrCurUnit] = useState('KRW');
 
 	function amountReset() {
 		setOcrAmount('');
@@ -51,6 +54,7 @@ function OcrModal({
 		// setDate(new Date());
 		setMoney(ocrAmount + '');
 		setExData(exRate + ':' + ocrCurType);
+		setCurUnit(ocrCurUnit);
 		setModalVisible(false);
 	}
 
@@ -62,6 +66,7 @@ function OcrModal({
 	useEffect(() => {
 		if (ocrRecoil.cur_type === 'jp') {
 			setOcrCurType('JPY(엔)');
+			setOcrCurUnit('JPY(100)');
 			getExRate('JPY(100)').then((rate) => {
 				if (rate) {
 					setExRate(rate);
@@ -69,6 +74,7 @@ function OcrModal({
 			});
 		} else if (ocrRecoil.cur_type === 'us') {
 			setOcrCurType('USD(달러)');
+			setOcrCurUnit('USD');
 			getExRate('USD').then((rate) => {
 				if (rate) {
 					setExRate(rate);

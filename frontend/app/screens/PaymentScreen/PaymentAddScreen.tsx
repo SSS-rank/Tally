@@ -95,11 +95,8 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 
 	function handleOcrData(ocr_data: OcrData) {
 		if (ocr_data.title != 'error') {
-			console.log(ocr_data);
 			setOcrRecoil(ocr_data);
-			console.log(ocrRecoil);
 			setModalVisible(true);
-			console.log('handleOcrdata' + ocrRecoil.title);
 		} else {
 			Alert.alert('데이터가 없습니다');
 		}
@@ -306,6 +303,7 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 					setModalVisible={setModalVisible}
 					setMoney={setMoney}
 					setExData={setExData}
+					setCurUnit={setCurUnit}
 				/>
 
 				<View style={styles.priceContainer}>
