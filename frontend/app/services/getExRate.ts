@@ -15,8 +15,8 @@ async function getExRate(curr_type: string) {
 			value: item.deal_bas_r,
 		}));
 	};
-	// const params = { searchdate: getCurrentDate() };
-	const params = { searchdate: '20230927' };
+	const params = { searchdate: getCurrentDate() };
+	// const params = { searchdate: '20230927' };
 
 	const res = await exRateApi.get('', { params });
 	if (res) {
