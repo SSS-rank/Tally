@@ -29,9 +29,9 @@ const ExRateDropDown: FC<ExRateDropDownProps> = (props) => {
 		return `${year}${month}${day}`;
 	};
 	async function checkExRate() {
-		// const params = { searchdate: getCurrentDate() };
+		const params = { searchdate: getCurrentDate() };
 		// 공휴일은 제공을 안하는 것으로 확인되어 임시로 20230927로 하드코딩
-		const params = { searchdate: 20230927 };
+		// const params = { searchdate: 20230927 };
 
 		const res = await exRateApi.get('', { params });
 		if (res) {
