@@ -314,7 +314,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			<AmountBox
 				isCash={isCash}
 				isPayer={isPayer}
-				totAmount={totAmount}
+				totAmount={Number(totAmount).toLocaleString()}
 				paymentUnit={paymentUnit}
 				setTotAmount={setTotAmount}
 				calculateStatus={calculateStatus}
