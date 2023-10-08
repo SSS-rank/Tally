@@ -105,23 +105,28 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 						image: item.profile_image,
 					};
 				});
+
+				// 현재 결제에 참여한(태그된) 인원 수 업데이트
+				const checkedMemberCount = memberdata.filter((member : any) => member.checked).length;
+				setTagedMemberCount(checkedMemberCount);
+
 				// 참여자 데이터에 기존 참여자 데이터 업데이트
 				const updatedPartyData = partyData.map((partyItem) => {
 					const matchingMember = memberdata.find(
 						(memberItem: ModMember) => memberItem.member_uuid === partyItem.member_uuid,
-					);
-					if (matchingMember) {
-						return {
-							...partyItem,
-							amount: matchingMember.amount,
-							checked: matchingMember.checked,
-							member_nickname: matchingMember.member_nickname,
-							image: matchingMember.image,
-						};
-					}
-					return partyItem; // 만약 일치하는 멤버가 없다면 기존의 partyData를 그대로 반환합니다.
-				});
-
+						);
+						if (matchingMember) {
+							return {
+								...partyItem,
+								amount: matchingMember.amount,
+								checked: matchingMember.checked,
+								member_nickname: matchingMember.member_nickname,
+								image: matchingMember.image,
+							};
+						}
+						return partyItem; // 만약 일치하는 멤버가 없다면 기존의 partyData를 그대로 반환합니다.
+					});
+					
 				setPartyMembers(updatedPartyData);
 
 				//결제자인 경우
@@ -262,6 +267,48 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			}
 		}
 	}
+
+	// 태그된 멤버 수가 바뀔 때마다 전체 금액 n빵하기
+	useEffect(() => {
+		// console.log('tagedMemberCount UseEffect ', tagedMemberCount)
+		if(totAmount !== '') devideAmount();
+	}, [tagedMemberCount]);
+
+	const devideAmount = () => {
+		const floorTotAmount = Math.floor(Number(totAmount));
+		// console.log('Math.floor(totAmount) ', floorTotAmount);
+		const deviededWithNAmount = Math.floor(floorTotAmount / tagedMemberCount);
+
+		// 남은 금액 계산
+		let restMoney = 0;
+		if (deviededWithNAmount * tagedMemberCount !== floorTotAmount) {
+			restMoney = Math.round(floorTotAmount - deviededWithNAmount * tagedMemberCount);
+		}
+		// console.log('restMoney ', restMoney);
+		setPartyMembers((prevMembers: SelectPayMember[]) => {
+			const updatedInvolveState = prevMembers.map((member: SelectPayMember) => {
+				// 결제자에게 남은 금액 추가
+				if (member.checked && member.member_uuid === memberinfo.member_uuid) {
+					return {
+						...member,
+						amount: deviededWithNAmount + restMoney,
+					};
+				}
+				// 결제자 외 태그된 사람
+				else if (member.checked) {
+					return {
+						...member,
+						amount: deviededWithNAmount,
+					};
+				} else {
+					return { ...member, amount: 0 };
+				}
+			});
+			// console.log('updatedInvolveState devied', updatedInvolveState);
+			return updatedInvolveState;
+		});
+	};
+
 	return (
 		<ScrollView style={styles.container}>
 			<AmountBox
