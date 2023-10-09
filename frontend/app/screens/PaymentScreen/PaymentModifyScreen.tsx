@@ -41,6 +41,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	const [rejectModalVisible, setRejectModalVisible] = useState(false);
 	const [tagedMemberCount, setTagedMemberCount] = useState(1);
 	const [calculateStatus, setCalculateStatus] = useState(0); //NONE:0 , BEFORE:1, ONGOING:2, AFTER:3
+	const [isDivideMode, setIsDivideMode] = useState(false);
 
 	useEffect(() => {
 		const { payment_uuid, payer, method, payment_date, calculate_status } = route.params;
@@ -271,7 +272,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 	// 태그된 멤버 수가 바뀔 때마다 전체 금액 n빵하기
 	useEffect(() => {
 		// console.log('tagedMemberCount UseEffect ', tagedMemberCount)
-		if(totAmount !== '') devideAmount();
+		if(totAmount !== '' && isDivideMode) devideAmount();
 	}, [tagedMemberCount]);
 
 	const devideAmount = () => {
@@ -410,6 +411,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 									}
 									setTagedMemberCount={setTagedMemberCount}
 									setPartyMembers={setPartyMembers}
+									setIsDivideMode={setIsDivideMode}
 								/>
 							))}
 						</ScrollView>
