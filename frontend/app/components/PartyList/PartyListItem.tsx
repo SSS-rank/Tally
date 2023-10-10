@@ -24,6 +24,7 @@ interface partyItemprops {
 	setPartyMembers: (
 		partyMembers: SelectPayMember[] | ((prevState: SelectPayMember[]) => SelectPayMember[]),
 	) => void;
+	setIsDivideMode?: (status: boolean) => void;
 }
 function PartyListItem(props: partyItemprops) {
 	// console.log(
@@ -41,6 +42,7 @@ function PartyListItem(props: partyItemprops) {
 	const handleAmountChange = (input: string) => {
 		const removed_input = removeCommaAndParseInt(input);
 		// const parsedInput = parseFloat(removed_input);
+		if (props.setIsDivideMode !== undefined) props.setIsDivideMode(false);
 
 		if (!isNaN(removed_input)) {
 			setAmount(removed_input.toString());
@@ -54,6 +56,7 @@ function PartyListItem(props: partyItemprops) {
 	};
 	const handleInVolveChange = () => {
 		// console.log(`handleInVolveChange ${props.name} ${involveCheck}`);
+		if (props.setIsDivideMode !== undefined) props.setIsDivideMode(true);
 		if (involveCheck) {
 			props.setTagedMemberCount((prev) => {
 				// console.log('setTagedMemberCount minus');

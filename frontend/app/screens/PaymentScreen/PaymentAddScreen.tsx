@@ -218,11 +218,18 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		}
 	}
 
+	const getCurrentDate = (): string => {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = (today.getMonth() + 1).toString().padStart(2, '0');
+		const day = today.getDate().toString().padStart(2, '0');
+		return `${year}${month}${day}`;
+	};
 	const getExRate = async () => {
 		try {
-			// const params = { searchdate: getCurrentDate() };
+			const params = { searchdate: getCurrentDate() };
 			// 공휴일은 제공을 안하는 것으로 확인되어 임시로 20230927로 하드코딩
-			const params = { searchdate: 20230927 };
+			// const params = { searchdate: 20230927 };
 
 			const res = await exRateApi.get('', { params });
 			if (res.status === 200) {
