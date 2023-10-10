@@ -40,6 +40,7 @@ import { MemberState } from '../../recoil/memberRecoil';
 import { OcrState } from '../../recoil/ocrRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import formatDate from '../../services/FormDate';
+import numberWithCommas from '../../services/NumberWithCommas';
 import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
 import { TextStyles } from '../../styles/CommonStyles';
 
@@ -141,9 +142,11 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 		setPartyMembers((prevMemebers) => {
 			const updatedAmounts = [...prevMemebers];
 			const index = updatedAmounts.findIndex((item) => item.member_uuid === memberUuid);
+			// const tmp_amount = removeCommaAndParseInt(amount);
 			if (index !== -1) {
 				updatedAmounts[index] = {
 					member_uuid: memberUuid,
+					// amount: tmp_amount,
 					amount: parseFloat(amount),
 					checked: checked,
 					member_nickname: memberNickname,
@@ -326,8 +329,9 @@ function PaymentAddScreen({ navigation, route }: AddPaymentScreenProps) {
 								style={styles.priceTextInput}
 								value={money}
 								onChangeText={(memo) => {
-									setMoney(memo);
-									setTotAmount(removeCommaAndParseInt(exData.split(':')[0]) * Number(memo));
+									setMoney(numberWithCommas(memo));
+									const numericValue = memo.replace(/\D/g, ''); // 숫자만 추출
+									setTotAmount(removeCommaAndParseInt(exData.split(':')[0]) * Number(numericValue));
 								}}
 								returnKeyType="next"
 								keyboardType="numeric"

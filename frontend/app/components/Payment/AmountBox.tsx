@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 
+import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
 import { TextStyles } from '../../styles/CommonStyles';
 interface AmountBoxProps {
 	isCash: boolean;
@@ -24,7 +25,9 @@ function AmountBox({
 				<TextInput
 					value={totAmount}
 					onChangeText={(memo) => {
-						setTotAmount(memo);
+						const dat = removeCommaAndParseInt(memo);
+						console.log(dat);
+						setTotAmount(dat + '');
 					}}
 					returnKeyType="next"
 					keyboardType="numeric"

@@ -19,6 +19,7 @@ import { ModifyPaymentScreenProps } from '../../model/tripNavigator';
 import { MemberState } from '../../recoil/memberRecoil';
 import { CurTripInfoState } from '../../recoil/recoil';
 import formatDate from '../../services/FormDate';
+import numberWithCommas from '../../services/NumberWithCommas';
 import { TextStyles } from '../../styles/CommonStyles';
 
 function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
@@ -267,7 +268,7 @@ function PaymentModifyScreen({ navigation, route }: ModifyPaymentScreenProps) {
 			<AmountBox
 				isCash={isCash}
 				isPayer={isPayer}
-				totAmount={totAmount}
+				totAmount={numberWithCommas(totAmount)}
 				paymentUnit={paymentUnit}
 				setTotAmount={setTotAmount}
 				calculateStatus={calculateStatus}

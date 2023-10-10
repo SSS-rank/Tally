@@ -7,6 +7,8 @@ import { AvatarImageSource } from 'react-native-paper/lib/typescript/components/
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { SelectPayMember } from '../../model/payment';
+import numberWithCommas from '../../services/NumberWithCommas';
+import removeCommaAndParseInt from '../../services/removeCommaAndParseInt';
 import { TextStyles } from '../../styles/CommonStyles';
 interface partyItemprops {
 	memberUuid: string;
@@ -37,11 +39,12 @@ function PartyListItem(props: partyItemprops) {
 	const [involveCheck, setInvolveCheck] = useState(props.involveCheck);
 	const [amount, setAmount] = useState(props.amount + '');
 	const handleAmountChange = (input: string) => {
-		const parsedInput = parseFloat(input);
+		const removed_input = removeCommaAndParseInt(input);
+		// const parsedInput = parseFloat(removed_input);
 
-		if (!isNaN(parsedInput)) {
-			setAmount(parsedInput.toString());
-			props.onAmountChange(parsedInput.toString());
+		if (!isNaN(removed_input)) {
+			setAmount(removed_input.toString());
+			props.onAmountChange(removed_input.toString());
 		} else {
 			setAmount('0');
 			props.onAmountChange('0');
@@ -81,7 +84,7 @@ function PartyListItem(props: partyItemprops) {
 
 	useEffect(() => {
 		// console.log('partyItem amount useEffect');
-		setAmount(props.amount + '');
+		setAmount(numberWithCommas(props.amount + ''));
 	}, [props.amount]);
 
 	return (
