@@ -137,96 +137,6 @@
 
 <br><br>
 
-## ✨팀원 소개
-
-### Front-End
-
-<table align="center">
-    <tr height="140px">
-      <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/18045556?v=4"/>
-            <br />
-            이희정
-      </td>
-       <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/43575986?v=4"/>
-            <br />
-            이다곤
-      </td> <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/44824456?v=4"/>
-            <br />
-            김선희
-      </td>
-     </tr>
-     <tr>
-       <td align="center" width="130px">
-           팀장, UI
-       </td>
-       <td align="center" width="130px">
-         UI
-       </td>
-       <td align="center" width="130px">
-         UI
-       </td>
-    </tr>
-    <tr>
-       <td align="center" width="130px">
-           <a href="https://github.com/heejeong13">@heejeong13</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/dagonlee">@dagonlee</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/KimSeonHui">@KimSeonHui</a>
-       </td>
-    </tr>
-</table>
-
-### Back-End
-
-<table align="center">
-    <tr height="140px">
-      <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/101235186?v=4"/>
-            <br />
-            박정은
-      </td>
-       <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/110279337?v=4"/>
-            <br />
-            박현철
-      </td> <td align="center" width="130px">
-        <img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/96433955?v=4"/>
-            <br />
-            김유진
-      </td>
-     </tr>
-     <tr>
-       <td align="center" width="130px">
-           리더, CI/CD
-       </td>
-       <td align="center" width="130px">
-         알림
-       </td>
-       <td align="center" width="130px">
-         Oauth
-       </td>
-    </tr>
-    <tr>
-       <td align="center" width="130px">
-           <a href="https://github.com/jungeunevepark">@jungeunevepark</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/rulrurara">@rulrurara</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/Yujin830">@Yujin830</a>
-       </td>
-    </tr>
-</table>
-
-<br></br>
-
 ## 🎈프로젝트 산출물
 
 ### 시스템 아키텍처
@@ -257,3 +167,105 @@
 [🎨 와이어 프레임](https://www.figma.com/file/bymxfC4GA5LYf0XzEXf9RG/Tally?type=design&node-id=0-1&mode=design&t=M7wYAjUtH0gPUiqo-0)
 
 [📕 Notion](https://shadow-tapir-1b1.notion.site/PROJECT-Tally-ea6c9c499c4b43119ee31f9623614639?pvs=4)
+
+<br><br>
+
+## ✨팀원 소개
+
+### Front-End
+
+<table align="center" width="90%">
+    <tr>
+      <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/18045556?v=4"/>
+      </td>
+       <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/43575986?v=4"/>
+      </td> <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/44824456?v=4"/>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+            이희정
+      </td>
+       <td align="center">
+            이다곤
+      </td> <td align="center">
+            김선희
+      </td>
+     </tr>
+     <tr>
+       <td align="center" width="130px">
+           팀장 <br> 디자인 총괄 <br> 
+ 정산 목록/상세<br> 여권도장 <br>
+여행 초대 기능
+       </td>
+       <td align="center" width="130px">
+         소셜 로그인<br>계좌 조회
+<br>여행 상세 페이지<br>거래 내역 생성/수정 페이지<br>OCR
+       </td>
+       <td align="center" width="130px">
+계좌 연결<br>여행 생성 / 분석 페이지 <br>
+정산 금액 자동 입력 기능<br>날씨 애니메이션<br> 알림 기능
+       </td>
+    </tr>
+    <tr>
+       <td align="center" width="130px">
+           <a href="https://github.com/heejeong13">@heejeong13</a>
+       </td>
+       <td align="center" width="130px">
+         <a href="https://github.com/dagonlee">@dagonlee</a>
+       </td>
+       <td align="center" width="130px">
+         <a href="https://github.com/KimSeonHui">@KimSeonHui</a>
+       </td>
+    </tr>
+</table>
+
+### Back-End
+
+<table align="center" width="90%">
+    <tr>
+      <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/101235186?v=4"/>
+      </td>
+       <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/110279337?v=4"/>
+      </td> <td align="center">
+        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/96433955?v=4"/>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+            박정은
+      </td>
+       <td align="center">
+            박현철
+      </td> <td align="center">
+            김유진
+      </td>
+     </tr>
+     <tr>
+       <td align="center" width="130px">
+           CI/CD 구축 <br> 여행 및 결제 관련 API <br> 여행 초대 관련 API <br> 카테고리, 결제 단위, 국내 여행지 등록
+       </td>
+       <td align="center" width="130px">
+         정산 관련 API <br> 체크리스트 관련 API <br> mongodb와 firebase를 이용한 알림
+       </td>
+       <td align="center" width="130px">
+         Oauth 카카오 로그인 <br> redis로 토큰 관리 <br> 계좌 관련 API <br> 분석 관련 API <br> 국가별 정보 등록
+       </td>
+    </tr>
+    <tr>
+       <td align="center" width="130px">
+           <a href="https://github.com/jungeunevepark">@jungeunevepark</a>
+       </td>
+       <td align="center" width="130px">
+         <a href="https://github.com/rulrurara">@rulrurara</a>
+       </td>
+       <td align="center" width="130px">
+         <a href="https://github.com/Yujin830">@Yujin830</a>
+       </td>
+    </tr>
+</table>
