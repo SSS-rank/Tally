@@ -172,100 +172,14 @@
 
 ## ✨팀원 소개
 
-### Front-End
+### Front-End(이희정, 이다곤, 김선희)
+### Back-End(박정은, 박현철, 김유진)
 
-<table align="center" width="90%">
-    <tr>
-      <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/18045556?v=4"/>
-      </td>
-       <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/43575986?v=4"/>
-      </td> <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/44824456?v=4"/>
-      </td>
-     </tr>
-     <tr>
-      <td align="center">
-            이희정
-      </td>
-       <td align="center">
-            이다곤
-      </td> <td align="center">
-            김선희
-      </td>
-     </tr>
-     <tr>
-       <td align="center" width="130px">
-           팀장 <br> 디자인 총괄 <br> 
- 정산 목록/상세<br> 여권도장 <br>
-여행 초대 기능
-       </td>
-       <td align="center" width="130px">
-         소셜 로그인<br>계좌 조회
-<br>여행 상세 페이지<br>거래 내역 생성/수정 페이지<br>OCR
-       </td>
-       <td align="center" width="130px">
-계좌 연결<br>여행 생성 / 분석 페이지 <br>
-정산 금액 자동 입력 기능<br>날씨 애니메이션<br> 알림 기능
-       </td>
-    </tr>
-    <tr>
-       <td align="center" width="130px">
-           <a href="https://github.com/heejeong13">@heejeong13</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/dagonlee">@dagonlee</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/KimSeonHui">@KimSeonHui</a>
-       </td>
-    </tr>
-</table>
-
-### Back-End
-
-<table align="center" width="90%">
-    <tr>
-      <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/101235186?v=4"/>
-      </td>
-       <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/110279337?v=4"/>
-      </td> <td align="center">
-        <img height="150px" width="150px" src="https://avatars.githubusercontent.com/u/96433955?v=4"/>
-      </td>
-     </tr>
-     <tr>
-      <td align="center">
-            박정은
-      </td>
-       <td align="center">
-            박현철
-      </td> <td align="center">
-            김유진
-      </td>
-     </tr>
-     <tr>
-       <td align="center" width="130px">
-           CI/CD 구축 <br> 여행 및 결제 관련 API <br> 여행 초대 관련 API <br> 카테고리, 결제 단위, 국내 여행지 등록
-       </td>
-       <td align="center" width="130px">
-         정산 관련 API <br> 체크리스트 관련 API <br> mongodb와 firebase를 이용한 알림
-       </td>
-       <td align="center" width="130px">
-         Oauth 카카오 로그인 <br> redis로 토큰 관리 <br> 계좌 관련 API <br> 분석 관련 API <br> 국가별 정보 등록
-       </td>
-    </tr>
-    <tr>
-       <td align="center" width="130px">
-           <a href="https://github.com/jungeunevepark">@jungeunevepark</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/rulrurara">@rulrurara</a>
-       </td>
-       <td align="center" width="130px">
-         <a href="https://github.com/Yujin830">@Yujin830</a>
-       </td>
-    </tr>
-</table>
+| 팀원 이름 | 개발 기능   |
+| :-: | --------------------------------------------- |
+| <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/18045556?v=4"/>   <br> [**이희정**](https://github.com/heejeong13) | * 팀장 <br> * 디자인 총괄 <br> * 정산 목록/상세<br> * 여권도장 <br> * 여행 초대 기능   |
+|   <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/110279337?v=4"/>   <br> [**이다곤**](https://github.com/dagonlee) |  * 소셜 로그인<br>* 계좌 조회<br>* 여행 상세 페이지<br>* 거래 내역 생성/수정 페이지<br>* OCR을 활용한 영수증 정산 기능 |
+|  <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/44824456?v=4"/>   <br> [**김선희**](https://github.com/KimSeonHui) |   * 계좌 연결<br>* 여행 생성 / 분석 페이지 <br>* 정산 금액 자동 입력 기능<br>* 날씨 애니메이션<br> * 알림 기능  |
+|  <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/101235186?v=4"/>   <br> [**박정은**](https://github.com/jungeunevepark) | * CI/CD 구축 <br> * 여행 및 결제 관련 API <br> * 여행 초대 관련 API <br> * 카테고리, 결제 단위, 국내 여행지 등록  |
+|  <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/110279337?v=4"/>   <br> [**박현철**](https://github.com/rulrurara) | * 정산 관련 API <br> * 체크리스트 관련 API <br> * mongodb와 firebase를 이용한 알림  |
+|  <img height="170px" width="170px" src="https://avatars.githubusercontent.com/u/96433955?v=4"/>   <br> [**김유진**](https://github.com/Yujin830) |  * Oauth 카카오 로그인 <br> * redis로 토큰 관리 <br>* 계좌 관련 API <br> * 분석 관련 API <br>* 국가별 정보 등록 |
