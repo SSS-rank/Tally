@@ -184,5 +184,7 @@ gradle-app.setting
 
 tallydocker/*
 
+src/main/resources/firebase/*
+
 .env
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,git,gradle
